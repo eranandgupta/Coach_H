@@ -1,0 +1,300 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int                @id @default(autoincrement())
+  email               String             @unique
+  password            String
+  name                String?
+  phone               String?
+  image               String?
+  role                String             @default("user")
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  assessmentCompleted Boolean            @default(false)
+  blogPosts           BlogPost[]
+  assessment          ClientAssessment?
+  dietPlans           DietPlan[]         @relation("ClientDiets")
+  createdDiets        DietPlan[]         @relation("CoachDiets")
+  subscriptions       UserSubscription[]
+  workoutPlans        WorkoutPlan[]      @relation("ClientWorkouts")
+  createdWorkouts     WorkoutPlan[]      @relation("CoachWorkouts")
+}
+
+model SubscriptionPlan {
+  id            Int                @id @default(autoincrement())
+  name          String
+  description   String?            @db.Text
+  price         Decimal            @db.Decimal(10, 2)
+  duration      Int
+  features      String?            @db.Text
+  isActive      Boolean            @default(true)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  subscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  planId    Int
+  status    String           @default("active")
+  startDate DateTime         @default(now())
+  endDate   DateTime
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  plan      SubscriptionPlan @relation(fields: [planId], references: [id])
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([planId])
+}
+
+model WorkoutPlan {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?    @db.Text
+  clientId    Int
+  coachId     Int
+  weekNumber  Int
+  startDate   DateTime
+  endDate     DateTime
+  notes       String?    @db.Text
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  exercises   Exercise[]
+  client      User       @relation("ClientWorkouts", fields: [clientId], references: [id], onDelete: Cascade)
+  coach       User       @relation("CoachWorkouts", fields: [coachId], references: [id])
+
+  @@index([clientId])
+  @@index([coachId])
+}
+
+model Exercise {
+  id            Int         @id @default(autoincrement())
+  workoutPlanId Int
+  name          String
+  description   String?     @db.Text
+  sets          Int?
+  reps          String?
+  duration      Int?
+  restTime      Int?
+  videoUrl      String?
+  day           String
+  order         Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  workoutPlan   WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+
+  @@index([workoutPlanId])
+}
+
+model DietPlan {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String?  @db.Text
+  clientId       Int
+  coachId        Int
+  weekNumber     Int
+  startDate      DateTime
+  endDate        DateTime
+  targetCalories Int?
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  client         User     @relation("ClientDiets", fields: [clientId], references: [id], onDelete: Cascade)
+  coach          User     @relation("CoachDiets", fields: [coachId], references: [id])
+  meals          Meal[]
+
+  @@index([clientId])
+  @@index([coachId])
+}
+
+model Meal {
+  id           Int      @id @default(autoincrement())
+  dietPlanId   Int
+  name         String
+  description  String?  @db.Text
+  mealType     String
+  calories     Int?
+  protein      Decimal? @db.Decimal(10, 2)
+  carbs        Decimal? @db.Decimal(10, 2)
+  fats         Decimal? @db.Decimal(10, 2)
+  ingredients  String?  @db.Text
+  instructions String?  @db.Text
+  day          String
+  time         String?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  dietPlan     DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
+
+  @@index([dietPlanId])
+}
+
+model PromoCode {
+  id                Int       @id @default(autoincrement())
+  code              String    @unique
+  discountType      String
+  discountValue     Decimal   @db.Decimal(10, 2)
+  maxUses           Int?
+  currentUses       Int       @default(0)
+  minPurchaseAmount Decimal?  @db.Decimal(10, 2)
+  expiryDate        DateTime?
+  isActive          Boolean   @default(true)
+  description       String?   @db.Text
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([code])
+}
+
+model ClientAssessment {
+  id                     Int       @id @default(autoincrement())
+  userId                 Int       @unique
+  dateOfBirth            DateTime?
+  height                 Decimal?  @db.Decimal(5, 2)
+  weight                 Decimal?  @db.Decimal(5, 2)
+  fatPercentage          Decimal?  @db.Decimal(5, 2)
+  address                String?   @db.Text
+  emergencyContact       String?
+  heartCondition         Boolean   @default(false)
+  chestPainActivity      Boolean   @default(false)
+  chestPainRest          Boolean   @default(false)
+  dizzinessBalance       Boolean   @default(false)
+  boneJointProblem       Boolean   @default(false)
+  pregnant               Boolean   @default(false)
+  recentSurgery          Boolean   @default(false)
+  takingMedication       Boolean   @default(false)
+  medicationDetails      String?   @db.Text
+  smoking                Boolean   @default(false)
+  smokingAmount          String?
+  alcohol                Boolean   @default(false)
+  alcoholGlassesPerWeek  Int?
+  sleepHours             Int?
+  jobType                String?
+  jobRequiresTravel      Boolean   @default(false)
+  stressLevel            Int?
+  familyOverweight       String?   @db.Text
+  overweightAsChild      Boolean   @default(false)
+  overweightAges         String?
+  bestShapePeriod        String?   @db.Text
+  exercisingConsistently Boolean   @default(false)
+  currentFitnessLevel    Int?
+  mealsPerDay            Int?
+  skipMeals              Boolean   @default(false)
+  eatBreakfast           Boolean   @default(true)
+  eatLateNight           String?
+  energyDrops            Boolean   @default(false)
+  energyDropTime         String?
+  takingSupplements      Boolean   @default(false)
+  supplementsList        String?   @db.Text
+  mealLocation           String?
+  eatOutsidePerWeek      Int?
+  eatingReasons          String?   @db.Text
+  eatPastFullness        String?
+  highSugarFoods         String?
+  goalLoseFat            Boolean   @default(false)
+  goalRehabilitate       Boolean   @default(false)
+  goalSportsTraining     Boolean   @default(false)
+  goalMuscleGain         Boolean   @default(false)
+  goalOther              String?   @db.Text
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model BlogPost {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  content     String    @db.LongText
+  excerpt     String?   @db.Text
+  coverImage  String?
+  authorId    Int
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  readTime    Int?
+  views       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  videoUrl    String?
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([slug])
+  @@index([publishedAt])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  coachId   Int
+  message   String   @db.Text
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([coachId])
+  @@index([isActive])
+}
+
+model PushSubscription {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  endpoint     String   @db.Text
+  endpointHash String   @db.VarChar(64)
+  p256dh       String   @db.Text
+  auth         String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, endpointHash])
+  @@index([userId])
+}
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String   @db.Text
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Feedback {
+  id             Int      @id @default(autoincrement())
+  name           String
+  email          String
+  location       String
+  phone          String?
+  rating         Int
+  review         String   @db.Text
+  transformation String?
+  profilePhoto   String?
+  beforePhoto    String?
+  afterPhoto     String?
+  isApproved     Boolean  @default(false)
+  isVisible      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([isApproved])
+  @@index([isVisible])
+  @@index([rating])
+  @@index([createdAt])
+}

@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma init:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma db pull:*)",
+      "Bash(npx prisma db push:*)",
+      "Bash(npm run seed:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx tsx:*)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c \"taskkill /F /PID 14100\")",
+      "Bash(timeout:*)",
+      "Bash(node test-email.js:*)",
+      "Bash(if exist .next rmdir /s /q .next)",
+      "Bash(npm run build:*)",
+      "Bash(node -e:*)",
+      "Bash(del check-feedbacks.js approve-all-feedbacks.js)",
+      "Bash(npx next build:*)",
+      "Bash(del add-promo.js)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

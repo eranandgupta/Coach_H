@@ -1,0 +1,29 @@
+# robots.txt for Coach Himanshu
+# https://coachhimanshu.com
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /_next/
+Disallow: /admin/
+
+# Googlebot specific
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+# Bingbot specific
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: https://coachhimanshu.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
