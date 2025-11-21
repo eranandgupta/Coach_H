@@ -168,7 +168,7 @@ export default function BlogPostPage() {
         >
           <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-2xl p-8 md:p-12">
             <div
-              className="prose prose-invert prose-lg max-w-none
+              className="prose prose-invert prose-lg max-w-none break-words
                 prose-headings:text-white prose-headings:font-bold
                 prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
                 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
@@ -177,6 +177,7 @@ export default function BlogPostPage() {
                 prose-ul:text-gray-300 prose-ul:my-6
                 prose-li:my-2
                 prose-a:text-brand-blue prose-a:no-underline hover:prose-a:text-brand-gold
+                [&>*]:break-words [&>*]:overflow-hidden
               "
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
