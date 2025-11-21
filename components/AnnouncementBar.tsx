@@ -1,13 +1,8 @@
 'use client';
 
-import { X, Sparkles, Youtube, Instagram } from 'lucide-react';
-import { useState } from 'react';
+import { Sparkles, Youtube, Instagram } from 'lucide-react';
 
 export default function AnnouncementBar() {
-  const [isVisible, setIsVisible] = useState(true);
-
-  if (!isVisible) return null;
-
   const messages = [
     {
       icon: <Sparkles className="w-3 h-3 text-brand-gold" />,
@@ -65,14 +60,6 @@ export default function AnnouncementBar() {
           </div>
         </div>
 
-        {/* Close button */}
-        <button
-          onClick={() => setIsVisible(false)}
-          className="ml-2 p-0.5 hover:bg-white/20 rounded-full transition-colors flex-shrink-0"
-          aria-label="Close announcement"
-        >
-          <X className="w-3 h-3" />
-        </button>
       </div>
     </div>
   );
