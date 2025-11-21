@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AnnouncementBar from '@/components/AnnouncementBar';
 import YouTubeEmbed from '@/components/YouTubeEmbed';
 import { Calendar, Clock, User, ArrowLeft, Loader2 } from 'lucide-react';
 import Button from '@/components/Button';
@@ -79,9 +80,10 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen bg-brand-navy">
+      <AnnouncementBar />
       <Navbar />
 
-      <article className="pt-24 pb-12">
+      <article className="pt-32 pb-12">
         {/* Back Button */}
         <div className="max-w-4xl mx-auto px-6 mb-8">
           <Button
