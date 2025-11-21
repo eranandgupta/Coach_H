@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, CheckCircle, XCircle, Eye, EyeOff, Trash2, Image as ImageIcon } from 'lucide-react';
+import { Star, CheckCircle, XCircle, Eye, EyeOff, Trash2, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
+import Link from 'next/link';
 
 interface Feedback {
   id: number;
@@ -99,6 +100,13 @@ export default function FeedbacksManagement() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
+          <Link
+            href="/dashboard/coach"
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Dashboard
+          </Link>
           <h1 className="text-4xl font-bold mb-2">Manage Feedbacks</h1>
           <p className="text-gray-400">Review and approve client testimonials</p>
         </div>

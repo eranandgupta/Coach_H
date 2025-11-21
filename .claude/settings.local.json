@@ -25,7 +25,9 @@
       "Bash(rm:*)",
       "Bash(cat:*)",
       "Bash(clip)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
