@@ -18,7 +18,8 @@ import {
   CreditCard,
   UserPlus,
   FileText,
-  Bell
+  Bell,
+  MessageSquare
 } from 'lucide-react';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
@@ -344,6 +345,13 @@ export default function CoachDashboard() {
                 <Bell className="w-5 h-5" />
                 Notify Clients
               </button>
+              <Link
+                href="/dashboard/coach/feedbacks"
+                className="bg-transparent border-2 border-yellow-500 text-yellow-400 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-500/10 transition-all flex items-center gap-2"
+              >
+                <MessageSquare className="w-5 h-5" />
+                Review Feedbacks
+              </Link>
             </div>
           </motion.div>
 
