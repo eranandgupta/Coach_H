@@ -22,7 +22,10 @@
       "Bash(del check-feedbacks.js approve-all-feedbacks.js)",
       "Bash(npx next build:*)",
       "Bash(del add-promo.js)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(cat:*)",
+      "Bash(clip)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

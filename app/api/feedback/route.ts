@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
-import sharp from 'sharp';
+import { put } from '@vercel/blob';
 
 // POST - Submit new feedback
 export async function POST(request: NextRequest) {
@@ -48,51 +45,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'feedback');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
-
-    // Helper function to save and compress file
-    const saveFile = async (file: File, prefix: string) => {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
+    // Helper function to upload file to Vercel Blob
+    const uploadFile = async (file: File, prefix: string) => {
       const timestamp = Date.now();
-      const fileName = `${prefix}_${timestamp}.webp`; // Always save as WebP for better compression
-      const filePath = join(uploadsDir, fileName);
+      const fileName = `feedback/${prefix}_${timestamp}_${file.name}`;
 
-      // Compress and resize image using sharp
-      await sharp(buffer)
-        .resize(800, 800, {
-          fit: 'inside', // Maintain aspect ratio
-          withoutEnlargement: true, // Don't enlarge smaller images
-        })
-        .webp({
-          quality: 75, // Good balance between quality and size
-          effort: 6, // Compression effort (0-6, higher = better compression)
-        })
-        .toFile(filePath);
+      const blob = await put(fileName, file, {
+        access: 'public',
+      });
 
-      return `/uploads/feedback/${fileName}`;
+      return blob.url;
     };
 
-    // Save uploaded files
+    // Upload files to Vercel Blob
     let profilePhotoUrl = null;
     let beforePhotoUrl = null;
     let afterPhotoUrl = null;
 
     if (profilePhoto && profilePhoto.size > 0) {
-      profilePhotoUrl = await saveFile(profilePhoto, 'profile');
+      profilePhotoUrl = await uploadFile(profilePhoto, 'profile');
     }
 
     if (beforePhoto && beforePhoto.size > 0) {
-      beforePhotoUrl = await saveFile(beforePhoto, 'before');
+      beforePhotoUrl = await uploadFile(beforePhoto, 'before');
     }
 
     if (afterPhoto && afterPhoto.size > 0) {
-      afterPhotoUrl = await saveFile(afterPhoto, 'after');
+      afterPhotoUrl = await uploadFile(afterPhoto, 'after');
     }
 
     // Save to database
