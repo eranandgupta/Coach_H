@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Star, Send, CheckCircle, ArrowLeft, Upload, X, Image } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AnnouncementBar from '@/components/AnnouncementBar';
 import Button from '@/components/Button';
 
 const containerVariants = {
@@ -171,9 +172,10 @@ export default function FeedbackPage() {
 
   return (
     <div className="min-h-screen bg-brand-navy">
+      <AnnouncementBar />
       <Navbar />
 
-      <section className="pt-24 md:pt-28 pb-20 px-4 md:px-6">
+      <section className="pt-32 md:pt-36 pb-20 px-4 md:px-6">
         <motion.div
           variants={containerVariants}
           initial="hidden"
