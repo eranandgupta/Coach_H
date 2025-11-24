@@ -33,7 +33,8 @@ export default function CreateBlogModal({
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('You must be logged in to create a blog post');
+        alert('You must be logged in to create a blog post. Please refresh the page and try again.');
+        setLoading(false);
         return;
       }
 
@@ -56,15 +57,24 @@ export default function CreateBlogModal({
           videoUrl: '',
           published: true,
         });
+        alert('Blog post created successfully!');
         onSuccess?.();
         onClose();
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to create blog post');
+
+        // Specific error messages for different status codes
+        if (response.status === 401) {
+          alert('Session expired. Please log out and log in again.');
+        } else if (response.status === 403) {
+          alert('Access denied. Only coaches can create blog posts. If you are a coach, please log out and log in again to refresh your session.');
+        } else {
+          alert(data.error || 'Failed to create blog post. Please try again.');
+        }
       }
     } catch (error) {
       console.error('Error creating blog post:', error);
-      alert('Failed to create blog post');
+      alert('Network error. Please check your internet connection and try again.');
     } finally {
       setLoading(false);
     }

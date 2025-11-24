@@ -66,6 +66,39 @@ export default function BlogPostPage() {
     });
   };
 
+  // Convert plain text to HTML if needed
+  const formatContent = (content: string) => {
+    // Check if content already contains HTML tags
+    const hasHtmlTags = /<[a-z][\s\S]*>/i.test(content);
+
+    if (hasHtmlTags) {
+      // Content is already HTML, return as is
+      return content;
+    }
+
+    // Content is plain text - convert to HTML with proper formatting
+    // Preserve line breaks and format paragraphs
+    return content
+      .split('\n\n')
+      .map(paragraph => {
+        const trimmed = paragraph.trim();
+        if (!trimmed) return '';
+
+        // Check if it's a list item (starts with -, *, or number)
+        if (trimmed.match(/^[-*•]\s/)) {
+          const items = trimmed.split('\n').filter(line => line.trim());
+          return '<ul>' + items.map(item =>
+            '<li>' + item.replace(/^[-*•]\s/, '').trim() + '</li>'
+          ).join('') + '</ul>';
+        }
+
+        // Regular paragraph - preserve line breaks within it
+        return '<p>' + trimmed.replace(/\n/g, '<br>') + '</p>';
+      })
+      .filter(p => p)
+      .join('\n');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-brand-navy flex items-center justify-center">
@@ -179,7 +212,7 @@ export default function BlogPostPage() {
                 prose-a:text-brand-blue prose-a:no-underline hover:prose-a:text-brand-gold
                 [&>*]:break-words [&>*]:overflow-hidden
               "
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: formatContent(post.content) }}
             />
           </div>
         </motion.div>

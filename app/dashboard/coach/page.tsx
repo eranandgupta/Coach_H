@@ -28,6 +28,7 @@ import SubscriptionManagementModal from '@/components/forms/SubscriptionManageme
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import CreateBlogModal from '@/components/CreateBlogModal';
 import NotificationModal from '@/components/NotificationModal';
+import DashboardLoader from '@/components/DashboardLoader';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -246,11 +247,7 @@ export default function CoachDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy flex items-center justify-center">
-        <div className="animate-pulse text-white text-xl">Loading...</div>
-      </div>
-    );
+    return <DashboardLoader />;
   }
 
   return (

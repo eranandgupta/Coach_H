@@ -34,6 +34,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
     { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday' }
   ]);
   const [clients, setClients] = useState<any[]>([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -87,6 +88,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   }, [isOpen, workout]);
 
   const fetchClients = async () => {
+    setClientsLoading(true);
     try {
       const token = localStorage.getItem('token');
       const res = await fetch('/api/clients', {
@@ -95,10 +97,16 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
 
       if (res.ok) {
         const data = await res.json();
-        setClients(data.clients);
+        setClients(data.clients || []);
+      } else {
+        console.error('Failed to fetch clients');
+        setClients([]);
       }
     } catch (err) {
       console.error('Error fetching clients:', err);
+      setClients([]);
+    } finally {
+      setClientsLoading(false);
     }
   };
 
@@ -236,17 +244,28 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                       onChange={(e) => setClientId(e.target.value)}
                       className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue disabled:opacity-50"
                       required
-                      disabled={!!workout}
+                      disabled={!!workout || clientsLoading}
                     >
-                      <option value="">Choose a client</option>
-                      {clients.map((client) => (
+                      <option value="">
+                        {clientsLoading ? 'Loading clients...' : 'Choose a client'}
+                      </option>
+                      {!clientsLoading && clients.length > 0 && clients.map((client) => (
                         <option key={client.id} value={client.id}>
                           {client.name || client.email}
                         </option>
                       ))}
+                      {!clientsLoading && clients.length === 0 && (
+                        <option value="" disabled>No clients available</option>
+                      )}
                     </select>
                     {workout && (
                       <p className="text-gray-500 text-xs mt-1">Client cannot be changed when editing</p>
+                    )}
+                    {!workout && clientsLoading && (
+                      <p className="text-gray-400 text-xs mt-1">Loading your clients...</p>
+                    )}
+                    {!workout && !clientsLoading && clients.length === 0 && (
+                      <p className="text-orange-400 text-xs mt-1">No clients found. Please add clients first.</p>
                     )}
                   </div>
                 </div>

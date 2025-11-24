@@ -38,6 +38,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
     { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', day: 'Monday', time: '' }
   ]);
   const [clients, setClients] = useState<any[]>([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -97,6 +98,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   }, [isOpen, diet]);
 
   const fetchClients = async () => {
+    setClientsLoading(true);
     try {
       const token = localStorage.getItem('token');
       const res = await fetch('/api/clients', {
@@ -105,10 +107,16 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
 
       if (res.ok) {
         const data = await res.json();
-        setClients(data.clients);
+        setClients(data.clients || []);
+      } else {
+        console.error('Failed to fetch clients');
+        setClients([]);
       }
     } catch (err) {
       console.error('Error fetching clients:', err);
+      setClients([]);
+    } finally {
+      setClientsLoading(false);
     }
   };
 
@@ -256,17 +264,28 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                       onChange={(e) => setClientId(e.target.value)}
                       className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue disabled:opacity-50"
                       required
-                      disabled={!!diet}
+                      disabled={!!diet || clientsLoading}
                     >
-                      <option value="">Choose a client</option>
-                      {clients.map((client) => (
+                      <option value="">
+                        {clientsLoading ? 'Loading clients...' : 'Choose a client'}
+                      </option>
+                      {!clientsLoading && clients.length > 0 && clients.map((client) => (
                         <option key={client.id} value={client.id}>
                           {client.name || client.email}
                         </option>
                       ))}
+                      {!clientsLoading && clients.length === 0 && (
+                        <option value="" disabled>No clients available</option>
+                      )}
                     </select>
                     {diet && (
                       <p className="text-gray-500 text-xs mt-1">Client cannot be changed when editing</p>
+                    )}
+                    {!diet && clientsLoading && (
+                      <p className="text-gray-400 text-xs mt-1">Loading your clients...</p>
+                    )}
+                    {!diet && !clientsLoading && clients.length === 0 && (
+                      <p className="text-orange-400 text-xs mt-1">No clients found. Please add clients first.</p>
                     )}
                   </div>
                 </div>

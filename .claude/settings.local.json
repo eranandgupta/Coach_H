@@ -27,7 +27,10 @@
       "Bash(clip)",
       "Bash(git push:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(node check-plans.js:*)",
+      "Bash(del check-plans.js)",
+      "Bash(if exist node_modules.prisma rmdir /s /q node_modules.prisma)"
     ],
     "deny": [],
     "ask": []

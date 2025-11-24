@@ -39,11 +39,17 @@ export async function POST(request: NextRequest) {
     const authUser = await getAuthUser(request);
 
     if (!authUser) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      console.error('Blog creation failed: No auth user');
+      return NextResponse.json({ error: 'Unauthorized. Please log in again.' }, { status: 401 });
     }
 
-    if (authUser.role !== 'coach') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // Case-insensitive role check to handle 'coach', 'Coach', 'COACH'
+    const userRole = authUser.role?.toLowerCase();
+    if (userRole !== 'coach') {
+      console.error(`Blog creation failed: User role is '${authUser.role}', expected 'coach'`);
+      return NextResponse.json({
+        error: 'Only coaches can create blog posts. Your current role is: ' + authUser.role
+      }, { status: 403 });
     }
 
     const body = await request.json();
@@ -56,6 +62,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Trim whitespace from content
+    const trimmedContent = content.trim();
+    if (trimmedContent.length === 0) {
+      return NextResponse.json(
+        { error: 'Content cannot be empty' },
+        { status: 400 }
+      );
+    }
+
     // Generate slug from title
     const slug = title
       .toLowerCase()
@@ -63,17 +78,19 @@ export async function POST(request: NextRequest) {
       .replace(/(^-|-$)/g, '');
 
     // Calculate read time (average reading speed: 200 words per minute)
-    const wordCount = content.split(/\s+/).length;
+    const wordCount = trimmedContent.split(/\s+/).length;
     const readTime = Math.ceil(wordCount / 200);
+
+    console.log(`Creating blog post: "${title}" by user ${authUser.userId} (${authUser.email})`);
 
     const post = await prisma.blogPost.create({
       data: {
-        title,
+        title: title.trim(),
         slug,
-        content,
-        excerpt,
-        coverImage,
-        videoUrl: videoUrl || null,
+        content: trimmedContent,
+        excerpt: excerpt?.trim() || null,
+        coverImage: coverImage?.trim() || null,
+        videoUrl: videoUrl?.trim() || null,
         authorId: authUser.userId,
         published: published || false,
         publishedAt: published ? new Date() : null,
@@ -100,17 +117,32 @@ export async function POST(request: NextRequest) {
           tag: 'blog',
           url: `/blog/${slug}`,
         });
+        console.log(`Push notifications sent for blog post: ${slug}`);
       } catch (pushError) {
         console.error('Failed to send push notifications for blog:', pushError);
         // Don't fail the request if push fails
       }
     }
 
-    return NextResponse.json(post, { status: 201 });
-  } catch (error) {
+    console.log(`Blog post created successfully: ${post.id} - ${post.slug}`);
+    return NextResponse.json({
+      success: true,
+      post,
+      message: 'Blog post created successfully'
+    }, { status: 201 });
+  } catch (error: any) {
     console.error('Error creating blog post:', error);
+
+    // Provide more specific error messages
+    let errorMessage = 'Failed to create blog post';
+    if (error.code === 'P2002') {
+      errorMessage = 'A blog post with this title already exists. Please use a different title.';
+    } else if (error.message) {
+      errorMessage = `Error: ${error.message}`;
+    }
+
     return NextResponse.json(
-      { error: 'Failed to create blog post' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

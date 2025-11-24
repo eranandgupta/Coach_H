@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, CheckCircle, XCircle, Eye, EyeOff, Trash2, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
+import DashboardLoader from '@/components/DashboardLoader';
 import Link from 'next/link';
 
 interface Feedback {
@@ -85,14 +86,7 @@ export default function FeedbacksManagement() {
   });
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-brand-navy text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-brand-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p>Loading feedbacks...</p>
-        </div>
-      </div>
-    );
+    return <DashboardLoader />;
   }
 
   return (

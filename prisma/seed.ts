@@ -43,56 +43,83 @@ async function main() {
   });
   console.log('✅ Client created:', client.email);
 
-  // Create Subscription Plans
+  // Create Subscription Plans (matching home page plans)
   console.log('💰 Creating subscription plans...');
-  const basicPlan = await prisma.subscriptionPlan.create({
+  const kickstartPlan = await prisma.subscriptionPlan.create({
     data: {
-      name: 'Basic',
-      description: 'Perfect for beginners starting their fitness journey',
-      price: 999,
-      duration: 30, // 30 days
+      name: 'Kickstart Plan',
+      description: 'All Inclusive',
+      price: 799,
+      duration: 30, // 1 Month
       features: JSON.stringify([
-        'Weekly workout plans',
-        'Basic diet guidance',
-        'Email support',
-        'Progress tracking',
-      ]),
-      isActive: true,
-    },
-  });
-
-  const proPlan = await prisma.subscriptionPlan.create({
-    data: {
-      name: 'Pro',
-      description: 'For serious athletes looking to level up',
-      price: 2499,
-      duration: 90, // 90 days
-      features: JSON.stringify([
-        'Customized workout plans',
-        'Detailed meal plans',
-        'Priority support',
-        'Weekly check-ins',
-        'Progress tracking',
-        'Video consultations',
-      ]),
-      isActive: true,
-    },
-  });
-
-  const premiumPlan = await prisma.subscriptionPlan.create({
-    data: {
-      name: 'Premium',
-      description: 'Ultimate transformation package with premium support',
-      price: 7999,
-      duration: 365, // 365 days
-      features: JSON.stringify([
-        'Fully customized workout & diet plans',
-        '24/7 priority support',
-        'Bi-weekly video calls',
+        'Personalized workout plans',
+        'Customized meal plans',
+        'Daily progress tracking',
+        '24/7 WhatsApp support',
+        'Full video library access',
+        'Monthly one-on-one consultations',
         'Supplement guidance',
-        'Progress tracking & analytics',
-        'Exclusive content access',
-        'Free merchandise',
+        'Lifestyle coaching',
+      ]),
+      isActive: true,
+    },
+  });
+
+  const consistencyPlan = await prisma.subscriptionPlan.create({
+    data: {
+      name: 'Consistency Plan',
+      description: 'All Inclusive',
+      price: 1799,
+      duration: 90, // 3 Months
+      features: JSON.stringify([
+        'Personalized workout plans',
+        'Customized meal plans',
+        'Daily progress tracking',
+        '24/7 WhatsApp support',
+        'Full video library access',
+        'Monthly one-on-one consultations',
+        'Supplement guidance',
+        'Lifestyle coaching',
+      ]),
+      isActive: true,
+    },
+  });
+
+  const strengthPlan = await prisma.subscriptionPlan.create({
+    data: {
+      name: 'Strength Plan',
+      description: 'All Inclusive',
+      price: 2999,
+      duration: 180, // 6 Months
+      features: JSON.stringify([
+        'Personalized workout plans',
+        'Customized meal plans',
+        'Daily progress tracking',
+        '24/7 WhatsApp support',
+        'Full video library access',
+        'Monthly one-on-one consultations',
+        'Supplement guidance',
+        'Lifestyle coaching',
+      ]),
+      isActive: true,
+    },
+  });
+
+  const masteryPlan = await prisma.subscriptionPlan.create({
+    data: {
+      name: 'Mastery Plan',
+      description: 'All Inclusive',
+      price: 5499,
+      duration: 365, // 12 Months
+      features: JSON.stringify([
+        'Personalized workout plans',
+        'Customized meal plans',
+        'Daily progress tracking',
+        '24/7 WhatsApp support',
+        'Full video library access',
+        'Monthly one-on-one consultations',
+        'Supplement guidance',
+        'Lifestyle coaching',
       ]),
       isActive: true,
     },
@@ -103,18 +130,18 @@ async function main() {
   console.log('📝 Creating subscription for client...');
   const startDate = new Date();
   const endDate = new Date();
-  endDate.setDate(endDate.getDate() + proPlan.duration);
+  endDate.setDate(endDate.getDate() + consistencyPlan.duration);
 
   const subscription = await prisma.userSubscription.create({
     data: {
       userId: client.id,
-      planId: proPlan.id,
+      planId: consistencyPlan.id,
       status: 'active',
       startDate,
       endDate,
     },
   });
-  console.log('✅ Active Pro subscription created for client');
+  console.log('✅ Active Consistency Plan subscription created for client');
 
   // Create Workout Plan with Exercises
   console.log('💪 Creating workout plan...');
@@ -446,7 +473,7 @@ async function main() {
   console.log('\n✨ Database seeding completed successfully!\n');
   console.log('📊 Summary:');
   console.log('- Users: 2 (1 coach, 1 client)');
-  console.log('- Subscription Plans: 3');
+  console.log('- Subscription Plans: 4 (Kickstart, Consistency, Strength, Mastery)');
   console.log('- Active Subscriptions: 1');
   console.log('- Workout Plans: 1 (with 12 exercises)');
   console.log('- Diet Plans: 1 (with 12 meals)\n');

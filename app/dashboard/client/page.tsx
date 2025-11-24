@@ -23,6 +23,7 @@ import ViewDietModal from '@/components/modals/ViewDietModal';
 import LatestBlogWidget from '@/components/LatestBlogWidget';
 import NotificationPanel from '@/components/NotificationPanel';
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
+import DashboardLoader from '@/components/DashboardLoader';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 
 export default function ClientDashboard() {
@@ -231,11 +232,7 @@ export default function ClientDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy flex items-center justify-center">
-        <div className="animate-pulse text-white text-xl">Loading...</div>
-      </div>
-    );
+    return <DashboardLoader />;
   }
 
   const isSubscriptionActive = subscription?.isActive;

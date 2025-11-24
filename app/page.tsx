@@ -617,13 +617,25 @@ export default function Home() {
         {/* Background Video */}
         <div className="absolute inset-0 overflow-hidden z-0">
           <video
-            className="absolute w-full h-full object-cover"
+            className="absolute w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
             autoPlay
             loop
             muted
             playsInline
+            preload="auto"
+            disablePictureInPicture
+            disableRemotePlayback
             aria-label="Coach Himanshu fitness transformation background video"
             title="NASM Certified Fitness Coach - Transformation Journey"
+            style={{
+              pointerEvents: 'none',
+            }}
+            onLoadedMetadata={(e) => {
+              const video = e.currentTarget;
+              video.play().catch(() => {
+                // Silently handle autoplay failures
+              });
+            }}
           >
             <source src="/intro2.mp4" type="video/mp4" />
           </video>
@@ -949,13 +961,25 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/20 to-brand-blue/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
               <div className="relative bg-gradient-to-br from-brand-navy-light/80 to-brand-navy/80 p-6 rounded-3xl border border-brand-gold/30 backdrop-blur-sm overflow-hidden h-full flex items-center">
                 <video
-                  className="w-full h-auto rounded-2xl"
+                  className="w-full h-auto rounded-2xl [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                   autoPlay
                   loop
                   muted
                   playsInline
+                  preload="auto"
+                  disablePictureInPicture
+                  disableRemotePlayback
                   aria-label="Rhynogrip Premium Gym Gear Products Showcase"
                   title="Professional Fitness Equipment by Rhynogrip - 10% OFF with Code COACHHIMANSHU"
+                  style={{
+                    pointerEvents: 'none',
+                  }}
+                  onLoadedMetadata={(e) => {
+                    const video = e.currentTarget;
+                    video.play().catch(() => {
+                      // Silently handle autoplay failures
+                    });
+                  }}
                 >
                   <source src="/RHYNOGRIP_VIDEO.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
@@ -1225,13 +1249,25 @@ export default function Home() {
             <motion.div variants={itemVariants} className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <video
-                  className="w-full h-auto"
+                  className="w-full h-auto [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                   autoPlay
                   loop
                   muted
                   playsInline
+                  preload="auto"
+                  disablePictureInPicture
+                  disableRemotePlayback
                   aria-label="Train Today - Fitness Motivation Video by Coach Himanshu"
                   title="Start Your Fitness Journey Today with Coach Himanshu"
+                  style={{
+                    pointerEvents: 'none',
+                  }}
+                  onLoadedMetadata={(e) => {
+                    const video = e.currentTarget;
+                    video.play().catch(() => {
+                      // Silently handle autoplay failures
+                    });
+                  }}
                 >
                   <source src="/train today.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
