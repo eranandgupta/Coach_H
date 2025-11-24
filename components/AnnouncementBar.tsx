@@ -13,6 +13,14 @@ export default function AnnouncementBar() {
       )
     },
     {
+      icon: <Sparkles className="w-3 h-3 text-green-400" />,
+      text: (
+        <>
+          Special Offer: <span className="font-bold bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded border border-green-400/30">JOINMASTERY20</span> - Get <span className="font-bold text-green-400">20% OFF</span> on Mastery Plan (12 Months)!
+        </>
+      )
+    },
+    {
       icon: <Youtube className="w-3 h-3 text-red-500" />,
       text: (
         <>
