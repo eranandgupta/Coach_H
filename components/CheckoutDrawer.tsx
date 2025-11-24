@@ -117,6 +117,7 @@ export default function CheckoutDrawer() {
         body: JSON.stringify({
           code: promoCode.toUpperCase(),
           cartTotal: getTotalPrice(),
+          planName: cartItems[0]?.name || null,
         }),
       });
 

@@ -30,7 +30,9 @@
       "Bash(git commit:*)",
       "Bash(node check-plans.js:*)",
       "Bash(del check-plans.js)",
-      "Bash(if exist node_modules.prisma rmdir /s /q node_modules.prisma)"
+      "Bash(if exist node_modules.prisma rmdir /s /q node_modules.prisma)",
+      "Bash(node add-mastery-promo.js:*)",
+      "Bash(del:*)"
     ],
     "deny": [],
     "ask": []

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { code, cartTotal } = body;
+    const { code, cartTotal, planName } = body;
 
     if (!code) {
       return NextResponse.json(
@@ -67,6 +67,29 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    // Check if promo code is applicable to the selected plan
+    if (promoCode.applicablePlans && planName) {
+      try {
+        const applicablePlans = JSON.parse(promoCode.applicablePlans);
+        if (Array.isArray(applicablePlans) && applicablePlans.length > 0) {
+          const isApplicable = applicablePlans.some(
+            (plan: string) => plan.toLowerCase() === planName.toLowerCase()
+          );
+          if (!isApplicable) {
+            return NextResponse.json(
+              {
+                error: `This promo code is only valid for: ${applicablePlans.join(', ')}`
+              },
+              { status: 400 }
+            );
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing applicablePlans:', error);
+        // If parsing fails, allow the promo code to be used
+      }
     }
 
     // Calculate discount

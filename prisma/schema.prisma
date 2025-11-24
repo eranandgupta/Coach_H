@@ -149,6 +149,7 @@ model PromoCode {
   expiryDate        DateTime?
   isActive          Boolean   @default(true)
   description       String?   @db.Text
+  applicablePlans   String?   @db.Text
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
