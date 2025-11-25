@@ -226,7 +226,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
                     type="date"
                     value={formData.dateOfBirth}
                     onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                    className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                    className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
 

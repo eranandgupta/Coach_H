@@ -198,7 +198,7 @@ export default function ClientDashboard() {
         milestones.push({
           id: i,
           label: `W${i}`,
-          progress: (i / 12) * 100,
+          progress: ((i - 1) / 11) * 100,
           isPassed: i <= currentWeek,
           isCurrent: i === currentWeek,
         });
@@ -210,7 +210,7 @@ export default function ClientDashboard() {
         milestones.push({
           id: i,
           label: `M${i}`,
-          progress: (i / 6) * 100,
+          progress: ((i - 1) / 5) * 100,
           isPassed: i <= currentMonth,
           isCurrent: i === currentMonth,
         });
@@ -222,7 +222,7 @@ export default function ClientDashboard() {
         milestones.push({
           id: i,
           label: `M${i}`,
-          progress: (i / 12) * 100,
+          progress: ((i - 1) / 11) * 100,
           isPassed: i <= currentMonth,
           isCurrent: i === currentMonth,
         });
