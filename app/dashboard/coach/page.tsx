@@ -39,6 +39,7 @@ export default function CoachDashboard() {
   const [clients, setClients] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [diets, setDiets] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
@@ -51,6 +52,7 @@ export default function CoachDashboard() {
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
+  const [selectedBlog, setSelectedBlog] = useState<any>(null);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -102,6 +104,15 @@ export default function CoachDashboard() {
       if (dietRes.ok) {
         const dietData = await dietRes.json();
         setDiets(dietData.diets);
+      }
+
+      // Fetch blogs
+      const blogRes = await fetch('/api/blog', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (blogRes.ok) {
+        const blogData = await blogRes.json();
+        setBlogs(blogData);
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -233,6 +244,38 @@ export default function CoachDashboard() {
     }
   };
 
+  const handleEditBlog = (blog: any) => {
+    setSelectedBlog(blog);
+    setIsBlogModalOpen(true);
+  };
+
+  const handleDeleteBlog = async (blogId: number) => {
+    if (!confirm('Are you sure you want to delete this blog post?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/blog?id=${blogId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        fetchDashboardData();
+        alert('Blog post deleted successfully');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to delete blog post');
+      }
+    } catch (error) {
+      console.error('Error deleting blog:', error);
+      alert('An error occurred while deleting the blog post');
+    }
+  };
+
   const filteredClients = clients.filter((client) =>
     client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.email?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -329,7 +372,10 @@ export default function CoachDashboard() {
                 Create Diet
               </button>
               <button
-                onClick={() => setIsBlogModalOpen(true)}
+                onClick={() => {
+                  setSelectedBlog(null);
+                  setIsBlogModalOpen(true);
+                }}
                 className="bg-transparent border-2 border-orange-500 text-orange-400 px-6 py-3 rounded-xl font-semibold hover:bg-orange-500/10 transition-all flex items-center gap-2"
               >
                 <FileText className="w-5 h-5" />
@@ -652,6 +698,68 @@ export default function CoachDashboard() {
             </div>
           </div>
         </motion.div>
+
+        {/* Manage Blogs Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mt-6"
+        >
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <FileText className="w-6 h-6 text-orange-400" />
+            Manage Blog Posts
+          </h2>
+          <div className="space-y-3">
+            {blogs.map((blog) => (
+              <div
+                key={blog.id}
+                className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-all group"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h3 className="text-white font-semibold">{blog.title}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`text-xs px-2 py-0.5 rounded ${blog.published ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                        {blog.published ? 'Published' : 'Draft'}
+                      </span>
+                      {blog.readTime && (
+                        <span className="text-xs text-gray-500">{blog.readTime} min read</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => handleEditBlog(blog)}
+                      className="p-1.5 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded hover:bg-blue-500/30 transition-all"
+                    >
+                      <Edit className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteBlog(blog.id)}
+                      className="p-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded hover:bg-red-500/30 transition-all"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+                {blog.excerpt && (
+                  <p className="text-gray-400 text-sm mb-2 line-clamp-2">{blog.excerpt}</p>
+                )}
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <Calendar className="w-3 h-3" />
+                  {new Date(blog.createdAt).toLocaleDateString()}
+                  {blog.views > 0 && (
+                    <span className="ml-2">{blog.views} views</span>
+                  )}
+                </div>
+              </div>
+            ))}
+            {blogs.length === 0 && (
+              <p className="text-gray-500 text-center py-8">No blog posts created yet</p>
+            )}
+          </div>
+        </motion.div>
         </div>
       </div>
 
@@ -711,8 +819,12 @@ export default function CoachDashboard() {
       />
       <CreateBlogModal
         isOpen={isBlogModalOpen}
-        onClose={() => setIsBlogModalOpen(false)}
+        onClose={() => {
+          setIsBlogModalOpen(false);
+          setSelectedBlog(null);
+        }}
         onSuccess={fetchDashboardData}
+        blog={selectedBlog}
       />
       <NotificationModal
         isOpen={isNotificationModalOpen}

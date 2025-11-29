@@ -1,20 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2, Image as ImageIcon } from 'lucide-react';
 import Button from './Button';
+
+interface BlogPost {
+  id: number;
+  title: string;
+  excerpt?: string;
+  content: string;
+  coverImage?: string;
+  videoUrl?: string;
+  published: boolean;
+}
 
 interface CreateBlogModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  blog?: BlogPost | null;
 }
 
 export default function CreateBlogModal({
   isOpen,
   onClose,
   onSuccess,
+  blog,
 }: CreateBlogModalProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,6 +38,31 @@ export default function CreateBlogModal({
     published: true,
   });
 
+  const isEditing = !!blog;
+
+  // Populate form data when editing
+  useEffect(() => {
+    if (blog) {
+      setFormData({
+        title: blog.title || '',
+        excerpt: blog.excerpt || '',
+        content: blog.content || '',
+        coverImage: blog.coverImage || '',
+        videoUrl: blog.videoUrl || '',
+        published: blog.published ?? true,
+      });
+    } else {
+      setFormData({
+        title: '',
+        excerpt: '',
+        content: '',
+        coverImage: '',
+        videoUrl: '',
+        published: true,
+      });
+    }
+  }, [blog, isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -33,18 +70,18 @@ export default function CreateBlogModal({
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('You must be logged in to create a blog post. Please refresh the page and try again.');
+        alert(`You must be logged in to ${isEditing ? 'edit' : 'create'} a blog post. Please refresh the page and try again.`);
         setLoading(false);
         return;
       }
 
       const response = await fetch('/api/blog', {
-        method: 'POST',
+        method: isEditing ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(isEditing ? { ...formData, id: blog?.id } : formData),
       });
 
       if (response.ok) {
@@ -57,7 +94,7 @@ export default function CreateBlogModal({
           videoUrl: '',
           published: true,
         });
-        alert('Blog post created successfully!');
+        alert(`Blog post ${isEditing ? 'updated' : 'created'} successfully!`);
         onSuccess?.();
         onClose();
       } else {
@@ -67,13 +104,13 @@ export default function CreateBlogModal({
         if (response.status === 401) {
           alert('Session expired. Please log out and log in again.');
         } else if (response.status === 403) {
-          alert('Access denied. Only coaches can create blog posts. If you are a coach, please log out and log in again to refresh your session.');
+          alert(`Access denied. Only coaches can ${isEditing ? 'edit' : 'create'} blog posts. If you are a coach, please log out and log in again to refresh your session.`);
         } else {
-          alert(data.error || 'Failed to create blog post. Please try again.');
+          alert(data.error || `Failed to ${isEditing ? 'update' : 'create'} blog post. Please try again.`);
         }
       }
     } catch (error) {
-      console.error('Error creating blog post:', error);
+      console.error(`Error ${isEditing ? 'updating' : 'creating'} blog post:`, error);
       alert('Network error. Please check your internet connection and try again.');
     } finally {
       setLoading(false);
@@ -112,7 +149,7 @@ export default function CreateBlogModal({
               >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-brand-navy-light/50 flex-shrink-0">
-                  <h2 className="text-2xl font-bold text-white">Create Blog Post</h2>
+                  <h2 className="text-2xl font-bold text-white">{isEditing ? 'Edit Blog Post' : 'Create Blog Post'}</h2>
                   <button
                     onClick={onClose}
                     className="text-gray-400 hover:text-white transition-colors"
@@ -239,10 +276,10 @@ export default function CreateBlogModal({
                     {loading ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>Creating...</span>
+                        <span>{isEditing ? 'Updating...' : 'Creating...'}</span>
                       </>
                     ) : (
-                      <span>Create Post</span>
+                      <span>{isEditing ? 'Update Post' : 'Create Post'}</span>
                     )}
                   </Button>
                   <Button
