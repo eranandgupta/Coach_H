@@ -19,7 +19,8 @@ import {
   UserPlus,
   FileText,
   Bell,
-  MessageSquare
+  MessageSquare,
+  Mail
 } from 'lucide-react';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
@@ -273,6 +274,45 @@ export default function CoachDashboard() {
     } catch (error) {
       console.error('Error deleting blog:', error);
       alert('An error occurred while deleting the blog post');
+    }
+  };
+
+  const handleSendReminder = async (client: any) => {
+    if (!client.subscriptions || client.subscriptions.length === 0) {
+      alert('This client has no active subscription');
+      return;
+    }
+
+    const subscription = client.subscriptions[0];
+    const endDate = new Date(subscription.endDate);
+    const today = new Date();
+    const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (!confirm(`Send subscription reminder to ${client.name}?\n\nPlan: ${subscription.plan.name}\nExpires: ${endDate.toLocaleDateString()}\nDays Remaining: ${daysRemaining}`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/clients/send-reminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ clientId: client.id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Reminder sent successfully to ${client.email}!\nDays remaining: ${data.daysRemaining}`);
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to send reminder');
+      }
+    } catch (error) {
+      console.error('Error sending reminder:', error);
+      alert('An error occurred while sending the reminder');
     }
   };
 
@@ -536,12 +576,26 @@ export default function CoachDashboard() {
                     {/* Subscription Info */}
                     {client.subscriptions && client.subscriptions.length > 0 && (
                       <div className="mb-3 p-2 bg-green-500/10 border border-green-500/30 rounded">
-                        <p className="text-green-400 text-xs font-medium">
-                          {client.subscriptions[0].plan.name} - {client.subscriptions[0].status}
-                        </p>
-                        <p className="text-gray-400 text-xs">
-                          Expires: {new Date(client.subscriptions[0].endDate).toLocaleDateString()}
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-green-400 text-xs font-medium">
+                              {client.subscriptions[0].plan.name} - {client.subscriptions[0].status}
+                            </p>
+                            <p className="text-gray-400 text-xs">
+                              Expires: {new Date(client.subscriptions[0].endDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSendReminder(client);
+                            }}
+                            className="p-1.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded hover:bg-orange-500/30 transition-all"
+                            title="Send Reminder"
+                          >
+                            <Mail className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     )}
 
