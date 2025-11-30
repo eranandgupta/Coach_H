@@ -151,6 +151,18 @@ export default function CheckoutDrawer() {
     return getTotalPrice();
   };
 
+  // Format amount for QR code filename (e.g., 4399.2 -> 4399.20, 5499 -> 5499)
+  const getQRFileName = () => {
+    const amount = getFinalTotal();
+    // Check if amount has decimals
+    if (amount % 1 !== 0) {
+      // Format with 2 decimal places
+      return amount.toFixed(2);
+    }
+    // Return as integer (no decimals)
+    return amount.toString();
+  };
+
   const handleClose = () => {
     closeCheckout();
     setCurrentStep('cart');
@@ -447,11 +459,21 @@ export default function CheckoutDrawer() {
                       Scan the QR code below to complete your payment
                     </p>
 
-                    {/* QR Code Placeholder */}
+                    {/* QR Code - Dynamic based on amount */}
                     <div className="bg-white p-6 rounded-xl inline-block mb-4">
-                      <div className="w-64 h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <QrCode className="w-32 h-32 text-gray-400" />
-                        <span className="sr-only">Payment QR Code</span>
+                      <div className="w-64 h-64 relative">
+                        <Image
+                          src={`/QR/${getQRFileName()}.jpg`}
+                          alt={`Payment QR Code for ₹${getFinalTotal()}`}
+                          fill
+                          className="object-contain rounded-lg"
+                          onError={(e) => {
+                            // Fallback if exact amount image doesn't exist
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement!.innerHTML = `<div class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center flex-col gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg><span class="text-gray-500 text-sm">QR not available</span></div>`;
+                          }}
+                        />
                       </div>
                     </div>
 
