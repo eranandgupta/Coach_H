@@ -13,7 +13,11 @@ import {
   ArrowRight,
   LogOut,
   Bell,
-  Key
+  Key,
+  Play,
+  FileText,
+  Clock,
+  ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,6 +28,7 @@ import LatestBlogWidget from '@/components/LatestBlogWidget';
 import NotificationPanel from '@/components/NotificationPanel';
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
 import DashboardLoader from '@/components/DashboardLoader';
+import VideoLibrary from '@/components/VideoLibrary';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 
 export default function ClientDashboard() {
@@ -38,6 +43,8 @@ export default function ClientDashboard() {
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
 
   // Push notifications
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
@@ -149,6 +156,13 @@ export default function ClientDashboard() {
       if (dietRes.ok) {
         const dietData = await dietRes.json();
         setDiets(dietData.currentDiets);
+      }
+
+      // Fetch blog posts
+      const blogRes = await fetch('/api/blog');
+      if (blogRes.ok) {
+        const blogData = await blogRes.json();
+        setBlogPosts(blogData.slice(0, 6)); // Get latest 6 posts
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -262,6 +276,13 @@ export default function ClientDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsVideoLibraryOpen(true)}
+              className="flex items-center justify-center p-2 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg hover:bg-purple-500/30 transition-all"
+              title="Video Library"
+            >
+              <Play className="w-5 h-5" />
+            </button>
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
               className="relative flex items-center justify-center p-2 bg-brand-blue/20 text-brand-blue border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all"
@@ -397,22 +418,14 @@ export default function ClientDashboard() {
                 </div>
               </div>
 
-              {/* Progress Bar with Week Milestones */}
-              <div className="relative px-1 pb-7">
-                {/* Main Progress Bar */}
-                <div className="relative h-2 bg-gradient-to-r from-white/5 to-white/10 rounded-full overflow-visible mb-4 shadow-inner border border-white/5">
+              {/* Progress Bar */}
+              <div className="relative px-1 mb-4">
+                <div className="relative h-2 bg-gradient-to-r from-white/5 to-white/10 rounded-full overflow-hidden shadow-inner border border-white/5">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${getSubscriptionProgress()}%` }}
                     transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1], delay: 0.3 }}
                     className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-500 rounded-full shadow-lg shadow-green-500/30"
-                  />
-                  {/* Glow Effect */}
-                  <motion.div
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: `${getSubscriptionProgress()}%`, opacity: 1 }}
-                    transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
-                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full blur-md opacity-50"
                   />
                   {/* Shimmer Effect */}
                   <motion.div
@@ -428,10 +441,16 @@ export default function ClientDashboard() {
                     />
                   </motion.div>
                 </div>
+              </div>
 
-                {/* Week Milestone Circles */}
-                <div className="relative -mt-7 overflow-visible">
-                  {getWeekMilestones().map((milestone) => (
+              {/* Week Milestones - Responsive */}
+              <div className="relative -mx-4 sm:-mx-6 md:mx-0">
+                {/* Fade edges - mobile only */}
+                <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-[#0f1628] to-transparent z-10 pointer-events-none md:hidden" />
+                <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#0f1628] to-transparent z-10 pointer-events-none md:hidden" />
+
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-6 md:px-1 pb-2 pt-1 md:overflow-visible md:justify-between">
+                  {getWeekMilestones().map((milestone, index) => (
                     <motion.div
                       key={milestone.id}
                       initial={{ scale: 0, opacity: 0 }}
@@ -440,37 +459,38 @@ export default function ClientDashboard() {
                         type: 'spring',
                         stiffness: 260,
                         damping: 20,
-                        delay: 0.6 + milestone.id * 0.04
+                        delay: 0.4 + index * 0.03
                       }}
-                      className="absolute"
-                      style={{ left: `${milestone.progress}%`, transform: 'translateX(-50%)' }}
+                      className="flex-shrink-0 md:flex-1 md:max-w-[4.5rem]"
                     >
-                      {/* Circle */}
                       <div
-                        className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold border-2 transition-all ${
+                        className={`relative flex flex-col items-center justify-center min-w-[2.75rem] md:min-w-0 md:w-full h-11 rounded-xl transition-all duration-300 ${
                           milestone.isCurrent
-                            ? 'bg-brand-blue border-brand-blue/80 text-white shadow-xl shadow-brand-blue/60 sm:scale-[1.15] scale-[1.1] ring-2 sm:ring-4 ring-brand-blue/20'
+                            ? 'bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-lg shadow-brand-blue/40 ring-2 ring-brand-blue/30 scale-105'
                             : milestone.isPassed
-                            ? 'bg-gradient-to-br from-green-400 to-green-500 border-green-300/50 text-white shadow-lg shadow-green-500/40'
-                            : 'bg-white/5 border-white/20 text-gray-500 backdrop-blur-xl shadow-md'
+                            ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30'
+                            : 'bg-white/5 text-gray-500 border border-white/10'
                         }`}
                       >
-                        {milestone.label}
+                        <span className={`text-[11px] font-bold ${milestone.isCurrent ? 'text-white' : ''}`}>
+                          {milestone.label}
+                        </span>
+                        {milestone.isCurrent && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.8, type: 'spring' }}
+                            className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0f1628] shadow-lg"
+                          />
+                        )}
+                        {milestone.isPassed && !milestone.isCurrent && (
+                          <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full flex items-center justify-center">
+                            <svg className="w-1.5 h-1.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
                       </div>
-
-                      {/* Current Week Indicator */}
-                      {milestone.isCurrent && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 1, type: 'spring' }}
-                          className="absolute -bottom-5 sm:-bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap hidden sm:block"
-                        >
-                          <span className="text-[9px] sm:text-[10px] font-bold text-brand-blue bg-brand-blue/15 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-brand-blue/30 shadow-lg backdrop-blur-sm">
-                            Current
-                          </span>
-                        </motion.div>
-                      )}
                     </motion.div>
                   ))}
                 </div>
@@ -530,6 +550,114 @@ export default function ClientDashboard() {
             <p className="text-gray-400 text-sm">Current Week</p>
           </motion.div>
         </div>
+
+        {/* Blog Posts Carousel */}
+        {blogPosts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="mb-8"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 rounded-xl border border-brand-blue/20">
+                  <FileText className="w-5 h-5 text-brand-blue" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-white">Latest Articles</h2>
+                  <p className="text-gray-500 text-xs">Fitness tips & insights</p>
+                </div>
+              </div>
+              <Link href="/blog">
+                <button className="flex items-center gap-1 text-brand-blue hover:text-brand-gold text-sm font-medium transition-colors">
+                  View All
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </Link>
+            </div>
+
+            {/* Carousel Container */}
+            <div className="relative -mx-4 sm:-mx-6 lg:mx-0">
+              {/* Fade edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
+              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
+
+              {/* Scrollable container */}
+              <div className="flex gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 lg:px-0 pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible">
+                {blogPosts.map((post, index) => (
+                  <Link key={post.id} href={`/blog/${post.slug}`} className="flex-shrink-0 w-72 lg:w-auto">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + index * 0.05 }}
+                      className="group bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-brand-blue/30 transition-all duration-300 h-full"
+                    >
+                      {/* Cover Image */}
+                      <div className="relative h-36 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 overflow-hidden">
+                        {post.coverImage ? (
+                          <img
+                            src={post.coverImage}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <FileText className="w-12 h-12 text-white/20" />
+                          </div>
+                        )}
+                        {/* Overlay gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                        {/* Read time badge */}
+                        {post.readTime && (
+                          <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                            <Clock className="w-3 h-3 text-gray-300" />
+                            <span className="text-[10px] text-gray-300 font-medium">{post.readTime} min</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4">
+                        {/* Date */}
+                        <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-2">
+                          <Calendar className="w-3 h-3" />
+                          <span>
+                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            }) : 'Draft'}
+                          </span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-white font-semibold line-clamp-2 group-hover:text-brand-blue transition-colors mb-2">
+                          {post.title}
+                        </h3>
+
+                        {/* Excerpt */}
+                        {post.excerpt && (
+                          <p className="text-gray-400 text-xs line-clamp-2">
+                            {post.excerpt}
+                          </p>
+                        )}
+
+                        {/* Read more */}
+                        <div className="flex items-center gap-1 text-brand-blue text-xs font-medium mt-3 group-hover:gap-2 transition-all">
+                          <span>Read Article</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Current Plans Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -724,6 +852,12 @@ export default function ClientDashboard() {
       <ChangePasswordModal
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
+      />
+
+      {/* Video Library Modal */}
+      <VideoLibrary
+        isOpen={isVideoLibraryOpen}
+        onClose={() => setIsVideoLibraryOpen(false)}
       />
     </div>
   );

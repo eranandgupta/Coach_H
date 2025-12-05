@@ -382,58 +382,76 @@ export default function CoachDashboard() {
               <p className="text-gray-300">Manage your clients and create personalized plans</p>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3 justify-center md:justify-end">
-              <button
+            {/* Action Buttons - Premium Horizontal Buttons */}
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={handleCreateNewClient}
-                className="bg-transparent border-2 border-blue-500 text-blue-400 px-6 py-3 rounded-xl font-semibold hover:bg-blue-500/10 transition-all flex items-center gap-2"
+                className="relative bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <UserPlus className="w-5 h-5" />
-                Create Client
-              </button>
-              <button
+                <span className="text-sm">Create Client</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   setSelectedWorkout(null);
                   setIsWorkoutModalOpen(true);
                 }}
-                className="bg-transparent border-2 border-purple-500 text-purple-400 px-6 py-3 rounded-xl font-semibold hover:bg-purple-500/10 transition-all flex items-center gap-2"
+                className="relative bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-200 flex items-center justify-center gap-2"
               >
-                <Plus className="w-5 h-5" />
-                Create Workout
-              </button>
-              <button
+                <Dumbbell className="w-5 h-5" />
+                <span className="text-sm">Create Workout</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   setSelectedDiet(null);
                   setIsDietModalOpen(true);
                 }}
-                className="bg-transparent border-2 border-green-500 text-green-400 px-6 py-3 rounded-xl font-semibold hover:bg-green-500/10 transition-all flex items-center gap-2"
+                className="relative bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-200 flex items-center justify-center gap-2"
               >
-                <Plus className="w-5 h-5" />
-                Create Diet
-              </button>
-              <button
+                <UtensilsCrossed className="w-5 h-5" />
+                <span className="text-sm">Create Diet</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   setSelectedBlog(null);
                   setIsBlogModalOpen(true);
                 }}
-                className="bg-transparent border-2 border-orange-500 text-orange-400 px-6 py-3 rounded-xl font-semibold hover:bg-orange-500/10 transition-all flex items-center gap-2"
+                className="relative bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <FileText className="w-5 h-5" />
-                Create Blog Post
-              </button>
-              <button
+                <span className="text-sm">Create Blog</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setIsNotificationModalOpen(true)}
-                className="bg-transparent border-2 border-red-500 text-red-400 px-6 py-3 rounded-xl font-semibold hover:bg-red-500/10 transition-all flex items-center gap-2"
+                className="relative bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <Bell className="w-5 h-5" />
-                Notify Clients
-              </button>
-              <Link
-                href="/dashboard/coach/feedbacks"
-                className="bg-transparent border-2 border-yellow-500 text-yellow-400 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-500/10 transition-all flex items-center gap-2"
-              >
-                <MessageSquare className="w-5 h-5" />
-                Review Feedbacks
+                <span className="text-sm">Notify Clients</span>
+              </motion.button>
+
+              <Link href="/dashboard/coach/feedbacks" className="block">
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="relative bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-yellow-500/30 hover:shadow-xl hover:shadow-yellow-500/40 transition-all duration-200 flex items-center justify-center gap-2 h-full"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span className="text-sm">Feedbacks</span>
+                </motion.div>
               </Link>
             </div>
           </motion.div>

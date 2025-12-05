@@ -150,7 +150,21 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { unoptimized: true },
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'screenpal.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'uxwing.com',
+        pathname: '/**',
+      },
+    ],
+  },
   webpack: (config, { isServer }) => {
     // Disable following symlinks to avoid permission errors on Windows
     config.resolve.symlinks = false;
