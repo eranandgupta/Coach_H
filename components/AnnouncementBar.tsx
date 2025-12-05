@@ -1,9 +1,17 @@
 'use client';
 
-import { Sparkles, Youtube, Instagram } from 'lucide-react';
+import { Sparkles, Youtube, Instagram, Gift } from 'lucide-react';
 
 export default function AnnouncementBar() {
   const messages = [
+    {
+      icon: <Gift className="w-3 h-3 text-orange-400" />,
+      text: (
+        <>
+          <span className="font-bold text-orange-400">FREE RhynoGrip Gear!</span> Join our <span className="font-bold bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded border border-orange-400/30">6-Month</span> or <span className="font-bold bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded border border-orange-400/30">12-Month</span> plan & get exclusive fitness gear!
+        </>
+      )
+    },
     {
       icon: <Sparkles className="w-3 h-3 text-brand-gold" />,
       text: (

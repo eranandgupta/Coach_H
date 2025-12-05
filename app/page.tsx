@@ -191,7 +191,7 @@ export default function Home() {
             '@type': 'Offer',
             position: 3,
             name: 'Strength Plan',
-            description: '6 months intensive fitness transformation program',
+            description: '6 months intensive fitness transformation program with FREE RhynoGrip fitness gear',
             price: '2999',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
@@ -201,7 +201,7 @@ export default function Home() {
             '@type': 'Offer',
             position: 4,
             name: 'Mastery Plan',
-            description: '12 months comprehensive fitness mastery program',
+            description: '12 months comprehensive fitness mastery program with FREE RhynoGrip fitness gear',
             price: '5499',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
@@ -266,6 +266,7 @@ export default function Home() {
         'Weekly one-on-one consultations',
         'Supplement guidance',
         'Lifestyle coaching',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
     },
     {
@@ -284,6 +285,7 @@ export default function Home() {
         'Weekly one-on-one consultations',
         'Supplement guidance',
         'Lifestyle coaching',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
     },
   ];
