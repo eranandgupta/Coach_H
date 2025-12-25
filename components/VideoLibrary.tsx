@@ -38,6 +38,7 @@ const categoryIcons: Record<string, string> = {
   abs: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/man-abs-six-pack-icon.svg',
   stretching: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/yoga-exercise-icon.svg',
   warmup: 'https://uxwing.com/wp-content/themes/uxwing/download/education-school/training-icon.svg',
+  cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-man-icon.svg',
 };
 
 // Video categories configuration
@@ -86,6 +87,11 @@ const categoryConfig: Record<string, { name: string; description: string; color:
     name: 'Warm Up',
     description: 'Pre-workout preparation',
     color: 'from-orange-500 to-red-500',
+  },
+  cardio: {
+    name: 'Cardio',
+    description: 'Heart-pumping exercises',
+    color: 'from-rose-500 to-red-600',
   },
 };
 

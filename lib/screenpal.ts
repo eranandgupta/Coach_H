@@ -75,6 +75,16 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     folderName: 'Back workout',
     videos: [
       {
+        id: 'cTlTQ6nYPxL',
+        title: 'Barbell Bentover Row',
+        embedUrl: 'https://go.screenpal.com/player/cTlTQ6nYPxL',
+      },
+      {
+        id: 'cTlZbdnY8Cu',
+        title: 'Straight Arm Lat Pulldown',
+        embedUrl: 'https://go.screenpal.com/player/cTlZbdnY8Cu',
+      },
+      {
         id: 'cTleIhnqLFr',
         title: 'Deadlift',
         embedUrl: 'https://go.screenpal.com/player/cTleIhnqLFr',
@@ -142,6 +152,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     folderName: 'Shoulders workout',
     videos: [
       {
+        id: 'cTlTj4nYPUN',
+        title: 'Reverse Pec Dec Fly',
+        embedUrl: 'https://go.screenpal.com/player/cTlTj4nYPUN',
+      },
+      {
         id: 'cTlhiYnqWqM',
         title: 'Dumbbell Shoulder Press',
         embedUrl: 'https://go.screenpal.com/player/cTlhiYnqWqM',
@@ -199,6 +214,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     folderName: 'Biceps workout',
     videos: [
       {
+        id: 'cTlZFjnY85M',
+        title: 'Concentration Curl',
+        embedUrl: 'https://go.screenpal.com/player/cTlZFjnY85M',
+      },
+      {
         id: 'cTleIJnqLu3',
         title: 'Reverse Barbell Curl',
         embedUrl: 'https://go.screenpal.com/player/cTleIJnqLu3',
@@ -251,6 +271,31 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     folderName: 'Triceps workout',
     videos: [
       {
+        id: 'cTlZbNnY8Cs',
+        title: 'Close Grip Knee Push Up',
+        embedUrl: 'https://go.screenpal.com/player/cTlZbNnY8Cs',
+      },
+      {
+        id: 'cTlZbPnY8CS',
+        title: 'Close Grip Push Ups',
+        embedUrl: 'https://go.screenpal.com/player/cTlZbPnY8CS',
+      },
+      {
+        id: 'cTlZb9nY85i',
+        title: 'Overhead Rope Extension',
+        embedUrl: 'https://go.screenpal.com/player/cTlZb9nY85i',
+      },
+      {
+        id: 'cTlZFcnY85b',
+        title: 'Single Arm Cable Extensions',
+        embedUrl: 'https://go.screenpal.com/player/cTlZFcnY85b',
+      },
+      {
+        id: 'cTlZFnnY85T',
+        title: 'Single Arm Cable Tricep Pushdowns',
+        embedUrl: 'https://go.screenpal.com/player/cTlZFnnY85T',
+      },
+      {
         id: 'cTleIZnqL3d',
         title: 'Declined Close Grip Barbell Press',
         embedUrl: 'https://go.screenpal.com/player/cTleIZnqL3d',
@@ -282,6 +327,16 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     name: 'Legs workout',
     folderName: 'Legs workout',
     videos: [
+      {
+        id: 'cTlZbsnY8CE',
+        title: 'Hip Thrust',
+        embedUrl: 'https://go.screenpal.com/player/cTlZbsnY8CE',
+      },
+      {
+        id: 'cTlZFfnY85B',
+        title: 'Romanian Deadlift (DB)',
+        embedUrl: 'https://go.screenpal.com/player/cTlZFfnY85B',
+      },
       {
         id: 'cTlhiVnqWou',
         title: 'Lunges',
@@ -376,6 +431,16 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     name: 'Stretching',
     folderName: 'Stretching',
     videos: [
+      {
+        id: 'cTlTQrnYPyk',
+        title: 'Triceps Stretch',
+        embedUrl: 'https://go.screenpal.com/player/cTlTQrnYPyk',
+      },
+      {
+        id: 'cTlTQTnYP4V',
+        title: 'Bow Pose',
+        embedUrl: 'https://go.screenpal.com/player/cTlTQTnYP4V',
+      },
       {
         id: 'cTleIOnqL0X',
         title: 'Hamstring Stretch',
@@ -522,6 +587,48 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         id: 'cTlhjVnqWti',
         title: 'Spine Lateral Flexion',
         embedUrl: 'https://go.screenpal.com/player/cTlhjVnqWti',
+      },
+    ],
+  },
+  {
+    id: 'cardio',
+    name: 'Cardio',
+    folderName: 'Cardio',
+    videos: [
+      {
+        id: 'cTlTj8nYPwH',
+        title: 'Burpees',
+        embedUrl: 'https://go.screenpal.com/player/cTlTj8nYPwH',
+      },
+      {
+        id: 'cTlTjPnYPws',
+        title: 'Jump Squat',
+        embedUrl: 'https://go.screenpal.com/player/cTlTjPnYPws',
+      },
+      {
+        id: 'cTlTj9nYPwP',
+        title: 'Jumping Jacks',
+        embedUrl: 'https://go.screenpal.com/player/cTlTj9nYPwP',
+      },
+      {
+        id: 'cTlTjRnYPwS',
+        title: 'Kettle Bell Swing',
+        embedUrl: 'https://go.screenpal.com/player/cTlTjRnYPwS',
+      },
+      {
+        id: 'cTlTQcnYPxh',
+        title: 'Mountain Climb',
+        embedUrl: 'https://go.screenpal.com/player/cTlTQcnYPxh',
+      },
+      {
+        id: 'cTlTQVnYPxl',
+        title: 'Step Jumps',
+        embedUrl: 'https://go.screenpal.com/player/cTlTQVnYPxl',
+      },
+      {
+        id: 'cTlTQnnYPxY',
+        title: 'Step Ups',
+        embedUrl: 'https://go.screenpal.com/player/cTlTQnnYPxY',
       },
     ],
   },
