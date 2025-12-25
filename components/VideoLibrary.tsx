@@ -38,7 +38,7 @@ const categoryIcons: Record<string, string> = {
   abs: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/man-abs-six-pack-icon.svg',
   stretching: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/yoga-exercise-icon.svg',
   warmup: 'https://uxwing.com/wp-content/themes/uxwing/download/education-school/training-icon.svg',
-  cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-man-icon.svg',
+  cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-icon.svg',
 };
 
 // Video categories configuration
