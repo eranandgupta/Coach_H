@@ -201,16 +201,6 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         title: 'Cable Lateral Raise',
         embedUrl: 'https://go.screenpal.com/player/cTlhignqW0q',
       },
-      {
-        id: 'cTlhignqW0Y',
-        title: 'Seated Dumbbell Shoulder Press 2',
-        embedUrl: 'https://go.screenpal.com/player/cTlhignqW0Y',
-      },
-      {
-        id: 'cTlhidnqWTc',
-        title: 'Cable Lateral Raise 2',
-        embedUrl: 'https://go.screenpal.com/player/cTlhidnqWTc',
-      },
     ],
   },
   {
