@@ -219,6 +219,16 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         embedUrl: 'https://go.screenpal.com/player/cTlZFjnY85M',
       },
       {
+        id: 'cTlhiFnqWqy',
+        title: 'Hammer Curl',
+        embedUrl: 'https://go.screenpal.com/player/cTlhiFnqWqy',
+      },
+      {
+        id: 'cTlhiDnqWqe',
+        title: 'Seated Cable Curl',
+        embedUrl: 'https://go.screenpal.com/player/cTlhiDnqWqe',
+      },
+      {
         id: 'cTleIJnqLu3',
         title: 'Reverse Barbell Curl',
         embedUrl: 'https://go.screenpal.com/player/cTleIJnqLu3',
