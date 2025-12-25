@@ -23,6 +23,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     folderName: 'Chest workout',
     videos: [
       {
+        id: 'cTlZFhnY85E',
+        title: 'Cable Chest Press',
+        embedUrl: 'https://go.screenpal.com/player/cTlZFhnY85E',
+      },
+      {
         id: 'cTleXynqM8v',
         title: 'Declined Barbell Press',
         embedUrl: 'https://go.screenpal.com/player/cTleXynqM8v',
