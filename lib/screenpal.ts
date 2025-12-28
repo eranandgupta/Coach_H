@@ -214,6 +214,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         embedUrl: 'https://go.screenpal.com/player/cTlZFjnY85M',
       },
       {
+        id: 'cTlhionqWFk',
+        title: 'Preacher Single Arm',
+        embedUrl: 'https://go.screenpal.com/player/cTlhionqWFk',
+      },
+      {
         id: 'cTlhiFnqWqy',
         title: 'Hammer Curl',
         embedUrl: 'https://go.screenpal.com/player/cTlhiFnqWqy',
@@ -336,6 +341,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         id: 'cTlZbsnY8CE',
         title: 'Hip Thrust',
         embedUrl: 'https://go.screenpal.com/player/cTlZbsnY8CE',
+      },
+      {
+        id: 'cTlOfTnY9tA',
+        title: 'Single Leg Extension',
+        embedUrl: 'https://go.screenpal.com/player/cTlOfTnY9tA',
       },
       {
         id: 'cTlZFfnY85B',
