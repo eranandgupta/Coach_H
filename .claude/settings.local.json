@@ -32,7 +32,18 @@
       "Bash(del check-plans.js)",
       "Bash(if exist node_modules.prisma rmdir /s /q node_modules.prisma)",
       "Bash(node add-mastery-promo.js:*)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "WebFetch(domain:drive.google.com)",
+      "Bash(findstr:*)",
+      "WebFetch(domain:go.screenpal.com)",
+      "Bash(curl:*)",
+      "WebFetch(domain:www.svgrepo.com)",
+      "WebFetch(domain:uxwing.com)",
+      "WebSearch",
+      "Bash(if exist \"node_modules\\.prisma\" rmdir /s /q \"node_modules\\.prisma\")",
+      "Bash(tasklist:*)",
+      "Bash(cmd /c \"taskkill /F /IM node.exe\")",
+      "Bash(cmd /c \"taskkill /F /PID 20196 /PID 19212 /PID 24584 /PID 26844\")"
     ],
     "deny": [],
     "ask": []

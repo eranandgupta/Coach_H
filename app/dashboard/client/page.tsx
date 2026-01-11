@@ -17,13 +17,15 @@ import {
   Play,
   FileText,
   Clock,
-  ChevronRight
+  ChevronRight,
+  Edit3
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ViewWorkoutModal from '@/components/modals/ViewWorkoutModal';
 import ViewDietModal from '@/components/modals/ViewDietModal';
+import EditAssessmentModal from '@/components/modals/EditAssessmentModal';
 import LatestBlogWidget from '@/components/LatestBlogWidget';
 import NotificationPanel from '@/components/NotificationPanel';
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
@@ -44,6 +46,7 @@ export default function ClientDashboard() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
+  const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
 
   // Push notifications
@@ -371,12 +374,17 @@ export default function ClientDashboard() {
               </div>
             </div>
 
-            {/* Right Side - Assessment Badge */}
+            {/* Right Side - Assessment Badge with Edit Button */}
             {user?.assessmentCompleted && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg backdrop-blur-sm flex-shrink-0">
-                <CheckCircle2 className="w-3.5 h-3.5 text-brand-blue flex-shrink-0" />
-                <span className="text-brand-blue text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment ✓</span>
-              </div>
+              <button
+                onClick={() => setIsEditAssessmentOpen(true)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg backdrop-blur-sm flex-shrink-0 hover:bg-brand-blue/30 transition-all group"
+                title="Click to edit your assessment"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-white flex-shrink-0" />
+                <span className="text-white text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment ✓</span>
+                <Edit3 className="w-3 h-3 text-white" />
+              </button>
             )}
 
             {/* Renew Button (if expired) */}
@@ -859,6 +867,15 @@ export default function ClientDashboard() {
         isOpen={isVideoLibraryOpen}
         onClose={() => setIsVideoLibraryOpen(false)}
       />
+
+      {/* Edit Assessment Modal */}
+      {user?.id && (
+        <EditAssessmentModal
+          isOpen={isEditAssessmentOpen}
+          onClose={() => setIsEditAssessmentOpen(false)}
+          userId={user.id}
+        />
+      )}
     </div>
   );
 }

@@ -12,78 +12,162 @@ import {
   ChevronLeft,
   CheckCircle,
   Loader2,
+  X,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+interface AssessmentData {
+  dateOfBirth?: string;
+  height?: string | number;
+  weight?: string | number;
+  fatPercentage?: string | number;
+  address?: string;
+  emergencyContact?: string;
+  heartCondition?: boolean;
+  chestPainActivity?: boolean;
+  chestPainRest?: boolean;
+  dizzinessBalance?: boolean;
+  boneJointProblem?: boolean;
+  pregnant?: boolean;
+  recentSurgery?: boolean;
+  takingMedication?: boolean;
+  medicationDetails?: string;
+  smoking?: boolean;
+  smokingAmount?: string;
+  alcohol?: boolean;
+  alcoholGlassesPerWeek?: string | number;
+  sleepHours?: string | number;
+  jobType?: string;
+  jobRequiresTravel?: boolean;
+  stressLevel?: string | number;
+  familyOverweight?: string | string[];
+  overweightAsChild?: boolean;
+  overweightAges?: string;
+  bestShapePeriod?: string;
+  exercisingConsistently?: boolean;
+  currentFitnessLevel?: string | number;
+  mealsPerDay?: string | number;
+  skipMeals?: boolean;
+  eatBreakfast?: boolean;
+  eatLateNight?: string;
+  energyDrops?: boolean;
+  energyDropTime?: string;
+  takingSupplements?: boolean;
+  supplementsList?: string;
+  mealLocation?: string;
+  eatOutsidePerWeek?: string | number;
+  eatingReasons?: string | string[];
+  eatPastFullness?: string;
+  highSugarFoods?: string;
+  dietPreference?: string;
+  nonVegRestrictedDays?: string;
+  goalLoseFat?: boolean;
+  goalRehabilitate?: boolean;
+  goalSportsTraining?: boolean;
+  goalMuscleGain?: boolean;
+  goalOther?: string;
+}
+
 interface PreAssessmentFormProps {
   userId: number;
+  initialData?: AssessmentData | null;
+  isEditMode?: boolean;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
 type Step = 'personal' | 'parq' | 'lifestyle' | 'fitness' | 'nutrition' | 'goals';
 
-export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
+export default function PreAssessmentForm({ userId, initialData, isEditMode = false, onSuccess, onCancel }: PreAssessmentFormProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>('personal');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  // Helper to parse JSON arrays from initial data
+  const parseArrayField = (value: string | string[] | undefined): string[] => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  // Helper to format date for input
+  const formatDateForInput = (date: string | Date | undefined): string => {
+    if (!date) return '';
+    try {
+      const d = new Date(date);
+      return d.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
+  };
+
   const [formData, setFormData] = useState({
     // Personal Information
-    dateOfBirth: '',
-    height: '',
-    weight: '',
-    fatPercentage: '',
-    address: '',
-    emergencyContact: '',
+    dateOfBirth: formatDateForInput(initialData?.dateOfBirth),
+    height: initialData?.height?.toString() || '',
+    weight: initialData?.weight?.toString() || '',
+    fatPercentage: initialData?.fatPercentage?.toString() || '',
+    address: initialData?.address || '',
+    emergencyContact: initialData?.emergencyContact || '',
 
     // PAR-Q Form
-    heartCondition: false,
-    chestPainActivity: false,
-    chestPainRest: false,
-    dizzinessBalance: false,
-    boneJointProblem: false,
-    pregnant: false,
-    recentSurgery: false,
-    takingMedication: false,
-    medicationDetails: '',
+    heartCondition: initialData?.heartCondition || false,
+    chestPainActivity: initialData?.chestPainActivity || false,
+    chestPainRest: initialData?.chestPainRest || false,
+    dizzinessBalance: initialData?.dizzinessBalance || false,
+    boneJointProblem: initialData?.boneJointProblem || false,
+    pregnant: initialData?.pregnant || false,
+    recentSurgery: initialData?.recentSurgery || false,
+    takingMedication: initialData?.takingMedication || false,
+    medicationDetails: initialData?.medicationDetails || '',
 
     // Lifestyle
-    smoking: false,
-    smokingAmount: '',
-    alcohol: false,
-    alcoholGlassesPerWeek: '',
-    sleepHours: '',
-    jobType: '',
-    jobRequiresTravel: false,
-    stressLevel: '',
-    familyOverweight: [] as string[],
-    overweightAsChild: false,
-    overweightAges: '',
+    smoking: initialData?.smoking || false,
+    smokingAmount: initialData?.smokingAmount || '',
+    alcohol: initialData?.alcohol || false,
+    alcoholGlassesPerWeek: initialData?.alcoholGlassesPerWeek?.toString() || '',
+    sleepHours: initialData?.sleepHours?.toString() || '',
+    jobType: initialData?.jobType || '',
+    jobRequiresTravel: initialData?.jobRequiresTravel || false,
+    stressLevel: initialData?.stressLevel?.toString() || '',
+    familyOverweight: parseArrayField(initialData?.familyOverweight) as string[],
+    overweightAsChild: initialData?.overweightAsChild || false,
+    overweightAges: initialData?.overweightAges || '',
 
     // Fitness History
-    bestShapePeriod: '',
-    exercisingConsistently: false,
-    currentFitnessLevel: '',
+    bestShapePeriod: initialData?.bestShapePeriod || '',
+    exercisingConsistently: initialData?.exercisingConsistently || false,
+    currentFitnessLevel: initialData?.currentFitnessLevel?.toString() || '',
 
     // Nutrition
-    mealsPerDay: '',
-    skipMeals: false,
-    eatBreakfast: true,
-    eatLateNight: '',
-    energyDrops: false,
-    energyDropTime: '',
-    takingSupplements: false,
-    supplementsList: '',
-    mealLocation: '',
-    eatOutsidePerWeek: '',
-    eatingReasons: [] as string[],
-    eatPastFullness: '',
-    highSugarFoods: '',
+    mealsPerDay: initialData?.mealsPerDay?.toString() || '',
+    skipMeals: initialData?.skipMeals || false,
+    eatBreakfast: initialData?.eatBreakfast ?? true,
+    eatLateNight: initialData?.eatLateNight || '',
+    energyDrops: initialData?.energyDrops || false,
+    energyDropTime: initialData?.energyDropTime || '',
+    takingSupplements: initialData?.takingSupplements || false,
+    supplementsList: initialData?.supplementsList || '',
+    mealLocation: initialData?.mealLocation || '',
+    eatOutsidePerWeek: initialData?.eatOutsidePerWeek?.toString() || '',
+    eatingReasons: parseArrayField(initialData?.eatingReasons) as string[],
+    eatPastFullness: initialData?.eatPastFullness || '',
+    highSugarFoods: initialData?.highSugarFoods || '',
+    dietPreference: initialData?.dietPreference || '',
+    nonVegRestrictedDays: initialData?.nonVegRestrictedDays || '',
 
     // Goals
-    goalLoseFat: false,
-    goalRehabilitate: false,
-    goalSportsTraining: false,
-    goalMuscleGain: false,
-    goalOther: '',
+    goalLoseFat: initialData?.goalLoseFat || false,
+    goalRehabilitate: initialData?.goalRehabilitate || false,
+    goalSportsTraining: initialData?.goalSportsTraining || false,
+    goalMuscleGain: initialData?.goalMuscleGain || false,
+    goalOther: initialData?.goalOther || '',
   });
 
   const steps: { id: Step; title: string; icon: any }[] = [
@@ -130,8 +214,12 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
       });
 
       if (response.ok) {
-        router.push('/dashboard');
-        router.refresh();
+        if (isEditMode && onSuccess) {
+          onSuccess();
+        } else {
+          router.push('/dashboard');
+          router.refresh();
+        }
       } else {
         alert('Failed to submit assessment. Please try again.');
       }
@@ -144,12 +232,107 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
   };
 
   const toggleArrayValue = (field: 'familyOverweight' | 'eatingReasons', value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: prev[field].includes(value)
-        ? prev[field].filter((v) => v !== value)
-        : [...prev[field], value],
-    }));
+    setFormData((prev) => {
+      // If selecting "None", clear other selections
+      if (value === 'None') {
+        return { ...prev, [field]: prev[field].includes('None') ? [] : ['None'] };
+      }
+      // If selecting other option, remove "None" if present
+      const newArray = prev[field].filter((v) => v !== 'None');
+      if (newArray.includes(value)) {
+        return { ...prev, [field]: newArray.filter((v) => v !== value) };
+      }
+      return { ...prev, [field]: [...newArray, value] };
+    });
+  };
+
+  // Validation functions for each step
+  const validatePersonalStep = (): string[] => {
+    const stepErrors: string[] = [];
+    if (!formData.dateOfBirth) stepErrors.push('Date of Birth is required');
+    if (!formData.height) stepErrors.push('Height is required');
+    if (!formData.weight) stepErrors.push('Weight is required');
+    if (!formData.address) stepErrors.push('Address is required');
+    if (!formData.emergencyContact) stepErrors.push('Emergency Contact is required');
+    return stepErrors;
+  };
+
+  const validateParqStep = (): string[] => {
+    const stepErrors: string[] = [];
+    if (formData.takingMedication && !formData.medicationDetails) {
+      stepErrors.push('Please describe your medications');
+    }
+    return stepErrors;
+  };
+
+  const validateLifestyleStep = (): string[] => {
+    const stepErrors: string[] = [];
+    if (formData.smoking && !formData.smokingAmount) stepErrors.push('Please specify how many cigarettes per day');
+    if (formData.alcohol && !formData.alcoholGlassesPerWeek) stepErrors.push('Please specify alcohol glasses per week');
+    if (!formData.sleepHours) stepErrors.push('Sleep hours is required');
+    if (!formData.jobType) stepErrors.push('Job type is required');
+    if (!formData.stressLevel) stepErrors.push('Stress level is required');
+    if (formData.familyOverweight.length === 0) stepErrors.push('Please select family members who are overweight or select "None"');
+    if (formData.overweightAsChild && !formData.overweightAges) stepErrors.push('Please specify at what age(s) you were overweight');
+    return stepErrors;
+  };
+
+  const validateFitnessStep = (): string[] => {
+    const stepErrors: string[] = [];
+    if (!formData.bestShapePeriod) stepErrors.push('Please describe when you were in best shape');
+    if (!formData.currentFitnessLevel) stepErrors.push('Current fitness level is required');
+    return stepErrors;
+  };
+
+  const validateNutritionStep = (): string[] => {
+    const stepErrors: string[] = [];
+    if (!formData.mealsPerDay) stepErrors.push('Meals per day is required');
+    if (!formData.eatLateNight) stepErrors.push('Please select late night eating frequency');
+    if (formData.energyDrops && !formData.energyDropTime) stepErrors.push('Please specify when you feel energy drops');
+    if (formData.takingSupplements && !formData.supplementsList) stepErrors.push('Please list your supplements');
+    if (!formData.mealLocation) stepErrors.push('Please select where you usually eat meals');
+    if (!formData.eatOutsidePerWeek && formData.eatOutsidePerWeek !== '0') stepErrors.push('Please specify how often you eat outside');
+    if (formData.eatingReasons.length === 0) stepErrors.push('Please select eating reasons or select "Hunger Only"');
+    if (!formData.eatPastFullness) stepErrors.push('Please select how often you eat past fullness');
+    if (!formData.highSugarFoods) stepErrors.push('Please select sugar consumption frequency');
+    if (!formData.dietPreference) stepErrors.push('Please select your diet preference');
+    if (formData.dietPreference === 'non-veg-restricted' && !formData.nonVegRestrictedDays) stepErrors.push('Please specify which days you cannot eat non-veg');
+    return stepErrors;
+  };
+
+  const validateGoalsStep = (): string[] => {
+    const stepErrors: string[] = [];
+    const hasGoal = formData.goalLoseFat || formData.goalRehabilitate || formData.goalSportsTraining || formData.goalMuscleGain || formData.goalOther;
+    if (!hasGoal) stepErrors.push('Please select at least one fitness goal');
+    return stepErrors;
+  };
+
+  const validateCurrentStep = (): boolean => {
+    let stepErrors: string[] = [];
+    switch (currentStep) {
+      case 'personal': stepErrors = validatePersonalStep(); break;
+      case 'parq': stepErrors = validateParqStep(); break;
+      case 'lifestyle': stepErrors = validateLifestyleStep(); break;
+      case 'fitness': stepErrors = validateFitnessStep(); break;
+      case 'nutrition': stepErrors = validateNutritionStep(); break;
+      case 'goals': stepErrors = validateGoalsStep(); break;
+    }
+    setErrors(stepErrors);
+    return stepErrors.length === 0;
+  };
+
+  const handleNextWithValidation = () => {
+    if (validateCurrentStep()) {
+      setErrors([]);
+      handleNext();
+    }
+  };
+
+  const handleSubmitWithValidation = async () => {
+    if (validateCurrentStep()) {
+      setErrors([]);
+      await handleSubmit();
+    }
   };
 
   return (
@@ -157,9 +340,14 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Pre-Assessment Form</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">
+            {isEditMode ? 'Edit Assessment' : 'Pre-Assessment Form'}
+          </h1>
           <p className="text-gray-400">
-            Help us understand you better to create a personalized fitness plan
+            {isEditMode
+              ? 'Update your information to keep your fitness plan accurate'
+              : 'Help us understand you better to create a personalized fitness plan'
+            }
           </p>
         </div>
 
@@ -206,6 +394,18 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
           </div>
         </div>
 
+        {/* Error Messages */}
+        {errors.length > 0 && (
+          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl">
+            <p className="text-red-400 font-semibold mb-2">Please fix the following errors:</p>
+            <ul className="list-disc list-inside text-red-300 text-sm space-y-1">
+              {errors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Form Content */}
         <motion.div
           key={currentStep}
@@ -221,39 +421,42 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Date of Birth</label>
+                  <label className="block text-gray-300 text-sm mb-2">Date of Birth <span className="text-red-400">*</span></label>
                   <input
                     type="date"
                     value={formData.dateOfBirth}
                     onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
                     className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:invert"
+                    required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Height (cm)</label>
+                  <label className="block text-gray-300 text-sm mb-2">Height (cm) <span className="text-red-400">*</span></label>
                   <input
                     type="number"
                     value={formData.height}
                     onChange={(e) => setFormData({ ...formData, height: e.target.value })}
                     className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                     placeholder="170"
+                    required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Weight (kg)</label>
+                  <label className="block text-gray-300 text-sm mb-2">Weight (kg) <span className="text-red-400">*</span></label>
                   <input
                     type="number"
                     value={formData.weight}
                     onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                     className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                     placeholder="70"
+                    required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Fat Percentage (optional)</label>
+                  <label className="block text-gray-300 text-sm mb-2">Fat Percentage <span className="text-gray-500">(optional)</span></label>
                   <input
                     type="number"
                     value={formData.fatPercentage}
@@ -265,24 +468,26 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">Address</label>
+                <label className="block text-gray-300 text-sm mb-2">Address <span className="text-red-400">*</span></label>
                 <textarea
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                   rows={2}
                   placeholder="Your address"
+                  required
                 />
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">Emergency Contact</label>
+                <label className="block text-gray-300 text-sm mb-2">Emergency Contact <span className="text-red-400">*</span></label>
                 <input
                   type="text"
                   value={formData.emergencyContact}
                   onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
                   className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                   placeholder="Emergency contact name and number"
+                  required
                 />
               </div>
             </div>
@@ -434,7 +639,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
 
                 {/* Sleep Hours */}
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">How many hours do you regularly sleep at night?</label>
+                  <label className="block text-gray-300 text-sm mb-2">How many hours do you regularly sleep at night? <span className="text-red-400">*</span></label>
                   <input
                     type="number"
                     value={formData.sleepHours}
@@ -443,12 +648,13 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
                     placeholder="7"
                     min="1"
                     max="24"
+                    required
                   />
                 </div>
 
                 {/* Job Type */}
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Describe your job</label>
+                  <label className="block text-gray-300 text-sm mb-2">Describe your job <span className="text-red-400">*</span></label>
                   <div className="grid grid-cols-3 gap-2">
                     {['sedentary', 'active', 'physically-demanding'].map((type) => (
                       <button
@@ -495,7 +701,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
                 {/* Stress Level */}
                 <div>
                   <label className="block text-gray-300 text-sm mb-2">
-                    Stress Level (1=very low, 10=very high): {formData.stressLevel || '-'}
+                    Stress Level (1=very low, 10=very high): {formData.stressLevel || 'Not set'} <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="range"
@@ -513,16 +719,16 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
 
                 {/* Family Overweight */}
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Is anyone in your family overweight?</label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {['Mother', 'Father', 'Sibling', 'Grandparent'].map((member) => (
+                  <label className="block text-gray-300 text-sm mb-2">Is anyone in your family overweight? <span className="text-red-400">*</span></label>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                    {['None', 'Mother', 'Father', 'Sibling', 'Grandparent'].map((member) => (
                       <button
                         key={member}
                         type="button"
                         onClick={() => toggleArrayValue('familyOverweight', member)}
                         className={`px-4 py-2 rounded-lg ${
                           formData.familyOverweight.includes(member)
-                            ? 'bg-brand-blue text-white'
+                            ? member === 'None' ? 'bg-green-500 text-white' : 'bg-brand-blue text-white'
                             : 'bg-brand-navy border border-white/10 text-gray-400'
                         }`}
                       >
@@ -577,18 +783,19 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               <h2 className="text-2xl font-bold text-white mb-4">Fitness History</h2>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">When were you in the best shape of your life?</label>
+                <label className="block text-gray-300 text-sm mb-2">When were you in the best shape of your life? <span className="text-red-400">*</span></label>
                 <input
                   type="text"
                   value={formData.bestShapePeriod}
                   onChange={(e) => setFormData({ ...formData, bestShapePeriod: e.target.value })}
                   className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                   placeholder="e.g., 2 years ago, in college, never..."
+                  required
                 />
               </div>
 
               <div className="flex items-center justify-between p-4 bg-brand-navy/50 rounded-lg">
-                <label className="text-white">Have you been exercising consistently for the past 3 months?</label>
+                <label className="text-white">Have you been exercising consistently for the past 3 months? <span className="text-red-400">*</span></label>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -613,7 +820,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
 
               <div>
                 <label className="block text-gray-300 text-sm mb-2">
-                  Current Fitness Level (1=Worst, 10=Best): {formData.currentFitnessLevel || '-'}
+                  Current Fitness Level (1=Worst, 10=Best): {formData.currentFitnessLevel || 'Not set'} <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="range"
@@ -637,7 +844,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               <h2 className="text-2xl font-bold text-white mb-4">Nutrition Questions</h2>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">How many times a day do you usually eat (including snacks)?</label>
+                <label className="block text-gray-300 text-sm mb-2">How many times a day do you usually eat (including snacks)? <span className="text-red-400">*</span></label>
                 <input
                   type="number"
                   value={formData.mealsPerDay}
@@ -645,6 +852,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
                   className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                   placeholder="3"
                   min="1"
+                  required
                 />
               </div>
 
@@ -699,7 +907,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">Do you eat late at night?</label>
+                <label className="block text-gray-300 text-sm mb-2">Do you eat late at night? <span className="text-red-400">*</span></label>
                 <div className="grid grid-cols-3 gap-2">
                   {['sometimes', 'often', 'never'].map((freq) => (
                     <button
@@ -789,7 +997,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">At work or school, do you usually:</label>
+                <label className="block text-gray-300 text-sm mb-2">At work or school, do you usually: <span className="text-red-400">*</span></label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { value: 'eat-outside', label: 'Eat Outside' },
@@ -812,7 +1020,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">How many times per week do you eat outside?</label>
+                <label className="block text-gray-300 text-sm mb-2">How many times per week do you eat outside? <span className="text-red-400">*</span></label>
                 <input
                   type="number"
                   value={formData.eatOutsidePerWeek}
@@ -820,20 +1028,21 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
                   className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                   placeholder="3"
                   min="0"
+                  required
                 />
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">Besides hunger, what other reason(s) do you eat?</label>
+                <label className="block text-gray-300 text-sm mb-2">Besides hunger, what other reason(s) do you eat? <span className="text-red-400">*</span></label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {['Boredom', 'Social', 'Stressed', 'Tired', 'Depressed', 'Happy', 'Nervous'].map((reason) => (
+                  {['Hunger Only', 'Boredom', 'Social', 'Stressed', 'Tired', 'Depressed', 'Happy', 'Nervous'].map((reason) => (
                     <button
                       key={reason}
                       type="button"
-                      onClick={() => toggleArrayValue('eatingReasons', reason)}
+                      onClick={() => toggleArrayValue('eatingReasons', reason === 'Hunger Only' ? 'None' : reason)}
                       className={`px-4 py-2 rounded-lg ${
-                        formData.eatingReasons.includes(reason)
-                          ? 'bg-brand-blue text-white'
+                        (reason === 'Hunger Only' && formData.eatingReasons.includes('None')) || (reason !== 'Hunger Only' && formData.eatingReasons.includes(reason))
+                          ? reason === 'Hunger Only' ? 'bg-green-500 text-white' : 'bg-brand-blue text-white'
                           : 'bg-brand-navy border border-white/10 text-gray-400'
                       }`}
                     >
@@ -844,7 +1053,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">Do you eat past the point of fullness?</label>
+                <label className="block text-gray-300 text-sm mb-2">Do you eat past the point of fullness? <span className="text-red-400">*</span></label>
                 <div className="grid grid-cols-3 gap-2">
                   {['often', 'sometimes', 'never'].map((freq) => (
                     <button
@@ -864,7 +1073,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">Do you eat foods high in sugar?</label>
+                <label className="block text-gray-300 text-sm mb-2">Do you eat foods high in sugar? <span className="text-red-400">*</span></label>
                 <div className="grid grid-cols-3 gap-2">
                   {['often', 'sometimes', 'never'].map((freq) => (
                     <button
@@ -882,6 +1091,56 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
                   ))}
                 </div>
               </div>
+
+              {/* Diet Preference */}
+              <div className="p-4 bg-brand-navy/50 rounded-lg border border-white/10">
+                <label className="block text-gray-300 text-sm mb-3">What is your diet preference? <span className="text-red-400">*</span></label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { value: 'pure-veg', label: 'Pure Vegetarian', icon: '🥬', desc: 'No meat, fish, or eggs' },
+                    { value: 'eggetarian', label: 'Eggetarian', icon: '🥚', desc: 'Vegetarian + Eggs' },
+                    { value: 'non-veg', label: 'Non-Vegetarian', icon: '🍗', desc: 'All foods including meat' },
+                    { value: 'non-veg-restricted', label: 'Non-Veg (Restricted Days)', icon: '📅', desc: 'Non-veg but not on specific days' },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, dietPreference: option.value, nonVegRestrictedDays: option.value !== 'non-veg-restricted' ? '' : formData.nonVegRestrictedDays })}
+                      className={`p-4 rounded-lg text-left transition-all flex items-start gap-3 ${
+                        formData.dietPreference === option.value
+                          ? 'bg-brand-blue border-2 border-brand-blue'
+                          : 'bg-brand-navy border-2 border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <span className="text-2xl">{option.icon}</span>
+                      <div>
+                        <p className="text-white font-medium">{option.label}</p>
+                        <p className="text-gray-400 text-xs mt-0.5">{option.desc}</p>
+                      </div>
+                      {formData.dietPreference === option.value && (
+                        <CheckCircle className="ml-auto text-white flex-shrink-0" size={20} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Restricted Days Input - Only shown when non-veg-restricted is selected */}
+                {formData.dietPreference === 'non-veg-restricted' && (
+                  <div className="mt-4">
+                    <label className="block text-gray-300 text-sm mb-2">
+                      Which days can you not eat non-veg? <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.nonVegRestrictedDays}
+                      onChange={(e) => setFormData({ ...formData, nonVegRestrictedDays: e.target.value })}
+                      className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                      placeholder="e.g., Tuesday, Thursday, Saturday or religious days"
+                      required
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -889,7 +1148,7 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
           {currentStep === 'goals' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-white mb-2">Your Fitness Goals</h2>
-              <p className="text-gray-400 mb-6">Select all that apply. This helps us create the perfect plan for you.</p>
+              <p className="text-gray-400 mb-6">Select at least one goal. <span className="text-red-400">*</span></p>
 
               <div className="space-y-3">
                 {[
@@ -933,22 +1192,33 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
 
         {/* Navigation Buttons */}
         <div className="flex items-center justify-between gap-4">
-          <button
-            onClick={handlePrev}
-            disabled={currentStepIndex === 0}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
-              currentStepIndex === 0
-                ? 'opacity-50 cursor-not-allowed bg-brand-navy-light text-gray-500'
-                : 'bg-brand-navy-light text-white hover:bg-brand-navy-light/80'
-            }`}
-          >
-            <ChevronLeft size={20} />
-            Previous
-          </button>
+          <div className="flex items-center gap-2">
+            {isEditMode && onCancel && (
+              <button
+                onClick={onCancel}
+                className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-all"
+              >
+                <X size={20} />
+                Cancel
+              </button>
+            )}
+            <button
+              onClick={handlePrev}
+              disabled={currentStepIndex === 0}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                currentStepIndex === 0
+                  ? 'opacity-50 cursor-not-allowed bg-brand-navy-light text-gray-500'
+                  : 'bg-brand-navy-light text-white hover:bg-brand-navy-light/80'
+              }`}
+            >
+              <ChevronLeft size={20} />
+              Previous
+            </button>
+          </div>
 
           {currentStepIndex < steps.length - 1 ? (
             <button
-              onClick={handleNext}
+              onClick={handleNextWithValidation}
               className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-gradient-to-r from-brand-blue to-brand-blue-dark text-white hover:shadow-[0_0_30px_rgba(23,95,255,0.4)] transition-all"
             >
               Next
@@ -956,19 +1226,19 @@ export default function PreAssessmentForm({ userId }: PreAssessmentFormProps) {
             </button>
           ) : (
             <button
-              onClick={handleSubmit}
+              onClick={handleSubmitWithValidation}
               disabled={isSubmitting}
               className="flex items-center gap-2 px-8 py-3 rounded-lg font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  Submitting...
+                  {isEditMode ? 'Saving...' : 'Submitting...'}
                 </>
               ) : (
                 <>
                   <CheckCircle size={20} />
-                  Submit Assessment
+                  {isEditMode ? 'Save Changes' : 'Submit Assessment'}
                 </>
               )}
             </button>
