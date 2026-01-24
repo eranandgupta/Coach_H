@@ -77,26 +77,51 @@ export default function BlogPostPage() {
     }
 
     // Content is plain text - convert to HTML with proper formatting
-    // Preserve line breaks and format paragraphs
-    return content
-      .split('\n\n')
-      .map(paragraph => {
-        const trimmed = paragraph.trim();
-        if (!trimmed) return '';
+    // Split by lines and process each line
+    const lines = content.split('\n');
+    const result: string[] = [];
+    let currentListItems: string[] = [];
+    let inList = false;
 
-        // Check if it's a list item (starts with -, *, or number)
-        if (trimmed.match(/^[-*•]\s/)) {
-          const items = trimmed.split('\n').filter(line => line.trim());
-          return '<ul>' + items.map(item =>
-            '<li>' + item.replace(/^[-*•]\s/, '').trim() + '</li>'
-          ).join('') + '</ul>';
+    const flushList = () => {
+      if (currentListItems.length > 0) {
+        result.push('<ul>' + currentListItems.map(item => '<li>' + item + '</li>').join('') + '</ul>');
+        currentListItems = [];
+      }
+      inList = false;
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Empty line - creates paragraph break
+      if (!trimmed) {
+        flushList();
+        continue;
+      }
+
+      // Check if it's a list item (starts with -, *, •, or number followed by . or ))
+      const listMatch = trimmed.match(/^([-*•]|\d+[.)]) /);
+      if (listMatch) {
+        if (!inList) {
+          inList = true;
         }
+        currentListItems.push(trimmed.replace(/^([-*•]|\d+[.)]) /, ''));
+        continue;
+      }
 
-        // Regular paragraph - preserve line breaks within it
-        return '<p>' + trimmed.replace(/\n/g, '<br>') + '</p>';
-      })
-      .filter(p => p)
-      .join('\n');
+      // Not a list item - flush any pending list
+      flushList();
+
+      // Regular text line - wrap in paragraph
+      result.push('<p>' + trimmed + '</p>');
+    }
+
+    // Flush any remaining list items
+    flushList();
+
+    return result.join('\n');
   };
 
   if (loading) {

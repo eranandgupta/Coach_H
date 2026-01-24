@@ -43,7 +43,17 @@
       "Bash(if exist \"node_modules\\.prisma\" rmdir /s /q \"node_modules\\.prisma\")",
       "Bash(tasklist:*)",
       "Bash(cmd /c \"taskkill /F /IM node.exe\")",
-      "Bash(cmd /c \"taskkill /F /PID 20196 /PID 19212 /PID 24584 /PID 26844\")"
+      "Bash(cmd /c \"taskkill /F /PID 20196 /PID 19212 /PID 24584 /PID 26844\")",
+      "Bash(powershell -Command \"New-Item -ItemType Directory -Force -Path ''E:\\\\CH\\\\Coach_H\\\\app\\\\fit-bharat-mission''\")",
+      "Bash(powershell -Command \"Get-ChildItem ''E:\\\\CH\\\\Coach_H\\\\app\\\\fit-bharat-mission''\")",
+      "Bash(powershell -Command:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cd /d E:CHCoach_H)",
+      "Bash(git diff:*)",
+      "Bash(git checkout:*)",
+      "Bash(ls:*)",
+      "Bash(git config:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []

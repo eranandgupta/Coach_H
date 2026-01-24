@@ -92,6 +92,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^7.0.3",
     "@types/web-push": "^3.6.4",
+    "baseline-browser-mapping": "^2.9.17",
     "sharp": "^0.34.5",
     "tsx": "^4.20.6"
   }

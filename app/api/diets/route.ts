@@ -77,32 +77,39 @@ async function postHandler(request: NextRequest, context: any) {
       );
     }
 
+    // Helper function to parse decimal values (empty string -> null)
+    const parseDecimal = (value: any) => {
+      if (value === '' || value === null || value === undefined) return null;
+      const parsed = parseFloat(value);
+      return isNaN(parsed) ? null : parsed;
+    };
+
     // Create diet plan with meals
     const diet = await prisma.dietPlan.create({
       data: {
         title,
-        description,
+        description: description || null,
         clientId: parseInt(clientId),
         coachId: user.userId,
         weekNumber: parseInt(weekNumber),
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         targetCalories: targetCalories ? parseInt(targetCalories) : null,
-        notes,
+        notes: notes || null,
         meals: meals
           ? {
               create: meals.map((meal: any, index: number) => ({
                 name: meal.name,
-                description: meal.description,
+                description: meal.description || null,
                 mealType: meal.mealType,
                 calories: meal.calories ? parseInt(meal.calories) : null,
-                protein: meal.protein,
-                carbs: meal.carbs,
-                fats: meal.fats,
-                ingredients: meal.ingredients,
-                instructions: meal.instructions,
+                protein: parseDecimal(meal.protein),
+                carbs: parseDecimal(meal.carbs),
+                fats: parseDecimal(meal.fats),
+                ingredients: meal.ingredients || null,
+                instructions: meal.instructions || null,
                 day: meal.day,
-                time: meal.time,
+                time: meal.time || null,
                 order: meal.order || index,
               })),
             }
@@ -182,31 +189,38 @@ async function putHandler(request: NextRequest, context: any) {
       });
     }
 
+    // Helper function to parse decimal values (empty string -> null)
+    const parseDecimal = (value: any) => {
+      if (value === '' || value === null || value === undefined) return null;
+      const parsed = parseFloat(value);
+      return isNaN(parsed) ? null : parsed;
+    };
+
     // Update diet plan
     const updatedDiet = await prisma.dietPlan.update({
       where: { id: parseInt(id) },
       data: {
         title: title || existingDiet.title,
-        description: description !== undefined ? description : existingDiet.description,
+        description: description !== undefined ? (description || null) : existingDiet.description,
         weekNumber: weekNumber ? parseInt(weekNumber) : existingDiet.weekNumber,
         startDate: startDate ? new Date(startDate) : existingDiet.startDate,
         endDate: endDate ? new Date(endDate) : existingDiet.endDate,
         targetCalories: targetCalories !== undefined ? (targetCalories ? parseInt(targetCalories) : null) : existingDiet.targetCalories,
-        notes: notes !== undefined ? notes : existingDiet.notes,
+        notes: notes !== undefined ? (notes || null) : existingDiet.notes,
         meals: meals
           ? {
               create: meals.map((meal: any, index: number) => ({
                 name: meal.name,
-                description: meal.description,
+                description: meal.description || null,
                 mealType: meal.mealType,
                 calories: meal.calories ? parseInt(meal.calories) : null,
-                protein: meal.protein,
-                carbs: meal.carbs,
-                fats: meal.fats,
-                ingredients: meal.ingredients,
-                instructions: meal.instructions,
+                protein: parseDecimal(meal.protein),
+                carbs: parseDecimal(meal.carbs),
+                fats: parseDecimal(meal.fats),
+                ingredients: meal.ingredients || null,
+                instructions: meal.instructions || null,
                 day: meal.day,
-                time: meal.time,
+                time: meal.time || null,
                 order: meal.order || index,
               })),
             }

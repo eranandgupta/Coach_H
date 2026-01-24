@@ -188,6 +188,12 @@ export default function AssessmentResultsModal({
                       <span className="text-gray-400 text-sm">Overweight as Child</span>
                       <BooleanBadge value={assessment.overweightAsChild} />
                     </div>
+                    {assessment.overweightAsChild && assessment.overweightAges && (
+                      <div className="py-2 border-b border-white/5">
+                        <span className="text-gray-400 text-sm">Overweight at Ages: </span>
+                        <span className="text-white text-sm">{assessment.overweightAges}</span>
+                      </div>
+                    )}
                   </div>
                   {assessment.familyOverweight && (
                     <div className="mt-3 pt-3 border-t border-white/5">
@@ -262,7 +268,17 @@ export default function AssessmentResultsModal({
                     </div>
                     <InfoRow label="Eat Past Fullness" value={assessment.eatPastFullness?.toUpperCase() || 'N/A'} />
                     <InfoRow label="High Sugar Foods" value={assessment.highSugarFoods?.toUpperCase() || 'N/A'} />
+                    <InfoRow
+                      label="Diet Preference"
+                      value={assessment.dietPreference ? assessment.dietPreference.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) : 'N/A'}
+                    />
                   </div>
+                  {assessment.dietPreference === 'non-veg-restricted' && assessment.nonVegRestrictedDays && (
+                    <div className="mt-3 pt-3 border-t border-white/5">
+                      <p className="text-gray-400 text-sm mb-1">Non-Veg Restricted Days:</p>
+                      <p className="text-white text-sm">{assessment.nonVegRestrictedDays}</p>
+                    </div>
+                  )}
                   {assessment.takingSupplements && assessment.supplementsList && (
                     <div className="mt-3 pt-3 border-t border-white/5">
                       <p className="text-gray-400 text-sm mb-1">Supplements:</p>
