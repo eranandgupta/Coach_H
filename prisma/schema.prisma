@@ -149,9 +149,9 @@ model PromoCode {
   expiryDate        DateTime?
   isActive          Boolean   @default(true)
   description       String?   @db.Text
-  applicablePlans   String?   @db.Text
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  applicablePlans   String?   @db.Text
 
   @@index([code])
 }
@@ -201,8 +201,6 @@ model ClientAssessment {
   eatingReasons          String?   @db.Text
   eatPastFullness        String?
   highSugarFoods         String?
-  dietPreference         String?
-  nonVegRestrictedDays   String?   @db.Text
   goalLoseFat            Boolean   @default(false)
   goalRehabilitate       Boolean   @default(false)
   goalSportsTraining     Boolean   @default(false)
@@ -210,6 +208,8 @@ model ClientAssessment {
   goalOther              String?   @db.Text
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
+  dietPreference         String?
+  nonVegRestrictedDays   String?   @db.Text
   user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])

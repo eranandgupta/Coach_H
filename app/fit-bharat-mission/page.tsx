@@ -9,9 +9,6 @@ import {
   Youtube,
   ArrowRight,
   Heart,
-  Calendar,
-  Award,
-  Users,
   CheckCircle2,
   Flame,
   Salad,
@@ -31,15 +28,6 @@ const fadeInUp = {
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
   transition: { duration: 0.6 }
-};
-
-const staggerContainer = {
-  initial: {},
-  whileInView: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
 };
 
 const workoutPlans = [
@@ -393,39 +381,55 @@ export default function FitBharatMissionPage() {
           </motion.div>
         </section>
 
-        {/* Coach Introduction */}
+        {/* About Fit Bharat Mission */}
         <section className="py-16 md:py-20 relative">
           <div className="max-w-6xl mx-auto px-4 md:px-6">
+            <motion.div {...fadeInUp} className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/20 via-white/10 to-green-500/20 border border-white/20 rounded-full mb-4">
+                <Heart className="w-4 h-4 text-red-400" />
+                <span className="text-white text-sm font-semibold">ABOUT THE INITIATIVE</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                What is Fit Bharat Mission?
+              </h2>
+              <div className="w-20 h-1 bg-gradient-to-r from-orange-500 via-white to-green-500 mx-auto"></div>
+            </motion.div>
+
             <motion.div {...fadeInUp} className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12">
-              <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-brand-blue to-brand-gold p-1 flex-shrink-0">
-                  <img
-                    src="/CH3.jpeg"
-                    alt="Coach Himanshu"
-                    className="w-full h-full rounded-full object-cover"
-                  />
+              <div className="max-w-4xl mx-auto">
+                <p className="text-xl md:text-2xl text-white font-medium text-center mb-8 leading-relaxed">
+                  A <span className="text-brand-gold">free public health initiative</span> by Coach Himanshu, created with one simple goal:
+                </p>
+
+                <div className="bg-gradient-to-r from-orange-500/20 via-brand-navy to-green-500/20 border border-brand-gold/30 rounded-2xl p-6 md:p-8 mb-8">
+                  <p className="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-orange-400 via-white to-green-400 bg-clip-text text-transparent">
+                    To make India healthier, stronger, and more fitness-aware.
+                  </p>
                 </div>
-                <div className="text-center md:text-left">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                    Coach Himanshu here
-                  </h2>
-                  <div className="space-y-2 text-gray-300">
-                    <p className="flex items-center gap-2 justify-center md:justify-start">
-                      <Award className="w-5 h-5 text-brand-gold flex-shrink-0" />
-                      <span>Founder - Coach Himanshu Platform</span>
+
+                <div className="space-y-6 text-gray-300 text-lg leading-relaxed">
+                  <p>
+                    In today's time, lifestyle diseases like <span className="text-red-400 font-semibold">obesity, diabetes, blood pressure, heart problems, joint pain, and mental stress</span> are rising rapidly — mainly due to wrong food habits, sedentary lifestyle, misinformation, and lack of scientific guidance.
+                  </p>
+
+                  <div className="bg-brand-navy/50 border border-white/10 rounded-xl p-6">
+                    <p className="text-white font-medium">
+                      <span className="text-brand-gold font-bold">Fit Bharat Mission</span> was launched to:
                     </p>
-                    <p className="flex items-center gap-2 justify-center md:justify-start">
-                      <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <span>Certified Fitness Trainer & Nutritionist (since 2021)</span>
-                    </p>
-                    <p className="flex items-center gap-2 justify-center md:justify-start">
-                      <Users className="w-5 h-5 text-brand-blue flex-shrink-0" />
-                      <span>Former Fitness & Nutrition Science Lecturer (2 years)</span>
-                    </p>
-                    <p className="flex items-center gap-2 justify-center md:justify-start">
-                      <Youtube className="w-5 h-5 text-red-500 flex-shrink-0" />
-                      <span>YouTube Educator for 3+ years - teaching fitness science, nutrition science, correct form & posture, fat loss, muscle gain & myth busting 100% free</span>
-                    </p>
+                    <ul className="mt-4 space-y-3">
+                      <li className="flex items-start gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-1" />
+                        <span>Break myths and spread <span className="text-white font-semibold">real fitness education</span></span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-1" />
+                        <span>Provide <span className="text-white font-semibold">free, practical workout & diet plans</span> that any Indian can follow safely</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-1" />
+                        <span>Make <span className="text-white font-semibold">scientific fitness guidance accessible</span> to everyone</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
