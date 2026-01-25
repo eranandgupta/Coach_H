@@ -36,7 +36,6 @@ const workoutPlans = [
     title: 'General Mix Workout',
     subtitle: 'Full Body - 5 Days/Week',
     icon: Dumbbell,
-    color: 'from-blue-500 to-cyan-500',
     days: [
       {
         name: 'Day 1 - Full Body A',
@@ -78,7 +77,6 @@ const workoutPlans = [
     title: 'Single Muscle Split',
     subtitle: '6 Days Training',
     icon: Target,
-    color: 'from-purple-500 to-pink-500',
     days: [
       {
         name: 'Day 1 - Chest',
@@ -140,7 +138,6 @@ const workoutPlans = [
     title: 'Push Workout',
     subtitle: 'Chest + Shoulders + Triceps',
     icon: Flame,
-    color: 'from-orange-500 to-red-500',
     days: [
       {
         name: 'Push Day',
@@ -160,7 +157,6 @@ const workoutPlans = [
     title: 'Pull Workout',
     subtitle: 'Back + Biceps',
     icon: Target,
-    color: 'from-green-500 to-emerald-500',
     days: [
       {
         name: 'Pull Day',
@@ -180,7 +176,6 @@ const workoutPlans = [
     title: 'Leg Workout',
     subtitle: 'Complete Lower Body',
     icon: Dumbbell,
-    color: 'from-brand-blue to-brand-gold',
     days: [
       {
         name: 'Leg Day',
@@ -203,7 +198,8 @@ const dietPlans = [
     title: 'Fat Loss - Vegetarian',
     subtitle: 'Under 1800 kcal',
     icon: Leaf,
-    color: 'from-green-500 to-emerald-500',
+    badge: 'VEG',
+    badgeColor: 'text-green-400 border-green-400/30 bg-green-400/10',
     meals: [
       { time: 'Morning', items: ['Warm water + lemon', '5 soaked almonds'] },
       { time: 'Breakfast', items: ['Oats (40g) + skim milk', '1 fruit'] },
@@ -217,7 +213,8 @@ const dietPlans = [
     title: 'Fat Loss - Non-Vegetarian',
     subtitle: 'Under 1800 kcal',
     icon: Beef,
-    color: 'from-red-500 to-orange-500',
+    badge: 'NON-VEG',
+    badgeColor: 'text-red-400 border-red-400/30 bg-red-400/10',
     meals: [
       { time: 'Breakfast', items: ['3 egg whites + 1 whole egg', '1 slice brown bread'] },
       { time: 'Lunch', items: ['Grilled chicken/fish (120g)', 'Rice (100g cooked)', 'Veg salad'] },
@@ -230,7 +227,8 @@ const dietPlans = [
     title: 'Muscle Gain - Vegetarian',
     subtitle: 'Under 2500 kcal',
     icon: Salad,
-    color: 'from-emerald-500 to-teal-500',
+    badge: 'VEG',
+    badgeColor: 'text-green-400 border-green-400/30 bg-green-400/10',
     meals: [
       { time: 'Breakfast', items: ['Oats + milk + peanut butter'] },
       { time: 'Mid-Meal', items: ['Fruit + nuts'] },
@@ -245,7 +243,8 @@ const dietPlans = [
     title: 'Muscle Gain - Non-Vegetarian',
     subtitle: 'Under 2500 kcal',
     icon: Beef,
-    color: 'from-amber-500 to-orange-500',
+    badge: 'NON-VEG',
+    badgeColor: 'text-red-400 border-red-400/30 bg-red-400/10',
     meals: [
       { time: 'Breakfast', items: ['4 eggs + oats'] },
       { time: 'Mid-Meal', items: ['Fruit + peanuts'] },
@@ -479,9 +478,9 @@ export default function FitBharatMissionPage() {
         <section id="workout-plans" className="py-16 md:py-24 bg-gradient-to-b from-transparent to-brand-navy-light/30">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <motion.div {...fadeInUp} className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-blue/20 border border-brand-blue/30 rounded-full mb-4">
-                <Dumbbell className="w-4 h-4 text-brand-blue" />
-                <span className="text-brand-blue text-sm font-semibold">FREE WORKOUT PLANS</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/10 border border-brand-gold/30 rounded-full mb-4">
+                <Dumbbell className="w-4 h-4 text-brand-gold" />
+                <span className="text-brand-gold text-sm font-semibold">FREE WORKOUT PLANS</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
                 General Workout Plans
@@ -489,23 +488,23 @@ export default function FitBharatMissionPage() {
               <div className="w-20 h-1 bg-gradient-to-r from-brand-blue to-brand-gold mx-auto"></div>
             </motion.div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {workoutPlans.map((plan, index) => (
                 <motion.div
                   key={plan.id}
                   {...fadeInUp}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300"
+                  className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300 group"
                 >
                   {/* Plan Header */}
-                  <div className={`bg-gradient-to-r ${plan.color} p-6 md:p-8`}>
+                  <div className="p-6 md:p-8 border-b border-white/10">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                        <plan.icon className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 border border-white/10 rounded-xl flex items-center justify-center group-hover:border-brand-gold/30 transition-colors">
+                        <plan.icon className="w-6 h-6 text-brand-gold" />
                       </div>
                       <div>
                         <h3 className="text-xl md:text-2xl font-bold text-white">{plan.title}</h3>
-                        <p className="text-white/80">{plan.subtitle}</p>
+                        <p className="text-gray-400">{plan.subtitle}</p>
                       </div>
                     </div>
                   </div>
@@ -516,13 +515,13 @@ export default function FitBharatMissionPage() {
                       {plan.days.map((day, dayIndex) => (
                         <div
                           key={dayIndex}
-                          className="bg-brand-navy/50 rounded-xl p-4 border border-white/5"
+                          className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors"
                         >
-                          <h4 className="text-brand-gold font-semibold mb-3">{day.name}</h4>
+                          <h4 className="text-white font-medium mb-3 text-sm">{day.name}</h4>
                           <ul className="space-y-2">
                             {day.exercises.map((exercise, exIndex) => (
-                              <li key={exIndex} className="text-gray-300 text-sm flex items-start gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                              <li key={exIndex} className="text-gray-400 text-sm flex items-start gap-2">
+                                <div className="w-1 h-1 bg-brand-gold/60 rounded-full mt-2 flex-shrink-0"></div>
                                 <span>{exercise}</span>
                               </li>
                             ))}
@@ -531,9 +530,9 @@ export default function FitBharatMissionPage() {
                       ))}
                     </div>
                     {plan.note && (
-                      <div className="mt-6 p-4 bg-brand-blue/10 border border-brand-blue/30 rounded-xl">
-                        <p className="text-brand-blue text-sm flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
+                      <div className="mt-6 p-4 bg-white/[0.03] border border-white/10 rounded-xl">
+                        <p className="text-gray-400 text-sm flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-brand-gold/70" />
                           {plan.note}
                         </p>
                       </div>
@@ -549,34 +548,39 @@ export default function FitBharatMissionPage() {
         <section id="diet-plans" className="py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <motion.div {...fadeInUp} className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full mb-4">
-                <Apple className="w-4 h-4 text-green-400" />
-                <span className="text-green-400 text-sm font-semibold">FREE DIET PLANS</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/10 border border-brand-gold/30 rounded-full mb-4">
+                <Apple className="w-4 h-4 text-brand-gold" />
+                <span className="text-brand-gold text-sm font-semibold">FREE DIET PLANS</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
                 General Diet Plans
               </h2>
-              <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto"></div>
+              <div className="w-20 h-1 bg-gradient-to-r from-brand-blue to-brand-gold mx-auto"></div>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {dietPlans.map((plan, index) => (
                 <motion.div
                   key={plan.id}
                   {...fadeInUp}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300"
+                  className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300 group"
                 >
                   {/* Plan Header */}
-                  <div className={`bg-gradient-to-r ${plan.color} p-6`}>
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                        <plan.icon className="w-6 h-6 text-white" />
+                  <div className="p-6 border-b border-white/10">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 border border-white/10 rounded-xl flex items-center justify-center group-hover:border-brand-gold/30 transition-colors">
+                          <plan.icon className="w-5 h-5 text-brand-gold" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-white">{plan.title}</h3>
+                          <p className="text-gray-400 text-sm">{plan.subtitle}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">{plan.title}</h3>
-                        <p className="text-white/80 text-sm">{plan.subtitle}</p>
-                      </div>
+                      <span className={`px-2.5 py-1 text-xs font-semibold border rounded-full ${plan.badgeColor}`}>
+                        {plan.badge}
+                      </span>
                     </div>
                   </div>
 
@@ -588,14 +592,14 @@ export default function FitBharatMissionPage() {
                           key={mealIndex}
                           className="flex gap-4"
                         >
-                          <div className="w-24 flex-shrink-0">
-                            <span className="text-brand-gold font-semibold text-sm">{meal.time}</span>
+                          <div className="w-28 flex-shrink-0">
+                            <span className="text-white/70 font-medium text-sm">{meal.time}</span>
                           </div>
                           <div className="flex-1">
-                            <ul className="space-y-1">
+                            <ul className="space-y-1.5">
                               {meal.items.map((item, itemIndex) => (
-                                <li key={itemIndex} className="text-gray-300 text-sm flex items-start gap-2">
-                                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1.5 flex-shrink-0"></div>
+                                <li key={itemIndex} className="text-gray-400 text-sm flex items-start gap-2">
+                                  <div className="w-1 h-1 bg-brand-gold/60 rounded-full mt-2 flex-shrink-0"></div>
                                   <span>{item}</span>
                                 </li>
                               ))}
