@@ -143,7 +143,7 @@ export default function BlogPostPage() {
 
       <article className="pt-32 pb-12">
         {/* Back Button */}
-        <div className="max-w-4xl mx-auto px-4 md:px-6 mb-8">
+        <div className="max-w-4xl mx-auto px-3 md:px-6 mb-6 md:mb-8">
           <Button
             variant="outline"
             onClick={() => router.push('/blog')}
@@ -159,7 +159,7 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto px-4 md:px-6 mb-8 md:mb-12"
+          className="max-w-4xl mx-auto px-3 md:px-6 mb-6 md:mb-12"
         >
           {/* Meta Info */}
           <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-400 mb-4 md:mb-6">
@@ -222,9 +222,9 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl mx-auto px-4 md:px-6"
+          className="max-w-4xl mx-auto px-3 md:px-6"
         >
-          <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-xl md:rounded-2xl p-4 md:p-8 lg:p-12">
+          <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-lg md:rounded-2xl p-3 md:p-8 lg:p-12">
             <div
               className="prose prose-invert prose-base md:prose-lg max-w-none break-words
                 prose-headings:text-white prose-headings:font-bold
@@ -247,7 +247,7 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="max-w-4xl mx-auto px-4 md:px-6 mt-8 md:mt-12"
+          className="max-w-4xl mx-auto px-3 md:px-6 mt-6 md:mt-12"
         >
           <div className="bg-gradient-to-r from-brand-blue/10 to-brand-gold/10 border border-brand-blue/30 rounded-xl md:rounded-2xl p-5 md:p-8 text-center">
             <h3 className="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">

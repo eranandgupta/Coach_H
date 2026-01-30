@@ -78,7 +78,7 @@ export default function BlogPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-28 md:pt-36 pb-12 md:pb-20 px-4 md:px-6 overflow-hidden">
+      <section className="relative pt-28 md:pt-36 pb-10 md:pb-20 px-3 md:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/10 to-transparent pointer-events-none" />
         <div className="absolute top-20 right-10 w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl" />
@@ -99,7 +99,7 @@ export default function BlogPage() {
       </section>
 
       {/* Blog Posts Grid */}
-      <section className="py-8 md:py-12 px-4 md:px-6 max-w-7xl mx-auto">
+      <section className="py-6 md:py-12 px-3 md:px-6 max-w-7xl mx-auto">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
@@ -126,7 +126,7 @@ export default function BlogPage() {
                 className="group"
               >
                 <Link href={`/blog/${post.slug}`}>
-                  <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-xl md:rounded-2xl overflow-hidden hover:border-brand-blue/50 transition-all duration-300 h-full flex flex-col">
+                  <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-lg md:rounded-2xl overflow-hidden hover:border-brand-blue/50 transition-all duration-300 h-full flex flex-col">
                     {/* Cover Image */}
                     {post.coverImage ? (
                       <div className="relative h-44 md:h-56 overflow-hidden bg-gradient-to-br from-brand-blue/20 to-brand-gold/20">
@@ -145,7 +145,7 @@ export default function BlogPage() {
                     )}
 
                     {/* Content */}
-                    <div className="p-4 md:p-6 flex-1 flex flex-col">
+                    <div className="p-3 md:p-6 flex-1 flex flex-col">
                       {/* Meta Info */}
                       <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
                         <div className="flex items-center gap-1">
