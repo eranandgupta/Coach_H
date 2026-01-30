@@ -143,7 +143,7 @@ export default function BlogPostPage() {
 
       <article className="pt-32 pb-12">
         {/* Back Button */}
-        <div className="max-w-4xl mx-auto px-6 mb-8">
+        <div className="max-w-4xl mx-auto px-4 md:px-6 mb-8">
           <Button
             variant="outline"
             onClick={() => router.push('/blog')}
@@ -159,10 +159,10 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto px-6 mb-12"
+          className="max-w-4xl mx-auto px-4 md:px-6 mb-8 md:mb-12"
         >
           {/* Meta Info */}
-          <div className="flex items-center gap-4 text-sm text-gray-400 mb-6">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-400 mb-4 md:mb-6">
             <div className="flex items-center gap-2">
               {post.author.image ? (
                 <img
@@ -194,13 +194,13 @@ export default function BlogPostPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight">
             {post.title}
           </h1>
 
           {/* Cover Image */}
           {post.coverImage && (
-            <div className="relative h-96 rounded-2xl overflow-hidden mb-12 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20">
+            <div className="relative h-48 md:h-96 rounded-xl md:rounded-2xl overflow-hidden mb-8 md:mb-12 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20">
               <img
                 src={post.coverImage}
                 alt={post.title}
@@ -222,18 +222,18 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl mx-auto px-6"
+          className="max-w-4xl mx-auto px-4 md:px-6"
         >
-          <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-2xl p-8 md:p-12">
+          <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-xl md:rounded-2xl p-4 md:p-8 lg:p-12">
             <div
-              className="prose prose-invert prose-lg max-w-none break-words
+              className="prose prose-invert prose-base md:prose-lg max-w-none break-words
                 prose-headings:text-white prose-headings:font-bold
-                prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
-                prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
-                prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6
+                prose-h2:text-xl prose-h2:md:text-2xl prose-h2:lg:text-3xl prose-h2:mt-8 prose-h2:md:mt-12 prose-h2:mb-4 prose-h2:md:mb-6
+                prose-h3:text-lg prose-h3:md:text-xl prose-h3:lg:text-2xl prose-h3:mt-6 prose-h3:md:mt-8 prose-h3:mb-3 prose-h3:md:mb-4
+                prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4 prose-p:md:mb-6 prose-p:text-sm prose-p:md:text-base
                 prose-strong:text-white prose-strong:font-semibold
-                prose-ul:text-gray-300 prose-ul:my-6
-                prose-li:my-2
+                prose-ul:text-gray-300 prose-ul:my-4 prose-ul:md:my-6 prose-ul:text-sm prose-ul:md:text-base
+                prose-li:my-1 prose-li:md:my-2
                 prose-a:text-brand-blue prose-a:no-underline hover:prose-a:text-brand-gold
                 [&>*]:break-words [&>*]:overflow-hidden
               "
@@ -247,13 +247,13 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="max-w-4xl mx-auto px-6 mt-12"
+          className="max-w-4xl mx-auto px-4 md:px-6 mt-8 md:mt-12"
         >
-          <div className="bg-gradient-to-r from-brand-blue/10 to-brand-gold/10 border border-brand-blue/30 rounded-2xl p-8 text-center">
-            <h3 className="text-2xl font-bold text-white mb-4">
+          <div className="bg-gradient-to-r from-brand-blue/10 to-brand-gold/10 border border-brand-blue/30 rounded-xl md:rounded-2xl p-5 md:p-8 text-center">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">
               Ready to Start Your Fitness Journey?
             </h3>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-300 text-sm md:text-base mb-4 md:mb-6">
               Get personalized training and nutrition guidance from Coach Himanshu
             </p>
             <Button

@@ -78,7 +78,7 @@ export default function BlogPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-36 pb-20 px-6 overflow-hidden">
+      <section className="relative pt-28 md:pt-36 pb-12 md:pb-20 px-4 md:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/10 to-transparent pointer-events-none" />
         <div className="absolute top-20 right-10 w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl" />
@@ -89,17 +89,17 @@ export default function BlogPage() {
           transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto text-center relative z-10"
         >
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-white">
             Fitness <span className="bg-gradient-to-r from-brand-blue to-brand-gold bg-clip-text text-transparent">Insights</span>
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto px-2">
             Expert advice, science-backed tips, and inspiring stories to fuel your fitness journey
           </p>
         </motion.div>
       </section>
 
       {/* Blog Posts Grid */}
-      <section className="py-12 px-6 max-w-7xl mx-auto">
+      <section className="py-8 md:py-12 px-4 md:px-6 max-w-7xl mx-auto">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
@@ -117,7 +117,7 @@ export default function BlogPage() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
           >
             {posts.map((post) => (
               <motion.article
@@ -126,10 +126,10 @@ export default function BlogPage() {
                 className="group"
               >
                 <Link href={`/blog/${post.slug}`}>
-                  <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-2xl overflow-hidden hover:border-brand-blue/50 transition-all duration-300 h-full flex flex-col">
+                  <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-xl md:rounded-2xl overflow-hidden hover:border-brand-blue/50 transition-all duration-300 h-full flex flex-col">
                     {/* Cover Image */}
                     {post.coverImage ? (
-                      <div className="relative h-56 overflow-hidden bg-gradient-to-br from-brand-blue/20 to-brand-gold/20">
+                      <div className="relative h-44 md:h-56 overflow-hidden bg-gradient-to-br from-brand-blue/20 to-brand-gold/20">
                         <img
                           src={post.coverImage}
                           alt={post.title}
@@ -137,17 +137,17 @@ export default function BlogPage() {
                         />
                       </div>
                     ) : (
-                      <div className="relative h-56 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 flex items-center justify-center">
-                        <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-gold rounded-2xl flex items-center justify-center">
-                          <User className="w-10 h-10 text-white" />
+                      <div className="relative h-44 md:h-56 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 flex items-center justify-center">
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-brand-blue to-brand-gold rounded-xl md:rounded-2xl flex items-center justify-center">
+                          <User className="w-8 h-8 md:w-10 md:h-10 text-white" />
                         </div>
                       </div>
                     )}
 
                     {/* Content */}
-                    <div className="p-6 flex-1 flex flex-col">
+                    <div className="p-4 md:p-6 flex-1 flex flex-col">
                       {/* Meta Info */}
-                      <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
+                      <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
                           <span>{formatDate(post.publishedAt)}</span>
@@ -161,13 +161,13 @@ export default function BlogPage() {
                       </div>
 
                       {/* Title */}
-                      <h2 className="text-xl font-bold text-white mb-3 group-hover:text-brand-blue transition-colors line-clamp-2">
+                      <h2 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 group-hover:text-brand-blue transition-colors line-clamp-2">
                         {post.title}
                       </h2>
 
                       {/* Excerpt */}
                       {post.excerpt && (
-                        <p className="text-gray-400 mb-6 line-clamp-3 flex-1">
+                        <p className="text-gray-400 text-sm md:text-base mb-4 md:mb-6 line-clamp-3 flex-1">
                           {post.excerpt}
                         </p>
                       )}

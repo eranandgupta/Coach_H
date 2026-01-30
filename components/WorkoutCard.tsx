@@ -5,8 +5,9 @@ import { Dumbbell } from 'lucide-react';
 
 interface Exercise {
   name: string;
-  sets: string;
-  reps: string;
+  sets?: string | number;
+  reps?: string;
+  duration?: number;
 }
 
 interface WorkoutCardProps {
@@ -49,7 +50,9 @@ export default function WorkoutCard({
               {exercise.name}
             </p>
             <p className="text-[#B3B3B3] text-xs">
-              {exercise.sets} × {exercise.reps}
+              {exercise.sets && exercise.reps && `${exercise.sets} × ${exercise.reps}`}
+              {exercise.duration && exercise.sets && !exercise.reps && `${exercise.duration} min × ${exercise.sets} sets`}
+              {exercise.duration && !exercise.sets && `${exercise.duration} min`}
             </p>
           </div>
         ))}

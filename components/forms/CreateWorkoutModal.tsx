@@ -399,7 +399,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                             value={exercise.duration}
                             onChange={(e) => updateExercise(index, 'duration', e.target.value)}
                             className="bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue"
-                            placeholder="Duration (minutes)"
+                            placeholder="Duration (min) e.g. planks"
                           />
 
                           <input

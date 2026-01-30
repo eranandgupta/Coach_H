@@ -722,6 +722,8 @@ export default function ClientDashboard() {
                         </div>
                         <div className="text-gray-300 text-sm">
                           {exercise.sets && exercise.reps && `${exercise.sets}x${exercise.reps}`}
+                          {exercise.duration && exercise.sets && !exercise.reps && `${exercise.duration} min × ${exercise.sets} sets`}
+                          {exercise.duration && !exercise.sets && `${exercise.duration} min`}
                         </div>
                       </div>
                     ))}

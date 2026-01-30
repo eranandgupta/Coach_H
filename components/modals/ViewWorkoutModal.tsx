@@ -121,7 +121,12 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout }: ViewWorko
                                       {exercise.sets}×{exercise.reps}
                                     </span>
                                   )}
-                                  {exercise.duration && (
+                                  {exercise.duration && exercise.sets && !exercise.reps && (
+                                    <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full">
+                                      {exercise.duration} min × {exercise.sets} sets
+                                    </span>
+                                  )}
+                                  {exercise.duration && !exercise.sets && (
                                     <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full">
                                       {exercise.duration} min
                                     </span>
