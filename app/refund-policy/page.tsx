@@ -94,7 +94,7 @@ export default function RefundPolicy() {
                   <li>Personalized plan creation tailored to your specific needs</li>
                   <li>Coach time and expertise dedicated to your programs</li>
                   <li>Immediate access to proprietary content and resources</li>
-                  <li>24/7 WhatsApp support allocation</li>
+                  <li>WhatsApp support (9am-7pm IST)</li>
                   <li>Digital content that cannot be "returned"</li>
                 </ul>
                 <p className="text-gray-300 leading-relaxed mt-4">

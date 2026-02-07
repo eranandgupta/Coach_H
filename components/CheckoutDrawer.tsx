@@ -1,9 +1,9 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, QrCode, ArrowLeft, Tag, Loader2 } from 'lucide-react';
+import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, QrCode, ArrowLeft, Tag, Loader2, Heart, Users } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -18,6 +18,11 @@ export default function CheckoutDrawer() {
     email: '',
     goal: '',
     notes: '',
+    // Partner 2 details for couple plans
+    partner2Name: '',
+    partner2Whatsapp: '',
+    partner2Email: '',
+    partner2Goal: '',
   });
   const [errors, setErrors] = useState<any>({});
   const router = useRouter();
@@ -28,9 +33,13 @@ export default function CheckoutDrawer() {
   const [promoError, setPromoError] = useState('');
   const [isValidatingPromo, setIsValidatingPromo] = useState(false);
 
+  // Check if current plan is a couple plan
+  const isCouplePlan = cartItems[0]?.name?.toLowerCase().includes('couple');
+
   const validateForm = () => {
     const newErrors: any = {};
 
+    // Partner 1 validation
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.whatsapp.trim()) {
       newErrors.whatsapp = 'WhatsApp number is required';
@@ -43,6 +52,22 @@ export default function CheckoutDrawer() {
       newErrors.email = 'Please enter a valid email';
     }
     if (!formData.goal.trim()) newErrors.goal = 'Fitness goal is required';
+
+    // Partner 2 validation (only for couple plans)
+    if (isCouplePlan) {
+      if (!formData.partner2Name.trim()) newErrors.partner2Name = 'Partner 2 name is required';
+      if (!formData.partner2Whatsapp.trim()) {
+        newErrors.partner2Whatsapp = 'Partner 2 WhatsApp number is required';
+      } else if (!/^\d{10}$/.test(formData.partner2Whatsapp)) {
+        newErrors.partner2Whatsapp = 'Please enter a valid 10-digit number';
+      }
+      if (!formData.partner2Email.trim()) {
+        newErrors.partner2Email = 'Partner 2 email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.partner2Email)) {
+        newErrors.partner2Email = 'Please enter a valid email';
+      }
+      if (!formData.partner2Goal.trim()) newErrors.partner2Goal = 'Partner 2 fitness goal is required';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -81,8 +106,17 @@ export default function CheckoutDrawer() {
     const promoText = appliedPromo
       ? `\nPromo Code: ${appliedPromo.promoCode.code}\nDiscount: ₹${appliedPromo.discountAmount}\nOriginal Price: ₹${getTotalPrice()}\nFinal Amount: ₹${getFinalTotal()}`
       : '';
+
+    // Build message based on whether it's a couple plan
+    let detailsText = '';
+    if (isCouplePlan) {
+      detailsText = `\n👤 *Partner 1 Details:*\nName: ${formData.name}\nEmail: ${formData.email}\nWhatsApp: ${formData.whatsapp}\nGoal: ${formData.goal}\n\n👤 *Partner 2 Details:*\nName: ${formData.partner2Name}\nEmail: ${formData.partner2Email}\nWhatsApp: ${formData.partner2Whatsapp}\nGoal: ${formData.partner2Goal}`;
+    } else {
+      detailsText = `\nName: ${formData.name}\nEmail: ${formData.email}\nWhatsApp: ${formData.whatsapp}\nGoal: ${formData.goal}`;
+    }
+
     const message = encodeURIComponent(
-      `Hi, I've completed payment for ${plan?.name}\n\nName: ${formData.name}\nEmail: ${formData.email}\nWhatsApp: ${formData.whatsapp}\nGoal: ${formData.goal}${promoText}\n\nAmount Paid: ₹${getFinalTotal()}\n\nPlease find the payment screenshot attached.`
+      `Hi, I've completed payment for ${plan?.name}${detailsText}${promoText}\n\nAmount Paid: ₹${getFinalTotal()}\n\nPlease find the payment screenshot attached.`
     );
 
     // Open WhatsApp
@@ -95,7 +129,7 @@ export default function CheckoutDrawer() {
         clearCart();
         closeCheckout();
         setCurrentStep('cart');
-        setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '' });
+        setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
         router.push('/');
       }, 5000);
     }, 500);
@@ -163,10 +197,20 @@ export default function CheckoutDrawer() {
     return amount.toString();
   };
 
+  // QR code image source state - try .jpg first, then .jpeg
+  const [qrExtension, setQrExtension] = useState<'jpg' | 'jpeg'>('jpg');
+  const [qrLoadFailed, setQrLoadFailed] = useState(false);
+
+  // Reset QR state when amount changes
+  useEffect(() => {
+    setQrExtension('jpg');
+    setQrLoadFailed(false);
+  }, [appliedPromo, cartItems]);
+
   const handleClose = () => {
     closeCheckout();
     setCurrentStep('cart');
-    setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '' });
+    setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
     setErrors({});
     setPromoCode('');
     setAppliedPromo(null);
@@ -210,12 +254,12 @@ export default function CheckoutDrawer() {
                     </button>
                   )}
                   {currentStep === 'cart' && <ShoppingCart className="w-6 h-6 text-brand-blue" />}
-                  {currentStep === 'details' && <User className="w-6 h-6 text-brand-blue" />}
+                  {currentStep === 'details' && (isCouplePlan ? <Heart className="w-6 h-6 text-pink-400" /> : <User className="w-6 h-6 text-brand-blue" />)}
                   {currentStep === 'payment' && <QrCode className="w-6 h-6 text-brand-blue" />}
                   {currentStep === 'success' && <CheckCircle className="w-6 h-6 text-green-400" />}
                   <h2 className="text-2xl font-bold text-white">
                     {currentStep === 'cart' && 'Your Cart'}
-                    {currentStep === 'details' && 'Your Details'}
+                    {currentStep === 'details' && (isCouplePlan ? 'Couple Details' : 'Your Details')}
                     {currentStep === 'payment' && 'Payment'}
                     {currentStep === 'success' && 'Success!'}
                   </h2>
@@ -352,7 +396,25 @@ export default function CheckoutDrawer() {
               {/* STEP 2: DETAILS FORM */}
               {currentStep === 'details' && (
                 <div className="space-y-5">
-                  <p className="text-gray-300 text-sm mb-6">Please provide your details to continue</p>
+                  {isCouplePlan ? (
+                    <div className="bg-pink-500/10 border border-pink-500/30 rounded-lg p-4 mb-4">
+                      <div className="flex items-center gap-2">
+                        <Heart className="w-5 h-5 text-pink-400" />
+                        <span className="text-pink-400 font-semibold">Couple Plan</span>
+                      </div>
+                      <p className="text-gray-300 text-sm mt-2">Please provide details for both partners</p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-300 text-sm mb-6">Please provide your details to continue</p>
+                  )}
+
+                  {/* Partner 1 Section */}
+                  {isCouplePlan && (
+                    <div className="flex items-center gap-2 mb-2 mt-4">
+                      <User className="w-5 h-5 text-pink-400" />
+                      <h3 className="text-pink-400 font-semibold">Partner 1</h3>
+                    </div>
+                  )}
 
                   {/* Name */}
                   <div>
@@ -365,7 +427,7 @@ export default function CheckoutDrawer() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
-                      placeholder="Enter your full name"
+                      placeholder="Enter full name"
                     />
                     {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                   </div>
@@ -425,8 +487,90 @@ export default function CheckoutDrawer() {
                     {errors.goal && <p className="text-red-400 text-xs mt-1">{errors.goal}</p>}
                   </div>
 
+                  {/* Partner 2 Section - Only for couple plans */}
+                  {isCouplePlan && (
+                    <>
+                      <div className="border-t border-white/10 my-6"></div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Users className="w-5 h-5 text-pink-400" />
+                        <h3 className="text-pink-400 font-semibold">Partner 2</h3>
+                      </div>
+
+                      {/* Partner 2 Name */}
+                      <div>
+                        <label className="block text-gray-300 text-sm font-medium mb-2">
+                          <User className="w-4 h-4 inline mr-2" />
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.partner2Name}
+                          onChange={(e) => setFormData({ ...formData, partner2Name: e.target.value })}
+                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400"
+                          placeholder="Enter partner's full name"
+                        />
+                        {errors.partner2Name && <p className="text-red-400 text-xs mt-1">{errors.partner2Name}</p>}
+                      </div>
+
+                      {/* Partner 2 WhatsApp */}
+                      <div>
+                        <label className="block text-gray-300 text-sm font-medium mb-2">
+                          <Phone className="w-4 h-4 inline mr-2" />
+                          WhatsApp Number *
+                        </label>
+                        <input
+                          type="tel"
+                          value={formData.partner2Whatsapp}
+                          onChange={(e) => setFormData({ ...formData, partner2Whatsapp: e.target.value.replace(/\D/g, '') })}
+                          maxLength={10}
+                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400"
+                          placeholder="10-digit mobile number"
+                        />
+                        {errors.partner2Whatsapp && <p className="text-red-400 text-xs mt-1">{errors.partner2Whatsapp}</p>}
+                      </div>
+
+                      {/* Partner 2 Email */}
+                      <div>
+                        <label className="block text-gray-300 text-sm font-medium mb-2">
+                          <Mail className="w-4 h-4 inline mr-2" />
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          value={formData.partner2Email}
+                          onChange={(e) => setFormData({ ...formData, partner2Email: e.target.value })}
+                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400"
+                          placeholder="partner@email.com"
+                        />
+                        {errors.partner2Email && <p className="text-red-400 text-xs mt-1">{errors.partner2Email}</p>}
+                      </div>
+
+                      {/* Partner 2 Goal */}
+                      <div>
+                        <label className="block text-gray-300 text-sm font-medium mb-2">
+                          <Target className="w-4 h-4 inline mr-2" />
+                          Fitness Goal *
+                        </label>
+                        <select
+                          value={formData.partner2Goal}
+                          onChange={(e) => setFormData({ ...formData, partner2Goal: e.target.value })}
+                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400"
+                        >
+                          <option value="">Select partner's goal</option>
+                          <option value="weight-loss">Weight Loss</option>
+                          <option value="muscle-gain">Muscle Gain</option>
+                          <option value="strength">Build Strength</option>
+                          <option value="endurance">Increase Endurance</option>
+                          <option value="general-fitness">General Fitness</option>
+                          <option value="body-transformation">Body Transformation</option>
+                        </select>
+                        {errors.partner2Goal && <p className="text-red-400 text-xs mt-1">{errors.partner2Goal}</p>}
+                      </div>
+                    </>
+                  )}
+
                   {/* Notes */}
-                  <div>
+                  <div className={isCouplePlan ? 'mt-6 pt-6 border-t border-white/10' : ''}>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
                       <FileText className="w-4 h-4 inline mr-2" />
                       Additional Notes (Optional)
@@ -436,7 +580,7 @@ export default function CheckoutDrawer() {
                       onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                       className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                       rows={3}
-                      placeholder="Any special requirements or medical conditions..."
+                      placeholder={isCouplePlan ? "Any special requirements or medical conditions for either partner..." : "Any special requirements or medical conditions..."}
                     />
                   </div>
                 </div>
@@ -462,18 +606,41 @@ export default function CheckoutDrawer() {
                     {/* QR Code - Dynamic based on amount */}
                     <div className="bg-white p-6 rounded-xl inline-block mb-4">
                       <div className="w-64 h-64 relative">
-                        <Image
-                          src={`/QR/${getQRFileName()}.jpg`}
-                          alt={`Payment QR Code for ₹${getFinalTotal()}`}
-                          fill
-                          className="object-contain rounded-lg"
-                          onError={(e) => {
-                            // Fallback if exact amount image doesn't exist
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            target.parentElement!.innerHTML = `<div class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center flex-col gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg><span class="text-gray-500 text-sm">QR not available</span></div>`;
-                          }}
-                        />
+                        {!qrLoadFailed ? (
+                          <Image
+                            src={`/QR/${getQRFileName()}.${qrExtension}`}
+                            alt={`Payment QR Code for ₹${getFinalTotal()}`}
+                            fill
+                            className="object-contain rounded-lg"
+                            onError={() => {
+                              // Try .jpeg if .jpg fails
+                              if (qrExtension === 'jpg') {
+                                setQrExtension('jpeg');
+                              } else {
+                                // Both extensions failed
+                                setQrLoadFailed(true);
+                              }
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center flex-col gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                              <rect width="5" height="5" x="3" y="3" rx="1"/>
+                              <rect width="5" height="5" x="16" y="3" rx="1"/>
+                              <rect width="5" height="5" x="3" y="16" rx="1"/>
+                              <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                              <path d="M21 21v.01"/>
+                              <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                              <path d="M3 12h.01"/>
+                              <path d="M12 3h.01"/>
+                              <path d="M12 16v.01"/>
+                              <path d="M16 12h1"/>
+                              <path d="M21 12v.01"/>
+                              <path d="M12 21v-1"/>
+                            </svg>
+                            <span className="text-gray-500 text-sm">QR not available</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 

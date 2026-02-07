@@ -122,7 +122,7 @@ export default function Home() {
           name: 'India',
         },
         availableLanguage: ['English', 'Hindi'],
-        description: 'Online fitness coaching services providing personalized workout plans, nutrition guidance, and 24/7 support',
+        description: 'Online fitness coaching services providing personalized workout plans, nutrition guidance, and dedicated support',
         offers: {
           '@type': 'AggregateOffer',
           priceCurrency: 'INR',
@@ -287,6 +287,48 @@ export default function Home() {
         'Lifestyle coaching',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
+    },
+    {
+      id: 5,
+      title: 'Couple Strength',
+      duration: '6 Months',
+      price: '₹5,998',
+      priceValue: 5998,
+      description: 'For 2 People',
+      features: [
+        'Personalized workout plans for both',
+        'Customized meal plans for both',
+        'Daily progress tracking',
+        'WhatsApp support',
+        'Full video library access',
+        'Weekly one-on-one consultations',
+        'Supplement guidance',
+        'Lifestyle coaching',
+        '💑 Train Together, Grow Together',
+        '🎁 FREE RhynoGrip Fitness Gear',
+      ],
+      couple: true,
+    },
+    {
+      id: 6,
+      title: 'Couple Mastery',
+      duration: '12 Months',
+      price: '₹10,998',
+      priceValue: 10998,
+      description: 'For 2 People',
+      features: [
+        'Personalized workout plans for both',
+        'Customized meal plans for both',
+        'Daily progress tracking',
+        'WhatsApp support',
+        'Full video library access',
+        'Weekly one-on-one consultations',
+        'Supplement guidance',
+        'Lifestyle coaching',
+        '💑 Train Together, Grow Together',
+        '🎁 FREE RhynoGrip Fitness Gear',
+      ],
+      couple: true,
     },
   ];
 
@@ -891,11 +933,11 @@ export default function Home() {
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
               Select the perfect package for your fitness goals. All plans
-              include personalized guidance and 24/7 support.
+              include personalized guidance and dedicated support.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
             {plans.map((plan, index) => (
               <motion.div
                 key={index}

@@ -116,7 +116,7 @@ export default function Contact() {
                       +91 7303484648
                     </a>
                     <p className="text-gray-400 text-sm mt-1">
-                      24/7 WhatsApp support for clients
+                      WhatsApp support: 9am-7pm IST
                     </p>
                   </div>
                 </div>
@@ -142,10 +142,9 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-white font-semibold mb-1">Business Hours</h3>
-                    <p className="text-gray-300">Monday - Saturday: 6:00 AM - 10:00 PM IST</p>
-                    <p className="text-gray-300">Sunday: 8:00 AM - 8:00 PM IST</p>
+                    <p className="text-gray-300">Monday - Sunday: 9:00 AM - 7:00 PM IST</p>
                     <p className="text-gray-400 text-sm mt-1">
-                      WhatsApp support available 24/7 for active clients
+                      WhatsApp & Call support available during business hours
                     </p>
                   </div>
                 </div>

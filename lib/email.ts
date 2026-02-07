@@ -125,7 +125,7 @@ export async function sendCredentialsEmail(data: {
             <li style="margin: 8px 0;">Complete your fitness assessment (if not done already)</li>
             <li style="margin: 8px 0;">View your personalized workout and meal plans</li>
             <li style="margin: 8px 0;">Track your daily progress</li>
-            <li style="margin: 8px 0;">Connect with Coach Himanshu via WhatsApp for 24/7 support</li>
+            <li style="margin: 8px 0;">Connect with Coach Himanshu via WhatsApp for support (9am-7pm IST)</li>
           </ul>
         </div>
 
@@ -202,7 +202,7 @@ export async function sendMembershipExpiryReminder(data: {
           <ul style="color: #4b5563; padding-left: 20px;">
             <li style="margin: 8px 0;">Keep access to personalized workout plans</li>
             <li style="margin: 8px 0;">Continue with custom meal plans</li>
-            <li style="margin: 8px 0;">Maintain 24/7 WhatsApp support</li>
+            <li style="margin: 8px 0;">Maintain WhatsApp support (9am-7pm IST)</li>
             <li style="margin: 8px 0;">Track your ongoing progress</li>
             <li style="margin: 8px 0;">Stay motivated with expert guidance</li>
           </ul>

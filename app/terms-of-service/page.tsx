@@ -48,7 +48,7 @@ export default function TermsOfService() {
                   <li>Personalized workout plans tailored to your fitness goals</li>
                   <li>Custom meal plans and nutrition guidance</li>
                   <li>Daily progress tracking and monitoring</li>
-                  <li>24/7 WhatsApp support for fitness-related queries</li>
+                  <li>WhatsApp support (9am-7pm IST) for fitness-related queries</li>
                   <li>Video library access with exercise demonstrations</li>
                   <li>Monthly one-on-one consultations</li>
                   <li>Supplement guidance and lifestyle coaching</li>

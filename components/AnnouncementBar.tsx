@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles, Youtube, Instagram, Gift } from 'lucide-react';
+import { Sparkles, Youtube, Instagram, Gift, Heart } from 'lucide-react';
 
 export default function AnnouncementBar() {
   const messages = [
@@ -16,7 +16,7 @@ export default function AnnouncementBar() {
       icon: <Sparkles className="w-3 h-3 text-brand-gold" />,
       text: (
         <>
-          Use Coupon: <span className="font-bold bg-brand-gold/20 text-brand-gold px-1.5 py-0.5 rounded border border-brand-gold/30">JOINCOACH10</span> - Get <span className="font-bold text-brand-gold">10% OFF</span> on All Plans!
+          Use Coupon: <span className="font-bold bg-brand-gold/20 text-brand-gold px-1.5 py-0.5 rounded border border-brand-gold/30">JOINSTRENGTH</span> - Get <span className="font-bold text-brand-gold">5% OFF</span> on 6-Month Plan!
         </>
       )
     },
@@ -24,7 +24,15 @@ export default function AnnouncementBar() {
       icon: <Sparkles className="w-3 h-3 text-green-400" />,
       text: (
         <>
-          Special Offer: <span className="font-bold bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded border border-green-400/30">JOINMASTERY20</span> - Get <span className="font-bold text-green-400">20% OFF</span> on Mastery Plan (12 Months)!
+          Use Coupon: <span className="font-bold bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded border border-green-400/30">JOINMASTERY</span> - Get <span className="font-bold text-green-400">10% OFF</span> on 12-Month Plan!
+        </>
+      )
+    },
+    {
+      icon: <Heart className="w-3 h-3 text-pink-500" />,
+      text: (
+        <>
+          <span className="font-bold text-pink-400">Couple Offer!</span> Use <span className="font-bold bg-pink-500/20 text-pink-400 px-1.5 py-0.5 rounded border border-pink-400/30">VALENTINE06</span> for <span className="font-bold text-pink-400">15% OFF</span> (6M) | <span className="font-bold bg-pink-500/20 text-pink-400 px-1.5 py-0.5 rounded border border-pink-400/30">VALENTINE12</span> for <span className="font-bold text-pink-400">25% OFF</span> (12M)
         </>
       )
     },

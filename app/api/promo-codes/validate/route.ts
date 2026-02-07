@@ -94,12 +94,14 @@ export async function POST(request: NextRequest) {
 
     // Calculate discount
     let discountAmount = 0;
+    const discountValue = Number(promoCode.discountValue);
+
     if (promoCode.discountType === 'percentage') {
-      discountAmount = (cartTotal * Number(promoCode.discountValue)) / 100;
+      discountAmount = (cartTotal * discountValue) / 100;
       // Cap discount at cart total
       discountAmount = Math.min(discountAmount, cartTotal);
     } else if (promoCode.discountType === 'fixed') {
-      discountAmount = Number(promoCode.discountValue);
+      discountAmount = discountValue;
       // Cap discount at cart total
       discountAmount = Math.min(discountAmount, cartTotal);
     }
@@ -111,7 +113,7 @@ export async function POST(request: NextRequest) {
       promoCode: {
         code: promoCode.code,
         discountType: promoCode.discountType,
-        discountValue: Number(promoCode.discountValue),
+        discountValue: discountValue,
         description: promoCode.description,
       },
       discountAmount: Math.round(discountAmount * 100) / 100, // Round to 2 decimals

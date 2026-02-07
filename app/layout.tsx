@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'Coach Himanshu | NASM Certified Online Fitness Coach & Personal Trainer India',
     template: '%s | Coach Himanshu',
   },
-  description: 'Transform your body with NASM Certified Fitness Coach Himanshu. Get personalized online workout plans, custom meal plans, 24/7 WhatsApp support & expert nutrition guidance. 1000+ transformations. Affordable fitness coaching in India starting at ₹799/month.',
+  description: 'Transform your body with NASM Certified Fitness Coach Himanshu. Get personalized online workout plans, custom meal plans, WhatsApp support & expert nutrition guidance. 1000+ transformations. Affordable fitness coaching in India starting at ₹799/month.',
   applicationName: 'Coach Himanshu',
   keywords: [
     'online fitness coach India',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: 'https://coachhimanshu.com',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach India',
-    description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, 24/7 support. 1000+ success stories. Start from ₹799/month.',
+    description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, dedicated support. 1000+ success stories. Start from ₹799/month.',
     siteName: 'Coach Himanshu',
     images: [
       {

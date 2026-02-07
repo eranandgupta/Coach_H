@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Button from './Button';
-import { Check, Crown, Sparkles } from 'lucide-react';
+import { Check, Crown, Sparkles, Heart } from 'lucide-react';
 
 interface PlanCardProps {
   id: number;
@@ -13,6 +13,7 @@ interface PlanCardProps {
   description: string;
   features: string[];
   popular?: boolean;
+  couple?: boolean;
   onAddToCart?: (plan: {
     id: number;
     name: string;
@@ -31,6 +32,7 @@ export default function PlanCard({
   description,
   features,
   popular = false,
+  couple = false,
   onAddToCart,
 }: PlanCardProps) {
   const handleAddToCart = () => {
@@ -49,13 +51,21 @@ export default function PlanCard({
       whileHover={{ scale: 1.02, y: -6 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={`relative rounded-xl overflow-hidden group ${
-        popular ? 'shadow-2xl shadow-brand-gold/20' : 'shadow-xl shadow-black/30'
+        popular ? 'shadow-2xl shadow-brand-gold/20' : couple ? 'shadow-2xl shadow-pink-500/20' : 'shadow-xl shadow-black/30'
       }`}
     >
       {/* Animated gradient border for popular plan */}
       {popular && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold bg-[length:200%_100%] animate-shimmer" />
+          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+        </>
+      )}
+
+      {/* Animated gradient border for couple plan */}
+      {couple && (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 bg-[length:200%_100%] animate-shimmer" />
           <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
         </>
       )}
@@ -80,18 +90,40 @@ export default function PlanCard({
         </motion.div>
       )}
 
+      {/* Couple badge */}
+      {couple && (
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', delay: 0.2 }}
+          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
+        >
+          <div className="bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 px-4 py-1 rounded-b-lg shadow-lg">
+            <div className="flex items-center gap-1.5">
+              <Heart size={12} className="text-white fill-white" />
+              <span className="text-white font-bold text-xs uppercase tracking-wider">
+                Couple
+              </span>
+              <Heart size={12} className="text-white fill-white" />
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       <div
         className={`relative p-4 md:p-5 h-full flex flex-col ${
           popular
             ? 'bg-gradient-to-br from-[#1a2332] via-brand-navy to-[#0f1419]'
+            : couple
+            ? 'bg-gradient-to-br from-[#2a1a2e] via-brand-navy to-[#1a0f1f]'
             : 'bg-gradient-to-br from-brand-navy-light/80 to-brand-navy/60 backdrop-blur-sm'
         } border ${
-          popular ? 'border-transparent' : 'border-white/5'
+          popular || couple ? 'border-transparent' : 'border-white/5'
         }`}
       >
         {/* Background decorative elements */}
-        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-brand-gold/5 to-transparent rounded-full blur-2xl" />
-        <div className="absolute bottom-0 left-0 w-28 h-28 bg-gradient-to-tr from-brand-blue/5 to-transparent rounded-full blur-2xl" />
+        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${couple ? 'from-pink-500/5' : 'from-brand-gold/5'} to-transparent rounded-full blur-2xl`} />
+        <div className={`absolute bottom-0 left-0 w-28 h-28 bg-gradient-to-tr ${couple ? 'from-rose-500/5' : 'from-brand-blue/5'} to-transparent rounded-full blur-2xl`} />
 
         {/* Crown icon for popular */}
         {popular && (
@@ -100,10 +132,17 @@ export default function PlanCard({
           </div>
         )}
 
+        {/* Heart icon for couple */}
+        {couple && (
+          <div className="absolute top-4 right-4 text-pink-400 opacity-15 group-hover:opacity-30 transition-opacity">
+            <Heart size={32} />
+          </div>
+        )}
+
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
           {/* Header */}
-          <div className={`mb-4 ${popular ? 'pt-4' : ''}`}>
+          <div className={`mb-4 ${popular || couple ? 'pt-4' : ''}`}>
             <h3 className="text-white text-lg md:text-xl font-bold mb-1 tracking-tight">
               {title}
             </h3>
@@ -115,6 +154,8 @@ export default function PlanCard({
                 <span className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${
                   popular
                     ? 'from-brand-gold via-yellow-300 to-brand-gold'
+                    : couple
+                    ? 'from-pink-400 via-rose-300 to-pink-400'
                     : 'from-gray-200 to-gray-400'
                 } bg-clip-text text-transparent`}>
                   {price}
@@ -127,6 +168,11 @@ export default function PlanCard({
                 {popular && (
                   <span className="px-1.5 py-0.5 bg-brand-gold/10 text-brand-gold text-xs rounded-full border border-brand-gold/20">
                     Best Value
+                  </span>
+                )}
+                {couple && (
+                  <span className="px-1.5 py-0.5 bg-pink-500/10 text-pink-400 text-xs rounded-full border border-pink-400/20">
+                    For 2
                   </span>
                 )}
               </div>
@@ -147,6 +193,8 @@ export default function PlanCard({
                   <div className={`flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center mt-0.5 ${
                     popular
                       ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold/30'
+                      : couple
+                      ? 'bg-pink-500/20 text-pink-400 border border-pink-400/30'
                       : 'bg-brand-green/20 text-brand-green border border-brand-green/30'
                   }`}>
                     <Check size={10} className="font-bold" />
@@ -165,15 +213,17 @@ export default function PlanCard({
             whileTap={{ scale: 0.98 }}
           >
             <Button
-              variant={popular ? 'primary' : 'secondary'}
+              variant={popular || couple ? 'primary' : 'secondary'}
               className={`w-full justify-center text-sm font-semibold py-2.5 rounded-lg transition-all duration-300 ${
                 popular
                   ? 'bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold hover:shadow-lg hover:shadow-brand-gold/30 text-brand-navy'
+                  : couple
+                  ? 'bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 hover:shadow-lg hover:shadow-pink-500/30 text-white'
                   : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white'
               }`}
               onClick={handleAddToCart}
             >
-              {popular ? 'Get Started' : 'Get Started'}
+              {couple ? 'Get Started Together' : 'Get Started'}
             </Button>
           </motion.div>
         </div>
