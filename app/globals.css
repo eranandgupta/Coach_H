@@ -73,7 +73,12 @@
     animation: marquee 30s linear infinite;
   }
 
-  .animate-marquee:hover {
+  .animate-marquee-slow {
+    animation: marquee 60s linear infinite;
+  }
+
+  .animate-marquee:hover,
+  .animate-marquee-slow:hover {
     animation-play-state: paused;
   }
 
