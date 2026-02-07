@@ -50,7 +50,7 @@ export default function PlanCard({
     <motion.div
       whileHover={{ scale: 1.02, y: -6 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={`relative rounded-xl overflow-hidden group ${
+      className={`relative rounded-xl overflow-hidden group h-full ${
         popular ? 'shadow-2xl shadow-brand-gold/20' : couple ? 'shadow-2xl shadow-pink-500/20' : 'shadow-xl shadow-black/30'
       }`}
     >

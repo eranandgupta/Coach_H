@@ -937,12 +937,13 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 items-stretch">
             {plans.map((plan, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
                 viewport={{ once: true }}
+                className="h-full"
               >
                 <PlanCard {...plan} onAddToCart={addToCart} />
               </motion.div>
