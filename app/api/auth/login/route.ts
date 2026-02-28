@@ -51,9 +51,9 @@ export async function POST(request: NextRequest) {
     const token = generateToken(user.id, user.email, user.role);
     console.log('Token generated');
 
-    // Check subscription status (only for regular users, not coaches)
+    // Check subscription status (only for regular users, not coaches/admins)
     let subscriptionStatus = null;
-    if (user.role !== 'coach') {
+    if (user.role !== 'coach' && user.role !== 'admin') {
       console.log('Checking subscription status...');
       subscriptionStatus = await checkSubscription(user.id);
       console.log('Subscription status:', subscriptionStatus);

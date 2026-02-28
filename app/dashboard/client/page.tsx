@@ -134,8 +134,8 @@ export default function ClientDashboard() {
       });
       const userData = await userRes.json();
 
-      // Check if client has completed assessment (coaches skip this check)
-      if (userData.user.role !== 'coach' && !userData.user.assessmentCompleted) {
+      // Check if client has completed assessment (coaches and admins skip this check)
+      if (userData.user.role !== 'coach' && userData.user.role !== 'admin' && !userData.user.assessmentCompleted) {
         router.push('/assessment');
         return;
       }

@@ -47,11 +47,11 @@ async function getHandler(request: NextRequest, context: any) {
   }
 }
 
-// POST - Create new client
+// POST - Create new client (optionally with subscription + payment info)
 async function postHandler(request: NextRequest, context: any) {
   try {
     const body = await request.json();
-    const { name, email, password, phone } = body;
+    const { name, email, password, phone, planId, paymentMode, transactionId } = body;
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -94,6 +94,30 @@ async function postHandler(request: NextRequest, context: any) {
         createdAt: true,
       },
     });
+
+    // If a plan is selected, create a subscription record
+    if (planId) {
+      const plan = await prisma.subscriptionPlan.findUnique({
+        where: { id: Number(planId) },
+      });
+
+      if (plan) {
+        const startDate = new Date();
+        const endDate = new Date(startDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
+
+        await prisma.userSubscription.create({
+          data: {
+            userId: client.id,
+            planId: plan.id,
+            status: 'active',
+            startDate,
+            endDate,
+            transactionId: transactionId || null,
+            paymentMode: paymentMode || null,
+          },
+        });
+      }
+    }
 
     return NextResponse.json({ client }, { status: 201 });
   } catch (error) {

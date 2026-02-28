@@ -92,9 +92,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         router.push('/#plans');
       } else {
         // For login, check if user is a coach
-        if (data.user.role === 'coach') {
-          // Coaches go directly to dashboard (no assessment needed)
-          console.log('Coach login - Redirecting to dashboard...');
+        if (data.user.role === 'coach' || data.user.role === 'admin') {
+          // Coaches and admins go directly to dashboard (no assessment needed)
+          console.log(`${data.user.role} login - Redirecting to dashboard...`);
           onClose();
           router.push('/dashboard');
         } else {

@@ -470,16 +470,32 @@ async function main() {
   });
   console.log('✅ Diet plan created with 12 meals');
 
+  // Upsert Admin User
+  console.log('🔐 Creating admin user...');
+  const adminHashedPassword = await bcrypt.hash('admin@123', 10);
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@coachhimanshu.com' },
+    update: {},
+    create: {
+      email: 'admin@coachhimanshu.com',
+      password: adminHashedPassword,
+      name: 'Admin',
+      role: 'admin',
+    },
+  });
+  console.log('✅ Admin created:', admin.email);
+
   console.log('\n✨ Database seeding completed successfully!\n');
   console.log('📊 Summary:');
-  console.log('- Users: 2 (1 coach, 1 client)');
+  console.log('- Users: 3 (1 coach, 1 client, 1 admin)');
   console.log('- Subscription Plans: 4 (Kickstart, Consistency, Strength, Mastery)');
   console.log('- Active Subscriptions: 1');
   console.log('- Workout Plans: 1 (with 12 exercises)');
   console.log('- Diet Plans: 1 (with 12 meals)\n');
   console.log('🔑 Login Credentials:');
   console.log('Coach: coach@example.com / password123');
-  console.log('Client: client@example.com / password123\n');
+  console.log('Client: client@example.com / password123');
+  console.log('Admin: admin@coachhimanshu.com / admin@123\n');
 }
 
 main()

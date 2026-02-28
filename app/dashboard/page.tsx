@@ -41,7 +41,10 @@ export default function DashboardRedirect() {
         console.log('Assessment completed:', assessmentCompleted);
 
         // Redirect based on role
-        if (userRole === 'coach') {
+        if (userRole === 'admin') {
+          console.log('Redirecting to admin dashboard');
+          router.push('/admin/dashboard');
+        } else if (userRole === 'coach') {
           console.log('Redirecting to coach dashboard');
           router.push('/dashboard/coach');
         } else {

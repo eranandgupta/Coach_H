@@ -126,6 +126,28 @@ export function requireCoach(handler: Function) {
   };
 }
 
+export function requireAdmin(handler: Function) {
+  return async (request: NextRequest, context?: any) => {
+    const user = await getAuthUser(request);
+
+    if (!user) {
+      return Response.json(
+        { error: 'Unauthorized. Please login.' },
+        { status: 401 }
+      );
+    }
+
+    if (user.role !== 'admin') {
+      return Response.json(
+        { error: 'Forbidden. Admin access required.' },
+        { status: 403 }
+      );
+    }
+
+    return handler(request, { ...context, user });
+  };
+}
+
 export function requireActiveSubscription(handler: Function) {
   return async (request: NextRequest, context?: any) => {
     const user = await getAuthUser(request);
@@ -137,8 +159,8 @@ export function requireActiveSubscription(handler: Function) {
       );
     }
 
-    // Coaches don't need subscriptions
-    if (user.role === 'coach') {
+    // Coaches and admins don't need subscriptions
+    if (user.role === 'coach' || user.role === 'admin') {
       return handler(request, { ...context, user });
     }
 

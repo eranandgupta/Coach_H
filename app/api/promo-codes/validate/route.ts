@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getAuthUser } from '@/lib/middleware';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,6 +68,17 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    // Check if promo code is targeted to a specific user
+    if (promoCode.targetUserId) {
+      const authUser = await getAuthUser(request);
+      if (!authUser || authUser.userId !== promoCode.targetUserId) {
+        return NextResponse.json(
+          { error: 'This promo code is not available for your account' },
+          { status: 400 }
+        );
+      }
     }
 
     // Check if promo code is applicable to the selected plan

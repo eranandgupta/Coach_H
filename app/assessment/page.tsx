@@ -20,8 +20,8 @@ export default function AssessmentPage() {
 
     const user = JSON.parse(userStr);
 
-    // If user is a coach, redirect to dashboard (coaches don't need assessment)
-    if (user.role === 'coach') {
+    // If user is a coach or admin, redirect to dashboard (no assessment needed)
+    if (user.role === 'coach' || user.role === 'admin') {
       router.push('/dashboard');
       return;
     }

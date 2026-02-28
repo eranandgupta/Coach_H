@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Phone, Lock, Loader2 } from 'lucide-react';
+import { X, User, Mail, Phone, Lock, Loader2, CreditCard, Hash, Wallet } from 'lucide-react';
+
+interface Plan {
+  id: number;
+  name: string;
+  price: number;
+  duration: number;
+}
 
 interface ClientManagementModalProps {
   isOpen: boolean;
@@ -22,9 +29,29 @@ export default function ClientManagementModal({
     email: '',
     phone: '',
     password: '',
+    planId: '',
+    paymentMode: '',
+    transactionId: '',
   });
   const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState(false);
+  const [plans, setPlans] = useState<Plan[]>([]);
+
+  useEffect(() => {
+    if (isOpen && !client) {
+      fetchPlans();
+    }
+  }, [isOpen, client]);
+
+  const fetchPlans = async () => {
+    try {
+      const res = await fetch('/api/subscriptions/plans');
+      const data = await res.json();
+      setPlans(data.plans || []);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
 
   useEffect(() => {
     if (client) {
@@ -33,6 +60,9 @@ export default function ClientManagementModal({
         email: client.email || '',
         phone: client.phone || '',
         password: '', // Never pre-fill password
+        planId: '',
+        paymentMode: '',
+        transactionId: '',
       });
     } else {
       setFormData({
@@ -40,6 +70,9 @@ export default function ClientManagementModal({
         email: '',
         phone: '',
         password: '',
+        planId: '',
+        paymentMode: '',
+        transactionId: '',
       });
     }
     setErrors({});
@@ -100,6 +133,12 @@ export default function ClientManagementModal({
         }
       } else {
         body.password = formData.password;
+        // Include plan/payment info only when creating
+        if (formData.planId && formData.planId !== 'none') {
+          body.planId = Number(formData.planId);
+          if (formData.paymentMode) body.paymentMode = formData.paymentMode;
+          if (formData.transactionId) body.transactionId = formData.transactionId;
+        }
       }
 
       const response = await fetch(url, {
@@ -127,6 +166,8 @@ export default function ClientManagementModal({
       setLoading(false);
     }
   };
+
+  const isCreating = !client;
 
   return (
     <AnimatePresence>
@@ -243,6 +284,73 @@ export default function ClientManagementModal({
                   <p className="text-red-400 text-xs mt-1">{errors.password}</p>
                 )}
               </div>
+
+              {/* Plan, Payment Mode, Transaction ID - only when creating */}
+              {isCreating && (
+                <>
+                  {/* Plan Selection */}
+                  <div>
+                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                      <CreditCard className="w-4 h-4 inline mr-2" />
+                      Subscription Plan
+                    </label>
+                    <select
+                      value={formData.planId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, planId: e.target.value })
+                      }
+                      className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue appearance-none"
+                    >
+                      <option value="" className="bg-brand-navy">No plan (optional)</option>
+                      {plans.map((plan) => (
+                        <option key={plan.id} value={String(plan.id)} className="bg-brand-navy">
+                          {plan.name} - ₹{plan.price} ({plan.duration} days)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {formData.planId && formData.planId !== 'none' && (
+                    <>
+                      {/* Payment Mode */}
+                      <div>
+                        <label className="block text-gray-300 text-sm font-medium mb-2">
+                          <Wallet className="w-4 h-4 inline mr-2" />
+                          Payment Mode
+                        </label>
+                        <select
+                          value={formData.paymentMode}
+                          onChange={(e) =>
+                            setFormData({ ...formData, paymentMode: e.target.value })
+                          }
+                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue appearance-none"
+                        >
+                          <option value="" className="bg-brand-navy">Select payment mode</option>
+                          <option value="cash" className="bg-brand-navy">Cash</option>
+                          <option value="online" className="bg-brand-navy">Online</option>
+                        </select>
+                      </div>
+
+                      {/* Transaction ID */}
+                      <div>
+                        <label className="block text-gray-300 text-sm font-medium mb-2">
+                          <Hash className="w-4 h-4 inline mr-2" />
+                          Transaction ID
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.transactionId}
+                          onChange={(e) =>
+                            setFormData({ ...formData, transactionId: e.target.value })
+                          }
+                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                          placeholder="Enter transaction ID (optional)"
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
 
               {/* Error Message */}
               {errors.submit && (
