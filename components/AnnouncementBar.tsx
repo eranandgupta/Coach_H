@@ -1,17 +1,9 @@
 'use client';
 
-import { Sparkles, Youtube, Instagram, Gift, Heart } from 'lucide-react';
+import { Sparkles, Youtube, Instagram, Gift } from 'lucide-react';
 
 export default function AnnouncementBar() {
   const messages = [
-    {
-      icon: <Heart className="w-3 h-3 text-pink-500" />,
-      text: (
-        <>
-          <span className="font-bold text-pink-400">Couple Offer!</span> Use <span className="font-bold bg-pink-500/20 text-pink-400 px-1.5 py-0.5 rounded border border-pink-400/30">VALENTINE06</span> for <span className="font-bold text-pink-400">15% OFF</span> (6M) | <span className="font-bold bg-pink-500/20 text-pink-400 px-1.5 py-0.5 rounded border border-pink-400/30">VALENTINE12</span> for <span className="font-bold text-pink-400">25% OFF</span> (12M)
-        </>
-      )
-    },
     {
       icon: <Gift className="w-3 h-3 text-orange-400" />,
       text: (
