@@ -91,5 +91,33 @@ async function postHandler(request: NextRequest, context: any) {
   }
 }
 
+// DELETE - Delete a promo code
+async function deleteHandler(request: NextRequest, context: any) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Promo code ID is required' },
+        { status: 400 }
+      );
+    }
+
+    await prisma.promoCode.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error('Delete promo code error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
 export const GET = requireAdmin(getHandler);
 export const POST = requireAdmin(postHandler);
+export const DELETE = requireAdmin(deleteHandler);

@@ -74,7 +74,7 @@
   }
 
   .animate-marquee-slow {
-    animation: marquee 90s linear infinite;
+    animation: marquee 40s linear infinite;
   }
 
   .animate-marquee:hover,

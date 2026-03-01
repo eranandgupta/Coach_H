@@ -1,30 +1,65 @@
 'use client';
 
-import { Sparkles, Youtube, Instagram, Gift } from 'lucide-react';
+import { useState, useEffect, ReactNode } from 'react';
+import { Sparkles, Youtube, Instagram, Gift, Tag } from 'lucide-react';
+
+interface PromoCode {
+  code: string;
+  discountType: string;
+  discountValue: string;
+  description: string | null;
+  applicablePlans: string | null;
+}
 
 export default function AnnouncementBar() {
-  const messages = [
+  const [promoMessages, setPromoMessages] = useState<{ icon: ReactNode; text: ReactNode }[]>([]);
+
+  useEffect(() => {
+    fetch('/api/promo-codes/active')
+      .then((res) => res.json())
+      .then((data) => {
+        const promos: PromoCode[] = data.promoCodes || [];
+        const msgs = promos.map((promo) => {
+          let planInfo = '';
+          if (promo.applicablePlans) {
+            try {
+              const plans = JSON.parse(promo.applicablePlans);
+              if (plans.length > 0) planInfo = ` on ${plans.join(', ')} Plan`;
+            } catch {}
+          }
+          const discountText =
+            promo.discountType === 'percentage'
+              ? `${promo.discountValue}% OFF`
+              : `₹${promo.discountValue} OFF`;
+
+          return {
+            icon: <Tag className="w-3 h-3 text-brand-gold" />,
+            text: (
+              <>
+                {promo.description ? (
+                  <span className="font-bold text-brand-gold">{promo.description} </span>
+                ) : null}
+                Use Coupon:{' '}
+                <span className="font-bold bg-brand-gold/20 text-brand-gold px-1.5 py-0.5 rounded border border-brand-gold/30">
+                  {promo.code}
+                </span>{' '}
+                - Get <span className="font-bold text-brand-gold">{discountText}</span>
+                {planInfo}!
+              </>
+            ),
+          };
+        });
+        setPromoMessages(msgs);
+      })
+      .catch(() => {});
+  }, []);
+
+  const staticMessages = [
     {
       icon: <Gift className="w-3 h-3 text-orange-400" />,
       text: (
         <>
           <span className="font-bold text-orange-400">FREE RhynoGrip Gear!</span> Join our <span className="font-bold bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded border border-orange-400/30">6-Month</span> or <span className="font-bold bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded border border-orange-400/30">12-Month</span> plan & get exclusive fitness gear!
-        </>
-      )
-    },
-    {
-      icon: <Sparkles className="w-3 h-3 text-brand-gold" />,
-      text: (
-        <>
-          Use Coupon: <span className="font-bold bg-brand-gold/20 text-brand-gold px-1.5 py-0.5 rounded border border-brand-gold/30">JOINSTRENGTH</span> - Get <span className="font-bold text-brand-gold">5% OFF</span> on 6-Month Plan!
-        </>
-      )
-    },
-    {
-      icon: <Sparkles className="w-3 h-3 text-green-400" />,
-      text: (
-        <>
-          Use Coupon: <span className="font-bold bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded border border-green-400/30">JOINMASTERY</span> - Get <span className="font-bold text-green-400">10% OFF</span> on 12-Month Plan!
         </>
       )
     },
@@ -45,6 +80,9 @@ export default function AnnouncementBar() {
       )
     }
   ];
+
+  // Remove the old hardcoded coupon messages - promos now come from DB
+  const messages = [...promoMessages, ...staticMessages];
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-slate-900 via-brand-navy to-slate-900 text-white py-1 px-3 overflow-hidden border-b border-brand-gold/20">

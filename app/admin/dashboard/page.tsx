@@ -21,6 +21,7 @@ import {
   CheckCircle,
   Lock,
   FileText,
+  Trash2,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
@@ -234,6 +235,24 @@ export default function AdminDashboard() {
       }
     } catch (error) { setPasswordMessage('Failed to change password'); }
     setChangingPassword(false);
+  };
+
+  const handleDeletePromo = async (promoId: number) => {
+    if (!confirm('Are you sure you want to delete this promo code?')) return;
+    try {
+      const res = await fetch(`/api/admin/promo-codes?id=${promoId}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      if (res.ok) {
+        fetchPromoCodes();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete promo code');
+      }
+    } catch (error) {
+      alert('Failed to delete promo code');
+    }
   };
 
   // Computed stats
@@ -557,29 +576,38 @@ export default function AdminDashboard() {
                     <div className="space-y-3">
                       {promoCodes.map((promo) => (
                         <div key={promo.id} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                              <span className="font-mono font-bold text-brand-blue text-lg">{promo.code}</span>
-                              <span className={`text-xs px-2 py-0.5 rounded-full border ${promo.isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-gray-400 bg-gray-500/20 border-gray-500/30'}`}>
-                                {promo.isActive ? 'Active' : 'Inactive'}
-                              </span>
-                              {promo.targetUser && (
-                                <span className="text-xs px-2 py-0.5 rounded-full border text-yellow-400 bg-yellow-500/20 border-yellow-500/30">
-                                  Targeted: {promo.targetUser.name || promo.targetUser.email}
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <span className="font-mono font-bold text-brand-blue text-lg">{promo.code}</span>
+                                <span className={`text-xs px-2 py-0.5 rounded-full border ${promo.isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-gray-400 bg-gray-500/20 border-gray-500/30'}`}>
+                                  {promo.isActive ? 'Active' : 'Inactive'}
                                 </span>
-                              )}
+                                {promo.targetUser && (
+                                  <span className="text-xs px-2 py-0.5 rounded-full border text-yellow-400 bg-yellow-500/20 border-yellow-500/30">
+                                    Targeted: {promo.targetUser.name || promo.targetUser.email}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-400">
+                                {promo.discountType === 'percentage' ? `${promo.discountValue}% off` : `₹${promo.discountValue} off`}
+                                {promo.description && ` — ${promo.description}`}
+                              </p>
+                              <div className="flex gap-4 mt-1 text-xs text-gray-500 flex-wrap">
+                                <span>Uses: {promo.currentUses}/{promo.maxUses || '∞'}</span>
+                                {promo.expiryDate && <span>Expires: {formatDate(promo.expiryDate)}</span>}
+                                {promo.applicablePlans && (
+                                  <span>Plans: {(() => { try { return JSON.parse(promo.applicablePlans).join(', '); } catch { return promo.applicablePlans; } })()}</span>
+                                )}
+                              </div>
                             </div>
-                            <p className="text-sm text-gray-400">
-                              {promo.discountType === 'percentage' ? `${promo.discountValue}% off` : `₹${promo.discountValue} off`}
-                              {promo.description && ` — ${promo.description}`}
-                            </p>
-                            <div className="flex gap-4 mt-1 text-xs text-gray-500 flex-wrap">
-                              <span>Uses: {promo.currentUses}/{promo.maxUses || '∞'}</span>
-                              {promo.expiryDate && <span>Expires: {formatDate(promo.expiryDate)}</span>}
-                              {promo.applicablePlans && (
-                                <span>Plans: {(() => { try { return JSON.parse(promo.applicablePlans).join(', '); } catch { return promo.applicablePlans; } })()}</span>
-                              )}
-                            </div>
+                            <button
+                              onClick={() => handleDeletePromo(promo.id)}
+                              className="p-2 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 hover:bg-red-500/30 hover:text-red-300 transition-all flex-shrink-0"
+                              title="Delete promo code"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
                           </div>
                         </div>
                       ))}
