@@ -107,7 +107,7 @@ export default function Home() {
         image: 'https://coachhimanshu.com/logo.png',
         url: 'https://coachhimanshu.com',
         telephone: '+91-XXXXXXXXXX',
-        priceRange: '₹799-₹5499',
+        priceRange: '₹799-₹10998',
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'IN',
@@ -127,8 +127,8 @@ export default function Home() {
           '@type': 'AggregateOffer',
           priceCurrency: 'INR',
           lowPrice: '799',
-          highPrice: '5499',
-          offerCount: '4',
+          highPrice: '10998',
+          offerCount: '7',
         },
         aggregateRating: {
           '@type': 'AggregateRating',
@@ -203,6 +203,16 @@ export default function Home() {
             name: 'Mastery Plan',
             description: '12 months comprehensive fitness mastery program with FREE RhynoGrip fitness gear',
             price: '5499',
+            priceCurrency: 'INR',
+            availability: 'https://schema.org/InStock',
+            url: 'https://coachhimanshu.com/#plans',
+          },
+          {
+            '@type': 'Offer',
+            position: 5,
+            name: 'Home Workout Plan',
+            description: 'Pre-sale 3+1 months home workout plan — no gym or equipment needed',
+            price: '1500',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -290,6 +300,25 @@ export default function Home() {
     },
     {
       id: 5,
+      title: 'Home Workout',
+      duration: '3+1 Months',
+      price: '₹1,500',
+      priceValue: 1500,
+      description: 'Pre-Sale Offer',
+      features: [
+        'Customized home workout plans',
+        'No gym or equipment needed',
+        'Personalized meal plans',
+        'Daily progress tracking',
+        'WhatsApp support',
+        'Video exercise demonstrations',
+        'Weekly check-ins',
+        '🔥 3+1 Months — 1 Month FREE',
+      ],
+      homeWorkout: true,
+    },
+    {
+      id: 6,
       title: 'Couple Strength',
       duration: '6 Months',
       price: '₹5,998',
@@ -310,7 +339,7 @@ export default function Home() {
       couple: true,
     },
     {
-      id: 6,
+      id: 7,
       title: 'Couple Mastery',
       duration: '12 Months',
       price: '₹10,998',
@@ -937,10 +966,11 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 items-stretch">
-            {plans.map((plan, index) => (
+          {/* Individual Plans */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 items-stretch">
+            {plans.filter(p => !p.couple && !p.homeWorkout).map((plan, index) => (
               <motion.div
-                key={index}
+                key={plan.id}
                 variants={itemVariants}
                 viewport={{ once: true }}
                 className="h-full"
@@ -948,6 +978,42 @@ export default function Home() {
                 <PlanCard {...plan} onAddToCart={addToCart} />
               </motion.div>
             ))}
+          </div>
+
+          {/* Home Workout Plan - Featured */}
+          <div className="mt-6 md:mt-8">
+            <div className="max-w-md mx-auto">
+              {plans.filter(p => p.homeWorkout).map((plan) => (
+                <motion.div
+                  key={plan.id}
+                  variants={itemVariants}
+                  viewport={{ once: true }}
+                >
+                  <PlanCard {...plan} onAddToCart={addToCart} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Couple Plans */}
+          <div className="mt-6 md:mt-8">
+            <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+              <span className="w-8 h-px bg-pink-500/30"></span>
+              <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs">Couple Plans</span>
+              <span className="w-8 h-px bg-pink-500/30"></span>
+            </motion.p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 items-stretch max-w-2xl mx-auto">
+              {plans.filter(p => p.couple).map((plan) => (
+                <motion.div
+                  key={plan.id}
+                  variants={itemVariants}
+                  viewport={{ once: true }}
+                  className="h-full"
+                >
+                  <PlanCard {...plan} onAddToCart={addToCart} />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.div>
       </section>
