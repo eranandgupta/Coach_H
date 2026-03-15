@@ -35,6 +35,8 @@ export default function CheckoutDrawer() {
 
   // Check if current plan is a couple plan
   const isCouplePlan = cartItems[0]?.name?.toLowerCase().includes('couple');
+  // Check if current plan is a home workout plan
+  const isHomeWorkoutPlan = cartItems[0]?.name?.toLowerCase().includes('home workout');
 
   const validateForm = () => {
     const newErrors: any = {};
@@ -319,8 +321,8 @@ export default function CheckoutDrawer() {
                         </motion.div>
                       ))}
 
-                      {/* Promo Code Section */}
-                      <div className="mt-6 pt-6 border-t border-white/10">
+                      {/* Promo Code Section - hidden for Home Workout plan */}
+                      {!isHomeWorkoutPlan && <div className="mt-6 pt-6 border-t border-white/10">
                         <div className="flex items-center gap-2 mb-3">
                           <Tag className="w-5 h-5 text-brand-gold" />
                           <h3 className="text-white font-semibold">Have a Promo Code?</h3>
@@ -387,7 +389,7 @@ export default function CheckoutDrawer() {
                             </div>
                           </div>
                         )}
-                      </div>
+                      </div>}
                     </div>
                   )}
                 </>
