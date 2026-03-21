@@ -31,6 +31,9 @@ async function getHandler(request: NextRequest, context: any) {
           include: {
             plan: true,
           },
+          orderBy: {
+            startDate: 'desc',
+          },
         },
       },
       orderBy: {

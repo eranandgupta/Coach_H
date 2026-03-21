@@ -124,6 +124,45 @@ async function main() {
       isActive: true,
     },
   });
+  const homeWorkoutPlan = await prisma.subscriptionPlan.create({
+    data: {
+      name: 'Home Workout',
+      description: 'Pre-Sale Offer',
+      price: 1500,
+      duration: 120, // 3+1 Months
+      features: JSON.stringify([
+        'Customised home workout plans',
+        'No gym or equipment needed',
+        'Personalized meal plans',
+        'Daily progress tracking',
+        'WhatsApp support',
+        'Video exercise demonstrations',
+        'Weekly check-ins',
+        '3+1 Months — 1 Month FREE',
+      ]),
+      isActive: true,
+    },
+  });
+
+  const rehabilitationPlan = await prisma.subscriptionPlan.create({
+    data: {
+      name: 'Rehabilitation Plan',
+      description: 'Recovery & Healing',
+      price: 1799,
+      duration: 90, // 3 Months
+      features: JSON.stringify([
+        'Customised rehabilitation workout',
+        'Specially designed for knee, spine, elbow, shoulder, ankle joints',
+        'No equipment needed',
+        'WhatsApp support',
+        'Exercise video tutorials',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'One-on-one consultation twice a month',
+      ]),
+      isActive: true,
+    },
+  });
   console.log('✅ Subscription plans created');
 
   // Create Active Subscription for Client

@@ -257,7 +257,7 @@ export default function AdminDashboard() {
 
   // Computed stats
   const totalClients = clients.length;
-  const activeSubscriptions = subscriptions.filter((s) => s.status === 'active').length;
+  const activeSubscriptions = subscriptions.filter((s) => s.status === 'active' && new Date(s.endDate) >= now).length;
   const now = new Date();
   const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const expiringSoon = subscriptions.filter(
@@ -428,27 +428,29 @@ export default function AdminDashboard() {
                                   <p className="text-xs text-gray-500 mt-1">Plan: {subStatus.plan} | Joined: {formatDate(client.createdAt)}</p>
                                 </div>
                               </div>
-                              <div className="flex gap-2 flex-shrink-0">
-                                {client.subscriptions?.length > 0 && (
+                              <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
+                                {client.subscriptions?.map((sub) => (
                                   <button
+                                    key={sub.id}
                                     onClick={() => {
-                                      const latestSub = client.subscriptions[0];
                                       setInvoiceSub({
-                                        id: latestSub.id,
-                                        status: latestSub.status,
-                                        startDate: latestSub.startDate,
-                                        endDate: latestSub.endDate,
-                                        transactionId: latestSub.transactionId,
-                                        paymentMode: latestSub.paymentMode,
-                                        plan: latestSub.plan,
+                                        id: sub.id,
+                                        status: sub.status,
+                                        startDate: sub.startDate,
+                                        endDate: sub.endDate,
+                                        transactionId: sub.transactionId,
+                                        paymentMode: sub.paymentMode,
+                                        plan: sub.plan,
                                         user: { id: client.id, name: client.name, email: client.email, phone: client.phone },
                                       });
                                       setInvoiceOpen(true);
                                     }}
-                                    className="flex items-center gap-1 px-3 py-1.5 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-400 hover:bg-amber-500/30 hover:text-amber-300 transition-all text-sm">
-                                    <FileText className="h-4 w-4" /> Invoice
+                                    title={`Invoice: ${sub.plan.name} (${new Date(sub.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })})`}
+                                    className="flex items-center gap-1 px-3 py-1.5 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-400 hover:bg-amber-500/30 hover:text-amber-300 transition-all text-xs">
+                                    <FileText className="h-3.5 w-3.5" />
+                                    {sub.plan.name.split(' ')[0]} {new Date(sub.startDate).toLocaleDateString('en-IN', { month: 'short', year: '2-digit' })}
                                   </button>
-                                )}
+                                ))}
                                 {subStatus.label === 'Active' ? (
                                   <button
                                     onClick={() => { setRenewSubClient({ id: client.id, name: client.name || 'Client', email: client.email }); setSubMode('extend'); setRenewSubOpen(true); }}
@@ -511,8 +513,8 @@ export default function AdminDashboard() {
                               </td>
                               <td className="py-3 pr-4 text-gray-300">{sub.plan.name}</td>
                               <td className="py-3 pr-4">
-                                <span className={`text-xs px-2 py-0.5 rounded-full border ${sub.status === 'active' ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
-                                  {sub.status}
+                                <span className={`text-xs px-2 py-0.5 rounded-full border ${sub.status === 'active' && new Date(sub.endDate) >= now ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
+                                  {sub.status === 'active' && new Date(sub.endDate) >= now ? 'active' : 'expired'}
                                 </span>
                               </td>
                               <td className="py-3 pr-4 text-gray-400">{formatDate(sub.startDate)}</td>

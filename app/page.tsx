@@ -210,6 +210,16 @@ export default function Home() {
           {
             '@type': 'Offer',
             position: 5,
+            name: 'Rehabilitation Plan',
+            description: '3 months rehabilitation and injury recovery program with personalized exercises',
+            price: '1799',
+            priceCurrency: 'INR',
+            availability: 'https://schema.org/InStock',
+            url: 'https://coachhimanshu.com/#plans',
+          },
+          {
+            '@type': 'Offer',
+            position: 6,
             name: 'Home Workout Plan',
             description: 'Pre-sale 3+1 months home workout plan — no gym or equipment needed',
             price: '1500',
@@ -297,6 +307,25 @@ export default function Home() {
         'Lifestyle coaching',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
+    },
+    {
+      id: 8,
+      title: 'Rehabilitation',
+      duration: '3 Months',
+      price: '₹1,799',
+      priceValue: 1799,
+      description: 'Recovery & Healing',
+      features: [
+        'Customised rehabilitation workout',
+        'Specially designed for knee, spine, elbow, shoulder, ankle joints',
+        'No equipment needed',
+        'WhatsApp support',
+        'Exercise video tutorials',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'One-on-one consultation twice a month',
+      ],
+      rehabilitation: true,
     },
     {
       id: 5,
@@ -978,6 +1007,21 @@ export default function Home() {
                 <PlanCard {...plan} onAddToCart={addToCart} />
               </motion.div>
             ))}
+          </div>
+
+          {/* Rehabilitation Plan - Featured */}
+          <div className="mt-6 md:mt-8">
+            <div className="max-w-md mx-auto">
+              {plans.filter(p => p.rehabilitation).map((plan) => (
+                <motion.div
+                  key={plan.id}
+                  variants={itemVariants}
+                  viewport={{ once: true }}
+                >
+                  <PlanCard {...plan} onAddToCart={addToCart} />
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           {/* Home Workout Plan - Featured */}

@@ -39,6 +39,7 @@ const APPLICABLE_PLANS = [
   'Consistency Plan',
   'Strength Plan',
   'Mastery Plan',
+  'Rehabilitation Plan',
 ];
 
 export default function CreatePromoCodeModal({

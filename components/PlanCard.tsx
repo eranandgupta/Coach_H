@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Button from './Button';
-import { Check, Crown, Sparkles, Heart, Home, MessageCircle } from 'lucide-react';
+import { Check, Crown, Sparkles, Heart, Home, MessageCircle, Activity } from 'lucide-react';
 
 interface PlanCardProps {
   id: number;
@@ -15,6 +15,7 @@ interface PlanCardProps {
   popular?: boolean;
   couple?: boolean;
   homeWorkout?: boolean;
+  rehabilitation?: boolean;
   onAddToCart?: (plan: {
     id: number;
     name: string;
@@ -35,6 +36,7 @@ export default function PlanCard({
   popular = false,
   couple = false,
   homeWorkout = false,
+  rehabilitation = false,
   onAddToCart,
 }: PlanCardProps) {
   const handleAddToCart = () => {
@@ -53,7 +55,7 @@ export default function PlanCard({
       whileHover={{ scale: 1.02, y: -6 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={`relative rounded-xl overflow-hidden group h-full ${
-        popular ? 'shadow-2xl shadow-brand-gold/20' : couple ? 'shadow-2xl shadow-pink-500/20' : homeWorkout ? 'shadow-2xl shadow-emerald-500/20' : 'shadow-xl shadow-black/30'
+        popular ? 'shadow-2xl shadow-brand-gold/20' : couple ? 'shadow-2xl shadow-pink-500/20' : homeWorkout ? 'shadow-2xl shadow-emerald-500/20' : rehabilitation ? 'shadow-2xl shadow-cyan-500/20' : 'shadow-xl shadow-black/30'
       }`}
     >
       {/* Animated gradient border for popular plan */}
@@ -76,6 +78,14 @@ export default function PlanCard({
       {homeWorkout && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-500 bg-[length:200%_100%] animate-shimmer" />
+          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+        </>
+      )}
+
+      {/* Animated gradient border for rehabilitation plan */}
+      {rehabilitation && (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-400 to-cyan-500 bg-[length:200%_100%] animate-shimmer" />
           <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
         </>
       )}
@@ -140,6 +150,26 @@ export default function PlanCard({
         </motion.div>
       )}
 
+      {/* Rehabilitation badge */}
+      {rehabilitation && (
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', delay: 0.2 }}
+          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
+        >
+          <div className="bg-gradient-to-r from-cyan-500 via-blue-400 to-cyan-500 px-4 py-1 rounded-b-lg shadow-lg">
+            <div className="flex items-center gap-1.5">
+              <Activity size={12} className="text-white" />
+              <span className="text-white font-bold text-xs uppercase tracking-wider">
+                Rehabilitation
+              </span>
+              <Activity size={12} className="text-white" />
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       <div
         className={`relative p-4 md:p-5 h-full flex flex-col ${
           popular
@@ -148,14 +178,16 @@ export default function PlanCard({
             ? 'bg-gradient-to-br from-[#2a1a2e] via-brand-navy to-[#1a0f1f]'
             : homeWorkout
             ? 'bg-gradient-to-br from-[#1a2e1f] via-brand-navy to-[#0f1a14]'
+            : rehabilitation
+            ? 'bg-gradient-to-br from-[#1a2a2e] via-brand-navy to-[#0f1519]'
             : 'bg-gradient-to-br from-brand-navy-light/80 to-brand-navy/60 backdrop-blur-sm'
         } border ${
-          popular || couple || homeWorkout ? 'border-transparent' : 'border-white/5'
+          popular || couple || homeWorkout || rehabilitation ? 'border-transparent' : 'border-white/5'
         }`}
       >
         {/* Background decorative elements */}
-        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${couple ? 'from-pink-500/5' : homeWorkout ? 'from-emerald-500/5' : 'from-brand-gold/5'} to-transparent rounded-full blur-2xl`} />
-        <div className={`absolute bottom-0 left-0 w-28 h-28 bg-gradient-to-tr ${couple ? 'from-rose-500/5' : homeWorkout ? 'from-green-500/5' : 'from-brand-blue/5'} to-transparent rounded-full blur-2xl`} />
+        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${couple ? 'from-pink-500/5' : homeWorkout ? 'from-emerald-500/5' : rehabilitation ? 'from-cyan-500/5' : 'from-brand-gold/5'} to-transparent rounded-full blur-2xl`} />
+        <div className={`absolute bottom-0 left-0 w-28 h-28 bg-gradient-to-tr ${couple ? 'from-rose-500/5' : homeWorkout ? 'from-green-500/5' : rehabilitation ? 'from-blue-500/5' : 'from-brand-blue/5'} to-transparent rounded-full blur-2xl`} />
 
         {/* Crown icon for popular */}
         {popular && (
@@ -178,10 +210,17 @@ export default function PlanCard({
           </div>
         )}
 
+        {/* Activity icon for rehabilitation */}
+        {rehabilitation && (
+          <div className="absolute top-4 right-4 text-cyan-400 opacity-15 group-hover:opacity-30 transition-opacity">
+            <Activity size={32} />
+          </div>
+        )}
+
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
           {/* Header */}
-          <div className={`mb-4 ${popular || couple || homeWorkout ? 'pt-4' : ''}`}>
+          <div className={`mb-4 ${popular || couple || homeWorkout || rehabilitation ? 'pt-4' : ''}`}>
             <h3 className="text-white text-lg md:text-xl font-bold mb-1 tracking-tight">
               {title}
             </h3>
@@ -197,6 +236,8 @@ export default function PlanCard({
                     ? 'from-pink-400 via-rose-300 to-pink-400'
                     : homeWorkout
                     ? 'from-emerald-400 via-green-300 to-emerald-400'
+                    : rehabilitation
+                    ? 'from-cyan-400 via-blue-300 to-cyan-400'
                     : 'from-gray-200 to-gray-400'
                 } bg-clip-text text-transparent`}>
                   {price}
@@ -221,6 +262,11 @@ export default function PlanCard({
                     Limited Time
                   </span>
                 )}
+                {rehabilitation && (
+                  <span className="px-1.5 py-0.5 bg-cyan-500/10 text-cyan-400 text-xs rounded-full border border-cyan-400/20">
+                    3 Months
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -243,6 +289,8 @@ export default function PlanCard({
                       ? 'bg-pink-500/20 text-pink-400 border border-pink-400/30'
                       : homeWorkout
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-400/30'
+                      : rehabilitation
+                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30'
                       : 'bg-brand-green/20 text-brand-green border border-brand-green/30'
                   }`}>
                     <Check size={10} className="font-bold" />
@@ -262,7 +310,7 @@ export default function PlanCard({
               whileTap={{ scale: 0.98 }}
             >
               <Button
-                variant={popular || couple || homeWorkout ? 'primary' : 'secondary'}
+                variant={popular || couple || homeWorkout || rehabilitation ? 'primary' : 'secondary'}
                 className={`w-full justify-center text-sm font-semibold py-2.5 rounded-lg transition-all duration-300 ${
                   popular
                     ? 'bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold hover:shadow-lg hover:shadow-brand-gold/30 text-brand-navy'
@@ -270,6 +318,8 @@ export default function PlanCard({
                     ? 'bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 hover:shadow-lg hover:shadow-pink-500/30 text-white'
                     : homeWorkout
                     ? 'bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-500 hover:shadow-lg hover:shadow-emerald-500/30 text-white'
+                    : rehabilitation
+                    ? 'bg-gradient-to-r from-cyan-500 via-blue-400 to-cyan-500 hover:shadow-lg hover:shadow-cyan-500/30 text-white'
                     : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white'
                 }`}
                 onClick={handleAddToCart}
