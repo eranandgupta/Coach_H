@@ -325,6 +325,7 @@ export default function CoachDashboard() {
   const activeClientsCount = clients.filter(
     (c) => c.subscriptions?.[0] && new Date(c.subscriptions[0].endDate) >= now
   ).length;
+  const inactiveClientsCount = clients.length - activeClientsCount;
 
   const getClientWorkouts = (clientId: number) => {
     return workouts.filter((w) => w.clientId === clientId);
@@ -462,65 +463,86 @@ export default function CoachDashboard() {
           </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          {/* Total Clients */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md border border-blue-500/30 rounded-2xl p-6"
+            className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md border border-blue-500/30 rounded-2xl p-5"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-blue-500/30 rounded-xl">
-                <Users className="w-6 h-6 text-blue-300" />
-              </div>
-              <Award className="w-5 h-5 text-yellow-400" />
+            <div className="p-2.5 bg-blue-500/30 rounded-xl w-fit mb-3">
+              <Users className="w-5 h-5 text-blue-300" />
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-1">{clients.length}</h3>
+            <p className="text-gray-300 text-sm">Total Clients</p>
+          </motion.div>
+
+          {/* Active Clients */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl p-5"
+          >
+            <div className="p-2.5 bg-green-500/30 rounded-xl w-fit mb-3">
+              <Award className="w-5 h-5 text-green-300" />
             </div>
             <h3 className="text-3xl font-bold text-white mb-1">{activeClientsCount}</h3>
             <p className="text-gray-300 text-sm">Active Clients</p>
           </motion.div>
 
+          {/* Inactive Clients */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border border-purple-500/30 rounded-2xl p-6"
+            transition={{ delay: 0.3 }}
+            className="bg-gradient-to-br from-red-500/20 to-rose-500/20 backdrop-blur-md border border-red-500/30 rounded-2xl p-5"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-purple-500/30 rounded-xl">
-                <Dumbbell className="w-6 h-6 text-purple-300" />
-              </div>
-              <TrendingUp className="w-5 h-5 text-green-400" />
+            <div className="p-2.5 bg-red-500/30 rounded-xl w-fit mb-3">
+              <Users className="w-5 h-5 text-red-300" />
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-1">{inactiveClientsCount}</h3>
+            <p className="text-gray-300 text-sm">Inactive Clients</p>
+          </motion.div>
+
+          {/* Workout Plans */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border border-purple-500/30 rounded-2xl p-5"
+          >
+            <div className="p-2.5 bg-purple-500/30 rounded-xl w-fit mb-3">
+              <Dumbbell className="w-5 h-5 text-purple-300" />
             </div>
             <h3 className="text-3xl font-bold text-white mb-1">{workouts.length}</h3>
             <p className="text-gray-300 text-sm">Workout Plans</p>
           </motion.div>
 
+          {/* Diet Plans */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl p-6"
+            transition={{ delay: 0.5 }}
+            className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-green-500/30 rounded-xl">
-                <UtensilsCrossed className="w-6 h-6 text-green-300" />
-              </div>
-              <Target className="w-5 h-5 text-orange-400" />
+            <div className="p-2.5 bg-emerald-500/30 rounded-xl w-fit mb-3">
+              <UtensilsCrossed className="w-5 h-5 text-emerald-300" />
             </div>
             <h3 className="text-3xl font-bold text-white mb-1">{diets.length}</h3>
             <p className="text-gray-300 text-sm">Diet Plans</p>
           </motion.div>
 
+          {/* Total Plans */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-md border border-orange-500/30 rounded-2xl p-6"
+            transition={{ delay: 0.6 }}
+            className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-md border border-orange-500/30 rounded-2xl p-5"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-orange-500/30 rounded-xl">
-                <Calendar className="w-6 h-6 text-orange-300" />
-              </div>
+            <div className="p-2.5 bg-orange-500/30 rounded-xl w-fit mb-3">
+              <Calendar className="w-5 h-5 text-orange-300" />
             </div>
             <h3 className="text-3xl font-bold text-white mb-1">
               {workouts.length + diets.length}
