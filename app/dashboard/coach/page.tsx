@@ -321,6 +321,11 @@ export default function CoachDashboard() {
     client.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const now = new Date();
+  const activeClientsCount = clients.filter(
+    (c) => c.subscriptions?.[0] && new Date(c.subscriptions[0].endDate) >= now
+  ).length;
+
   const getClientWorkouts = (clientId: number) => {
     return workouts.filter((w) => w.clientId === clientId);
   };
@@ -470,7 +475,7 @@ export default function CoachDashboard() {
               </div>
               <Award className="w-5 h-5 text-yellow-400" />
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">{clients.length}</h3>
+            <h3 className="text-3xl font-bold text-white mb-1">{activeClientsCount}</h3>
             <p className="text-gray-300 text-sm">Active Clients</p>
           </motion.div>
 
@@ -592,15 +597,18 @@ export default function CoachDashboard() {
                     </div>
 
                     {/* Subscription Info */}
-                    {client.subscriptions && client.subscriptions.length > 0 && (
-                      <div className="mb-3 p-2 bg-green-500/10 border border-green-500/30 rounded">
+                    {client.subscriptions && client.subscriptions.length > 0 && (() => {
+                      const sub = client.subscriptions[0];
+                      const isActive = new Date(sub.endDate) >= now;
+                      return (
+                      <div className={`mb-3 p-2 rounded border ${isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-green-400 text-xs font-medium">
-                              {client.subscriptions[0].plan.name} - {client.subscriptions[0].status}
+                            <p className={`text-xs font-medium ${isActive ? 'text-green-400' : 'text-red-400'}`}>
+                              {sub.plan.name} - {isActive ? 'active' : 'expired'}
                             </p>
                             <p className="text-gray-400 text-xs">
-                              Expires: {new Date(client.subscriptions[0].endDate).toLocaleDateString()}
+                              Expires: {new Date(sub.endDate).toLocaleDateString()}
                             </p>
                           </div>
                           <button
@@ -615,7 +623,8 @@ export default function CoachDashboard() {
                           </button>
                         </div>
                       </div>
-                    )}
+                      );
+                    })()}
 
                     {/* Plan Counts */}
                     <div className="flex items-center gap-4 mb-3">
@@ -648,7 +657,7 @@ export default function CoachDashboard() {
                             </span>
                           )}
                           {!activeWorkout && !activeDiet && (
-                            <span className="text-gray-500">No active plans</span>
+                            <span className="text-gray-500">No active workout/diet</span>
                           )}
                         </div>
                         <p className="text-xs text-brand-blue opacity-0 group-hover:opacity-100 transition-opacity">
