@@ -996,8 +996,13 @@ export default function Home() {
           </motion.div>
 
           {/* Individual Plans */}
+          <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+            <span className="w-8 h-px bg-brand-gold/30"></span>
+            <span className="text-brand-gold font-semibold uppercase tracking-wider text-xs">Individual Plans</span>
+            <span className="w-8 h-px bg-brand-gold/30"></span>
+          </motion.p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 items-stretch">
-            {plans.filter(p => !p.couple && !p.homeWorkout).map((plan, index) => (
+            {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation).map((plan, index) => (
               <motion.div
                 key={plan.id}
                 variants={itemVariants}
@@ -1009,29 +1014,20 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Rehabilitation Plan - Featured */}
+          {/* Specialty Plans — Rehabilitation & Home Workout */}
           <div className="mt-6 md:mt-8">
-            <div className="max-w-md mx-auto">
-              {plans.filter(p => p.rehabilitation).map((plan) => (
+            <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+              <span className="w-8 h-px bg-cyan-500/30"></span>
+              <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs">Specialty Plans</span>
+              <span className="w-8 h-px bg-cyan-500/30"></span>
+            </motion.p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 items-stretch max-w-2xl mx-auto">
+              {plans.filter(p => p.rehabilitation || p.homeWorkout).map((plan) => (
                 <motion.div
                   key={plan.id}
                   variants={itemVariants}
                   viewport={{ once: true }}
-                >
-                  <PlanCard {...plan} onAddToCart={addToCart} />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Home Workout Plan - Featured */}
-          <div className="mt-6 md:mt-8">
-            <div className="max-w-md mx-auto">
-              {plans.filter(p => p.homeWorkout).map((plan) => (
-                <motion.div
-                  key={plan.id}
-                  variants={itemVariants}
-                  viewport={{ once: true }}
+                  className="h-full"
                 >
                   <PlanCard {...plan} onAddToCart={addToCart} />
                 </motion.div>
