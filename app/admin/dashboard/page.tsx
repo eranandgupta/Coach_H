@@ -256,9 +256,9 @@ export default function AdminDashboard() {
   };
 
   // Computed stats
+  const now = new Date();
   const totalClients = clients.length;
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active' && new Date(s.endDate) >= now).length;
-  const now = new Date();
   const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const expiringSoon = subscriptions.filter(
     (s) => s.status === 'active' && new Date(s.endDate) <= sevenDaysFromNow && new Date(s.endDate) >= now
