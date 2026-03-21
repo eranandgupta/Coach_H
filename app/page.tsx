@@ -995,61 +995,38 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Individual Plans */}
+          {/* Row 1 — Individual Plans */}
           <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
-            <span className="w-8 h-px bg-brand-gold/30"></span>
+            <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
             <span className="text-brand-gold font-semibold uppercase tracking-wider text-xs">Individual Plans</span>
-            <span className="w-8 h-px bg-brand-gold/30"></span>
+            <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
           </motion.p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 items-stretch">
-            {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation).map((plan, index) => (
-              <motion.div
-                key={plan.id}
-                variants={itemVariants}
-                viewport={{ once: true }}
-                className="h-full"
-              >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
+            {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
+              <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
                 <PlanCard {...plan} onAddToCart={addToCart} />
               </motion.div>
             ))}
           </div>
 
-          {/* Specialty Plans — Rehabilitation & Home Workout */}
+          {/* Row 2 — Specialty + Couple Plans (same 4-col grid = same card size) */}
           <div className="mt-6 md:mt-8">
-            <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
-              <span className="w-8 h-px bg-cyan-500/30"></span>
-              <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs">Specialty Plans</span>
-              <span className="w-8 h-px bg-cyan-500/30"></span>
-            </motion.p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 items-stretch max-w-2xl mx-auto">
-              {plans.filter(p => p.rehabilitation || p.homeWorkout).map((plan) => (
-                <motion.div
-                  key={plan.id}
-                  variants={itemVariants}
-                  viewport={{ once: true }}
-                  className="h-full"
-                >
-                  <PlanCard {...plan} onAddToCart={addToCart} />
-                </motion.div>
-              ))}
+            {/* Section labels: side-by-side on sm+, stacked on mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
+              <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                <span className="flex-1 h-px bg-cyan-500/20"></span>
+                <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Specialty Plans</span>
+                <span className="flex-1 h-px bg-cyan-500/20"></span>
+              </motion.div>
+              <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                <span className="flex-1 h-px bg-pink-500/20"></span>
+                <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plans</span>
+                <span className="flex-1 h-px bg-pink-500/20"></span>
+              </motion.div>
             </div>
-          </div>
-
-          {/* Couple Plans */}
-          <div className="mt-6 md:mt-8">
-            <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
-              <span className="w-8 h-px bg-pink-500/30"></span>
-              <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs">Couple Plans</span>
-              <span className="w-8 h-px bg-pink-500/30"></span>
-            </motion.p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 items-stretch max-w-2xl mx-auto">
-              {plans.filter(p => p.couple).map((plan) => (
-                <motion.div
-                  key={plan.id}
-                  variants={itemVariants}
-                  viewport={{ once: true }}
-                  className="h-full"
-                >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
+              {plans.filter(p => p.rehabilitation || p.homeWorkout || p.couple).map((plan) => (
+                <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
                   <PlanCard {...plan} onAddToCart={addToCart} />
                 </motion.div>
               ))}
