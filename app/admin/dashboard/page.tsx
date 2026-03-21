@@ -258,6 +258,10 @@ export default function AdminDashboard() {
   // Computed stats
   const now = new Date();
   const totalClients = clients.length;
+  const activeClients = clients.filter((c) =>
+    c.subscriptions?.some((s) => s.status === 'active' && new Date(s.endDate) >= now)
+  ).length;
+  const inactiveClients = totalClients - activeClients;
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active' && new Date(s.endDate) >= now).length;
   const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const expiringSoon = subscriptions.filter(
@@ -322,36 +326,52 @@ export default function AdminDashboard() {
             <p className="text-gray-300">Manage clients, subscriptions & promo codes</p>
           </div>
 
-          {/* Stats Grid - matches coach dashboard style */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md border border-blue-500/30 rounded-2xl p-6">
-              <div className="p-3 bg-blue-500/30 rounded-xl w-fit mb-3">
-                <Users className="w-6 h-6 text-blue-300" />
+              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md border border-blue-500/30 rounded-2xl p-5">
+              <div className="p-2.5 bg-blue-500/30 rounded-xl w-fit mb-3">
+                <Users className="w-5 h-5 text-blue-300" />
               </div>
               <h3 className="text-3xl font-bold text-white mb-1">{totalClients}</h3>
               <p className="text-gray-300 text-sm">Total Clients</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl p-6">
-              <div className="p-3 bg-green-500/30 rounded-xl w-fit mb-3">
-                <CheckCircle className="w-6 h-6 text-green-300" />
+              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl p-5">
+              <div className="p-2.5 bg-green-500/30 rounded-xl w-fit mb-3">
+                <CheckCircle className="w-5 h-5 text-green-300" />
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-1">{activeClients}</h3>
+              <p className="text-gray-300 text-sm">Active Clients</p>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="bg-gradient-to-br from-red-500/20 to-rose-500/20 backdrop-blur-md border border-red-500/30 rounded-2xl p-5">
+              <div className="p-2.5 bg-red-500/30 rounded-xl w-fit mb-3">
+                <Users className="w-5 h-5 text-red-300" />
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-1">{inactiveClients}</h3>
+              <p className="text-gray-300 text-sm">Inactive Clients</p>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5">
+              <div className="p-2.5 bg-emerald-500/30 rounded-xl w-fit mb-3">
+                <CheckCircle className="w-5 h-5 text-emerald-300" />
               </div>
               <h3 className="text-3xl font-bold text-white mb-1">{activeSubscriptions}</h3>
               <p className="text-gray-300 text-sm">Active Subs</p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-md border border-orange-500/30 rounded-2xl p-6">
-              <div className="p-3 bg-orange-500/30 rounded-xl w-fit mb-3">
-                <Clock className="w-6 h-6 text-orange-300" />
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+              className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-md border border-orange-500/30 rounded-2xl p-5">
+              <div className="p-2.5 bg-orange-500/30 rounded-xl w-fit mb-3">
+                <Clock className="w-5 h-5 text-orange-300" />
               </div>
               <h3 className="text-3xl font-bold text-white mb-1">{expiringSoon}</h3>
               <p className="text-gray-300 text-sm">Expiring (7d)</p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border border-purple-500/30 rounded-2xl p-6">
-              <div className="p-3 bg-purple-500/30 rounded-xl w-fit mb-3">
-                <Tag className="w-6 h-6 text-purple-300" />
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border border-purple-500/30 rounded-2xl p-5">
+              <div className="p-2.5 bg-purple-500/30 rounded-xl w-fit mb-3">
+                <Tag className="w-5 h-5 text-purple-300" />
               </div>
               <h3 className="text-3xl font-bold text-white mb-1">{totalPromoCodes}</h3>
               <p className="text-gray-300 text-sm">Promo Codes</p>
