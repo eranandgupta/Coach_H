@@ -1007,14 +1007,20 @@ export default function Home() {
 
           {/* Row 2 — Specialty + Couple Plans (same 4-col grid = same card size) */}
           <div className="mt-6 md:mt-8">
-            {/* Section labels: side-by-side on sm+, stacked on mobile */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
-              <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+            {/* Mobile/tablet: single combined label */}
+            <motion.div variants={itemVariants} className="lg:hidden flex items-center justify-center gap-2 mb-4">
+              <span className="flex-1 h-px bg-white/10"></span>
+              <span className="text-gray-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Specialty &amp; Couple Plans</span>
+              <span className="flex-1 h-px bg-white/10"></span>
+            </motion.div>
+            {/* Desktop: two labels aligned over their 2 columns each */}
+            <div className="hidden lg:grid lg:grid-cols-4 gap-4 mb-4">
+              <motion.div variants={itemVariants} className="col-span-2 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-cyan-500/20"></span>
                 <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Specialty Plans</span>
                 <span className="flex-1 h-px bg-cyan-500/20"></span>
               </motion.div>
-              <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+              <motion.div variants={itemVariants} className="col-span-2 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-pink-500/20"></span>
                 <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plans</span>
                 <span className="flex-1 h-px bg-pink-500/20"></span>
