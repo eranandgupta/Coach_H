@@ -55,6 +55,21 @@ const itemVariants = {
 export default function Home() {
   const { addToCart } = useCart();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [dbPlanIds, setDbPlanIds] = useState<Record<string, number>>({});
+
+  // Fetch real plan IDs from DB so payments always use the correct ID
+  useEffect(() => {
+    fetch('/api/plans')
+      .then((r) => r.json())
+      .then((data) => {
+        const map: Record<string, number> = {};
+        data.plans?.forEach((p: { id: number; name: string }) => {
+          map[p.name] = p.id;
+        });
+        setDbPlanIds(map);
+      })
+      .catch(() => {}); // fallback to hardcoded ids if fetch fails
+  }, []);
 
   // Structured Data for SEO
   const structuredData = {
@@ -235,6 +250,7 @@ export default function Home() {
   const plans = [
     {
       id: 1,
+      dbName: 'Kickstart Plan',
       title: 'Kickstart Plan',
       duration: 'Month',
       price: '₹799',
@@ -252,6 +268,7 @@ export default function Home() {
     },
     {
       id: 2,
+      dbName: 'Consistency Plan',
       title: 'Consistency Plan',
       duration: '3 Months',
       price: '₹1,799',
@@ -270,6 +287,7 @@ export default function Home() {
     },
     {
       id: 3,
+      dbName: 'Strength Plan',
       title: 'Strength Plan',
       duration: '6 Months',
       price: '₹2,999',
@@ -288,6 +306,7 @@ export default function Home() {
     },
     {
       id: 4,
+      dbName: 'Mastery Plan',
       title: 'Mastery Plan',
       duration: '12 Months',
       price: '₹5,499',
@@ -306,6 +325,7 @@ export default function Home() {
     },
     {
       id: 8,
+      dbName: 'Rehabilitation Plan',
       title: 'Rehabilitation',
       duration: '3 Months',
       price: '₹1,799',
@@ -325,6 +345,7 @@ export default function Home() {
     },
     {
       id: 5,
+      dbName: 'Home Workout Plan',
       title: 'Home Workout',
       duration: '3+1 Months',
       price: '₹1,500',
@@ -344,6 +365,7 @@ export default function Home() {
     },
     {
       id: 6,
+      dbName: 'Couple Strength Plan',
       title: 'Couple Strength',
       duration: '6 Months',
       price: '₹5,998',
@@ -365,6 +387,7 @@ export default function Home() {
     },
     {
       id: 7,
+      dbName: 'Couple Mastery Plan',
       title: 'Couple Mastery',
       duration: '12 Months',
       price: '₹10,998',
@@ -1000,7 +1023,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
             {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
               <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                <PlanCard {...plan} onAddToCart={addToCart} />
+                <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
               </motion.div>
             ))}
           </div>
@@ -1029,7 +1052,7 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
               {plans.filter(p => p.rehabilitation || p.homeWorkout || p.couple).map((plan) => (
                 <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                  <PlanCard {...plan} onAddToCart={addToCart} />
+                  <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
                 </motion.div>
               ))}
             </div>
