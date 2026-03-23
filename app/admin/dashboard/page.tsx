@@ -44,6 +44,10 @@ interface Client {
     endDate: string;
     transactionId: string | null;
     paymentMode: string | null;
+    razorpayPaymentId: string | null;
+    paidAmount: string | null;
+    customerGoal: string | null;
+    customerNotes: string | null;
     plan: { id: number; name: string; price: string; duration: number };
   }>;
 }
@@ -55,6 +59,10 @@ interface Subscription {
   endDate: string;
   transactionId: string | null;
   paymentMode: string | null;
+  razorpayPaymentId: string | null;
+  paidAmount: string | null;
+  customerGoal: string | null;
+  customerNotes: string | null;
   plan: { id: number; name: string; price: string; duration: number };
   user: { id: number; name: string | null; email: string; phone: string | null };
 }
@@ -446,6 +454,12 @@ export default function AdminDashboard() {
                                   <p className="text-sm text-gray-400">{client.email}</p>
                                   {client.phone && <p className="text-sm text-gray-500">{client.phone}</p>}
                                   <p className="text-xs text-gray-500 mt-1">Plan: {subStatus.plan} | Joined: {formatDate(client.createdAt)}</p>
+                                  {client.subscriptions?.[0]?.customerGoal && (
+                                    <p className="text-xs text-brand-blue mt-0.5">Goal: <span className="capitalize">{client.subscriptions[0].customerGoal.replace(/-/g, ' ')}</span></p>
+                                  )}
+                                  {client.subscriptions?.[0]?.razorpayPaymentId && (
+                                    <p className="text-xs text-gray-500 font-mono mt-0.5">Txn: {client.subscriptions[0].razorpayPaymentId}</p>
+                                  )}
                                 </div>
                               </div>
                               <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
@@ -458,8 +472,12 @@ export default function AdminDashboard() {
                                         status: sub.status,
                                         startDate: sub.startDate,
                                         endDate: sub.endDate,
-                                        transactionId: sub.transactionId,
+                                        transactionId: sub.razorpayPaymentId || sub.transactionId,
                                         paymentMode: sub.paymentMode,
+                                        razorpayPaymentId: sub.razorpayPaymentId,
+                                        paidAmount: sub.paidAmount,
+                                        customerGoal: sub.customerGoal,
+                                        customerNotes: sub.customerNotes,
                                         plan: sub.plan,
                                         user: { id: client.id, name: client.name, email: client.email, phone: client.phone },
                                       });
@@ -519,8 +537,9 @@ export default function AdminDashboard() {
                             <th className="pb-3 pr-4">Status</th>
                             <th className="pb-3 pr-4">Start</th>
                             <th className="pb-3 pr-4">End</th>
-                            <th className="pb-3 pr-4">Txn ID</th>
-                            <th className="pb-3 pr-4">Payment</th>
+                            <th className="pb-3 pr-4">Amount</th>
+                            <th className="pb-3 pr-4">Goal</th>
+                            <th className="pb-3 pr-4">Payment ID</th>
                             <th className="pb-3">Action</th>
                           </tr>
                         </thead>
@@ -539,8 +558,9 @@ export default function AdminDashboard() {
                               </td>
                               <td className="py-3 pr-4 text-gray-400">{formatDate(sub.startDate)}</td>
                               <td className="py-3 pr-4 text-gray-400">{formatDate(sub.endDate)}</td>
-                              <td className="py-3 pr-4 text-gray-400 font-mono text-xs">{sub.transactionId || '-'}</td>
-                              <td className="py-3 pr-4 text-gray-400 capitalize">{sub.paymentMode || '-'}</td>
+                              <td className="py-3 pr-4 text-gray-300 font-semibold">{sub.paidAmount ? `₹${Number(sub.paidAmount).toLocaleString()}` : (sub.plan.price ? `₹${Number(sub.plan.price).toLocaleString()}` : '-')}</td>
+                              <td className="py-3 pr-4 text-gray-400 capitalize text-xs">{sub.customerGoal ? sub.customerGoal.replace(/-/g, ' ') : '-'}</td>
+                              <td className="py-3 pr-4 text-gray-400 font-mono text-xs max-w-[120px] truncate" title={sub.razorpayPaymentId || sub.transactionId || ''}>{sub.razorpayPaymentId || sub.transactionId || '-'}</td>
                               <td className="py-3">
                                 <div className="flex gap-1.5">
                                   <button

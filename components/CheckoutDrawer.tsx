@@ -1,11 +1,10 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, QrCode, ArrowLeft, Tag, Loader2, Heart, Users } from 'lucide-react';
+import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, ArrowLeft, Tag, Loader2, Heart, Users, CreditCard } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 type CheckoutStep = 'cart' | 'details' | 'payment' | 'success';
 
@@ -32,6 +31,9 @@ export default function CheckoutDrawer() {
   const [appliedPromo, setAppliedPromo] = useState<any>(null);
   const [promoError, setPromoError] = useState('');
   const [isValidatingPromo, setIsValidatingPromo] = useState(false);
+
+  // Receipt state
+  const [paymentReceipt, setPaymentReceipt] = useState<any>(null);
 
   // Check if current plan is a couple plan
   const isCouplePlan = cartItems[0]?.name?.toLowerCase().includes('couple');
@@ -86,58 +88,7 @@ export default function CheckoutDrawer() {
     }
   };
 
-  const handlePaymentComplete = async () => {
-    // If promo code was applied, increment usage count
-    if (appliedPromo) {
-      try {
-        await fetch('/api/promo-codes/apply', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code: appliedPromo.promoCode.code,
-          }),
-        });
-      } catch (error) {
-        console.error('Error applying promo code:', error);
-        // Continue anyway - payment is more important
-      }
-    }
-
-    // Show WhatsApp confirmation message
-    const plan = cartItems[0];
-    const promoText = appliedPromo
-      ? `\nPromo Code: ${appliedPromo.promoCode.code}\nDiscount: ₹${appliedPromo.discountAmount}\nOriginal Price: ₹${getTotalPrice()}\nFinal Amount: ₹${getFinalTotal()}`
-      : '';
-
-    // Build message based on whether it's a couple plan
-    let detailsText = '';
-    if (isCouplePlan) {
-      detailsText = `\n👤 *Partner 1 Details:*\nName: ${formData.name}\nEmail: ${formData.email}\nWhatsApp: ${formData.whatsapp}\nGoal: ${formData.goal}\n\n👤 *Partner 2 Details:*\nName: ${formData.partner2Name}\nEmail: ${formData.partner2Email}\nWhatsApp: ${formData.partner2Whatsapp}\nGoal: ${formData.partner2Goal}`;
-    } else {
-      detailsText = `\nName: ${formData.name}\nEmail: ${formData.email}\nWhatsApp: ${formData.whatsapp}\nGoal: ${formData.goal}`;
-    }
-
-    const message = encodeURIComponent(
-      `Hi, I've completed payment for ${plan?.name}${detailsText}${promoText}\n\nAmount Paid: ₹${getFinalTotal()}\n\nPlease find the payment screenshot attached.`
-    );
-
-    // Open WhatsApp
-    window.open(`https://wa.me/917303484648?text=${message}`, '_blank');
-
-    // Show success after short delay
-    setTimeout(() => {
-      setCurrentStep('success');
-      setTimeout(() => {
-        clearCart();
-        closeCheckout();
-        setCurrentStep('cart');
-        setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
-        router.push('/');
-      }, 5000);
-    }, 500);
-  };
-
-  const handleApplyPromo = async () => {
+const handleApplyPromo = async () => {
     if (!promoCode.trim()) {
       setPromoError('Please enter a promo code');
       return;
@@ -187,27 +138,125 @@ export default function CheckoutDrawer() {
     return getTotalPrice();
   };
 
-  // Format amount for QR code filename (e.g., 4399.2 -> 4399.20, 5499 -> 5499)
-  const getQRFileName = () => {
-    const amount = getFinalTotal();
-    // Check if amount has decimals
-    if (amount % 1 !== 0) {
-      // Format with 2 decimal places
-      return amount.toFixed(2);
-    }
-    // Return as integer (no decimals)
-    return amount.toString();
-  };
+const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  // QR code image source state - try .jpg first, then .jpeg
-  const [qrExtension, setQrExtension] = useState<'jpg' | 'jpeg'>('jpg');
-  const [qrLoadFailed, setQrLoadFailed] = useState(false);
-
-  // Reset QR state when amount changes
+  // Load Razorpay checkout script
   useEffect(() => {
-    setQrExtension('jpg');
-    setQrLoadFailed(false);
-  }, [appliedPromo, cartItems]);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      if (document.body.contains(script)) document.body.removeChild(script);
+    };
+  }, []);
+
+  const handleRazorpayPayment = async () => {
+    const plan = cartItems[0];
+    if (!plan) return;
+
+    setIsProcessingPayment(true);
+
+    try {
+      const orderRes = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: getFinalTotal(),
+          planId: plan.id,
+          planName: plan.name,
+          name: formData.name,
+          email: formData.email,
+        }),
+      });
+
+      if (!orderRes.ok) throw new Error('Failed to create payment order');
+
+      const orderData = await orderRes.json();
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'Coach H',
+        description: plan.name,
+        order_id: orderData.orderId,
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: `91${formData.whatsapp}`,
+        },
+        theme: { color: '#175FFF' },
+        handler: async (response: any) => {
+          try {
+            const verifyRes = await fetch('/api/payment/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                planId: plan.id,
+                name: formData.name,
+                email: formData.email,
+                whatsapp: formData.whatsapp,
+                goal: formData.goal,
+                notes: formData.notes,
+                partner2Name: formData.partner2Name,
+                partner2Email: formData.partner2Email,
+                partner2Whatsapp: formData.partner2Whatsapp,
+                partner2Goal: formData.partner2Goal,
+              }),
+            });
+
+            if (!verifyRes.ok) {
+              const errData = await verifyRes.json();
+              throw new Error(errData.error || 'Verification failed');
+            }
+
+            const verifyData = await verifyRes.json();
+            setPaymentReceipt(verifyData.receipt || null);
+
+            if (appliedPromo) {
+              try {
+                await fetch('/api/promo-codes/apply', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ code: appliedPromo.promoCode.code }),
+                });
+              } catch (_) {}
+            }
+
+            setCurrentStep('success');
+            setTimeout(() => {
+              clearCart();
+              closeCheckout();
+              setCurrentStep('cart');
+              setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
+              router.push('/');
+            }, 5000);
+          } catch (error: any) {
+            alert(`Payment verification failed: ${error.message}\n\nPlease contact support with Payment ID: ${response.razorpay_payment_id}`);
+          }
+        },
+        modal: {
+          ondismiss: () => setIsProcessingPayment(false),
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', () => {
+        alert('Payment failed. Please try again.');
+        setIsProcessingPayment(false);
+      });
+      rzp.open();
+      setIsProcessingPayment(false);
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Failed to initiate payment. Please try again.');
+      setIsProcessingPayment(false);
+    }
+  };
 
   const handleClose = () => {
     closeCheckout();
@@ -217,6 +266,7 @@ export default function CheckoutDrawer() {
     setPromoCode('');
     setAppliedPromo(null);
     setPromoError('');
+    setPaymentReceipt(null);
   };
 
   const handleBack = () => {
@@ -257,7 +307,7 @@ export default function CheckoutDrawer() {
                   )}
                   {currentStep === 'cart' && <ShoppingCart className="w-6 h-6 text-brand-blue" />}
                   {currentStep === 'details' && (isCouplePlan ? <Heart className="w-6 h-6 text-pink-400" /> : <User className="w-6 h-6 text-brand-blue" />)}
-                  {currentStep === 'payment' && <QrCode className="w-6 h-6 text-brand-blue" />}
+                  {currentStep === 'payment' && <CreditCard className="w-6 h-6 text-brand-blue" />}
                   {currentStep === 'success' && <CheckCircle className="w-6 h-6 text-green-400" />}
                   <h2 className="text-2xl font-bold text-white">
                     {currentStep === 'cart' && 'Your Cart'}
@@ -590,155 +640,160 @@ export default function CheckoutDrawer() {
 
               {/* STEP 3: PAYMENT */}
               {currentStep === 'payment' && (
-                <div className="space-y-6 text-center">
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-left">
+                <div className="space-y-6">
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
                     <CheckCircle className="w-6 h-6 text-green-400 inline mr-2" />
-                    <span className="text-green-400 font-semibold">Details Submitted</span>
+                    <span className="text-green-400 font-semibold">Details Confirmed</span>
                     <p className="text-gray-300 text-sm mt-2">
-                      Your details will be sent to your fitness coach who will review and create a personalized plan for you.
+                      Your coach will create a personalized plan once payment is complete.
                     </p>
                   </div>
 
-                  <div className="py-6">
-                    <h3 className="text-xl font-bold text-white mb-4">Complete Payment</h3>
-                    <p className="text-gray-400 mb-6">
-                      Scan the QR code below to complete your payment
-                    </p>
-
-                    {/* QR Code - Dynamic based on amount */}
-                    <div className="bg-white p-6 rounded-xl inline-block mb-4">
-                      <div className="w-64 h-64 relative">
-                        {!qrLoadFailed ? (
-                          <Image
-                            src={`/QR/${getQRFileName()}.${qrExtension}`}
-                            alt={`Payment QR Code for ₹${getFinalTotal()}`}
-                            fill
-                            className="object-contain rounded-lg"
-                            onError={() => {
-                              // Try .jpeg if .jpg fails
-                              if (qrExtension === 'jpg') {
-                                setQrExtension('jpeg');
-                              } else {
-                                // Both extensions failed
-                                setQrLoadFailed(true);
-                              }
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center flex-col gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                              <rect width="5" height="5" x="3" y="3" rx="1"/>
-                              <rect width="5" height="5" x="16" y="3" rx="1"/>
-                              <rect width="5" height="5" x="3" y="16" rx="1"/>
-                              <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
-                              <path d="M21 21v.01"/>
-                              <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-                              <path d="M3 12h.01"/>
-                              <path d="M12 3h.01"/>
-                              <path d="M12 16v.01"/>
-                              <path d="M16 12h1"/>
-                              <path d="M21 12v.01"/>
-                              <path d="M12 21v-1"/>
-                            </svg>
-                            <span className="text-gray-500 text-sm">QR not available</span>
-                          </div>
-                        )}
+                  {/* Order Summary */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                    <h3 className="text-white font-semibold mb-4">Order Summary</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400 text-sm">Plan</span>
+                        <span className="text-white text-sm font-medium">{cartItems[0]?.name}</span>
                       </div>
-                    </div>
-
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-400">Amount to Pay</span>
+                      {appliedPromo && (
+                        <>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 text-sm">Original Price</span>
+                            <span className="text-gray-400 text-sm line-through">₹{getTotalPrice().toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-green-400 text-sm">Discount ({appliedPromo.promoCode.code})</span>
+                            <span className="text-green-400 text-sm">-₹{appliedPromo.discountAmount.toLocaleString()}</span>
+                          </div>
+                        </>
+                      )}
+                      <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                        <span className="text-gray-300 font-semibold">Total Payable</span>
                         <span className="text-2xl font-bold text-white">₹{getFinalTotal().toLocaleString()}</span>
                       </div>
-                      {appliedPromo && (
-                        <div className="flex items-center justify-between text-sm text-gray-400 mb-1">
-                          <span>Original Price:</span>
-                          <span className="line-through">₹{getTotalPrice().toLocaleString()}</span>
-                        </div>
-                      )}
-                      {appliedPromo && (
-                        <div className="flex items-center justify-between text-sm text-green-400 mb-2">
-                          <span>Discount ({appliedPromo.promoCode.code}):</span>
-                          <span>-₹{appliedPromo.discountAmount.toLocaleString()}</span>
-                        </div>
-                      )}
-                      <p className="text-gray-500 text-xs">Plan: {cartItems[0]?.name}</p>
                     </div>
+                  </div>
 
-                    {/* WhatsApp Screenshot Instruction */}
-                    <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-5 mb-4 text-left">
-                      <div className="flex items-start gap-3 mb-3">
-                        <MessageCircle className="w-6 h-6 text-orange-400 flex-shrink-0 mt-1" />
-                        <div className="flex-1">
-                          <h4 className="text-orange-400 font-semibold mb-2">Important: Send Payment Screenshot</h4>
-                          <p className="text-gray-300 text-sm mb-3">
-                            After completing the payment, please share your payment screenshot to confirm your subscription.
-                          </p>
-                          <p className="text-gray-400 text-xs mb-3">
-                            WhatsApp Number: <span className="text-white font-semibold">+91 7303484648</span>
-                          </p>
+                  {/* Payment Methods Info */}
+                  <div className="bg-brand-blue/10 border border-brand-blue/30 rounded-xl p-5">
+                    <h4 className="text-white font-semibold mb-3">Secure Payment via Razorpay</h4>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      {['UPI / QR Code', 'Credit / Debit Card', 'Net Banking', 'Wallets'].map((method) => (
+                        <div key={method} className="bg-white/5 rounded-lg px-3 py-2 text-center">
+                          <span className="text-gray-300 text-xs">{method}</span>
                         </div>
-                      </div>
-                      <div className="bg-orange-500/20 rounded-lg p-3 mb-3">
-                        <p className="text-orange-300 text-xs font-medium mb-1">📸 What to send:</p>
-                        <ul className="text-gray-300 text-xs space-y-1 ml-4">
-                          <li>• Screenshot of payment confirmation</li>
-                          <li>• Include transaction ID if visible</li>
-                          <li>• Your registered email address</li>
-                        </ul>
-                      </div>
+                      ))}
                     </div>
+                    <p className="text-gray-400 text-xs">
+                      Your payment is secured by Razorpay with 256-bit SSL encryption. Your account will be activated instantly after payment.
+                    </p>
+                  </div>
 
-                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
-                      <MessageCircle className="w-5 h-5 text-blue-400 inline mr-2" />
-                      <span className="text-blue-400 font-semibold">Need Help?</span>
-                      <p className="text-gray-300 text-sm mt-2">
-                        Having issues with payment? Contact us on WhatsApp
-                      </p>
-                      <a
-                        href="https://wa.me/917303484648"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 inline-flex items-center gap-2 bg-green-500/20 text-green-400 px-4 py-2 rounded-lg hover:bg-green-500/30 transition-all text-sm"
-                      >
-                        <MessageCircle className="w-4 h-4" />
-                        WhatsApp Support
-                      </a>
-                    </div>
+                  {/* Need Help */}
+                  <div className="text-center">
+                    <p className="text-gray-500 text-sm mb-2">Having trouble? Contact us on WhatsApp</p>
+                    <a
+                      href="https://wa.me/917303484648"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-500/20 transition-all text-sm"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      WhatsApp Support
+                    </a>
                   </div>
                 </div>
               )}
 
-              {/* STEP 4: SUCCESS */}
+              {/* STEP 4: SUCCESS + RECEIPT */}
               {currentStep === 'success' && (
-                <div className="text-center py-12">
+                <div className="py-6">
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: 'spring', duration: 0.5 }}
+                    className="text-center mb-6"
                   >
-                    <CheckCircle className="w-24 h-24 text-green-400 mx-auto mb-6" />
-                    <h2 className="text-3xl font-bold text-white mb-4">Payment Successful!</h2>
-                    <p className="text-gray-300 mb-6">
-                      Thank you for your purchase. Your credentials will be sent to your email shortly.
-                    </p>
-                    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-6 text-left max-w-md mx-auto">
-                      <p className="text-gray-300 text-sm mb-4">
-                        <strong className="text-white">What's Next:</strong>
-                      </p>
-                      <ul className="space-y-2 text-sm text-gray-300">
-                        <li>• Check your email for login credentials</li>
-                        <li>• Your coach will review your details</li>
-                        <li>• Personalized plan will be created</li>
-                        <li>• You'll get access to your dashboard</li>
-                      </ul>
-                    </div>
-                    <p className="text-brand-blue font-semibold mt-8 text-lg">
-                      All the best for your fitness journey! 💪
-                    </p>
-                    <p className="text-gray-500 text-sm mt-4">Redirecting to home...</p>
+                    <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-3" />
+                    <h2 className="text-2xl font-bold text-white">Payment Successful!</h2>
+                    <p className="text-gray-400 text-sm mt-1">Your subscription is now active.</p>
                   </motion.div>
+
+                  {/* Receipt */}
+                  {paymentReceipt && (
+                    <div id="payment-receipt" className="bg-white/5 border border-white/10 rounded-xl p-5 mb-5 text-left">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3 className="text-white font-bold text-lg">Payment Receipt</h3>
+                          <p className="text-gray-500 text-xs">{new Date(paymentReceipt.startDate).toLocaleString('en-IN')}</p>
+                        </div>
+                        <button
+                          onClick={() => window.print()}
+                          className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs px-3 py-1.5 rounded-lg transition-all"
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                          Print
+                        </button>
+                      </div>
+
+                      <div className="space-y-2.5 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Receipt No.</span>
+                          <span className="text-white font-mono text-xs">{paymentReceipt.paymentId}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Order ID</span>
+                          <span className="text-white font-mono text-xs">{paymentReceipt.orderId}</span>
+                        </div>
+                        <div className="border-t border-white/10 pt-2.5">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Plan</span>
+                            <span className="text-white font-medium">{paymentReceipt.planName}</span>
+                          </div>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Name</span>
+                          <span className="text-white">{paymentReceipt.customerName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Email</span>
+                          <span className="text-white text-xs">{paymentReceipt.customerEmail}</span>
+                        </div>
+                        {paymentReceipt.goal && (
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Goal</span>
+                            <span className="text-white capitalize">{paymentReceipt.goal.replace(/-/g, ' ')}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Valid Till</span>
+                          <span className="text-white">{new Date(paymentReceipt.endDate).toLocaleDateString('en-IN')}</span>
+                        </div>
+                        <div className="border-t border-white/10 pt-2.5 flex justify-between items-center">
+                          <span className="text-gray-300 font-semibold">Amount Paid</span>
+                          <span className="text-green-400 text-xl font-bold">₹{paymentReceipt.paidAmount?.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Payment Method</span>
+                          <span className="text-white">Razorpay</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-left mb-4">
+                    <p className="text-gray-300 text-sm font-semibold text-white mb-2">What's Next:</p>
+                    <ul className="space-y-1.5 text-sm text-gray-300">
+                      <li>• Check your email for login credentials</li>
+                      <li>• Your coach will review your details</li>
+                      <li>• Personalized plan will be created within 24hrs</li>
+                      <li>• You'll get access to your dashboard</li>
+                    </ul>
+                  </div>
+                  <p className="text-center text-brand-blue font-semibold text-sm">All the best for your fitness journey! 💪</p>
+                  <p className="text-center text-gray-500 text-xs mt-2">Redirecting to home...</p>
                 </div>
               )}
             </div>
@@ -789,10 +844,18 @@ export default function CheckoutDrawer() {
 
                 {currentStep === 'payment' && (
                   <button
-                    onClick={handlePaymentComplete}
-                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-4 rounded-xl hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all duration-300"
+                    onClick={handleRazorpayPayment}
+                    disabled={isProcessingPayment}
+                    className="w-full bg-gradient-to-r from-brand-blue to-brand-blue-dark text-white font-bold py-4 rounded-xl hover:shadow-[0_0_30px_rgba(23,95,255,0.4)] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    I've Completed Payment
+                    {isProcessingPayment ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Preparing Payment...
+                      </>
+                    ) : (
+                      <>Pay ₹{getFinalTotal().toLocaleString()} Securely</>
+                    )}
                   </button>
                 )}
               </div>
