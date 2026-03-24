@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, ChevronLeft, Maximize2, Loader2, Clock, Dumbbell, Search, TrendingUp } from 'lucide-react';
 import { useRef, useCallback } from 'react';
+import ProtectedContent from '@/components/ProtectedContent';
 
 interface Video {
   id: string;
@@ -25,6 +26,7 @@ interface VideoCategory {
 interface VideoLibraryProps {
   isOpen: boolean;
   onClose: () => void;
+  userEmail?: string;
 }
 
 // Category icons from UXWing (free, no attribution required)
@@ -101,7 +103,7 @@ interface AllVideo extends Video {
   categoryName: string;
 }
 
-export default function VideoLibrary({ isOpen, onClose }: VideoLibraryProps) {
+export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibraryProps) {
   const [categories, setCategories] = useState<VideoCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<VideoCategory | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -515,8 +517,9 @@ export default function VideoLibrary({ isOpen, onClose }: VideoLibraryProps) {
                       {/* Left Side - Main Video Player */}
                       <div className="flex-1 flex flex-col min-w-0">
                         {/* Video Container - Full width on mobile */}
+                        <ProtectedContent userEmail={userEmail} className="-mx-4 md:mx-0">
                         <div
-                          className="relative bg-black rounded-lg lg:rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 -mx-4 md:mx-0"
+                          className="relative bg-black rounded-lg lg:rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10"
                           onContextMenu={(e) => e.preventDefault()}
                         >
                           <div className="aspect-video w-full">
@@ -530,6 +533,7 @@ export default function VideoLibrary({ isOpen, onClose }: VideoLibraryProps) {
                             />
                           </div>
                         </div>
+                        </ProtectedContent>
 
                         {/* Video Info - Mobile optimized */}
                         <div className="mt-3 lg:mt-4 px-1 lg:px-0">

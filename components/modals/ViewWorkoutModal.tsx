@@ -3,14 +3,16 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Dumbbell, Calendar } from 'lucide-react';
 import { useEffect } from 'react';
+import ProtectedContent from '@/components/ProtectedContent';
 
 interface ViewWorkoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   workout: any;
+  userEmail?: string;
 }
 
-export default function ViewWorkoutModal({ isOpen, onClose, workout }: ViewWorkoutModalProps) {
+export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail }: ViewWorkoutModalProps) {
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -63,6 +65,7 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout }: ViewWorko
                 <X size={24} />
               </button>
 
+              <ProtectedContent userEmail={userEmail} className="w-full">
               {/* Header */}
               <div className="flex items-start gap-4 mb-6 pr-8">
                 <div className="p-3 bg-purple-500/20 rounded-xl flex-shrink-0">
@@ -172,6 +175,7 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout }: ViewWorko
               >
                 Close
               </button>
+              </ProtectedContent>
             </motion.div>
           </div>
         </>

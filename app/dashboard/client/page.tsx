@@ -839,11 +839,13 @@ export default function ClientDashboard() {
         isOpen={isWorkoutModalOpen}
         onClose={() => setIsWorkoutModalOpen(false)}
         workout={currentWorkout}
+        userEmail={user?.email}
       />
       <ViewDietModal
         isOpen={isDietModalOpen}
         onClose={() => setIsDietModalOpen(false)}
         diet={currentDiet}
+        userEmail={user?.email}
       />
 
       {/* Latest Blog Widget */}
@@ -868,6 +870,7 @@ export default function ClientDashboard() {
       <VideoLibrary
         isOpen={isVideoLibraryOpen}
         onClose={() => setIsVideoLibraryOpen(false)}
+        userEmail={user?.email}
       />
 
       {/* Edit Assessment Modal */}

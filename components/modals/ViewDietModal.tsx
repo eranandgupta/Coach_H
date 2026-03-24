@@ -3,14 +3,16 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, UtensilsCrossed, Calendar, Flame } from 'lucide-react';
 import { useEffect } from 'react';
+import ProtectedContent from '@/components/ProtectedContent';
 
 interface ViewDietModalProps {
   isOpen: boolean;
   onClose: () => void;
   diet: any;
+  userEmail?: string;
 }
 
-export default function ViewDietModal({ isOpen, onClose, diet }: ViewDietModalProps) {
+export default function ViewDietModal({ isOpen, onClose, diet, userEmail }: ViewDietModalProps) {
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -71,6 +73,7 @@ export default function ViewDietModal({ isOpen, onClose, diet }: ViewDietModalPr
                 <X size={24} />
               </button>
 
+              <ProtectedContent userEmail={userEmail} className="w-full">
               {/* Header */}
               <div className="flex items-start gap-4 mb-6 pr-8">
                 <div className="p-3 bg-green-500/20 rounded-xl flex-shrink-0">
@@ -201,6 +204,7 @@ export default function ViewDietModal({ isOpen, onClose, diet }: ViewDietModalPr
               >
                 Close
               </button>
+              </ProtectedContent>
             </motion.div>
           </div>
         </>
