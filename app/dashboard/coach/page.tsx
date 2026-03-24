@@ -20,7 +20,8 @@ import {
   FileText,
   Bell,
   MessageSquare,
-  Mail
+  Mail,
+  RefreshCw,
 } from 'lucide-react';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
@@ -54,6 +55,21 @@ export default function CoachDashboard() {
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
   const [selectedBlog, setSelectedBlog] = useState<any>(null);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
+
+  const fetchEnrollments = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('/api/new-enrollments', { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const data = await res.json();
+        setEnrollments(data.enrollments || []);
+      }
+    } catch (error) {
+      console.error('Error fetching enrollments:', error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -62,6 +78,7 @@ export default function CoachDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
+    fetchEnrollments();
   }, []);
 
   const fetchDashboardData = async () => {
@@ -800,6 +817,67 @@ export default function CoachDashboard() {
               )}
             </div>
           </div>
+        </motion.div>
+
+        {/* New Enrollments Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mt-6"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <UserPlus className="w-6 h-6 text-green-400" />
+                New Enrollments
+              </h2>
+              <p className="text-gray-400 text-sm mt-1">Clients who enrolled via online payment</p>
+            </div>
+            <button onClick={fetchEnrollments} className="p-2 bg-white/10 border border-white/20 rounded-lg text-gray-300 hover:bg-white/20 transition-all">
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
+          {enrollments.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No online enrollments yet</p>
+          ) : (
+            <div className="space-y-3">
+              {enrollments.map((enr, idx) => {
+                const isActive = enr.status === 'active' && new Date(enr.endDate) >= now;
+                return (
+                  <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
+                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                          {enr.user?.name?.[0]?.toUpperCase() || 'C'}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-semibold text-white">{enr.user?.name || 'Unnamed'}</h3>
+                            <span className={`text-xs px-2 py-0.5 rounded-full border ${isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
+                              {isActive ? 'Active' : 'Expired'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-400">{enr.user?.email}</p>
+                          {enr.user?.phone && <p className="text-xs text-gray-500">{enr.user.phone}</p>}
+                          {enr.customerGoal && (
+                            <p className="text-xs text-brand-blue capitalize">{enr.customerGoal.replace(/-/g, ' ')}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:items-end gap-1 text-sm">
+                        <span className="text-white font-semibold">{enr.plan?.name}</span>
+                        <span className="text-green-400 font-bold">₹{Number(enr.paidAmount).toLocaleString('en-IN')}</span>
+                        <span className="text-gray-500 text-xs">{new Date(enr.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                        <span className="text-gray-600 font-mono text-xs truncate max-w-[180px]">{enr.razorpayPaymentId}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
 
         {/* Manage Blogs Section */}

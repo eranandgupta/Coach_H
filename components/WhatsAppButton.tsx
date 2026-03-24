@@ -12,7 +12,7 @@ export default function WhatsAppButton() {
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 group"
+      className="fixed bottom-20 right-4 md:bottom-8 md:right-6 z-40 group"
       aria-label="Chat on WhatsApp"
     >
       <div className="relative">
@@ -20,7 +20,7 @@ export default function WhatsAppButton() {
         <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-25" />
 
         {/* Button */}
-        <div className="relative flex items-center justify-center w-14 h-14 bg-green-500 rounded-full shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 cursor-pointer">
+        <div className="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-green-500 rounded-full shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 cursor-pointer">
           <svg
             viewBox="0 0 24 24"
             className="w-7 h-7 text-white fill-current"

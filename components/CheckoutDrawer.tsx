@@ -34,6 +34,7 @@ export default function CheckoutDrawer() {
 
   // Receipt state
   const [paymentReceipt, setPaymentReceipt] = useState<any>(null);
+  const [isGeneratingReceipt, setIsGeneratingReceipt] = useState(false);
 
   // Check if current plan is a couple plan
   const isCouplePlan = cartItems[0]?.name?.toLowerCase().includes('couple');
@@ -189,6 +190,8 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
         theme: { color: '#175FFF' },
         handler: async (response: any) => {
           try {
+            setIsGeneratingReceipt(true);
+            setCurrentStep('success');
             const verifyRes = await fetch('/api/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -216,6 +219,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
             const verifyData = await verifyRes.json();
             setPaymentReceipt(verifyData.receipt || null);
+            setIsGeneratingReceipt(false);
 
             if (appliedPromo) {
               try {
@@ -226,16 +230,8 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                 });
               } catch (_) {}
             }
-
-            setCurrentStep('success');
-            setTimeout(() => {
-              clearCart();
-              closeCheckout();
-              setCurrentStep('cart');
-              setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
-              router.push('/');
-            }, 5000);
           } catch (error: any) {
+            setIsGeneratingReceipt(false);
             alert(`Payment verification failed: ${error.message}\n\nPlease contact support with Payment ID: ${response.razorpay_payment_id}`);
           }
         },
@@ -267,6 +263,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
     setAppliedPromo(null);
     setPromoError('');
     setPaymentReceipt(null);
+    setIsGeneratingReceipt(false);
   };
 
   const handleBack = () => {
@@ -721,8 +718,17 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                     <p className="text-gray-400 text-sm mt-1">Your subscription is now active.</p>
                   </motion.div>
 
+                  {/* Receipt generating loader */}
+                  {isGeneratingReceipt && (
+                    <div className="flex flex-col items-center justify-center gap-3 py-6 mb-5 bg-white/5 border border-white/10 rounded-xl">
+                      <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
+                      <p className="text-gray-300 text-sm">Generating your receipt...</p>
+                      <p className="text-gray-500 text-xs">Please do not refresh the page</p>
+                    </div>
+                  )}
+
                   {/* Receipt */}
-                  {paymentReceipt && (
+                  {!isGeneratingReceipt && paymentReceipt && (
                     <div id="payment-receipt" className="bg-white/5 border border-white/10 rounded-xl p-5 mb-5 text-left">
                       <div className="flex items-center justify-between mb-4">
                         <div>
@@ -793,7 +799,19 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                     </ul>
                   </div>
                   <p className="text-center text-brand-blue font-semibold text-sm">All the best for your fitness journey! 💪</p>
-                  <p className="text-center text-gray-500 text-xs mt-2">Redirecting to home...</p>
+                  <button
+                    onClick={() => {
+                      clearCart();
+                      closeCheckout();
+                      setCurrentStep('cart');
+                      setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
+                      setPaymentReceipt(null);
+                      router.push('/');
+                    }}
+                    className="mt-4 w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold py-3 rounded-xl transition-all"
+                  >
+                    Go to Home
+                  </button>
                 </div>
               )}
             </div>

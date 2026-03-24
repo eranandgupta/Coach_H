@@ -157,6 +157,119 @@ export async function sendCredentialsEmail(data: {
   await transporter.sendMail(mailOptions);
 }
 
+// Send payment receipt email to client
+export async function sendPaymentReceiptEmail(data: {
+  clientName: string;
+  clientEmail: string;
+  paymentId: string;
+  orderId: string;
+  planName: string;
+  paidAmount: number;
+  startDate: string;
+  endDate: string;
+  goal?: string | null;
+}) {
+  const transporter = createTransporter();
+
+  const formattedStart = new Intl.DateTimeFormat('en-IN', { dateStyle: 'long', timeZone: 'Asia/Kolkata' }).format(new Date(data.startDate));
+  const formattedEnd = new Intl.DateTimeFormat('en-IN', { dateStyle: 'long', timeZone: 'Asia/Kolkata' }).format(new Date(data.endDate));
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Payment Receipt – Coach Himanshu</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+        <h1 style="color: #ffffff; margin: 0; font-size: 26px;">Payment Confirmed!</h1>
+        <p style="color: #bfdbfe; margin: 8px 0 0 0; font-size: 14px;">Thank you for joining Coach Himanshu</p>
+      </div>
+
+      <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e5e7eb;">
+        <p style="font-size: 16px; margin-bottom: 20px;">Hello <strong>${data.clientName}</strong>,</p>
+        <p style="margin-bottom: 20px;">Your payment has been received successfully. Here is your receipt for reference.</p>
+
+        <!-- Receipt Box -->
+        <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; margin-bottom: 25px;">
+          <div style="background: #1e3a8a; padding: 14px 20px;">
+            <h2 style="margin: 0; color: #ffffff; font-size: 16px; letter-spacing: 1px;">PAYMENT RECEIPT</h2>
+          </div>
+          <div style="padding: 20px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280; width: 45%;">Receipt No.</td>
+                <td style="padding: 8px 0; color: #111827; font-family: monospace; font-size: 12px;">${data.paymentId}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280;">Order ID</td>
+                <td style="padding: 8px 0; color: #111827; font-family: monospace; font-size: 12px;">${data.orderId}</td>
+              </tr>
+              <tr style="border-top: 1px solid #f3f4f6;">
+                <td style="padding: 8px 0; color: #6b7280; padding-top: 14px;">Plan</td>
+                <td style="padding: 8px 0; color: #111827; font-weight: bold; padding-top: 14px;">${data.planName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280;">Client</td>
+                <td style="padding: 8px 0; color: #111827;">${data.clientName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280;">Email</td>
+                <td style="padding: 8px 0; color: #111827;">${data.clientEmail}</td>
+              </tr>
+              ${data.goal ? `<tr><td style="padding: 8px 0; color: #6b7280;">Goal</td><td style="padding: 8px 0; color: #111827; text-transform: capitalize;">${data.goal.replace(/-/g, ' ')}</td></tr>` : ''}
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280;">Start Date</td>
+                <td style="padding: 8px 0; color: #111827;">${formattedStart}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280;">Valid Till</td>
+                <td style="padding: 8px 0; color: #111827;">${formattedEnd}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280;">Payment Via</td>
+                <td style="padding: 8px 0; color: #111827;">Razorpay (Online)</td>
+              </tr>
+              <tr style="border-top: 2px solid #e5e7eb;">
+                <td style="padding: 14px 0 8px 0; color: #1e3a8a; font-weight: bold; font-size: 16px;">Amount Paid</td>
+                <td style="padding: 14px 0 8px 0; color: #16a34a; font-weight: bold; font-size: 22px;">₹${data.paidAmount.toLocaleString('en-IN')}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="https://coachhimanshu.com/dashboard" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Go to Dashboard</a>
+        </div>
+
+        <div style="background: #dbeafe; padding: 20px; border-radius: 8px; margin-top: 10px; text-align: center;">
+          <p style="margin: 0 0 8px 0; color: #1e3a8a; font-weight: bold;">Need Help?</p>
+          <p style="margin: 4px 0; color: #1e40af; font-size: 14px;">📧 info@coachhimanshu.com</p>
+          <p style="margin: 4px 0; color: #1e40af; font-size: 14px;">📱 WhatsApp: +91 7303484648</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; padding: 20px; color: #6b7280; font-size: 12px;">
+        <p style="margin: 5px 0;">Coach Himanshu – NASM Certified Fitness Expert</p>
+        <p style="margin: 5px 0;">Please save this email as your payment confirmation.</p>
+        <p style="margin: 10px 0;"><a href="https://coachhimanshu.com" style="color: #3b82f6; text-decoration: none;">coachhimanshu.com</a></p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const mailOptions = {
+    from: `"Coach Himanshu" <${process.env.SMTP_USER || 'info@coachhimanshu.com'}>`,
+    to: data.clientEmail,
+    subject: `Payment Receipt – ${data.planName} | Coach Himanshu`,
+    html: htmlContent,
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
 // Send membership expiry reminder
 export async function sendMembershipExpiryReminder(data: {
   clientName: string;

@@ -22,6 +22,7 @@ import {
   Lock,
   FileText,
   Trash2,
+  UserPlus,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
@@ -98,6 +99,7 @@ export default function AdminDashboard() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const [createClientOpen, setCreateClientOpen] = useState(false);
@@ -135,7 +137,7 @@ export default function AdminDashboard() {
 
   const fetchAllData = async () => {
     setLoading(true);
-    await Promise.all([fetchClients(), fetchSubscriptions(), fetchPromoCodes(), fetchPlans()]);
+    await Promise.all([fetchClients(), fetchSubscriptions(), fetchPromoCodes(), fetchPlans(), fetchEnrollments()]);
     setLoading(false);
   };
 
@@ -181,6 +183,16 @@ export default function AdminDashboard() {
       setPlans(data.plans || []);
     } catch (error) {
       console.error('Error fetching plans:', error);
+    }
+  };
+
+  const fetchEnrollments = async () => {
+    try {
+      const res = await fetch('/api/new-enrollments', { headers: authHeaders() });
+      const data = await res.json();
+      setEnrollments(data.enrollments || []);
+    } catch (error) {
+      console.error('Error fetching enrollments:', error);
     }
   };
 
@@ -390,6 +402,9 @@ export default function AdminDashboard() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="w-full flex bg-white/5 backdrop-blur-md border border-white/10 rounded-xl mb-6 p-1 h-auto">
+                <TabsTrigger value="enrollments" className="flex-1 gap-1.5 text-xs sm:text-sm text-gray-400 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-2.5">
+                  <UserPlus className="h-4 w-4" /> <span className="hidden sm:inline">New Enrollments</span>
+                </TabsTrigger>
                 <TabsTrigger value="clients" className="flex-1 gap-1.5 text-xs sm:text-sm text-gray-400 data-[state=active]:bg-brand-blue data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-2.5">
                   <Users className="h-4 w-4" /> <span className="hidden sm:inline">Clients</span>
                 </TabsTrigger>
@@ -406,6 +421,66 @@ export default function AdminDashboard() {
                   <Settings className="h-4 w-4" /> <span className="hidden sm:inline">Settings</span>
                 </TabsTrigger>
               </TabsList>
+
+              {/* ===== Tab: New Enrollments ===== */}
+              <TabsContent value="enrollments">
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <UserPlus className="h-5 w-5 text-green-400" /> New Enrollments
+                      </h2>
+                      <p className="text-gray-400 text-sm mt-1">Clients who enrolled via online payment</p>
+                    </div>
+                    <button onClick={fetchEnrollments} className="p-2 bg-white/10 border border-white/20 rounded-lg text-gray-300 hover:bg-white/20 transition-all">
+                      <RefreshCw className="h-4 w-4" />
+                    </button>
+                  </div>
+                  {enrollments.length === 0 ? (
+                    <div className="text-center py-12">
+                      <UserPlus className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                      <p className="text-gray-400">No online enrollments yet</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {enrollments.map((enr, idx) => {
+                        const isActive = enr.status === 'active' && new Date(enr.endDate) >= now;
+                        return (
+                          <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
+                            className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                                  {enr.user?.name?.[0]?.toUpperCase() || 'C'}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <h3 className="font-semibold text-white">{enr.user?.name || 'Unnamed'}</h3>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full border ${isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
+                                      {isActive ? 'Active' : 'Expired'}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-400">{enr.user?.email}</p>
+                                  {enr.user?.phone && <p className="text-xs text-gray-500">{enr.user.phone}</p>}
+                                </div>
+                              </div>
+                              <div className="flex flex-col sm:items-end gap-1 text-sm">
+                                <span className="text-white font-semibold">{enr.plan?.name}</span>
+                                <span className="text-green-400 font-bold">₹{Number(enr.paidAmount).toLocaleString('en-IN')}</span>
+                                <span className="text-gray-500 text-xs">{formatDate(enr.createdAt)}</span>
+                                {enr.customerGoal && (
+                                  <span className="text-brand-blue text-xs capitalize">{enr.customerGoal.replace(/-/g, ' ')}</span>
+                                )}
+                                <span className="text-gray-600 font-mono text-xs">{enr.razorpayPaymentId}</span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
 
               {/* ===== Tab 1: Clients ===== */}
               <TabsContent value="clients">

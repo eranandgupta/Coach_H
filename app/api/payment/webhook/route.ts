@@ -20,7 +20,7 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
-import { sendCredentialsEmail } from '@/lib/email';
+import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
       throw txError;
     }
 
-    // --- 8. Send credentials email (non-fatal) ---
+    // --- 8. Send emails (non-fatal) ---
     if (isNewUser && plainPassword) {
       try {
         await sendCredentialsEmail({
@@ -187,6 +187,20 @@ export async function POST(request: NextRequest) {
       } catch (err) {
         console.error('Webhook: credentials email failed:', err);
       }
+    }
+    try {
+      await sendPaymentReceiptEmail({
+        clientName: customerName,
+        clientEmail: emailToUse,
+        paymentId,
+        orderId,
+        planName: plan.name,
+        paidAmount,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      });
+    } catch (err) {
+      console.error('Webhook: receipt email failed:', err);
     }
   }
 

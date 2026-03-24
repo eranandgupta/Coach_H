@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
-import { sendCredentialsEmail } from '@/lib/email';
+import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -175,7 +175,8 @@ export async function POST(request: NextRequest) {
       return { user, subscription };
     });
 
-    // --- 6. Send credentials email (outside transaction — non-fatal) ---
+    // --- 6. Send emails (outside transaction — non-fatal) ---
+    // Send credentials to new users
     if (isNewUser && plainPassword) {
       try {
         await sendCredentialsEmail({
@@ -186,6 +187,22 @@ export async function POST(request: NextRequest) {
       } catch (emailError) {
         console.error('Credentials email failed (non-fatal):', emailError);
       }
+    }
+    // Send payment receipt to all users
+    try {
+      await sendPaymentReceiptEmail({
+        clientName: name || email.split('@')[0],
+        clientEmail: email,
+        paymentId: razorpay_payment_id,
+        orderId: razorpay_order_id,
+        planName: plan.name,
+        paidAmount,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        goal: goal || null,
+      });
+    } catch (receiptEmailError) {
+      console.error('Receipt email failed (non-fatal):', receiptEmailError);
     }
 
     console.log(`Payment verified & subscription created: ${razorpay_payment_id} → user ${result.user.id}`);
