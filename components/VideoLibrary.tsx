@@ -524,7 +524,8 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
                         >
                           <div className="aspect-video w-full">
                             <iframe
-                              src={selectedVideo.url}
+                              key={selectedVideo.id}
+                              src={`${selectedVideo.url}?autoplay=1`}
                               className="w-full h-full"
                               frameBorder="0"
                               allow="autoplay; fullscreen"
@@ -577,7 +578,15 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
                                 {/* Thumbnail */}
                                 <div className="relative">
                                   <div className={`aspect-video rounded-lg overflow-hidden bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'}`}>
-                                    <div className="w-full h-full flex items-center justify-center bg-black/30">
+                                    {video.thumbnail && (
+                                      <img
+                                        src={video.thumbnail}
+                                        alt={video.title}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                      />
+                                    )}
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                                       {selectedVideo.id === video.id ? (
                                         <div className="w-7 h-7 bg-brand-blue rounded-full flex items-center justify-center">
                                           <Play className="w-3 h-3 text-white ml-0.5" fill="white" />
@@ -640,7 +649,15 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
                                 {/* Thumbnail */}
                                 <div className="relative w-32 flex-shrink-0">
                                   <div className={`aspect-video rounded-lg overflow-hidden bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'}`}>
-                                    <div className="w-full h-full flex items-center justify-center bg-black/30">
+                                    {video.thumbnail && (
+                                      <img
+                                        src={video.thumbnail}
+                                        alt={video.title}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                      />
+                                    )}
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                                       {selectedVideo.id === video.id ? (
                                         <div className="w-8 h-8 bg-brand-blue rounded-full flex items-center justify-center">
                                           <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
@@ -755,17 +772,20 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
                           >
                             {/* Thumbnail with gradient overlay */}
                             <div className="relative aspect-video bg-gradient-to-br from-gray-800 to-gray-900">
-                              {/* Gradient background as placeholder */}
-                              <div className={`absolute inset-0 bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'} opacity-30`} />
-
-                              {/* Exercise icon */}
-                              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                              {/* Actual video thumbnail */}
+                              {video.thumbnail && (
                                 <img
-                                  src={categoryIcons[selectedCategory?.id || '']}
-                                  alt=""
-                                  className="w-16 h-16 object-contain invert"
+                                  src={video.thumbnail}
+                                  alt={video.title}
+                                  className="absolute inset-0 w-full h-full object-cover"
+                                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                 />
-                              </div>
+                              )}
+
+                              {/* Gradient fallback (shown if no thumbnail or load error) */}
+                              {!video.thumbnail && (
+                                <div className={`absolute inset-0 bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'} opacity-30`} />
+                              )}
 
                               {/* Play Button Overlay */}
                               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all duration-300">
