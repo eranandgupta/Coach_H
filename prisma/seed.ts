@@ -49,7 +49,7 @@ async function main() {
     data: {
       name: 'Kickstart Plan',
       description: 'All Inclusive',
-      price: 799,
+      price: 999,
       duration: 30, // 1 Month
       features: JSON.stringify([
         'Personalized workout plans',
@@ -69,7 +69,7 @@ async function main() {
     data: {
       name: 'Consistency Plan',
       description: 'All Inclusive',
-      price: 1799,
+      price: 2099,
       duration: 90, // 3 Months
       features: JSON.stringify([
         'Personalized workout plans',
@@ -89,7 +89,7 @@ async function main() {
     data: {
       name: 'Strength Plan',
       description: 'All Inclusive',
-      price: 2999,
+      price: 3599,
       duration: 180, // 6 Months
       features: JSON.stringify([
         'Personalized workout plans',
@@ -109,7 +109,7 @@ async function main() {
     data: {
       name: 'Mastery Plan',
       description: 'All Inclusive',
-      price: 5499,
+      price: 7499,
       duration: 365, // 12 Months
       features: JSON.stringify([
         'Personalized workout plans',
@@ -128,7 +128,7 @@ async function main() {
     data: {
       name: 'Home Workout',
       description: 'Pre-Sale Offer',
-      price: 1500,
+      price: 1799,
       duration: 120, // 3+1 Months
       features: JSON.stringify([
         'Customised home workout plans',
@@ -148,7 +148,7 @@ async function main() {
     data: {
       name: 'Rehabilitation Plan',
       description: 'Recovery & Healing',
-      price: 1799,
+      price: 2299,
       duration: 90, // 3 Months
       features: JSON.stringify([
         'Customised rehabilitation workout',

@@ -96,10 +96,14 @@ export default function TermsOfService() {
                   We offer the following subscription plans:
                 </p>
                 <ul className="list-disc list-inside text-gray-300 space-y-2 mb-4">
-                  <li>Kickstart Plan: ₹799/month</li>
-                  <li>Consistency Plan: ₹1,799 for 3 months</li>
-                  <li>Strength Plan: ₹2,999 for 6 months</li>
-                  <li>Mastery Plan: ₹5,499 for 12 months</li>
+                  <li>Kickstart Plan: ₹999/month</li>
+                  <li>Consistency Plan: ₹2,099 for 3 months</li>
+                  <li>Strength Plan: ₹3,599 for 6 months</li>
+                  <li>Mastery Plan: ₹7,499 for 12 months</li>
+                  <li>Home Workout Plan: ₹1,799 for 3+1 months</li>
+                  <li>Rehabilitation Plan: ₹2,299 for 3 months</li>
+                  <li>Couple Strength Plan: ₹6,999 for 6 months</li>
+                  <li>Couple Mastery Plan: ₹13,899 for 12 months</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold text-white mb-3">5.2 Payment Terms</h3>
