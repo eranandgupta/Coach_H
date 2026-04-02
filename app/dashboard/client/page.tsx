@@ -871,6 +871,7 @@ export default function ClientDashboard() {
         isOpen={isVideoLibraryOpen}
         onClose={() => setIsVideoLibraryOpen(false)}
         userEmail={user?.email}
+        userPlan={subscription?.subscription?.plan?.name}
       />
 
       {/* Edit Assessment Modal */}

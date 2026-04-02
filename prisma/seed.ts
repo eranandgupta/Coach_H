@@ -127,9 +127,9 @@ async function main() {
   const homeWorkoutPlan = await prisma.subscriptionPlan.create({
     data: {
       name: 'Home Workout',
-      description: 'Pre-Sale Offer',
+      description: 'Home Workout',
       price: 1799,
-      duration: 120, // 3+1 Months
+      duration: 90, // 3 Months
       features: JSON.stringify([
         'Customised home workout plans',
         'No gym or equipment needed',
@@ -138,7 +138,6 @@ async function main() {
         'WhatsApp support',
         'Video exercise demonstrations',
         'Weekly check-ins',
-        '3+1 Months — 1 Month FREE',
       ]),
       isActive: true,
     },

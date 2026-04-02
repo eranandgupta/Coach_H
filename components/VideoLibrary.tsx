@@ -21,12 +21,15 @@ interface VideoCategory {
   description: string;
   color: string;
   videoCount: number;
+  channelUrl?: string;
+  requiredPlans?: string[];
 }
 
 interface VideoLibraryProps {
   isOpen: boolean;
   onClose: () => void;
   userEmail?: string;
+  userPlan?: string;
 }
 
 // Category icons from UXWing (free, no attribution required)
@@ -41,6 +44,8 @@ const categoryIcons: Record<string, string> = {
   stretching: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/yoga-exercise-icon.svg',
   warmup: 'https://uxwing.com/wp-content/themes/uxwing/download/education-school/training-icon.svg',
   cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-icon.svg',
+  homeWorkout: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E",
+  rehabilitation: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'/%3E%3C/svg%3E",
 };
 
 // Video categories configuration
@@ -95,6 +100,16 @@ const categoryConfig: Record<string, { name: string; description: string; color:
     description: 'Heart-pumping exercises',
     color: 'from-rose-500 to-red-600',
   },
+  homeWorkout: {
+    name: 'Home Workout',
+    description: 'No equipment needed',
+    color: 'from-emerald-500 to-green-600',
+  },
+  rehabilitation: {
+    name: 'Rehabilitation',
+    description: 'Recovery & healing',
+    color: 'from-cyan-500 to-blue-600',
+  },
 };
 
 // All videos for search functionality
@@ -103,7 +118,7 @@ interface AllVideo extends Video {
   categoryName: string;
 }
 
-export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibraryProps) {
+export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: VideoLibraryProps) {
   const [categories, setCategories] = useState<VideoCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<VideoCategory | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -145,10 +160,15 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
       const response = await fetch('/api/videos');
       if (response.ok) {
         const data = await response.json();
-        const categoriesWithConfig = data.categories.map((cat: any) => ({
-          ...cat,
-          ...categoryConfig[cat.id],
-        }));
+        const categoriesWithConfig = data.categories
+          .filter((cat: any) => {
+            if (!cat.requiredPlans || cat.requiredPlans.length === 0) return true;
+            return userPlan && cat.requiredPlans.includes(userPlan);
+          })
+          .map((cat: any) => ({
+            ...cat,
+            ...categoryConfig[cat.id],
+          }));
         setCategories(categoriesWithConfig);
       }
     } catch (error) {
@@ -180,15 +200,18 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
       const categoryIds = Object.keys(categoryConfig);
 
       for (const catId of categoryIds) {
-        const response = await fetch(`/api/videos?category=${catId}`);
-        if (response.ok) {
-          const data = await response.json();
-          const videosWithCategory = data.videos.map((v: Video) => ({
-            ...v,
-            categoryId: catId,
-            categoryName: categoryConfig[catId]?.name || catId,
-          }));
-          allVids.push(...videosWithCategory);
+        // Skip channel-only categories (no individual videos to index)
+        if (categoryConfig[catId] && !categories.find(c => c.id === catId)?.channelUrl) {
+          const response = await fetch(`/api/videos?category=${catId}`);
+          if (response.ok) {
+            const data = await response.json();
+            const videosWithCategory = data.videos.map((v: Video) => ({
+              ...v,
+              categoryId: catId,
+              categoryName: categoryConfig[catId]?.name || catId,
+            }));
+            allVids.push(...videosWithCategory);
+          }
         }
       }
       setAllVideos(allVids);
@@ -706,9 +729,9 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => handleCategorySelect(category)}
-                        disabled={category.videoCount === 0}
+                        disabled={category.videoCount === 0 && !category.channelUrl}
                         className={`group relative p-5 md:p-6 rounded-2xl bg-gradient-to-br ${categoryConfig[category.id]?.color || 'from-gray-500 to-gray-600'} overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl ${
-                          category.videoCount === 0 ? 'opacity-40 cursor-not-allowed grayscale' : ''
+                          category.videoCount === 0 && !category.channelUrl ? 'opacity-40 cursor-not-allowed grayscale' : ''
                         }`}
                       >
                         {/* Background Pattern */}
@@ -813,6 +836,23 @@ export default function VideoLibrary({ isOpen, onClose, userEmail }: VideoLibrar
                           </motion.button>
                         ))}
                       </div>
+                    ) : selectedCategory.channelUrl ? (
+                      /* Channel View - Embed ScreenPal channel */
+                      <ProtectedContent userEmail={userEmail} className="h-full">
+                        <div className="h-full flex flex-col" style={{ minHeight: '60vh' }}>
+                          <div className="relative flex-1 bg-black rounded-xl overflow-hidden ring-1 ring-white/10 shadow-2xl">
+                            <iframe
+                              src={selectedCategory.channelUrl}
+                              className="w-full h-full"
+                              style={{ minHeight: '60vh' }}
+                              frameBorder="0"
+                              allow="autoplay; fullscreen"
+                              allowFullScreen
+                              title={`${selectedCategory.name} Channel`}
+                            />
+                          </div>
+                        </div>
+                      </ProtectedContent>
                     ) : (
                       /* No Videos - Show placeholder */
                       <div className="h-full flex flex-col items-center justify-center text-center py-12">

@@ -11,7 +11,9 @@ export async function GET(request: NextRequest) {
       const categories = VIDEO_CATEGORIES.map((cat) => ({
         id: cat.id,
         folderName: cat.folderName,
-        videoCount: cat.videos.length,
+        videoCount: cat.displayCount ?? cat.videos.length,
+        channelUrl: cat.channelUrl,
+        requiredPlans: cat.requiredPlans,
       }));
 
       return NextResponse.json({ categories });

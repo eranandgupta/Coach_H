@@ -130,25 +130,6 @@ export default function PlanCard({
         </motion.div>
       )}
 
-      {/* Home Workout badge */}
-      {homeWorkout && (
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
-        >
-          <div className="bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-500 px-4 py-1 rounded-b-lg shadow-lg">
-            <div className="flex items-center gap-1.5">
-              <Home size={12} className="text-white" />
-              <span className="text-white font-bold text-xs uppercase tracking-wider">
-                Pre-Sale Offer
-              </span>
-              <Sparkles size={12} className="text-white" />
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {/* Rehabilitation badge */}
       {rehabilitation && (
@@ -255,16 +236,6 @@ export default function PlanCard({
                 {couple && (
                   <span className="px-1.5 py-0.5 bg-pink-500/10 text-pink-400 text-xs rounded-full border border-pink-400/20">
                     For 2
-                  </span>
-                )}
-                {homeWorkout && (
-                  <span className="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs rounded-full border border-emerald-400/20 animate-pulse">
-                    Limited Time
-                  </span>
-                )}
-                {rehabilitation && (
-                  <span className="px-1.5 py-0.5 bg-cyan-500/10 text-cyan-400 text-xs rounded-full border border-cyan-400/20">
-                    3 Months
                   </span>
                 )}
               </div>

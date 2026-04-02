@@ -13,6 +13,9 @@ export interface VideoCategory {
   name: string;
   folderName: string;
   videos: ScreenPalVideo[];
+  channelUrl?: string;
+  displayCount?: number;
+  requiredPlans?: string[]; // if set, only users with these plans can see this category
 }
 
 // Video categories with ScreenPal videos
@@ -604,6 +607,24 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         embedUrl: 'https://go.screenpal.com/player/cTlhjVnqWti',
       },
     ],
+  },
+  {
+    id: 'rehabilitation',
+    name: 'Rehabilitation',
+    folderName: 'Rehabilitation',
+    channelUrl: 'https://go.screenpal.com/channels/cOfVbxVT8f',
+    displayCount: 33,
+    requiredPlans: ['Rehabilitation Plan'],
+    videos: [],
+  },
+  {
+    id: 'homeWorkout',
+    name: 'Home Workout',
+    folderName: 'Home Workout',
+    channelUrl: 'https://go.screenpal.com/channels/cOfVDnVT8n',
+    displayCount: 76,
+    requiredPlans: ['Home Workout', 'Mastery Plan'],
+    videos: [],
   },
   {
     id: 'cardio',
