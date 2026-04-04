@@ -77,6 +77,31 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         title: 'Push Ups',
         embedUrl: 'https://go.screenpal.com/player/cTleXynqM8B',
       },
+      {
+        id: 'cOfVbcnTBUX',
+        title: 'Inclined Pushup',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbcnTBUX',
+      },
+      {
+        id: 'cOfVbnnTBUa',
+        title: 'Declined Pushup',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbnnTBUa',
+      },
+      {
+        id: 'cOfVbcnTBU6',
+        title: 'Inclined Bench DB Fly',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbcnTBU6',
+      },
+      {
+        id: 'cOfVbcnTBUi',
+        title: 'Declined Bench DB Fly',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbcnTBUi',
+      },
+      {
+        id: 'cOfVbcnTBUQ',
+        title: 'Flat Bench DB Fly',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbcnTBUQ',
+      },
     ],
   },
   {
@@ -154,6 +179,26 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         title: 'Hyper Extension',
         embedUrl: 'https://go.screenpal.com/player/cTleIhnqLFy',
       },
+      {
+        id: 'cOfVDMnTBtL',
+        title: 'One Arm Close Grip Lat Pull Down',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDMnTBtL',
+      },
+      {
+        id: 'cOfVDMnTBtN',
+        title: 'One Arm Lat Pull Down',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDMnTBtN',
+      },
+      {
+        id: 'cOfVDMnTBt8',
+        title: 'Rack Pull',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDMnTBt8',
+      },
+      {
+        id: 'cOfVDMnTBt9',
+        title: 'Trap Bar Shrugs',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDMnTBt9',
+      },
     ],
   },
   {
@@ -205,6 +250,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         id: 'cTlhignqW0q',
         title: 'Cable Lateral Raise',
         embedUrl: 'https://go.screenpal.com/player/cTlhignqW0q',
+      },
+      {
+        id: 'cOfVbqnTBx2',
+        title: 'Prone High Row',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbqnTBx2',
       },
     ],
   },
@@ -278,6 +328,21 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         title: 'Preacher Single Arm Hammer Curl',
         embedUrl: 'https://go.screenpal.com/player/cTleIJnqLux',
       },
+      {
+        id: 'cOfVbXnTBvL',
+        title: 'Reverse Cable Curl',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbXnTBvL',
+      },
+      {
+        id: 'cOfVbXnTBvN',
+        title: 'Single Arm Cable High Curl',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbXnTBvN',
+      },
+      {
+        id: 'cOfVbXnTBvM',
+        title: 'Cable High Curl',
+        embedUrl: 'https://go.screenpal.com/player/cOfVbXnTBvM',
+      },
     ],
   },
   {
@@ -334,6 +399,26 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         id: 'cTleIZnqL3M',
         title: 'Declined Dumbbell Squeeze Press',
         embedUrl: 'https://go.screenpal.com/player/cTleIZnqL3M',
+      },
+      {
+        id: 'cOfVb3nTBxN',
+        title: 'Bench Dips',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb3nTBxN',
+      },
+      {
+        id: 'cOfVb3nTBx8',
+        title: 'Overhead DB Extension',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb3nTBx8',
+      },
+      {
+        id: 'cOfVb3nTBxP',
+        title: 'Single Arm Cable OH Tricep Extension',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb3nTBxP',
+      },
+      {
+        id: 'cOfVb3nTBx9',
+        title: 'Single Arm DB OH Triceps Extension',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb3nTBx9',
       },
     ],
   },
@@ -402,6 +487,36 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         title: 'Single Leg Curl',
         embedUrl: 'https://go.screenpal.com/player/cTlhiVnqWoA',
       },
+      {
+        id: 'cOfVb2nTBw4',
+        title: 'Good Morning',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb2nTBw4',
+      },
+      {
+        id: 'cOfVb2nTBwy',
+        title: 'Cable Kick Back',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb2nTBwy',
+      },
+      {
+        id: 'cOfVb2nTBwx',
+        title: 'Cable Hip Adduction',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb2nTBwx',
+      },
+      {
+        id: 'cOfVb2nTBww',
+        title: 'Cable Hip Abduction',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb2nTBww',
+      },
+      {
+        id: 'cOfVb2nTBwz',
+        title: 'Seated Calf Raises',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb2nTBwz',
+      },
+      {
+        id: 'cOfVb2nTBwa',
+        title: 'Overhead Squats',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb2nTBwa',
+      },
     ],
   },
   {
@@ -443,6 +558,21 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         id: 'cTleI0nqL3w',
         title: 'Plank',
         embedUrl: 'https://go.screenpal.com/player/cTleI0nqL3w',
+      },
+      {
+        id: 'cOfVb1nTBvI',
+        title: 'Lying Leg Raises',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb1nTBvI',
+      },
+      {
+        id: 'cOfVb1nTBvX',
+        title: 'Cable Crunches',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb1nTBvX',
+      },
+      {
+        id: 'cOfVb1nTBvl',
+        title: 'Hanging Leg Raises',
+        embedUrl: 'https://go.screenpal.com/player/cOfVb1nTBvl',
       },
     ],
   },
@@ -872,6 +1002,46 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         id: 'cTlTQnnYPxY',
         title: 'Step Ups',
         embedUrl: 'https://go.screenpal.com/player/cTlTQnnYPxY',
+      },
+      {
+        id: 'cOfVDjnTBqf',
+        title: 'High Knees',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBqf',
+      },
+      {
+        id: 'cOfVDjnTBq1',
+        title: 'Standing Jump',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBq1',
+      },
+      {
+        id: 'cOfVDjnTBqn',
+        title: 'Box Jump',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBqn',
+      },
+      {
+        id: 'cOfVDjnTBqe',
+        title: 'Burpee to Clean Press',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBqe',
+      },
+      {
+        id: 'cOfVDjnTBqh',
+        title: 'Kettlebell Clean Press',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBqh',
+      },
+      {
+        id: 'cOfVDjnTBFW',
+        title: 'Barbell Clean Press',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBFW',
+      },
+      {
+        id: 'cOfVDjnTBqc',
+        title: 'Barbell Front Squat to Press',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBqc',
+      },
+      {
+        id: 'cOfVDjnTBqV',
+        title: 'Barbell Squat to Press',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDjnTBqV',
       },
     ],
   },

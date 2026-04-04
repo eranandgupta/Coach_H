@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { VIDEO_CATEGORIES, getScreenPalThumbnail } from '@/lib/screenpal';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -23,7 +26,9 @@ export async function GET(request: NextRequest) {
         })),
       }));
 
-      return NextResponse.json({ categories });
+      return NextResponse.json({ categories }, {
+        headers: { 'Cache-Control': 'no-store, max-age=0' },
+      });
     }
 
     // Get videos for specific category — search top-level and sub-categories
@@ -48,7 +53,9 @@ export async function GET(request: NextRequest) {
       thumbnail: video.thumbnail || getScreenPalThumbnail(video.id),
     }));
 
-    return NextResponse.json({ videos });
+    return NextResponse.json({ videos }, {
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
+    });
   } catch (error) {
     console.error('Error fetching videos:', error);
     return NextResponse.json(
