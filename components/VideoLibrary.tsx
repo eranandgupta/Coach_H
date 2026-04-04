@@ -23,6 +23,7 @@ interface VideoCategory {
   videoCount: number;
   channelUrl?: string;
   requiredPlans?: string[];
+  subCategories?: Array<{ id: string; folderName: string; videoCount: number }>;
 }
 
 interface VideoLibraryProps {
@@ -30,6 +31,7 @@ interface VideoLibraryProps {
   onClose: () => void;
   userEmail?: string;
   userPlan?: string;
+  userRole?: string;
 }
 
 // Category icons from UXWing (free, no attribution required)
@@ -46,6 +48,20 @@ const categoryIcons: Record<string, string> = {
   cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-icon.svg',
   homeWorkout: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E",
   rehabilitation: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'/%3E%3C/svg%3E",
+  // Home Workout sub-categories (reuse existing icons)
+  hw_warmup: 'https://uxwing.com/wp-content/themes/uxwing/download/education-school/training-icon.svg',
+  hw_cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-icon.svg',
+  hw_core: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/man-abs-six-pack-icon.svg',
+  hw_legs: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/leg-icon.svg',
+  hw_chest: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/chest-male-icon.svg',
+  hw_back: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/male-body-back-icon.svg',
+  hw_triceps: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/strength-icon.svg',
+  hw_exercises: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E",
+  // Rehabilitation sub-categories
+  rehab_spine: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4'/%3E%3C/svg%3E",
+  rehab_shoulder: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/chest-male-icon.svg',
+  rehab_knee: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/leg-icon.svg',
+  rehab_ankle: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M8 12h8M12 8v8'/%3E%3C/svg%3E",
 };
 
 // Video categories configuration
@@ -105,6 +121,20 @@ const categoryConfig: Record<string, { name: string; description: string; color:
     description: 'No equipment needed',
     color: 'from-emerald-500 to-green-600',
   },
+  // Home Workout sub-categories
+  hw_warmup: { name: 'Warm Up', description: 'Pre-workout warm up', color: 'from-orange-500 to-red-500' },
+  hw_cardio: { name: 'Cardio', description: 'Heart-pumping exercises', color: 'from-rose-500 to-red-600' },
+  hw_core: { name: 'Core', description: 'Core strengthening', color: 'from-pink-500 to-rose-500' },
+  hw_legs: { name: 'Legs', description: 'Leg exercises', color: 'from-yellow-500 to-orange-500' },
+  hw_chest: { name: 'Chest & Push Ups', description: 'Chest exercises', color: 'from-red-500 to-orange-500' },
+  hw_back: { name: 'Back', description: 'Back exercises', color: 'from-blue-500 to-cyan-500' },
+  hw_triceps: { name: 'Triceps', description: 'Triceps exercises', color: 'from-teal-500 to-cyan-500' },
+  hw_exercises: { name: 'Home Exercises', description: 'Resistance band, TRX & more', color: 'from-violet-500 to-purple-600' },
+  // Rehabilitation sub-categories
+  rehab_spine: { name: 'Spine & Core', description: 'Spinal mobility & core rehab', color: 'from-cyan-500 to-blue-500' },
+  rehab_shoulder: { name: 'Shoulder', description: 'Shoulder rehabilitation', color: 'from-blue-500 to-indigo-500' },
+  rehab_knee: { name: 'Knee & Hip', description: 'Knee & hip rehabilitation', color: 'from-teal-500 to-cyan-600' },
+  rehab_ankle: { name: 'Ankle & Foot', description: 'Ankle & foot rehabilitation', color: 'from-emerald-500 to-teal-500' },
   rehabilitation: {
     name: 'Rehabilitation',
     description: 'Recovery & healing',
@@ -118,12 +148,13 @@ interface AllVideo extends Video {
   categoryName: string;
 }
 
-export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: VideoLibraryProps) {
+export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, userRole }: VideoLibraryProps) {
   const [categories, setCategories] = useState<VideoCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<VideoCategory | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<VideoCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingVideos, setIsLoadingVideos] = useState(false);
 
@@ -163,6 +194,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
         const categoriesWithConfig = data.categories
           .filter((cat: any) => {
             if (!cat.requiredPlans || cat.requiredPlans.length === 0) return true;
+            if (userRole === 'admin' || userRole === 'coach') return true;
             return userPlan && cat.requiredPlans.includes(userPlan);
           })
           .map((cat: any) => ({
@@ -197,7 +229,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
   const fetchAllVideos = async () => {
     try {
       const allVids: AllVideo[] = [];
-      const categoryIds = Object.keys(categoryConfig);
+      const categoryIds = Object.keys(categoryConfig).filter(id => !id.startsWith('hw_') && !id.startsWith('rehab_'));
 
       for (const catId of categoryIds) {
         // Skip channel-only categories (no individual videos to index)
@@ -286,12 +318,31 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
 
   const handleCategorySelect = async (category: VideoCategory) => {
     setSelectedCategory(category);
+    if (category.subCategories && category.subCategories.length > 0) {
+      return; // show sub-categories grid
+    }
     await fetchVideos(category.id);
+  };
+
+  const handleSubCategorySelect = async (subCat: { id: string; folderName: string; videoCount: number }) => {
+    const subCategory: VideoCategory = {
+      id: subCat.id,
+      name: categoryConfig[subCat.id]?.name || subCat.folderName,
+      icon: categoryIcons[subCat.id] || '',
+      description: categoryConfig[subCat.id]?.description || '',
+      color: categoryConfig[subCat.id]?.color || 'from-emerald-500 to-green-600',
+      videoCount: subCat.videoCount,
+    };
+    setSelectedSubCategory(subCategory);
+    await fetchVideos(subCat.id);
   };
 
   const handleBack = () => {
     if (selectedVideo) {
       setSelectedVideo(null);
+    } else if (selectedSubCategory) {
+      setSelectedSubCategory(null);
+      setVideos([]);
     } else {
       setSelectedCategory(null);
       setVideos([]);
@@ -301,6 +352,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
 
   const handleClose = () => {
     setSelectedCategory(null);
+    setSelectedSubCategory(null);
     setSelectedVideo(null);
     setVideos([]);
     setIsFullscreen(false);
@@ -361,16 +413,22 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
                       <h2 className="text-lg font-bold text-white tracking-tight">
                         {selectedVideo
                           ? selectedVideo.title
-                          : selectedCategory
-                            ? selectedCategory.name
-                            : 'Exercise Library'}
+                          : selectedSubCategory
+                            ? selectedSubCategory.name
+                            : selectedCategory
+                              ? selectedCategory.name
+                              : 'Exercise Library'}
                       </h2>
                       <p className="text-gray-500 text-xs">
                         {selectedVideo
-                          ? selectedCategory?.name
-                          : selectedCategory
-                            ? `${selectedCategory.videoCount} exercises`
-                            : 'Video guides'}
+                          ? (selectedSubCategory?.name || selectedCategory?.name)
+                          : selectedSubCategory
+                            ? `${videos.length} exercises`
+                            : selectedCategory?.subCategories
+                              ? `${selectedCategory.subCategories.length} folders`
+                              : selectedCategory
+                                ? `${selectedCategory.videoCount} exercises`
+                                : 'Video guides'}
                       </p>
                     </div>
                   </div>
@@ -567,11 +625,11 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
                           <div className="flex items-center gap-2 mt-2 flex-wrap">
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-brand-blue/10 rounded-full border border-brand-blue/20">
                               <img
-                                src={categoryIcons[selectedCategory?.id || '']}
+                                src={categoryIcons[(selectedSubCategory || selectedCategory)?.id || '']}
                                 alt=""
                                 className="w-3.5 h-3.5 object-contain invert"
                               />
-                              <span className="text-brand-blue text-xs font-medium">{selectedCategory?.name}</span>
+                              <span className="text-brand-blue text-xs font-medium">{(selectedSubCategory || selectedCategory)?.name}</span>
                             </div>
                             <span className="text-gray-500 text-xs">
                               {videos.findIndex(v => v.id === selectedVideo.id) + 1} of {videos.length}
@@ -600,7 +658,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
                               >
                                 {/* Thumbnail */}
                                 <div className="relative">
-                                  <div className={`aspect-video rounded-lg overflow-hidden bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'}`}>
+                                  <div className={`aspect-video rounded-lg overflow-hidden bg-gradient-to-br ${categoryConfig[(selectedSubCategory || selectedCategory)?.id || '']?.color || 'from-gray-700 to-gray-800'}`}>
                                     {video.thumbnail && (
                                       <img
                                         src={video.thumbnail}
@@ -646,12 +704,12 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
                           <div className="p-4 border-b border-white/5 bg-white/[0.02]">
                             <div className="flex items-center justify-between">
                               <div>
-                                <h4 className="text-white font-semibold">{selectedCategory?.name}</h4>
+                                <h4 className="text-white font-semibold">{(selectedSubCategory || selectedCategory)?.name}</h4>
                                 <p className="text-gray-500 text-xs mt-0.5">{videos.length} exercises</p>
                               </div>
                               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-blue/20 to-blue-600/20 flex items-center justify-center">
                                 <img
-                                  src={categoryIcons[selectedCategory?.id || '']}
+                                  src={categoryIcons[(selectedSubCategory || selectedCategory)?.id || '']}
                                   alt=""
                                   className="w-4 h-4 object-contain invert"
                                 />
@@ -671,7 +729,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
                               >
                                 {/* Thumbnail */}
                                 <div className="relative w-32 flex-shrink-0">
-                                  <div className={`aspect-video rounded-lg overflow-hidden bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'}`}>
+                                  <div className={`aspect-video rounded-lg overflow-hidden bg-gradient-to-br ${categoryConfig[(selectedSubCategory || selectedCategory)?.id || '']?.color || 'from-gray-700 to-gray-800'}`}>
                                     {video.thumbnail && (
                                       <img
                                         src={video.thumbnail}
@@ -766,6 +824,49 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
                       </motion.button>
                     ))}
                   </motion.div>
+                ) : selectedCategory?.subCategories && !selectedSubCategory ? (
+                  /* Sub-Categories Grid */
+                  <motion.div
+                    key="sub-categories"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"
+                  >
+                    {selectedCategory.subCategories.map((subCat, index) => (
+                      <motion.button
+                        key={subCat.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        onClick={() => handleSubCategorySelect(subCat)}
+                        className={`group relative p-5 md:p-6 rounded-2xl bg-gradient-to-br ${categoryConfig[subCat.id]?.color || 'from-gray-500 to-gray-600'} overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl`}
+                      >
+                        <div className="absolute inset-0 opacity-20">
+                          <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+                          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
+                        </div>
+                        <div className="relative z-10 text-left">
+                          <div className="mb-3 drop-shadow-lg">
+                            <img
+                              src={categoryIcons[subCat.id] || categoryIcons['homeWorkout']}
+                              alt={subCat.folderName}
+                              className="w-10 h-10 md:w-12 md:h-12 object-contain invert"
+                            />
+                          </div>
+                          <h3 className="text-lg md:text-xl font-bold text-white mb-1 drop-shadow">
+                            {categoryConfig[subCat.id]?.name || subCat.folderName}
+                          </h3>
+                          <p className="text-white/70 text-sm font-medium">
+                            {subCat.videoCount} exercise{subCat.videoCount !== 1 ? 's' : ''}
+                          </p>
+                        </div>
+                        <div className="absolute bottom-5 right-5 w-9 h-9 bg-white/20 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                          <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
+                        </div>
+                      </motion.button>
+                    ))}
+                  </motion.div>
                 ) : (
                   /* Video List for Selected Category */
                   <motion.div
@@ -807,7 +908,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan }: V
 
                               {/* Gradient fallback (shown if no thumbnail or load error) */}
                               {!video.thumbnail && (
-                                <div className={`absolute inset-0 bg-gradient-to-br ${categoryConfig[selectedCategory?.id || '']?.color || 'from-gray-700 to-gray-800'} opacity-30`} />
+                                <div className={`absolute inset-0 bg-gradient-to-br ${categoryConfig[(selectedSubCategory || selectedCategory)?.id || '']?.color || 'from-gray-700 to-gray-800'} opacity-30`} />
                               )}
 
                               {/* Play Button Overlay */}
