@@ -11,16 +11,31 @@ export async function GET(request: NextRequest) {
       const categories = VIDEO_CATEGORIES.map((cat) => ({
         id: cat.id,
         folderName: cat.folderName,
-        videoCount: cat.displayCount ?? cat.videos.length,
+        videoCount: cat.subCategories
+          ? cat.subCategories.reduce((sum, sub) => sum + sub.videos.length, 0)
+          : (cat.displayCount ?? cat.videos.length),
         channelUrl: cat.channelUrl,
         requiredPlans: cat.requiredPlans,
+        subCategories: cat.subCategories?.map((sub) => ({
+          id: sub.id,
+          folderName: sub.folderName,
+          videoCount: sub.videos.length,
+        })),
       }));
 
       return NextResponse.json({ categories });
     }
 
-    // Get videos for specific category
-    const categoryData = VIDEO_CATEGORIES.find((cat) => cat.id === category);
+    // Get videos for specific category — search top-level and sub-categories
+    let categoryData = VIDEO_CATEGORIES.find((cat) => cat.id === category);
+    if (!categoryData) {
+      for (const cat of VIDEO_CATEGORIES) {
+        if (cat.subCategories) {
+          const sub = cat.subCategories.find((s) => s.id === category);
+          if (sub) { categoryData = sub; break; }
+        }
+      }
+    }
     if (!categoryData) {
       return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
     }

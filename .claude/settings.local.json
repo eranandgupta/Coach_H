@@ -56,7 +56,12 @@
       "mcp__ide__getDiagnostics",
       "Bash(cd:*)",
       "Read(//Users/agupta2/.ssh/**)",
-      "Bash(ssh -T git@github.com)"
+      "Bash(ssh -T git@github.com)",
+      "WebFetch(domain:api.screenpal.com)",
+      "Bash(read id:*)",
+      "Bash(gunzip)",
+      "WebFetch(domain:screenpal.com)",
+      "Bash(grep -n \"^  {$\\\\|id: '\" \"/Users/agupta2/bin/untitled folder/Coach_H/lib/screenpal.ts\")"
     ],
     "deny": [],
     "ask": []

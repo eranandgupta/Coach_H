@@ -22,7 +22,9 @@ import {
   MessageSquare,
   Mail,
   RefreshCw,
+  Play,
 } from 'lucide-react';
+import VideoLibrary from '@/components/VideoLibrary';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
 import ClientManagementModal from '@/components/forms/ClientManagementModal';
@@ -51,6 +53,7 @@ export default function CoachDashboard() {
   const [isClientDetailModalOpen, setIsClientDetailModalOpen] = useState(false);
   const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
@@ -476,6 +479,16 @@ export default function CoachDashboard() {
                   <span className="text-sm">Feedbacks</span>
                 </motion.div>
               </Link>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsVideoLibraryOpen(true)}
+                className="relative bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Play className="w-5 h-5" />
+                <span className="text-sm">Video Library</span>
+              </motion.button>
             </div>
           </motion.div>
 
@@ -1011,6 +1024,12 @@ export default function CoachDashboard() {
         isOpen={isNotificationModalOpen}
         onClose={() => setIsNotificationModalOpen(false)}
         onSuccess={fetchDashboardData}
+      />
+      <VideoLibrary
+        isOpen={isVideoLibraryOpen}
+        onClose={() => setIsVideoLibraryOpen(false)}
+        userEmail={user?.email}
+        userRole="coach"
       />
     </div>
   );

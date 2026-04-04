@@ -23,9 +23,11 @@ import {
   FileText,
   Trash2,
   UserPlus,
+  Play,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
+import VideoLibrary from '@/components/VideoLibrary';
 import CreateClientModal from '@/components/admin/CreateClientModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import CreatePromoCodeModal from '@/components/admin/CreatePromoCodeModal';
@@ -110,6 +112,7 @@ export default function AdminDashboard() {
   const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [invoiceSub, setInvoiceSub] = useState<Subscription | null>(null);
 
+  const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [sendingReminder, setSendingReminder] = useState<number | null>(null);
   const [sendingAll, setSendingAll] = useState(false);
 
@@ -396,6 +399,19 @@ export default function AdminDashboard() {
               <h3 className="text-3xl font-bold text-white mb-1">{totalPromoCodes}</h3>
               <p className="text-gray-300 text-sm">Promo Codes</p>
             </motion.div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 mb-6">
+            <motion.button
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setIsVideoLibraryOpen(true)}
+              className="relative bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center gap-2"
+            >
+              <Play className="w-5 h-5" />
+              <span className="text-sm">Video Library</span>
+            </motion.button>
           </div>
 
           {/* Tabs */}
@@ -824,6 +840,13 @@ export default function AdminDashboard() {
           </motion.div>
         </div>
       </div>
+
+      {/* Video Library */}
+      <VideoLibrary
+        isOpen={isVideoLibraryOpen}
+        onClose={() => setIsVideoLibraryOpen(false)}
+        userRole="admin"
+      />
 
       {/* Modals */}
       <CreateClientModal open={createClientOpen} onOpenChange={setCreateClientOpen}
