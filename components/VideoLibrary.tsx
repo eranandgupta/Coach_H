@@ -50,13 +50,13 @@ const categoryIcons: Record<string, string> = {
   rehabilitation: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'/%3E%3C/svg%3E",
   // Home Workout sub-categories (reuse existing icons)
   hw_warmup: 'https://uxwing.com/wp-content/themes/uxwing/download/education-school/training-icon.svg',
-  hw_cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-icon.svg',
-  hw_core: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/man-abs-six-pack-icon.svg',
-  hw_legs: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/leg-icon.svg',
   hw_chest: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/chest-male-icon.svg',
   hw_back: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/male-body-back-icon.svg',
-  hw_triceps: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/strength-icon.svg',
-  hw_exercises: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E",
+  hw_shoulders: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/bodybuilding-muscles-icon.svg',
+  hw_legs: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/leg-icon.svg',
+  hw_arms: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/arm-muscles-icon.svg',
+  hw_core: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/man-abs-six-pack-icon.svg',
+  hw_cardio: 'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/running-icon.svg',
   // Rehabilitation sub-categories
   rehab_spine: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4'/%3E%3C/svg%3E",
   rehab_shoulder: 'https://uxwing.com/wp-content/themes/uxwing/download/health-sickness-organs/chest-male-icon.svg',
@@ -123,13 +123,13 @@ const categoryConfig: Record<string, { name: string; description: string; color:
   },
   // Home Workout sub-categories
   hw_warmup: { name: 'Warm Up', description: 'Pre-workout warm up', color: 'from-orange-500 to-red-500' },
-  hw_cardio: { name: 'Cardio', description: 'Heart-pumping exercises', color: 'from-rose-500 to-red-600' },
-  hw_core: { name: 'Core', description: 'Core strengthening', color: 'from-pink-500 to-rose-500' },
-  hw_legs: { name: 'Legs', description: 'Leg exercises', color: 'from-yellow-500 to-orange-500' },
-  hw_chest: { name: 'Chest & Push Ups', description: 'Chest exercises', color: 'from-red-500 to-orange-500' },
+  hw_chest: { name: 'Chest', description: 'Push ups & chest exercises', color: 'from-red-500 to-orange-500' },
   hw_back: { name: 'Back', description: 'Back exercises', color: 'from-blue-500 to-cyan-500' },
-  hw_triceps: { name: 'Triceps', description: 'Triceps exercises', color: 'from-teal-500 to-cyan-500' },
-  hw_exercises: { name: 'Home Exercises', description: 'Resistance band, TRX & more', color: 'from-violet-500 to-purple-600' },
+  hw_shoulders: { name: 'Shoulders', description: 'Shoulder exercises', color: 'from-purple-500 to-pink-500' },
+  hw_legs: { name: 'Legs', description: 'Leg exercises', color: 'from-yellow-500 to-orange-500' },
+  hw_arms: { name: 'Arms', description: 'Biceps & triceps exercises', color: 'from-teal-500 to-cyan-500' },
+  hw_core: { name: 'Core', description: 'Core strengthening', color: 'from-pink-500 to-rose-500' },
+  hw_cardio: { name: 'Cardio', description: 'Heart-pumping exercises', color: 'from-rose-500 to-red-600' },
   // Rehabilitation sub-categories
   rehab_spine: { name: 'Spine & Core', description: 'Spinal mobility & core rehab', color: 'from-cyan-500 to-blue-500' },
   rehab_shoulder: { name: 'Shoulder', description: 'Shoulder rehabilitation', color: 'from-blue-500 to-indigo-500' },
@@ -193,8 +193,12 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
         const data = await response.json();
         const categoriesWithConfig = data.categories
           .filter((cat: any) => {
-            if (!cat.requiredPlans || cat.requiredPlans.length === 0) return true;
             if (userRole === 'admin' || userRole === 'coach') return true;
+            // Rehab plan clients only see the rehabilitation section
+            if (userPlan === 'Rehabilitation Plan') return cat.id === 'rehabilitation';
+            // Show unrestricted categories to all other users
+            if (!cat.requiredPlans || cat.requiredPlans.length === 0) return true;
+            // Show plan-gated categories if user has the matching plan
             return userPlan && cat.requiredPlans.includes(userPlan);
           })
           .map((cat: any) => ({
