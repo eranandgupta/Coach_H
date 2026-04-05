@@ -42,6 +42,7 @@ export default function ClientDashboard() {
   const [loading, setLoading] = useState(true);
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
   const [isDietModalOpen, setIsDietModalOpen] = useState(false);
+  const [selectedDietIndex, setSelectedDietIndex] = useState(0);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -254,7 +255,7 @@ export default function ClientDashboard() {
 
   const isSubscriptionActive = subscription?.isActive;
   const currentWorkout = workouts[0];
-  const currentDiet = diets[0];
+  const currentDiet = diets[selectedDietIndex] || diets[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy">
@@ -763,6 +764,24 @@ export default function ClientDashboard() {
                 <h2 className="text-2xl font-bold text-white">Current Diet</h2>
               </div>
             </div>
+
+            {diets.length > 1 && (
+              <div className="flex gap-2 mb-4 flex-wrap">
+                {diets.map((diet: any, idx: number) => (
+                  <button
+                    key={diet.id}
+                    onClick={() => setSelectedDietIndex(idx)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      selectedDietIndex === idx
+                        ? 'bg-green-500 text-white'
+                        : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
+                    }`}
+                  >
+                    {diet.title || `Plan ${idx + 1}`}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {currentDiet ? (
               <div className="space-y-4">
