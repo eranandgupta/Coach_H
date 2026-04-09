@@ -40,6 +40,9 @@ const APPLICABLE_PLANS = [
   'Strength Plan',
   'Mastery Plan',
   'Rehabilitation Plan',
+  'Home Workout Plan',
+  'Couple Strength Plan',
+  'Couple Mastery Plan',
 ];
 
 export default function CreatePromoCodeModal({

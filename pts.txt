@@ -1,0 +1,103 @@
+Home workout library 
+
+# WARM UP 
+
+	1.	Shoulder rotation 
+	2.	Neck rotation 
+	3.	Neck flexion,extension,lateral flexion
+	4.	Chest fly 
+	5.	Spine lateral flexion 
+	6.	Trunk rotation 
+	7.	Toe touches 
+	8.	Cat cow 
+	9.	Thoracic rotation 
+	10.	Shrugs 
+	11.	Scapula retraction protraction 
+	12.	Scapula elevation depression 
+	13.	Elbow flexion 
+	14.	Wrist rotation 
+	15.	Leg raises 
+	16.	Leg swing 
+	17.	Hip rotation 
+	18.	Squats 
+	19.	Calf raises 
+	20.	Ankle rotation 
+
+# CHEST
+
+Push up
+Knee push ups
+Wall push up
+TRX chest press
+Resistance band chest press
+Declined push up
+Inclined push up
+
+# BACK
+
+Superman hold
+Resistance band seated rowing
+Resistance band bent over row
+Resistance band lat pull down
+Resistance band close grip lat pull down
+TRX back rowing
+
+# SHOULDERS
+
+Resistance band shoulder press
+Resistance band front raises
+Resistance band lateral raises
+Resistance band face pull
+TRX face pull
+TRX shoulder high row
+
+# LEGS
+
+Calf raises
+Lunges
+Squats
+Resistance band RDL
+Resistance band squats
+TRX supported squats
+TRX supported lunges
+TRX supported half squats
+Wall sit
+Resistance band kick back
+Resistance band hip abduction
+Resistance band hip adduction
+Resistance band leg curl
+Chair half squats
+Floor hip thrust
+
+# ARMS (Biceps + Triceps)
+
+Close grip push up 
+Close grip knee push up 
+Resistance band biceps curls
+Resistance band seated biceps curl
+TRX biceps curls
+Resistance band triceps extension
+Resistance band O H triceps extension
+TRX triceps extension
+
+# CORE
+
+Plank
+Reverse crunches
+Crunches
+Side plank
+Side bend
+Lying leg raises
+Resistance band woodchopper
+
+
+# Cardio
+
+Jumping jacks
+Burpees
+Jump squat
+Mountain climbers 
+Standing jump
+High knees 
+Resistance band squat to press
+TRX knee tuck

@@ -40,6 +40,7 @@ interface RenewSubscriptionModalProps {
   client: Client | null;
   plans: Plan[];
   mode: 'renew' | 'extend';
+  apiUrl?: string;
 }
 
 export default function RenewSubscriptionModal({
@@ -49,6 +50,7 @@ export default function RenewSubscriptionModal({
   client,
   plans,
   mode,
+  apiUrl = '/api/admin/panel/subscriptions',
 }: RenewSubscriptionModalProps) {
   const [planId, setPlanId] = useState('');
   const [transactionId, setTransactionId] = useState('');
@@ -77,7 +79,7 @@ export default function RenewSubscriptionModal({
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/panel/subscriptions', {
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

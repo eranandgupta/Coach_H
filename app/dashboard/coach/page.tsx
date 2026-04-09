@@ -29,6 +29,7 @@ import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
 import ClientManagementModal from '@/components/forms/ClientManagementModal';
 import SubscriptionManagementModal from '@/components/forms/SubscriptionManagementModal';
+import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import CreateBlogModal from '@/components/CreateBlogModal';
 import NotificationModal from '@/components/NotificationModal';
@@ -59,6 +60,10 @@ export default function CoachDashboard() {
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
   const [selectedBlog, setSelectedBlog] = useState<any>(null);
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [plans, setPlans] = useState<{ id: number; name: string; price: number; duration: number }[]>([]);
+  const [renewSubOpen, setRenewSubOpen] = useState(false);
+  const [renewSubClient, setRenewSubClient] = useState<{ id: number; name: string; email: string } | null>(null);
+  const [subMode, setSubMode] = useState<'renew' | 'extend'>('renew');
 
   const fetchEnrollments = async () => {
     try {
@@ -79,9 +84,20 @@ export default function CoachDashboard() {
     router.push('/');
   };
 
+  const fetchPlans = async () => {
+    try {
+      const res = await fetch('/api/subscriptions/plans');
+      const data = await res.json();
+      setPlans(data.plans || []);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
+
   useEffect(() => {
     fetchDashboardData();
     fetchEnrollments();
+    fetchPlans();
   }, []);
 
   const fetchDashboardData = async () => {
@@ -663,16 +679,45 @@ export default function CoachDashboard() {
                               Expires: {new Date(sub.endDate).toLocaleDateString()}
                             </p>
                           </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSendReminder(client);
-                            }}
-                            className="p-1.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded hover:bg-orange-500/30 transition-all"
-                            title="Send Reminder"
-                          >
-                            <Mail className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-1">
+                            {isActive ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setRenewSubClient({ id: client.id, name: client.name || 'Client', email: client.email });
+                                  setSubMode('extend');
+                                  setRenewSubOpen(true);
+                                }}
+                                className="px-2 py-1 text-xs bg-green-500/20 text-green-400 border border-green-500/30 rounded hover:bg-green-500/30 transition-all flex items-center gap-1"
+                                title="Extend Plan"
+                              >
+                                <CreditCard className="w-3 h-3" /> Extend
+                              </button>
+                            ) : (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setRenewSubClient({ id: client.id, name: client.name || 'Client', email: client.email });
+                                  setSubMode('renew');
+                                  setRenewSubOpen(true);
+                                }}
+                                className="px-2 py-1 text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded hover:bg-blue-500/30 transition-all flex items-center gap-1"
+                                title="Renew Subscription"
+                              >
+                                <RefreshCw className="w-3 h-3" /> Renew
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSendReminder(client);
+                              }}
+                              className="p-1.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded hover:bg-orange-500/30 transition-all"
+                              title="Send Reminder"
+                            >
+                              <Mail className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                       );
@@ -993,6 +1038,15 @@ export default function CoachDashboard() {
         }}
         onSuccess={fetchDashboardData}
         client={selectedClient}
+      />
+      <RenewSubscriptionModal
+        open={renewSubOpen}
+        onOpenChange={setRenewSubOpen}
+        onSuccess={fetchDashboardData}
+        client={renewSubClient}
+        plans={plans}
+        mode={subMode}
+        apiUrl="/api/admin/subscriptions"
       />
       <ClientDetailModal
         isOpen={isClientDetailModalOpen}

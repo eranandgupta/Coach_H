@@ -199,6 +199,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         title: 'Trap Bar Shrugs',
         embedUrl: 'https://go.screenpal.com/player/cOfVDMnTBt9',
       },
+      {
+        id: 'cOfVDMnTBtP',
+        title: 'Trap Bar Deadlift',
+        embedUrl: 'https://go.screenpal.com/player/cOfVDMnTBtP',
+      },
     ],
   },
   {
@@ -762,8 +767,8 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
       },
       {
         id: 'rehab_shoulder',
-        name: 'Shoulder',
-        folderName: 'Shoulder',
+        name: 'Shoulder & Elbow',
+        folderName: 'Shoulder & Elbow',
         parentId: 'rehabilitation',
         videos: [
           { id: 'cOfVbHnTBAC', title: 'Isometric Shoulder Abduction', embedUrl: 'https://go.screenpal.com/player/cOfVbHnTBAC' },

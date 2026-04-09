@@ -61,7 +61,8 @@
       "Bash(read id:*)",
       "Bash(gunzip)",
       "WebFetch(domain:screenpal.com)",
-      "Bash(grep -n \"^  {$\\\\|id: '\" \"/Users/agupta2/bin/untitled folder/Coach_H/lib/screenpal.ts\")"
+      "Bash(grep -n \"^  {$\\\\|id: '\" \"/Users/agupta2/bin/untitled folder/Coach_H/lib/screenpal.ts\")",
+      "Bash(npx prisma:*)"
     ],
     "deny": [],
     "ask": []

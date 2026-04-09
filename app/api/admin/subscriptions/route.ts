@@ -4,11 +4,11 @@ import { requireCoach } from '@/lib/middleware';
 
 export const dynamic = 'force-dynamic';
 
-// POST - Create subscription for a client
+// POST - Create, renew, or extend subscription for a client
 async function postHandler(request: NextRequest, context: any) {
   try {
     const body = await request.json();
-    const { clientId, planId, duration } = body;
+    const { clientId, planId, duration, transactionId, paymentMode, mode } = body;
 
     // Validate required fields
     if (!clientId || !planId) {
@@ -36,10 +36,36 @@ async function postHandler(request: NextRequest, context: any) {
       return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
     }
 
-    // Calculate end date based on plan duration
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + (duration || plan.duration));
+    let startDate: Date;
+    let endDate: Date;
+
+    if (mode === 'extend') {
+      // Find the current active subscription
+      const activeSub = await prisma.userSubscription.findFirst({
+        where: {
+          userId: parseInt(clientId),
+          status: 'active',
+          endDate: { gte: new Date() },
+        },
+        orderBy: { endDate: 'desc' },
+      });
+
+      if (!activeSub) {
+        return NextResponse.json(
+          { error: 'No active subscription found to extend' },
+          { status: 400 }
+        );
+      }
+
+      // Extend: start from current endDate, new endDate = current endDate + plan duration
+      startDate = activeSub.endDate;
+      endDate = new Date(activeSub.endDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
+    } else {
+      // Renew or new: start from today
+      startDate = new Date();
+      endDate = new Date();
+      endDate.setDate(endDate.getDate() + (duration || plan.duration));
+    }
 
     // Create subscription
     const subscription = await prisma.userSubscription.create({
@@ -49,6 +75,8 @@ async function postHandler(request: NextRequest, context: any) {
         status: 'active',
         startDate,
         endDate,
+        transactionId: transactionId || null,
+        paymentMode: paymentMode || null,
       },
       include: {
         plan: true,
