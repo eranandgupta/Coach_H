@@ -196,6 +196,8 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
             if (userRole === 'admin' || userRole === 'coach') return true;
             // Rehab plan clients only see the rehabilitation section
             if (userPlan === 'Rehabilitation Plan') return cat.id === 'rehabilitation';
+            // Home Workout plan clients only see the home workout section
+            if (userPlan === 'Home Workout' || userPlan === 'Home Workout Plan') return cat.id === 'homeWorkout';
             // Show unrestricted categories to all other users
             if (!cat.requiredPlans || cat.requiredPlans.length === 0) return true;
             // Show plan-gated categories if user has the matching plan
