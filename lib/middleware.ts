@@ -47,7 +47,7 @@ export async function checkSubscription(userId: number): Promise<{
         plan: true,
       },
       orderBy: {
-        endDate: 'desc',
+        createdAt: 'desc',
       },
     });
 

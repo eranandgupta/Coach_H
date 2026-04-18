@@ -363,33 +363,6 @@ export default function PlanCard({
               </motion.div>
             )}
 
-            {/* WhatsApp Know More - home workout & rehabilitation */}
-            {homeWorkout && (
-              <motion.a
-                href="https://wa.me/917303484648?text=Hi%2C%20I%20want%20to%20know%20more%20about%20the%20Home%20Workout%20Plan"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-lg bg-white/5 hover:bg-emerald-500/10 border border-emerald-400/20 hover:border-emerald-400/40 text-emerald-400 transition-all duration-300 cursor-pointer"
-              >
-                <MessageCircle size={16} />
-                Want to know more? WhatsApp Us
-              </motion.a>
-            )}
-            {rehabilitation && (
-              <motion.a
-                href="https://wa.me/917303484648?text=Hi%2C%20I%20want%20to%20know%20more%20about%20the%20Rehabilitation%20Plan"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-lg bg-white/5 hover:bg-cyan-500/10 border border-cyan-400/20 hover:border-cyan-400/40 text-cyan-400 transition-all duration-300 cursor-pointer"
-              >
-                <MessageCircle size={16} />
-                Want to know more? WhatsApp Us
-              </motion.a>
-            )}
           </div>
         </div>
       </div>

@@ -869,93 +869,98 @@ export default function Home() {
         </div>
 
         {/* ========= MOBILE HERO (lg:hidden) ========= */}
-        <div className="relative z-10 flex-1 flex flex-col lg:hidden">
-          {/* Top spacer for navbar */}
-          <div className="pt-[72px]" />
-
-          {/* Content area — centered vertically */}
-          <div className="flex-1 flex flex-col justify-center px-6">
-            <motion.div variants={containerVariants} initial="hidden" animate="visible">
-              {/* Greeting line */}
-              <motion.p variants={itemVariants} className="text-gray-500 text-[11px] font-medium tracking-[0.2em] uppercase mb-4">
-                Coach Himanshu
-              </motion.p>
-
-              {/* Heading — large and clean */}
-              <motion.h1 variants={itemVariants} className="mb-4">
-                <span className="block text-[2.25rem] font-extrabold text-white leading-[1.1] tracking-tight">
-                  Transform
-                </span>
-                <span className="block text-[2.25rem] font-extrabold leading-[1.1] tracking-tight">
-                  Your{' '}
-                  <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                    Fitness
-                  </span>
-                </span>
-                <span className="block text-[2.25rem] font-extrabold text-white leading-[1.1] tracking-tight">
-                  Journey
-                </span>
-              </motion.h1>
-
-              {/* Subtitle — one line */}
-              <motion.p variants={itemVariants} className="text-[13px] text-gray-400 leading-relaxed mb-6 max-w-[280px]">
-                Personalized training & nutrition built for <span className="text-white">real results</span>.
-              </motion.p>
-
-              {/* CTA — primary full width with glass secondary inline */}
-              <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
-                <a href="#plans" className="flex-1">
-                  <button className="group relative w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-semibold text-white text-sm overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500" />
-                    <span className="relative z-10">Get Started</span>
-                    <ArrowRight size={16} className="relative z-10" />
-                  </button>
-                </a>
-                <button
-                  onClick={() => setIsLoginOpen(true)}
-                  className="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-2xl border border-white/[0.1] backdrop-blur-xl transition-all"
-                  style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)' }}
-                  aria-label="Login"
-                >
-                  <ArrowRight size={18} className="text-white/60" />
-                </button>
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Bottom glass card — stats + social proof */}
+        <div className="relative z-10 flex-1 flex flex-col justify-end lg:hidden pt-24">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="px-4 pb-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="flex-1 flex flex-col justify-center px-5"
           >
-            <div className="rounded-2xl border border-white/[0.06] backdrop-blur-xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
-              {/* Stats row */}
-              <div className="grid grid-cols-3 divide-x divide-white/[0.06]">
-                {stats.map((stat, index) => (
-                  <div key={index} className="flex flex-col items-center py-4 px-2">
-                    <div className="text-lg font-bold text-white leading-none">{stat.value}</div>
-                    <div className="text-gray-500 text-[8px] mt-1 font-medium text-center">{stat.label}</div>
+            {/* Badge */}
+            <motion.div variants={itemVariants} className="mb-5">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.1] backdrop-blur-xl shadow-lg" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.12) 0%, rgba(23,95,255,0.04) 100%)' }}>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-60"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
+                </span>
+                <span className="text-blue-300 text-[11px] font-medium tracking-wider uppercase">NASM Certified Fitness Expert</span>
+              </span>
+            </motion.div>
+
+            {/* Heading */}
+            <motion.h1 variants={itemVariants} className="mb-4">
+              <span className="block text-4xl font-extrabold text-white leading-[1.08] tracking-tight">
+                Transform Your
+              </span>
+              <span className="block text-4xl font-extrabold leading-[1.08] tracking-tight mt-1">
+                <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-brand-gold bg-clip-text text-transparent">
+                  Fitness
+                </span>
+                <span className="text-white"> Journey</span>
+              </span>
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p variants={itemVariants} className="text-sm text-gray-300/80 mb-5 leading-relaxed max-w-sm">
+              Personalized training & nutrition — built for <span className="text-white font-semibold">real results</span>.
+              Start your transformation with <span className="text-brand-gold font-semibold">Coach Himanshu</span> today.
+            </motion.p>
+
+            {/* Social proof */}
+            <motion.div variants={itemVariants} className="flex items-center gap-2.5 mb-6">
+              <div className="flex -space-x-2">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="w-7 h-7 rounded-full border-2 border-brand-navy/80 bg-gradient-to-br from-brand-blue/50 to-brand-gold/50 flex items-center justify-center text-[10px] text-white/80 font-bold">
+                    {['R','P','A','S'][i]}
                   </div>
                 ))}
               </div>
-              {/* Social proof row */}
-              <div className="border-t border-white/[0.06] px-4 py-2.5 flex items-center justify-center gap-2">
-                <div className="flex -space-x-1.5">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="w-5 h-5 rounded-full border-[1.5px] border-brand-navy bg-gradient-to-br from-brand-blue/40 to-blue-400/40 flex items-center justify-center text-[7px] text-white/60 font-medium">
-                      {['R','P','A','S'][i]}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-0.5">
+              <div className="flex items-center gap-1.5 text-sm text-gray-400">
+                <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={8} className="text-brand-gold/60 fill-brand-gold/60" />
+                    <Star key={i} size={12} className="text-brand-gold fill-brand-gold" />
                   ))}
                 </div>
-                <span className="text-gray-500 text-[10px] font-medium">1000+ transformed</span>
+                <span className="text-gray-300 font-medium">1000+</span>
+                <span className="text-gray-500 text-xs">transformed</span>
               </div>
+            </motion.div>
+
+            {/* CTAs */}
+            <motion.div variants={itemVariants} className="flex flex-col gap-3">
+              <a href="#plans" className="w-full">
+                <button className="group relative w-full inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-white text-base overflow-hidden transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500 blur-xl opacity-40" />
+                  <span className="relative z-10">Start Your Journey</span>
+                  <ArrowRight size={18} className="relative z-10" />
+                </button>
+              </a>
+              <button
+                onClick={() => setIsLoginOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-white/90 text-base border border-white/[0.12] backdrop-blur-xl transition-all duration-300"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)' }}
+              >
+                View Dashboard
+              </button>
+            </motion.div>
+          </motion.div>
+
+          {/* Stats bar at bottom */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-6"
+          >
+            <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.5) 0%, rgba(10,15,31,0.85) 100%)' }}>
+              {stats.map((stat, index) => (
+                <div key={index} className="flex flex-col items-center justify-center py-4 px-2">
+                  <stat.icon size={16} className="text-brand-blue/70 mb-1.5" />
+                  <div className="text-base font-bold text-white leading-none">{stat.value}</div>
+                  <div className="text-gray-500 text-[9px] mt-0.5 font-medium">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
