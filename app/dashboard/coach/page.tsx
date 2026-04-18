@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import FunFactModal from '@/components/FunFactModal';
+import LiveSessionModal from '@/components/LiveSessionModal';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
 import ClientManagementModal from '@/components/forms/ClientManagementModal';
@@ -60,6 +61,7 @@ export default function CoachDashboard() {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isFunFactModalOpen, setIsFunFactModalOpen] = useState(false);
+  const [isLiveSessionModalOpen, setIsLiveSessionModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
@@ -521,6 +523,16 @@ export default function CoachDashboard() {
               >
                 <Lightbulb className="w-5 h-5" />
                 <span className="text-sm">Fun Facts</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsLiveSessionModalOpen(true)}
+                className="relative bg-gradient-to-r from-violet-600 to-purple-500 hover:from-violet-500 hover:to-purple-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Play className="w-5 h-5" />
+                <span className="text-sm">Live Sessions</span>
               </motion.button>
             </div>
           </motion.div>
@@ -1128,6 +1140,10 @@ export default function CoachDashboard() {
       <FunFactModal
         isOpen={isFunFactModalOpen}
         onClose={() => setIsFunFactModalOpen(false)}
+      />
+      <LiveSessionModal
+        isOpen={isLiveSessionModalOpen}
+        onClose={() => setIsLiveSessionModalOpen(false)}
       />
     </div>
   );

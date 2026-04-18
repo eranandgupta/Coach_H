@@ -32,6 +32,7 @@ import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import FunFactWidget from '@/components/FunFactWidget';
+import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 
 export default function ClientDashboard() {
@@ -243,6 +244,8 @@ export default function ClientDashboard() {
   const isSubscriptionActive = subscription?.isActive;
   const currentWorkout = workouts[0];
   const currentDiet = diets[selectedDietIndex] || diets[0];
+  const planName = subscription?.subscription?.plan?.name || '';
+  const isLiveSessionPlan = planName === 'She Strong Program' || planName === 'Active Parents Program';
 
   return (
     <div className="min-h-screen bg-brand-navy">
@@ -267,14 +270,14 @@ export default function ClientDashboard() {
           </div>
 
           <div className="flex items-center gap-1.5 md:gap-3">
-            <button
+            {!isLiveSessionPlan && <button
               onClick={() => setIsVideoLibraryOpen(true)}
               className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
               style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}
               title="Video Library"
             >
               <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
-            </button>
+            </button>}
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
               className="relative flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
@@ -494,6 +497,17 @@ export default function ClientDashboard() {
           )}
         </motion.div>
 
+        {/* Fun Fact Widget — shown for all plans */}
+        <FunFactWidget />
+
+        {/* Live Session Plans — show different dashboard */}
+        {isLiveSessionPlan && isSubscriptionActive && (
+          <LiveSessionWidget planName={planName} />
+        )}
+
+        {/* Regular Plans — stats, workouts, diets */}
+        {!isLiveSessionPlan && (
+        <>
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
           <motion.div
@@ -545,9 +559,6 @@ export default function ClientDashboard() {
             <p className="text-gray-500 text-[11px] md:text-sm">Current Week</p>
           </motion.div>
         </div>
-
-        {/* Fun Fact Widget */}
-        <FunFactWidget />
 
         {/* Blog Posts Carousel */}
         {blogPosts.length > 0 && (
@@ -839,6 +850,8 @@ export default function ClientDashboard() {
             )}
           </motion.div>
         </div>
+        </>
+        )}
         </div>
       </div>
 
