@@ -31,6 +31,7 @@ import NotificationPanel from '@/components/NotificationPanel';
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
+import FunFactWidget from '@/components/FunFactWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 
 export default function ClientDashboard() {
@@ -544,6 +545,9 @@ export default function ClientDashboard() {
             <p className="text-gray-500 text-[11px] md:text-sm">Current Week</p>
           </motion.div>
         </div>
+
+        {/* Fun Fact Widget */}
+        <FunFactWidget />
 
         {/* Blog Posts Carousel */}
         {blogPosts.length > 0 && (

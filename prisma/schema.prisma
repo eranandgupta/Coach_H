@@ -291,6 +291,21 @@ model ContactSubmission {
   @@index([createdAt])
 }
 
+model FunFact {
+  id          Int       @id @default(autoincrement())
+  content     String    @db.Text
+  coachId     Int
+  position    Int
+  publishedAt DateTime?
+  isPublished Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isPublished])
+  @@index([position])
+  @@index([publishedAt])
+}
+
 model Feedback {
   id             Int      @id @default(autoincrement())
   name           String

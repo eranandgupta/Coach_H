@@ -821,10 +821,10 @@ export default function Home() {
         <AnnouncementBar />
         <Navbar />
 
-      <section className="relative pb-0 overflow-hidden min-h-0 lg:min-h-screen flex flex-col" aria-label="Hero section">
-        {/* Background — dark base with subtle gradient */}
+      <section className="relative pb-0 overflow-hidden h-[100svh] flex flex-col" aria-label="Hero section">
+        {/* Background */}
         <div className="absolute inset-0 z-0 bg-brand-navy">
-          {/* Mobile: full-screen video background */}
+          {/* Mobile: video background with strong overlay to let text breathe */}
           <div className="absolute inset-0 lg:hidden overflow-hidden">
             <video
               className="absolute w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
@@ -835,144 +835,168 @@ export default function Home() {
             >
               <source src="/intro2.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/95 via-brand-navy/60 to-brand-navy" />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
+            <div className="absolute inset-0 bg-brand-navy/30" />
           </div>
 
-          {/* Desktop: subtle background texture */}
+          {/* Desktop: subtle radial glows */}
           <div className="absolute inset-0 hidden lg:block" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(23,95,255,0.06) 0%, transparent 60%)' }} />
           <div className="absolute inset-0 hidden lg:block" style={{ background: 'radial-gradient(ellipse at 80% 80%, rgba(23,95,255,0.04) 0%, transparent 50%)' }} />
         </div>
 
-        {/* Atmospheric glow */}
+        {/* Atmospheric glow orbs */}
         <div className="absolute top-[15%] left-[5%] w-[250px] lg:w-[400px] h-[250px] lg:h-[400px] rounded-full blur-[120px] lg:blur-[160px] pointer-events-none animate-glow-pulse" style={{ background: 'rgba(23,95,255,0.06)' }} />
         <div className="absolute bottom-[20%] right-[10%] w-[200px] lg:w-[350px] h-[200px] lg:h-[350px] rounded-full blur-[100px] lg:blur-[140px] pointer-events-none animate-glow-pulse" style={{ background: 'rgba(23,95,255,0.04)', animationDelay: '2s' }} />
 
-        {/* Fitness background elements — subtle, decorative */}
+        {/* Desktop fitness background elements */}
         <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.03] hidden lg:block">
-          {/* Hexagon grid pattern — top right */}
           <svg className="absolute -top-20 -right-20 w-[600px] h-[600px] text-brand-blue animate-drift" viewBox="0 0 400 400" fill="none">
             {[...Array(5)].map((_, row) =>
               [...Array(4)].map((_, col) => (
-                <polygon
-                  key={`${row}-${col}`}
-                  points="30,0 60,17 60,52 30,69 0,52 0,17"
-                  transform={`translate(${col * 70 + (row % 2) * 35}, ${row * 62})`}
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  fill="none"
-                />
+                <polygon key={`${row}-${col}`} points="30,0 60,17 60,52 30,69 0,52 0,17" transform={`translate(${col * 70 + (row % 2) * 35}, ${row * 62})`} stroke="currentColor" strokeWidth="1" fill="none" />
               ))
             )}
           </svg>
-
-          {/* Dumbbell icon — left side */}
           <svg className="absolute top-[30%] -left-8 w-[280px] h-[280px] text-white/80 rotate-[25deg]" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="0.8">
-            <rect x="10" y="45" width="12" height="30" rx="3" />
-            <rect x="22" y="50" width="8" height="20" rx="2" />
-            <rect x="90" y="50" width="8" height="20" rx="2" />
-            <rect x="98" y="45" width="12" height="30" rx="3" />
-            <line x1="30" y1="60" x2="90" y2="60" strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="10" y="45" width="12" height="30" rx="3" /><rect x="22" y="50" width="8" height="20" rx="2" /><rect x="90" y="50" width="8" height="20" rx="2" /><rect x="98" y="45" width="12" height="30" rx="3" /><line x1="30" y1="60" x2="90" y2="60" strokeWidth="2.5" strokeLinecap="round" />
           </svg>
-
-          {/* Heartbeat / pulse line — across bottom */}
           <svg className="absolute bottom-[18%] left-0 w-full h-24 text-brand-blue" viewBox="0 0 1200 80" fill="none" stroke="currentColor" strokeWidth="1.2">
-            <polyline points="0,40 200,40 230,40 250,15 270,65 290,25 310,55 330,40 500,40 530,40 550,12 570,68 590,20 610,58 630,40 900,40 930,40 950,18 970,62 990,28 1010,52 1030,40 1200,40" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="0,40 200,40 250,15 270,65 290,25 310,55 330,40 500,40 550,12 570,68 590,20 610,58 630,40 900,40 950,18 970,62 990,28 1010,52 1030,40 1200,40" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-
-          {/* Kettlebell icon — right side middle */}
           <svg className="absolute top-[55%] right-[8%] w-[180px] h-[180px] text-white/60 -rotate-12" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.8">
-            <path d="M35,35 Q35,15 50,15 Q65,15 65,35" strokeLinecap="round" />
-            <circle cx="50" cy="58" r="25" />
-            <circle cx="50" cy="58" r="18" strokeDasharray="4 3" />
-          </svg>
-
-          {/* Target / crosshair — top left */}
-          <svg className="absolute top-[12%] left-[15%] w-[140px] h-[140px] text-white/50" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.7">
-            <circle cx="50" cy="50" r="40" />
-            <circle cx="50" cy="50" r="28" />
-            <circle cx="50" cy="50" r="16" />
-            <circle cx="50" cy="50" r="4" fill="currentColor" opacity="0.3" />
-            <line x1="50" y1="5" x2="50" y2="25" />
-            <line x1="50" y1="75" x2="50" y2="95" />
-            <line x1="5" y1="50" x2="25" y2="50" />
-            <line x1="75" y1="50" x2="95" y2="50" />
-          </svg>
-
-          {/* Barbell plate — bottom left */}
-          <svg className="absolute bottom-[25%] left-[5%] w-[200px] h-[200px] text-white/40 rotate-[15deg]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6">
-            <circle cx="50" cy="50" r="42" />
-            <circle cx="50" cy="50" r="35" />
-            <circle cx="50" cy="50" r="12" />
-            <circle cx="50" cy="50" r="8" fill="currentColor" opacity="0.15" />
-            <text x="50" y="54" textAnchor="middle" fontSize="8" fill="currentColor" opacity="0.5" fontWeight="bold">25</text>
+            <path d="M35,35 Q35,15 50,15 Q65,15 65,35" strokeLinecap="round" /><circle cx="50" cy="58" r="25" /><circle cx="50" cy="58" r="18" strokeDasharray="4 3" />
           </svg>
         </div>
 
-        {/* Mobile fitness elements — very subtle */}
-        <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.025] lg:hidden">
-          {/* Pulse line */}
-          <svg className="absolute top-[20%] left-0 w-full h-16 text-brand-blue" viewBox="0 0 600 60" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <polyline points="0,30 100,30 120,30 135,8 150,52 165,15 180,45 195,30 400,30 420,30 435,10 450,50 465,18 480,42 495,30 600,30" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+        {/* ========= MOBILE HERO (lg:hidden) ========= */}
+        <div className="relative z-10 flex-1 flex flex-col lg:hidden">
+          {/* Top spacer for navbar */}
+          <div className="pt-[72px]" />
 
-          {/* Small dumbbell — top right */}
-          <svg className="absolute top-[35%] right-4 w-[100px] h-[100px] text-white/60 rotate-[40deg]" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1">
-            <rect x="15" y="48" width="10" height="24" rx="3" />
-            <rect x="95" y="48" width="10" height="24" rx="3" />
-            <line x1="25" y1="60" x2="95" y2="60" strokeWidth="2.5" strokeLinecap="round" />
-          </svg>
+          {/* Content area — centered vertically */}
+          <div className="flex-1 flex flex-col justify-center px-6">
+            <motion.div variants={containerVariants} initial="hidden" animate="visible">
+              {/* Greeting line */}
+              <motion.p variants={itemVariants} className="text-gray-500 text-[11px] font-medium tracking-[0.2em] uppercase mb-4">
+                Coach Himanshu
+              </motion.p>
+
+              {/* Heading — large and clean */}
+              <motion.h1 variants={itemVariants} className="mb-4">
+                <span className="block text-[2.25rem] font-extrabold text-white leading-[1.1] tracking-tight">
+                  Transform
+                </span>
+                <span className="block text-[2.25rem] font-extrabold leading-[1.1] tracking-tight">
+                  Your{' '}
+                  <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                    Fitness
+                  </span>
+                </span>
+                <span className="block text-[2.25rem] font-extrabold text-white leading-[1.1] tracking-tight">
+                  Journey
+                </span>
+              </motion.h1>
+
+              {/* Subtitle — one line */}
+              <motion.p variants={itemVariants} className="text-[13px] text-gray-400 leading-relaxed mb-6 max-w-[280px]">
+                Personalized training & nutrition built for <span className="text-white">real results</span>.
+              </motion.p>
+
+              {/* CTA — primary full width with glass secondary inline */}
+              <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
+                <a href="#plans" className="flex-1">
+                  <button className="group relative w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-semibold text-white text-sm overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500" />
+                    <span className="relative z-10">Get Started</span>
+                    <ArrowRight size={16} className="relative z-10" />
+                  </button>
+                </a>
+                <button
+                  onClick={() => setIsLoginOpen(true)}
+                  className="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-2xl border border-white/[0.1] backdrop-blur-xl transition-all"
+                  style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)' }}
+                  aria-label="Login"
+                >
+                  <ArrowRight size={18} className="text-white/60" />
+                </button>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          {/* Bottom glass card — stats + social proof */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="px-4 pb-4"
+          >
+            <div className="rounded-2xl border border-white/[0.06] backdrop-blur-xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
+              {/* Stats row */}
+              <div className="grid grid-cols-3 divide-x divide-white/[0.06]">
+                {stats.map((stat, index) => (
+                  <div key={index} className="flex flex-col items-center py-4 px-2">
+                    <div className="text-lg font-bold text-white leading-none">{stat.value}</div>
+                    <div className="text-gray-500 text-[8px] mt-1 font-medium text-center">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Social proof row */}
+              <div className="border-t border-white/[0.06] px-4 py-2.5 flex items-center justify-center gap-2">
+                <div className="flex -space-x-1.5">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="w-5 h-5 rounded-full border-[1.5px] border-brand-navy bg-gradient-to-br from-brand-blue/40 to-blue-400/40 flex items-center justify-center text-[7px] text-white/60 font-medium">
+                      {['R','P','A','S'][i]}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={8} className="text-brand-gold/60 fill-brand-gold/60" />
+                  ))}
+                </div>
+                <span className="text-gray-500 text-[10px] font-medium">1000+ transformed</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Main hero content */}
-        <div className="relative z-10 pt-24 lg:pt-32 lg:flex-1 lg:flex lg:flex-col lg:justify-center">
+        {/* ========= DESKTOP HERO (hidden lg:flex) ========= */}
+        <div className="relative z-10 hidden lg:flex flex-1 flex-col justify-center pt-28">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="px-5 md:px-8 lg:px-12 max-w-7xl mx-auto w-full"
+            className="px-8 lg:px-12 max-w-7xl mx-auto w-full"
           >
-            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12 xl:gap-16 pb-6 lg:pb-16">
-
-              {/* LEFT — Text content */}
-              <div className="flex-1 lg:max-w-[55%]">
-                {/* Badge */}
-                <motion.div variants={itemVariants} className="mb-4 lg:mb-5">
-                  <span className="inline-flex items-center gap-2 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full border border-white/[0.08] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}>
+            <div className="flex items-center gap-12 xl:gap-16 pb-16">
+              {/* LEFT — Text */}
+              <div className="flex-1 max-w-[55%]">
+                <motion.div variants={itemVariants} className="mb-5">
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}>
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-60"></span>
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-brand-blue"></span>
                     </span>
-                    <span className="text-blue-300/90 text-[10px] lg:text-xs font-medium tracking-widest uppercase">NASM Certified Coach</span>
+                    <span className="text-blue-300/90 text-xs font-medium tracking-widest uppercase">NASM Certified Coach</span>
                   </span>
                 </motion.div>
 
-                {/* Heading */}
-                <motion.h1 variants={itemVariants} className="mb-4 lg:mb-5">
-                  <span className="block text-[2.75rem] sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-[1.02] tracking-tight">
-                    Transform Your
-                  </span>
-                  <span className="block text-[2.75rem] sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.02] tracking-tight">
-                    <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                      Fitness
-                    </span>
+                <motion.h1 variants={itemVariants} className="mb-5">
+                  <span className="block text-6xl xl:text-7xl font-extrabold text-white leading-[1.02] tracking-tight">Transform Your</span>
+                  <span className="block text-6xl xl:text-7xl font-extrabold leading-[1.02] tracking-tight">
+                    <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">Fitness</span>
                     <span className="text-white"> Journey</span>
                   </span>
                 </motion.h1>
 
-                {/* Subtitle */}
-                <motion.p
-                  variants={itemVariants}
-                  className="text-sm lg:text-lg text-gray-400 max-w-lg mb-6 lg:mb-8 leading-relaxed"
-                >
+                <motion.p variants={itemVariants} className="text-lg text-gray-400 max-w-lg mb-8 leading-relaxed">
                   Personalized training & nutrition — built for <span className="text-white font-medium">real results</span>.
                   Start your transformation with <span className="text-brand-blue font-medium">Coach Himanshu</span> today.
                 </motion.p>
 
-                {/* CTAs */}
-                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 mb-6 lg:mb-8">
-                  <a href="#plans" className="w-full sm:w-auto">
-                    <button className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 lg:px-8 lg:py-4 rounded-2xl font-semibold text-white text-sm lg:text-base overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-brand-blue/30">
+                <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
+                  <a href="#plans">
+                    <button className="group relative inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl font-semibold text-white text-base overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-brand-blue/30">
                       <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500" />
                       <span className="relative z-10">Start Your Journey</span>
                       <ArrowRight size={16} className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
@@ -980,14 +1004,13 @@ export default function Home() {
                   </a>
                   <button
                     onClick={() => setIsLoginOpen(true)}
-                    className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 lg:px-8 lg:py-4 rounded-2xl font-medium text-white/80 text-sm lg:text-base border border-white/[0.1] backdrop-blur-xl transition-all duration-300 hover:border-white/[0.2] hover:text-white"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-medium text-white/80 text-base border border-white/[0.1] backdrop-blur-xl transition-all duration-300 hover:border-white/[0.2] hover:text-white"
                     style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}
                   >
                     View Dashboard
                   </button>
                 </motion.div>
 
-                {/* Social proof */}
                 <motion.div
                   variants={itemVariants}
                   className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-white/[0.06] backdrop-blur-xl"
@@ -1012,34 +1035,23 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              {/* RIGHT — Video card (desktop only) */}
-              <motion.div
-                variants={itemVariants}
-                className="hidden lg:block flex-1 lg:max-w-[45%]"
-              >
+              {/* RIGHT — Video card */}
+              <motion.div variants={itemVariants} className="flex-1 max-w-[45%]">
                 <div className="relative">
-                  {/* Glow behind card */}
                   <div className="absolute -inset-4 rounded-[2rem] blur-2xl opacity-40" style={{ background: 'radial-gradient(ellipse, rgba(23,95,255,0.15) 0%, transparent 70%)' }} />
-
-                  {/* Glass video card */}
                   <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
-                    {/* Inner padding for glass border effect */}
                     <div className="p-1.5">
                       <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
                         <video
                           className="absolute w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                           autoPlay loop muted playsInline preload="auto"
                           disablePictureInPicture disableRemotePlayback
-                          aria-label="Coach Himanshu fitness transformation"
                           style={{ pointerEvents: 'none' }}
                           onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
                         >
                           <source src="/intro2.mp4" type="video/mp4" />
                         </video>
-                        {/* Bottom gradient for depth */}
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent" />
-
-                        {/* Floating glass stat card — bottom left */}
                         <div className="absolute bottom-4 left-4 right-4">
                           <div className="backdrop-blur-xl rounded-2xl border border-white/[0.1] px-5 py-4" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.7) 0%, rgba(10,15,31,0.5) 100%)' }}>
                             <div className="flex items-center justify-between">
@@ -1054,8 +1066,6 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-
-                        {/* Floating badge — top right */}
                         <div className="absolute top-4 right-4">
                           <div className="backdrop-blur-xl rounded-xl border border-white/[0.1] px-3 py-2" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
                             <div className="flex items-center gap-1.5">
@@ -1073,34 +1083,28 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Stats bar — flush to bottom */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="relative z-10 w-full mt-auto"
-        >
-          <div className="grid grid-cols-3 border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className={`flex flex-col items-center justify-center gap-1 sm:gap-3 py-4 sm:py-7 px-2 sm:px-8 transition-colors duration-300 group sm:flex-row ${index < 2 ? 'border-r border-white/[0.06]' : ''}`}
-              >
-                <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl border border-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:border-brand-blue/20 transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
-                  <stat.icon size={14} className="text-brand-blue/80 sm:hidden" />
-                  <stat.icon size={18} className="text-brand-blue/80 hidden sm:block" />
-                </div>
-                <div className="text-center sm:text-left">
-                  <div className="text-base sm:text-xl md:text-2xl font-bold text-white/90 leading-none">
-                    {stat.value}
+        {/* Desktop stats bar */}
+        <div className="relative z-10 w-full hidden lg:block">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible">
+            <div className="grid grid-cols-3 border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className={`flex items-center justify-center gap-3 py-7 px-8 transition-colors duration-300 group ${index < 2 ? 'border-r border-white/[0.06]' : ''}`}
+                >
+                  <div className="w-11 h-11 rounded-xl border border-white/[0.06] flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
+                    <stat.icon size={18} className="text-brand-blue/80" />
                   </div>
-                  <div className="text-gray-500 text-[9px] sm:text-xs mt-0.5 font-medium">{stat.label}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                  <div>
+                    <div className="text-xl md:text-2xl font-bold text-white/90 leading-none">{stat.value}</div>
+                    <div className="text-gray-500 text-xs mt-0.5 font-medium">{stat.label}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">

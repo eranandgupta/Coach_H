@@ -24,8 +24,10 @@ import {
   RefreshCw,
   Play,
   CalendarCog,
+  Lightbulb,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
+import FunFactModal from '@/components/FunFactModal';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
 import ClientManagementModal from '@/components/forms/ClientManagementModal';
@@ -57,6 +59,7 @@ export default function CoachDashboard() {
   const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
+  const [isFunFactModalOpen, setIsFunFactModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
@@ -508,6 +511,16 @@ export default function CoachDashboard() {
               >
                 <Play className="w-5 h-5" />
                 <span className="text-sm">Video Library</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsFunFactModalOpen(true)}
+                className="relative bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-500 hover:to-amber-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-yellow-500/30 hover:shadow-xl hover:shadow-yellow-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Lightbulb className="w-5 h-5" />
+                <span className="text-sm">Fun Facts</span>
               </motion.button>
             </div>
           </motion.div>
@@ -1111,6 +1124,10 @@ export default function CoachDashboard() {
         onClose={() => setIsVideoLibraryOpen(false)}
         userEmail={user?.email}
         userRole="coach"
+      />
+      <FunFactModal
+        isOpen={isFunFactModalOpen}
+        onClose={() => setIsFunFactModalOpen(false)}
       />
     </div>
   );
