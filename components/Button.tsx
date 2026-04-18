@@ -21,15 +21,15 @@ export default function Button({
   disabled = false,
 }: ButtonProps) {
   const baseStyles =
-    'px-6 py-3 rounded-lg font-semibold transition-all duration-300 relative overflow-hidden inline-flex items-center justify-center';
+    'px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden inline-flex items-center justify-center';
 
   const variants = {
     primary:
-      'bg-brand-blue text-white hover:bg-brand-blue-dark shadow-lg hover:shadow-[0_8px_24px_rgba(23,95,255,0.4)] hover:-translate-y-0.5',
+      'bg-gradient-to-r from-brand-blue to-blue-500 text-white shadow-lg shadow-brand-blue/25 hover:shadow-[0_8px_30px_rgba(23,95,255,0.45)] hover:-translate-y-0.5',
     secondary:
-      'bg-brand-navy-light text-white border border-brand-navy-light/50 hover:border-brand-blue/50 hover:shadow-[0_8px_24px_rgba(23,95,255,0.2)] hover:-translate-y-0.5',
+      'btn-glass text-white hover:-translate-y-0.5',
     outline:
-      'bg-transparent text-brand-blue border-2 border-brand-blue hover:bg-brand-blue/10 hover:shadow-[0_8px_24px_rgba(23,95,255,0.3)] hover:-translate-y-0.5',
+      'bg-transparent text-brand-blue border border-brand-blue/40 hover:bg-brand-blue/10 hover:border-brand-blue/60 hover:shadow-[0_8px_30px_rgba(23,95,255,0.2)] hover:-translate-y-0.5 backdrop-blur-sm',
   };
 
   return (

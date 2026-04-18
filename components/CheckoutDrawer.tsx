@@ -337,7 +337,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                           key={item.id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="bg-white/5 border border-white/10 rounded-xl p-5"
+                          className="glass-card-subtle p-5"
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
@@ -647,7 +647,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                   </div>
 
                   {/* Order Summary */}
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                  <div className="glass-card-subtle p-5">
                     <h3 className="text-white font-semibold mb-4">Order Summary</h3>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">

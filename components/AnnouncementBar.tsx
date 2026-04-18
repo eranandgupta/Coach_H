@@ -85,9 +85,9 @@ export default function AnnouncementBar() {
   const messages = [...promoMessages, ...staticMessages];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-slate-900 via-brand-navy to-slate-900 text-white py-1 px-3 overflow-hidden border-b border-brand-gold/20">
-      {/* Animated background effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-gold/10 to-transparent animate-shimmer"></div>
+    <div className="fixed top-0 left-0 right-0 z-[60] text-white py-1.5 px-3 overflow-hidden border-b border-white/[0.04] backdrop-blur-2xl" style={{ background: 'linear-gradient(90deg, rgba(7,10,21,0.95) 0%, rgba(10,15,31,0.9) 50%, rgba(7,10,21,0.95) 100%)' }}>
+      {/* Subtle animated background effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-blue/[0.04] to-transparent animate-shimmer"></div>
 
       <div className="relative z-10 flex items-center">
         {/* Running text container */}

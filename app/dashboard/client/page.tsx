@@ -200,47 +200,33 @@ export default function ClientDashboard() {
     const start = new Date(subscription.subscription.startDate);
     const end = new Date(subscription.subscription.endDate);
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    const totalWeeks = Math.ceil(totalDays / 7);
     const now = new Date();
     const currentDay = Math.max(1, Math.ceil((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
 
     const milestones = [];
+    const totalMonths = Math.round(totalDays / 30);
 
-    // 3 months (~90 days) = 12 weeks
-    // 6 months (~180 days) = 6 months
-    // 12 months (~365 days) = 12 months
-    if (totalDays <= 100) {
-      // 3-month plan: show 12 weeks
-      const currentWeek = Math.ceil(currentDay / 7);
-      for (let i = 1; i <= 12; i++) {
+    // Plans <= 3 months: show weeks (W1, W2, ...)
+    // Plans > 3 months: show months (M1, M2, ...)
+    if (totalMonths <= 3) {
+      const totalWeeks = Math.ceil(totalDays / 7);
+      const currentWeek = Math.min(Math.ceil(currentDay / 7), totalWeeks);
+      for (let i = 1; i <= totalWeeks; i++) {
         milestones.push({
           id: i,
           label: `W${i}`,
-          progress: ((i - 1) / 11) * 100,
+          progress: ((i - 1) / Math.max(totalWeeks - 1, 1)) * 100,
           isPassed: i <= currentWeek,
           isCurrent: i === currentWeek,
         });
       }
-    } else if (totalDays <= 200) {
-      // 6-month plan: show 6 months
-      const currentMonth = Math.ceil(currentDay / 30);
-      for (let i = 1; i <= 6; i++) {
-        milestones.push({
-          id: i,
-          label: `M${i}`,
-          progress: ((i - 1) / 5) * 100,
-          isPassed: i <= currentMonth,
-          isCurrent: i === currentMonth,
-        });
-      }
     } else {
-      // Yearly plan: show 12 months
-      const currentMonth = Math.ceil(currentDay / 30);
-      for (let i = 1; i <= 12; i++) {
+      const currentMonth = Math.min(Math.ceil(currentDay / 30), totalMonths);
+      for (let i = 1; i <= totalMonths; i++) {
         milestones.push({
           id: i,
           label: `M${i}`,
-          progress: ((i - 1) / 11) * 100,
+          progress: ((i - 1) / Math.max(totalMonths - 1, 1)) * 100,
           isPassed: i <= currentMonth,
           isCurrent: i === currentMonth,
         });
@@ -258,17 +244,17 @@ export default function ClientDashboard() {
   const currentDiet = diets[selectedDietIndex] || diets[0];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy">
+    <div className="min-h-screen bg-brand-navy">
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
+      <header className="fixed top-0 left-0 right-0 z-40 navbar-glass">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 py-2 flex items-center justify-between gap-2 md:gap-4">
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image
               src="/logo.png"
               alt="Coach Himanshu"
               width={90}
               height={90}
-              className="object-contain"
+              className="object-contain w-[60px] md:w-[90px]"
             />
           </Link>
 
@@ -279,52 +265,56 @@ export default function ClientDashboard() {
             <p className="text-gray-300 text-xs lg:text-sm">Let's crush your fitness goals today</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3">
             <button
               onClick={() => setIsVideoLibraryOpen(true)}
-              className="flex items-center justify-center p-2 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg hover:bg-purple-500/30 transition-all"
+              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}
               title="Video Library"
             >
-              <Play className="w-5 h-5" />
+              <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
             </button>
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
-              className="relative flex items-center justify-center p-2 bg-brand-blue/20 text-brand-blue border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all"
+              className="relative flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
             >
-              <Bell className={`w-5 h-5 ${notificationCount > 0 ? 'animate-pulse' : ''}`} />
+              <Bell className={`w-4 h-4 md:w-5 md:h-5 text-brand-blue ${notificationCount > 0 ? 'animate-pulse' : ''}`} />
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center animate-pulse">
                   {notificationCount > 9 ? '9+' : notificationCount}
                 </span>
               )}
             </button>
             <button
               onClick={() => setIsChangePasswordOpen(true)}
-              className="flex items-center justify-center p-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-lg hover:bg-yellow-500/30 transition-all"
+              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all hidden sm:flex"
+              style={{ background: 'linear-gradient(135deg, rgba(234,179,8,0.1) 0%, rgba(234,179,8,0.03) 100%)' }}
               title="Change Password"
             >
-              <Key className="w-5 h-5" />
+              <Key className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all flex-shrink-0"
+              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-xl border border-white/[0.08] hover:border-red-500/20 transition-all flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.03) 100%)' }}
             >
-              <LogOut className="w-5 h-5" />
-              <span className="hidden lg:inline">Logout</span>
+              <LogOut className="w-4 h-4 md:w-5 md:h-5 text-red-400" />
+              <span className="hidden lg:inline text-red-400 text-sm font-medium">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="pt-28 pb-20 px-4">
+      <div className="pt-24 md:pt-28 pb-20 px-3 md:px-4">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Welcome (shown only on small screens) */}
-          <div className="md:hidden mb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Welcome, {user?.name || 'Champion'}! 💪
+          <div className="md:hidden mb-5">
+            <h1 className="text-2xl font-bold text-white mb-1">
+              Hi {user?.name?.split(' ')[0] || 'Champion'},
             </h1>
-            <p className="text-gray-300">Let's crush your fitness goals today</p>
+            <p className="text-gray-400 text-sm">Welcome back! Let's crush it today</p>
           </div>
 
         {/* Subscription Status Card - Compact & Aesthetic */}
@@ -332,10 +322,10 @@ export default function ClientDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className={`mb-8 p-5 rounded-xl backdrop-blur-md border overflow-hidden ${
+          className={`mb-6 md:mb-8 p-4 md:p-5 rounded-2xl backdrop-blur-xl border overflow-hidden glass-card ${
             isSubscriptionActive
-              ? 'bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30'
-              : 'bg-gradient-to-br from-red-500/10 to-orange-500/10 border-red-500/30'
+              ? 'border-green-500/15'
+              : 'border-red-500/15'
           }`}
         >
           {/* Header Row */}
@@ -453,12 +443,8 @@ export default function ClientDashboard() {
               </div>
 
               {/* Week Milestones - Responsive */}
-              <div className="relative -mx-4 sm:-mx-6 md:mx-0">
-                {/* Fade edges - mobile only */}
-                <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-[#0f1628] to-transparent z-10 pointer-events-none md:hidden" />
-                <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#0f1628] to-transparent z-10 pointer-events-none md:hidden" />
-
-                <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-6 md:px-1 pb-2 pt-1 md:overflow-visible md:justify-between">
+              <div className="relative">
+                <div className="grid gap-1.5 md:gap-2 px-0 md:px-1 pb-2 pt-1" style={{ gridTemplateColumns: `repeat(${getWeekMilestones().length}, 1fr)` }}>
                   {getWeekMilestones().map((milestone, index) => (
                     <motion.div
                       key={milestone.id}
@@ -470,10 +456,9 @@ export default function ClientDashboard() {
                         damping: 20,
                         delay: 0.4 + index * 0.03
                       }}
-                      className="flex-shrink-0 md:flex-1 md:max-w-[4.5rem]"
                     >
                       <div
-                        className={`relative flex flex-col items-center justify-center min-w-[2.75rem] md:min-w-0 md:w-full h-11 rounded-xl transition-all duration-300 ${
+                        className={`relative flex flex-col items-center justify-center w-full h-10 md:h-11 rounded-xl transition-all duration-300 ${
                           milestone.isCurrent
                             ? 'bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-lg shadow-brand-blue/40 ring-2 ring-brand-blue/30 scale-105'
                             : milestone.isPassed
@@ -509,54 +494,54 @@ export default function ClientDashboard() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all"
+            className="glass-card p-3 md:p-6 hover:border-white/[0.12] transition-all"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-purple-500/20 rounded-xl">
-                <Dumbbell className="w-6 h-6 text-purple-400" />
+            <div className="flex items-center justify-between mb-2 md:mb-4">
+              <div className="p-2 md:p-3 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}>
+                <Dumbbell className="w-4 h-4 md:w-6 md:h-6 text-purple-400" />
               </div>
-              <Crown className="w-5 h-5 text-yellow-400" />
+              <Crown className="w-4 h-4 md:w-5 md:h-5 text-yellow-400/60" />
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">{workouts.length}</h3>
-            <p className="text-gray-400 text-sm">Active Workouts</p>
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">{workouts.length}</h3>
+            <p className="text-gray-500 text-[11px] md:text-sm">Active Workouts</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all"
+            className="glass-card p-3 md:p-6 hover:border-white/[0.12] transition-all"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-green-500/20 rounded-xl">
-                <UtensilsCrossed className="w-6 h-6 text-green-400" />
+            <div className="flex items-center justify-between mb-2 md:mb-4">
+              <div className="p-2 md:p-3 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.03) 100%)' }}>
+                <UtensilsCrossed className="w-4 h-4 md:w-6 md:h-6 text-green-400" />
               </div>
-              <TrendingUp className="w-5 h-5 text-green-400" />
+              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-green-400/60" />
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">{diets.length}</h3>
-            <p className="text-gray-400 text-sm">Diet Plans</p>
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">{diets.length}</h3>
+            <p className="text-gray-500 text-[11px] md:text-sm">Diet Plans</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all"
+            className="glass-card p-3 md:p-6 hover:border-white/[0.12] transition-all"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-orange-500/20 rounded-xl">
-                <Calendar className="w-6 h-6 text-orange-400" />
+            <div className="flex items-center justify-between mb-2 md:mb-4">
+              <div className="p-2 md:p-3 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.1) 0%, rgba(249,115,22,0.03) 100%)' }}>
+                <Calendar className="w-4 h-4 md:w-6 md:h-6 text-orange-400" />
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">
-              Week {currentWorkout?.weekNumber || 1}
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">
+              <span className="hidden md:inline">Week </span><span className="md:hidden">W</span>{currentWorkout?.weekNumber || (subscription?.subscription?.startDate ? Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7))) : 1)}
             </h3>
-            <p className="text-gray-400 text-sm">Current Week</p>
+            <p className="text-gray-500 text-[11px] md:text-sm">Current Week</p>
           </motion.div>
         </div>
 
@@ -601,7 +586,7 @@ export default function ClientDashboard() {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 + index * 0.05 }}
-                      className="group bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-brand-blue/30 transition-all duration-300 h-full"
+                      className="group glass-card overflow-hidden hover:border-white/[0.12] transition-all duration-300 h-full"
                     >
                       {/* Cover Image */}
                       <div className="relative h-36 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 overflow-hidden">
@@ -669,17 +654,17 @@ export default function ClientDashboard() {
         )}
 
         {/* Current Plans Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* Current Workout */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+            className="glass-card p-6"
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-500/20 rounded-lg">
+                <div className="p-2 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}>
                   <Dumbbell className="w-6 h-6 text-purple-400" />
                 </div>
                 <h2 className="text-2xl font-bold text-white">Current Workout</h2>
@@ -754,11 +739,11 @@ export default function ClientDashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+            className="glass-card p-6"
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500/20 rounded-lg">
+                <div className="p-2 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.03) 100%)' }}>
                   <UtensilsCrossed className="w-6 h-6 text-green-400" />
                 </div>
                 <h2 className="text-2xl font-bold text-white">Current Diet</h2>

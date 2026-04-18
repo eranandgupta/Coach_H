@@ -62,7 +62,11 @@
       "Bash(gunzip)",
       "WebFetch(domain:screenpal.com)",
       "Bash(grep -n \"^  {$\\\\|id: '\" \"/Users/agupta2/bin/untitled folder/Coach_H/lib/screenpal.ts\")",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "Bash(npx next:*)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill:*)",
+      "Bash(lsof -ti:3001)"
     ],
     "deny": [],
     "ask": []

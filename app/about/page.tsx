@@ -81,13 +81,13 @@ export default function AboutPage() {
     <>
       <AnnouncementBar />
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-brand-navy via-brand-navy-light to-brand-navy">
+      <div className="min-h-screen bg-brand-navy">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-brand-blue rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-brand-gold rounded-full blur-3xl animate-pulse delay-1000"></div>
+        {/* Ambient Background */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-[400px] h-[400px] bg-brand-blue/[0.05] rounded-full blur-[150px] animate-glow-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[180px] animate-glow-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 md:px-6 pt-24 md:pt-32 pb-16 relative z-10">
@@ -103,7 +103,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="inline-block mb-6"
             >
-              <span className="px-6 py-2 bg-gradient-to-r from-brand-blue/20 to-brand-gold/20 border border-brand-blue/30 rounded-full text-brand-gold font-semibold text-sm tracking-wide">
+              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-md text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
                 THE JOURNEY BEHIND THE VISION
               </span>
             </motion.div>
@@ -217,7 +217,7 @@ export default function AboutPage() {
                 <p className="text-gray-300 text-lg leading-relaxed">
                   In <span className="text-brand-gold font-semibold">2018</span>, after joining college, I discovered my true calling—<span className="text-brand-blue font-semibold">strength training and the gym</span>. What started as casual workouts soon grew into a passion. By 2021, I shifted focus from just training to studying fitness science in depth.
                 </p>
-                <div className="bg-gradient-to-r from-brand-blue/10 to-brand-gold/10 border border-brand-gold/30 rounded-2xl p-6">
+                <div className="glass-card p-6">
                   <p className="text-white text-lg leading-relaxed font-medium">
                     Today, my journey reflects one belief: <span className="text-brand-gold font-bold">fitness is not about shortcuts, but about knowledge, discipline, and consistency</span>. And through CoachHimanshu Platform, I want to empower as many people as possible to build healthier, stronger lives.
                   </p>
@@ -381,7 +381,7 @@ export default function AboutPage() {
                     key={index}
                     variants={fadeInUp}
                     whileHover={{ scale: 1.03, y: -5 }}
-                    className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-brand-gold/50 transition-all duration-300 group"
+                    className="glass-card p-6 hover:border-white/[0.12] transition-all duration-300 group"
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-gold rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-lg group-hover:shadow-brand-gold/50 transition-all">
@@ -399,7 +399,7 @@ export default function AboutPage() {
 
           <motion.div
             {...fadeInUp}
-            className="mt-12 bg-gradient-to-r from-brand-blue/20 to-brand-gold/20 border border-brand-gold/30 rounded-2xl p-8 text-center"
+            className="mt-12 glass-card-strong p-8 text-center"
           >
             <p className="text-gray-300 text-lg leading-relaxed">
               After completing my initial diplomas, I began <span className="text-brand-gold font-semibold">lecturing in fitness institutions</span>, teaching and mentoring aspiring trainers while continuing my own growth. Alongside, I launched my YouTube channel – <span className="text-brand-blue font-semibold">Coach Himanshu</span>, dedicated to spreading evidence-based knowledge in exercise science and nutrition.

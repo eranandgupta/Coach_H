@@ -821,7 +821,7 @@ export default function Home() {
         <AnnouncementBar />
         <Navbar />
 
-      <section className="relative pt-28 md:pt-32 pb-0 overflow-hidden min-h-screen flex flex-col justify-center" aria-label="Hero section">
+      <section className="relative pt-24 md:pt-32 pb-0 overflow-hidden min-h-[100svh] flex flex-col justify-center" aria-label="Hero section">
         {/* Background Video */}
         <div className="absolute inset-0 overflow-hidden z-0">
           <video
@@ -843,20 +843,21 @@ export default function Home() {
           >
             <source src="/intro2.mp4" type="video/mp4" />
           </video>
-          {/* Layered dark overlays for depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/70 via-transparent to-brand-navy/40" />
+          {/* Layered dark overlays for depth - darker, more cinematic */}
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/90 via-brand-navy/60 to-brand-navy" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/80 via-transparent to-brand-navy/50" />
+          <div className="absolute inset-0 bg-brand-navy/20" />
         </div>
 
-        {/* Ambient glow orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-blue/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-gold/8 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-blue/5 rounded-full blur-[150px] pointer-events-none" />
+        {/* Ambient glow orbs - more prominent, atmospheric */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-blue/8 rounded-full blur-[150px] pointer-events-none animate-glow-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-brand-blue/6 rounded-full blur-[130px] pointer-events-none animate-glow-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-brand-blue/4 rounded-full blur-[180px] pointer-events-none" />
 
         {/* Floating accent dots */}
-        <div className="absolute top-40 right-16 w-2 h-2 bg-brand-gold/60 rounded-full animate-pulse hidden lg:block" />
-        <div className="absolute top-60 right-32 w-1 h-1 bg-brand-blue/80 rounded-full animate-pulse hidden lg:block" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-40 left-20 w-1.5 h-1.5 bg-brand-gold/50 rounded-full animate-pulse hidden lg:block" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-40 right-16 w-1.5 h-1.5 bg-brand-blue/40 rounded-full animate-float hidden lg:block" />
+        <div className="absolute top-60 right-32 w-1 h-1 bg-brand-blue/60 rounded-full animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-40 left-20 w-1 h-1 bg-brand-blue/30 rounded-full animate-float hidden lg:block" style={{ animationDelay: '2s' }} />
 
         <motion.div
           variants={containerVariants}
@@ -865,25 +866,25 @@ export default function Home() {
           className="relative z-10 flex flex-col items-center justify-center px-4 md:px-6 pt-8 pb-16 md:pb-24"
         >
           {/* Badge */}
-          <motion.div variants={itemVariants} className="mb-6 md:mb-8">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-blue/40 bg-brand-blue/10 backdrop-blur-sm shadow-lg shadow-brand-blue/10">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
+          <motion.div variants={itemVariants} className="mb-5 md:mb-8">
+            <span className="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full border border-white/[0.1] backdrop-blur-xl shadow-lg" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.12) 0%, rgba(23,95,255,0.04) 100%)' }}>
+              <span className="relative flex h-1.5 w-1.5 md:h-2 md:w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-60"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 md:h-2 md:w-2 bg-brand-blue"></span>
               </span>
-              <span className="text-brand-blue text-xs md:text-sm font-semibold tracking-wide">NASM Certified Fitness Expert</span>
+              <span className="text-blue-300 text-[10px] md:text-sm font-medium tracking-wider uppercase">NASM Certified Fitness Expert</span>
             </span>
           </motion.div>
 
           {/* Heading */}
           <motion.h1
             variants={itemVariants}
-            className="text-center max-w-4xl px-2 mb-6 md:mb-8"
+            className="text-center max-w-4xl px-2 mb-5 md:mb-8"
           >
-            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.08] tracking-tight">
+            <span className="block text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.05] tracking-tight">
               Transform Your
             </span>
-            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight mt-1">
+            <span className="block text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mt-0.5">
               <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-brand-gold bg-clip-text text-transparent">
                 Fitness
               </span>
@@ -894,48 +895,50 @@ export default function Home() {
           {/* Subtitle */}
           <motion.p
             variants={itemVariants}
-            className="text-base sm:text-lg md:text-xl text-gray-300/90 max-w-xl md:max-w-2xl mx-auto mb-3 leading-relaxed text-center px-4"
+            className="text-sm sm:text-lg md:text-xl text-gray-300/80 max-w-xl md:max-w-2xl mx-auto mb-3 leading-relaxed text-center px-6"
           >
             Personalized training & nutrition — built for <span className="text-white font-semibold">real results</span>.
             Start your transformation with <span className="text-brand-gold font-semibold">Coach Himanshu</span> today.
           </motion.p>
 
           {/* Social proof micro-text */}
-          <motion.div variants={itemVariants} className="flex items-center gap-2 mb-8 md:mb-10">
+          <motion.div variants={itemVariants} className="flex items-center gap-2 md:gap-3 mb-7 md:mb-10 px-3 md:px-4 py-2 md:py-2.5 rounded-full border border-white/[0.06] backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)' }}>
             <div className="flex -space-x-2">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="w-7 h-7 rounded-full border-2 border-brand-navy bg-gradient-to-br from-brand-blue/60 to-brand-gold/60 flex items-center justify-center text-[10px] text-white font-bold">
+                <div key={i} className="w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-brand-navy/80 bg-gradient-to-br from-brand-blue/50 to-blue-400/50 flex items-center justify-center text-[9px] md:text-[10px] text-white/80 font-medium">
                   {['R','P','A','S'][i]}
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-1.5 text-sm text-gray-400">
+            <div className="flex items-center gap-1 md:gap-1.5 text-xs md:text-sm text-gray-400/80">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={12} className="text-brand-gold fill-brand-gold" />
+                  <Star key={i} size={10} className="text-brand-gold/80 fill-brand-gold/80" />
                 ))}
               </div>
-              <span className="text-gray-300 font-medium">1000+</span>
-              <span>clients transformed</span>
+              <span className="text-white/70 font-medium">1000+</span>
+              <span className="text-gray-500 hidden sm:inline">clients transformed</span>
+              <span className="text-gray-500 sm:hidden">transformed</span>
             </div>
           </motion.div>
 
           {/* CTAs */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full max-w-sm sm:max-w-none px-4"
+            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full max-w-sm sm:max-w-none px-6"
           >
             <a href="#plans" className="w-full sm:w-auto">
-              <button className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white text-base overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-brand-blue/40">
+              <button className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 md:py-4 rounded-2xl font-semibold text-white text-sm md:text-base overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-brand-blue/30">
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500 transition-all duration-300 group-hover:from-blue-500 group-hover:to-brand-blue" />
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-500 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
                 <span className="relative">Start Your Journey</span>
-                <ArrowRight size={18} className="relative transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight size={16} className="relative transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </a>
             <button
               onClick={() => setIsLoginOpen(true)}
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white text-base border border-white/20 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/30 hover:scale-105"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 md:py-4 rounded-2xl font-semibold text-white/90 text-sm md:text-base border border-white/[0.1] backdrop-blur-xl transition-all duration-300 hover:border-white/[0.2] hover:scale-[1.03]"
+              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)' }}
             >
               View Dashboard
             </button>
@@ -949,22 +952,23 @@ export default function Home() {
           animate="visible"
           className="relative z-10 w-full"
         >
-          <div className="grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 bg-black/30 backdrop-blur-md">
+          <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.7) 0%, rgba(10,15,31,0.85) 100%)' }}>
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 py-5 sm:py-6 px-3 sm:px-8 transition-colors duration-200 group"
+                whileHover={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
+                className="flex flex-col items-center justify-center gap-1.5 sm:gap-4 py-4 sm:py-8 px-2 sm:px-8 transition-colors duration-300 group sm:flex-row"
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-brand-gold/30 transition-colors duration-200">
-                  <stat.icon size={20} className="text-brand-gold" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl border border-white/[0.08] flex items-center justify-center flex-shrink-0 group-hover:border-brand-blue/30 transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}>
+                  <stat.icon size={16} className="text-brand-blue sm:hidden" />
+                  <stat.icon size={20} className="text-brand-blue hidden sm:block" />
                 </div>
                 <div className="text-center sm:text-left">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-brand-gold to-yellow-300 bg-clip-text text-transparent leading-none">
+                  <div className="text-lg sm:text-2xl md:text-3xl font-bold text-white leading-none">
                     {stat.value}
                   </div>
-                  <div className="text-gray-400 text-xs sm:text-sm mt-0.5">{stat.label}</div>
+                  <div className="text-gray-500 text-[10px] sm:text-sm mt-0.5 sm:mt-1 font-medium">{stat.label}</div>
                 </div>
               </motion.div>
             ))}
@@ -972,58 +976,69 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-20 px-6 bg-brand-navy-light/30 border-y border-brand-navy-light/20" aria-label="Why choose Coach Himanshu">
+      <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
+        {/* Background ambient glow */}
+        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] pointer-events-none" />
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="max-w-6xl mx-auto"
+          className="max-w-6xl mx-auto relative z-10"
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-4 text-white">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+              <Award size={14} className="text-brand-blue" />
+              <span className="text-blue-300/80 text-xs font-medium tracking-wider uppercase">Why Choose Us</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-5 text-white">
               Why Choose Coach Himanshu?
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              NASM Certified Bodybuilding Coach with <span className="text-brand-gold font-semibold">6+ professional diplomas</span>. Experience science-backed training that's <span className="text-brand-gold font-semibold">affordable</span>, <span className="text-brand-gold font-semibold">accessible</span>, and designed for real transformation.
+            <p className="text-sm md:text-lg text-gray-400/80 max-w-3xl mx-auto leading-relaxed px-2">
+              NASM Certified Bodybuilding Coach with <span className="text-white font-medium">6+ professional diplomas</span>. Experience science-backed training that's <span className="text-white font-medium">affordable</span>, <span className="text-white font-medium">accessible</span>, and designed for real transformation.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative overflow-hidden bg-brand-navy-light border border-brand-navy-light/50 rounded-2xl hover:border-brand-gold/50 transition-all duration-500 cursor-pointer"
+                whileHover={{ y: -6 }}
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all duration-500 cursor-pointer"
+                style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.4) 0%, rgba(10,15,31,0.8) 100%)' }}
               >
                 {/* Premium Image Background */}
-                <div className="relative h-80 overflow-hidden">
+                <div className="relative h-56 md:h-72 overflow-hidden">
                   <img
                     src={feature.image}
                     alt={`${feature.title} - Coach Himanshu Professional Fitness Expertise`}
-                    className={`w-full h-full object-cover ${feature.imagePosition} transition-transform duration-700 group-hover:scale-110 brightness-90 group-hover:brightness-100`}
+                    className={`w-full h-full object-cover ${feature.imagePosition} transition-transform duration-700 group-hover:scale-105 brightness-[0.7] group-hover:brightness-[0.85]`}
                     loading="lazy"
                   />
 
-                  {/* Lighter Gradient Overlay - only at bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/40 to-transparent"></div>
+                  {/* Premium gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/50 to-transparent"></div>
 
-                  {/* Animated glow effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  {/* Subtle blue glow on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
 
-                {/* Content Section */}
-                <div className="relative p-8 bg-gradient-to-b from-brand-navy to-brand-navy-light">
-                  <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-brand-gold transition-colors duration-300">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
-                    {feature.description}
-                  </p>
+                {/* Content Section with glass overlay */}
+                <div className="relative p-4 md:p-7 -mt-6">
+                  <div className="glass-card-subtle p-4 md:p-5">
+                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors duration-300">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-400/80 text-sm leading-relaxed group-hover:text-gray-300/80 transition-colors duration-300">
+                      {feature.description}
+                    </p>
+                  </div>
 
                   {/* Decorative bottom line */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-brand-blue/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
               </motion.div>
             ))}
@@ -1032,7 +1047,7 @@ export default function Home() {
       </section>
 
       {/* Qualifications Marquee */}
-      <section className="py-4 bg-gradient-to-r from-brand-navy-light/50 via-brand-navy-light/30 to-brand-navy-light/50 border-y border-brand-gold/10 overflow-hidden">
+      <section className="py-5 border-y border-white/[0.04] overflow-hidden relative" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(26,37,64,0.15) 50%, rgba(10,15,31,0.95) 100%)' }}>
         <div className="relative">
           {/* Gradient overlays for fade effect */}
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-brand-navy to-transparent z-10"></div>
@@ -1050,9 +1065,9 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="inline-flex items-center gap-2 mx-4 px-4 py-2 bg-gradient-to-br from-brand-blue/10 to-brand-gold/5 border border-brand-gold/20 rounded-lg"
+                className="inline-flex items-center gap-2 mx-3 px-4 py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-gold rounded-md flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-gray-300 font-medium text-xs">{item.text}</span>
@@ -1069,9 +1084,9 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={`dup-${index}`}
-                className="inline-flex items-center gap-2 mx-4 px-4 py-2 bg-gradient-to-br from-brand-blue/10 to-brand-gold/5 border border-brand-gold/20 rounded-lg"
+                className="inline-flex items-center gap-2 mx-3 px-4 py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-gold rounded-md flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-gray-300 font-medium text-xs">{item.text}</span>
@@ -1081,7 +1096,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="plans" className="py-12 md:py-16 px-4 md:px-6" aria-label="Fitness coaching plans">
+      <section id="plans" className="py-16 md:py-20 px-4 md:px-6 relative overflow-hidden" aria-label="Fitness coaching plans">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -1101,7 +1116,7 @@ export default function Home() {
 
           {/* Category Tabs */}
           <motion.div variants={itemVariants} className="flex justify-center mb-8 md:mb-10">
-            <div className="inline-flex flex-wrap justify-center gap-2 p-1.5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
+            <div className="inline-flex flex-wrap justify-center gap-2 p-2 rounded-2xl border border-white/[0.06] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               {[
                 { key: 'gym' as const, label: 'Gym Workout', icon: Dumbbell, color: 'brand-gold' },
                 { key: 'home' as const, label: 'Home Workout', icon: HomeIcon, color: 'emerald-400' },
@@ -1264,8 +1279,8 @@ export default function Home() {
               className="flex flex-col items-center justify-center py-16 md:py-24"
             >
               <motion.div variants={itemVariants} className="relative mb-6">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500/20 to-purple-600/20 border border-violet-500/30 flex items-center justify-center">
-                  <Users className="w-9 h-9 text-violet-400" />
+                <div className="w-20 h-20 rounded-2xl border border-white/[0.08] flex items-center justify-center backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0.03) 100%)' }}>
+                  <Users className="w-9 h-9 text-violet-400/80" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 flex items-center justify-center animate-pulse">
                   <Sparkles className="w-3 h-3 text-white" />
@@ -1299,11 +1314,11 @@ export default function Home() {
       </section>
 
       {/* Rhynogrip Fitness Gear Partner Section */}
-      <section className="py-12 px-6 bg-gradient-to-br from-brand-navy-light/40 via-brand-navy to-brand-navy-light/40 border-y border-brand-gold/20 relative overflow-hidden" aria-label="Fitness gear partner Rhynogrip">
-        {/* Animated background effects */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-gold/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-blue/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <section className="py-16 px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Fitness gear partner Rhynogrip">
+        {/* Ambient glow effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] animate-glow-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] animate-glow-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
 
         <motion.div
@@ -1315,9 +1330,9 @@ export default function Home() {
         >
           {/* Header Section */}
           <motion.div variants={itemVariants} className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-gold/10 border border-brand-gold/30 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-4" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
               <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
-              <span className="text-brand-gold text-xs font-semibold">Premium Partner</span>
+              <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Premium Partner</span>
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white">
@@ -1349,8 +1364,8 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               className="relative group"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/20 to-brand-blue/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
-              <div className="relative bg-gradient-to-br from-brand-navy-light/80 to-brand-navy/80 p-6 rounded-3xl border border-brand-gold/30 backdrop-blur-sm overflow-hidden h-full flex items-center">
+              <div className="absolute inset-0 bg-brand-blue/[0.06] rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+              <div className="relative p-5 rounded-2xl border border-white/[0.08] backdrop-blur-xl overflow-hidden h-full flex items-center" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
                 <video
                   className="w-full h-auto rounded-2xl [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                   autoPlay
@@ -1380,7 +1395,7 @@ export default function Home() {
 
             {/* Offer Details */}
             <motion.div variants={itemVariants} className="flex">
-              <div className="bg-gradient-to-br from-brand-navy-light/60 to-brand-navy-light/30 p-5 rounded-2xl border border-brand-gold/30 backdrop-blur-sm flex flex-col justify-between w-full">
+              <div className="glass-card-strong p-6 flex flex-col justify-between w-full">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-9 h-9 bg-gradient-to-br from-brand-gold to-yellow-500 rounded-xl flex items-center justify-center">
@@ -1396,9 +1411,9 @@ export default function Home() {
                   </p>
 
                   {/* Coupon Code Box */}
-                  <div className="bg-gradient-to-br from-brand-gold/20 to-brand-gold/10 border-2 border-brand-gold/50 rounded-xl p-3 mb-3">
-                    <p className="text-xs text-gray-300 mb-1.5">Use Coupon Code</p>
-                    <div className="flex items-center justify-between bg-brand-navy/60 rounded-lg p-2.5 border border-brand-gold/30">
+                  <div className="rounded-xl p-4 mb-3 border border-brand-gold/20 backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
+                    <p className="text-xs text-gray-400 mb-2 font-medium tracking-wide uppercase">Use Coupon Code</p>
+                    <div className="flex items-center justify-between rounded-lg p-3 border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
                       <code className="text-lg font-bold text-brand-gold tracking-wider">
                         COACHHIMANSHU
                       </code>
@@ -1413,20 +1428,20 @@ export default function Home() {
 
                   <div className="space-y-1.5 mb-3">
                     <div className="flex items-start gap-1.5">
-                      <div className="w-4 h-4 bg-brand-gold/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <div className="w-1.5 h-1.5 bg-brand-gold rounded-full"></div>
+                      <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border border-brand-blue/20" style={{ background: 'rgba(23,95,255,0.08)' }}>
+                        <div className="w-1.5 h-1.5 bg-brand-blue/60 rounded-full"></div>
                       </div>
                       <p className="text-xs text-gray-300">Premium quality gym accessories</p>
                     </div>
                     <div className="flex items-start gap-1.5">
-                      <div className="w-4 h-4 bg-brand-gold/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <div className="w-1.5 h-1.5 bg-brand-gold rounded-full"></div>
+                      <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border border-brand-blue/20" style={{ background: 'rgba(23,95,255,0.08)' }}>
+                        <div className="w-1.5 h-1.5 bg-brand-blue/60 rounded-full"></div>
                       </div>
                       <p className="text-xs text-gray-300">Engineered for professional athletes</p>
                     </div>
                     <div className="flex items-start gap-1.5">
-                      <div className="w-4 h-4 bg-brand-gold/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <div className="w-1.5 h-1.5 bg-brand-gold rounded-full"></div>
+                      <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border border-brand-blue/20" style={{ background: 'rgba(23,95,255,0.08)' }}>
+                        <div className="w-1.5 h-1.5 bg-brand-blue/60 rounded-full"></div>
                       </div>
                       <p className="text-xs text-gray-300">Trusted by Coach Himanshu's clients</p>
                     </div>
@@ -1453,7 +1468,7 @@ export default function Home() {
       </section>
 
       {/* Client Testimonials Section */}
-      <section className="py-20 px-6 bg-brand-navy-light/50 border-y border-brand-navy-light/20" aria-label="Client testimonials">
+      <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Client testimonials">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -1462,15 +1477,15 @@ export default function Home() {
           className="max-w-7xl mx-auto"
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/10 border border-brand-gold/30 rounded-full mb-4">
-              <Star className="w-4 h-4 text-brand-gold fill-brand-gold" />
-              <span className="text-brand-gold text-sm font-semibold">Client Success Stories</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-6" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.06) 0%, rgba(201,166,70,0.02) 100%)' }}>
+              <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
+              <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Client Success Stories</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-5 text-white">
               What Our Clients Say
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Real transformations, real results. Join <span className="text-brand-gold font-semibold">1000+ satisfied clients</span> who achieved their fitness goals with Coach Himanshu.
+            <p className="text-sm md:text-lg text-gray-400/80 max-w-3xl mx-auto leading-relaxed px-2">
+              Real transformations, real results. Join <span className="text-white font-medium">1000+ satisfied clients</span> who achieved their fitness goals with Coach Himanshu.
             </p>
           </motion.div>
 
@@ -1488,7 +1503,7 @@ export default function Home() {
               {getCurrentPageTestimonials().map((testimonial, index) => (
                 <div
                   key={currentTestimonial + index}
-                  className="bg-gradient-to-br from-brand-navy-light to-brand-navy p-6 rounded-2xl border border-brand-gold/30 shadow-xl relative overflow-hidden hover:border-brand-gold/50 transition-all duration-300 flex flex-col"
+                  className="glass-card-strong p-6 relative overflow-hidden hover:border-white/[0.15] transition-all duration-300 flex flex-col"
                 >
                   {/* Decorative Quote Icon */}
                   <div className="absolute top-4 right-4 opacity-10">
@@ -1509,8 +1524,8 @@ export default function Home() {
 
                   {/* Transformation Badge */}
                   {testimonial.transformation && (
-                    <div className="inline-block px-3 py-1.5 bg-brand-gold/10 border border-brand-gold/30 rounded-full mb-4">
-                      <span className="text-brand-gold font-semibold text-xs">
+                    <div className="inline-block px-3 py-1.5 rounded-full border border-brand-blue/20 mb-4" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
+                      <span className="text-blue-300/80 font-medium text-xs">
                         {testimonial.transformation}
                       </span>
                     </div>
@@ -1574,17 +1589,19 @@ export default function Home() {
             <div className="flex justify-center gap-4 mt-8">
               <button
                 onClick={prevTestimonial}
-                className="w-12 h-12 bg-brand-navy-light border border-brand-navy-light/50 rounded-full flex items-center justify-center hover:border-brand-gold/50 hover:bg-brand-navy-light/80 transition-all duration-300 group"
+                className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group backdrop-blur-md"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
                 aria-label="Previous testimonial"
               >
-                <ChevronLeft className="text-gray-400 group-hover:text-brand-gold transition-colors" size={24} />
+                <ChevronLeft className="text-gray-500 group-hover:text-white transition-colors" size={22} />
               </button>
               <button
                 onClick={nextTestimonial}
-                className="w-12 h-12 bg-brand-navy-light border border-brand-navy-light/50 rounded-full flex items-center justify-center hover:border-brand-gold/50 hover:bg-brand-navy-light/80 transition-all duration-300 group"
+                className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group backdrop-blur-md"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
                 aria-label="Next testimonial"
               >
-                <ChevronRight className="text-gray-400 group-hover:text-brand-gold transition-colors" size={24} />
+                <ChevronRight className="text-gray-500 group-hover:text-white transition-colors" size={22} />
               </button>
             </div>
 
@@ -1594,10 +1611,10 @@ export default function Home() {
                 <button
                   key={pageIndex}
                   onClick={() => setCurrentTestimonial(pageIndex * TESTIMONIALS_PER_PAGE)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
                     pageIndex === currentPage
-                      ? 'w-8 bg-brand-gold'
-                      : 'w-2 bg-gray-600 hover:bg-gray-500'
+                      ? 'w-8 bg-brand-blue'
+                      : 'w-1.5 bg-white/10 hover:bg-white/20'
                   }`}
                   aria-label={`Go to page ${pageIndex + 1}`}
                 />
@@ -1620,7 +1637,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-20 px-6 bg-gradient-to-br from-brand-blue/10 to-brand-blue/5 border-t border-brand-navy-light/20" aria-label="Get started with transformation">
+      <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden border-t border-white/[0.04]" aria-label="Get started with transformation">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -1638,7 +1655,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Section - Video */}
             <motion.div variants={itemVariants} className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden glass-card-strong p-1">
                 <video
                   className="w-full h-auto [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                   autoPlay

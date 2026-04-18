@@ -132,7 +132,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-50 backdrop-blur-md"
+            className="fixed inset-0 bg-black/70 z-50 backdrop-blur-xl"
             onClick={onClose}
           />
           <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">
@@ -142,7 +142,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 40 }}
                 transition={{ type: 'spring', duration: 0.5 }}
-                className="bg-gradient-to-br from-brand-navy-light to-black border border-brand-navy-light/30 rounded-3xl p-10 relative shadow-2xl w-full"
+                className="glass-card-strong rounded-3xl p-10 relative w-full"
               >
                 <button
                   onClick={onClose}

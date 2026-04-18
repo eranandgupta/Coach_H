@@ -4,7 +4,7 @@ import { Instagram, Youtube, Mail, Phone, Facebook, Twitter } from 'lucide-react
 
 export default function Footer() {
   return (
-    <footer className="bg-brand-navy border-t border-brand-navy-light/20 py-8 md:py-16">
+    <footer className="relative py-8 md:py-16 border-t border-white/[0.04]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(7,10,21,1) 100%)' }}>
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* About Section - Full width on mobile */}
         <div className="mb-6 md:mb-0 md:hidden">
@@ -204,7 +204,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-4 md:pt-8 border-t border-brand-navy-light/20">
+        <div className="pt-4 md:pt-8 border-t border-white/[0.06]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
             <p className="text-gray-400 text-xs md:text-sm text-center md:text-left">
               &copy; 2025 Coach Himanshu. All rights reserved.

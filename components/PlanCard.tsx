@@ -58,7 +58,7 @@ export default function PlanCard({
     <motion.div
       whileHover={{ scale: 1.02, y: -6 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={`relative rounded-xl overflow-hidden group h-full ${
+      className={`relative rounded-2xl overflow-hidden group h-full ${
         popular ? 'shadow-2xl shadow-brand-gold/20' : couple ? 'shadow-2xl shadow-pink-500/20' : homeWorkout ? 'shadow-2xl shadow-emerald-500/20' : rehabilitation ? 'shadow-2xl shadow-cyan-500/20' : liveGroup ? 'shadow-2xl shadow-violet-500/20' : 'shadow-xl shadow-black/30'
       }`}
     >
@@ -66,7 +66,7 @@ export default function PlanCard({
       {popular && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold bg-[length:200%_100%] animate-shimmer" />
-          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+          <div className="absolute inset-[1px] bg-brand-navy rounded-2xl" />
         </>
       )}
 
@@ -74,7 +74,7 @@ export default function PlanCard({
       {couple && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 bg-[length:200%_100%] animate-shimmer" />
-          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+          <div className="absolute inset-[1px] bg-brand-navy rounded-2xl" />
         </>
       )}
 
@@ -82,7 +82,7 @@ export default function PlanCard({
       {homeWorkout && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-500 bg-[length:200%_100%] animate-shimmer" />
-          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+          <div className="absolute inset-[1px] bg-brand-navy rounded-2xl" />
         </>
       )}
 
@@ -90,7 +90,7 @@ export default function PlanCard({
       {rehabilitation && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-400 to-cyan-500 bg-[length:200%_100%] animate-shimmer" />
-          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+          <div className="absolute inset-[1px] bg-brand-navy rounded-2xl" />
         </>
       )}
 
@@ -98,7 +98,7 @@ export default function PlanCard({
       {liveGroup && (
         <>
           <div className="absolute inset-0 bg-gradient-to-r from-violet-500 via-purple-400 to-violet-500 bg-[length:200%_100%] animate-shimmer" />
-          <div className="absolute inset-[2px] bg-brand-navy rounded-xl" />
+          <div className="absolute inset-[1px] bg-brand-navy rounded-2xl" />
         </>
       )}
 
@@ -184,21 +184,26 @@ export default function PlanCard({
       )}
 
       <div
-        className={`relative p-4 md:p-5 h-full flex flex-col ${
+        className={`relative p-5 md:p-6 h-full flex flex-col backdrop-blur-xl ${
           popular
-            ? 'bg-gradient-to-br from-[#1a2332] via-brand-navy to-[#0f1419]'
+            ? 'bg-gradient-to-br from-[#1a2332]/90 via-brand-navy/80 to-[#0f1419]/90'
             : couple
-            ? 'bg-gradient-to-br from-[#2a1a2e] via-brand-navy to-[#1a0f1f]'
+            ? 'bg-gradient-to-br from-[#2a1a2e]/90 via-brand-navy/80 to-[#1a0f1f]/90'
             : homeWorkout
-            ? 'bg-gradient-to-br from-[#1a2e1f] via-brand-navy to-[#0f1a14]'
+            ? 'bg-gradient-to-br from-[#1a2e1f]/90 via-brand-navy/80 to-[#0f1a14]/90'
             : rehabilitation
-            ? 'bg-gradient-to-br from-[#1a2a2e] via-brand-navy to-[#0f1519]'
+            ? 'bg-gradient-to-br from-[#1a2a2e]/90 via-brand-navy/80 to-[#0f1519]/90'
             : liveGroup
-            ? 'bg-gradient-to-br from-[#251a2e] via-brand-navy to-[#170f1f]'
-            : 'bg-gradient-to-br from-brand-navy-light/80 to-brand-navy/60 backdrop-blur-sm'
-        } border ${
-          popular || couple || homeWorkout || rehabilitation || liveGroup ? 'border-transparent' : 'border-white/5'
+            ? 'bg-gradient-to-br from-[#251a2e]/90 via-brand-navy/80 to-[#170f1f]/90'
+            : 'glass-card'
+        } ${
+          popular || couple || homeWorkout || rehabilitation || liveGroup ? 'border-transparent' : ''
         }`}
+        style={!(popular || couple || homeWorkout || rehabilitation || liveGroup) ? {
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.08)',
+        } : undefined}
       >
         {/* Background decorative elements */}
         <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${couple ? 'from-pink-500/5' : homeWorkout ? 'from-emerald-500/5' : rehabilitation ? 'from-cyan-500/5' : liveGroup ? 'from-violet-500/5' : 'from-brand-gold/5'} to-transparent rounded-full blur-2xl`} />
