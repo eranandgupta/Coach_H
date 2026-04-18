@@ -472,7 +472,6 @@ export default function Home() {
         'Flexible timing for homemakers',
       ],
       liveGroup: true,
-      whatsappOnly: true,
     },
     {
       id: 10,
@@ -492,7 +491,6 @@ export default function Home() {
         'Low impact, high results',
       ],
       liveGroup: true,
-      whatsappOnly: true,
     },
   ];
 
@@ -1405,45 +1403,26 @@ export default function Home() {
             </motion.div>
           )}
 
-          {/* Live Group Classes — Coming Soon */}
+          {/* Live Group Classes */}
           {activePlanTab === 'live' && (
             <motion.div
               key="live"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="flex flex-col items-center justify-center py-16 md:py-24"
             >
-              <motion.div variants={itemVariants} className="relative mb-6">
-                <div className="w-20 h-20 rounded-2xl border border-white/[0.08] flex items-center justify-center backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0.03) 100%)' }}>
-                  <Users className="w-9 h-9 text-violet-400/80" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 flex items-center justify-center animate-pulse">
-                  <Sparkles className="w-3 h-3 text-white" />
-                </div>
-              </motion.div>
-              <motion.h3 variants={itemVariants} className="text-2xl sm:text-3xl font-bold text-white mb-3 text-center">
-                Coming Soon
-              </motion.h3>
-              <motion.p variants={itemVariants} className="text-gray-400 text-sm sm:text-base max-w-md text-center mb-2">
-                Live Group Classes are launching soon! Get ready for exciting group sessions including
+              <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+                <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
+                <span className="text-violet-400 font-semibold uppercase tracking-wider text-xs">Live Group Sessions</span>
+                <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
               </motion.p>
-              <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-2 mb-8">
-                <span className="px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-400 text-xs font-semibold">SHE STRONG PROGRAM</span>
-                <span className="px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-400 text-xs font-semibold">ACTIVE PARENTS PROGRAM</span>
-              </motion.div>
-              <motion.a
-                variants={itemVariants}
-                href="https://wa.me/917303484648?text=Hi%2C%20I%20want%20to%20know%20more%20about%20Live%20Group%20Classes"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-violet-500/20 transition-all"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Get Notified on WhatsApp
-              </motion.a>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
+                {plans.filter(p => p.liveGroup).map((plan) => (
+                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           )}
         </motion.div>
