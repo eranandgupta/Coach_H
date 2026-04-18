@@ -502,7 +502,117 @@ export default function ClientDashboard() {
 
         {/* Live Session Plans — show different dashboard */}
         {isLiveSessionPlan && isSubscriptionActive && (
+          <>
           <LiveSessionWidget planName={planName} />
+
+          {/* Blog Posts for Live Session Users */}
+          {blogPosts.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              className="mt-8"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 rounded-xl border border-brand-blue/20">
+                    <FileText className="w-5 h-5 text-brand-blue" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">Latest Articles</h2>
+                    <p className="text-gray-500 text-xs">Fitness tips & insights</p>
+                  </div>
+                </div>
+                <Link href="/blog">
+                  <button className="flex items-center gap-1 text-brand-blue hover:text-brand-gold text-sm font-medium transition-colors">
+                    View All
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </Link>
+              </div>
+
+              {/* Carousel Container */}
+              <div className="relative -mx-4 sm:-mx-6 lg:mx-0">
+                {/* Fade edges */}
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
+
+                {/* Scrollable container */}
+                <div className="flex gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 lg:px-0 pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible">
+                  {blogPosts.map((post, index) => (
+                    <Link key={post.id} href={`/blog/${post.slug}`} className="flex-shrink-0 w-72 lg:w-auto">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 + index * 0.05 }}
+                        className="group glass-card overflow-hidden hover:border-white/[0.12] transition-all duration-300 h-full"
+                      >
+                        {/* Cover Image */}
+                        <div className="relative h-36 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 overflow-hidden">
+                          {post.coverImage ? (
+                            <img
+                              src={post.coverImage}
+                              alt={post.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <FileText className="w-12 h-12 text-white/20" />
+                            </div>
+                          )}
+                          {/* Overlay gradient */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                          {/* Read time badge */}
+                          {post.readTime && (
+                            <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                              <Clock className="w-3 h-3 text-gray-300" />
+                              <span className="text-[10px] text-gray-300 font-medium">{post.readTime} min</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-4">
+                          {/* Date */}
+                          <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-2">
+                            <Calendar className="w-3 h-3" />
+                            <span>
+                              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                              }) : 'Draft'}
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <h3 className="text-white font-semibold line-clamp-2 group-hover:text-brand-blue transition-colors mb-2">
+                            {post.title}
+                          </h3>
+
+                          {/* Excerpt */}
+                          {post.excerpt && (
+                            <p className="text-gray-400 text-xs line-clamp-2">
+                              {post.excerpt}
+                            </p>
+                          )}
+
+                          {/* Read more */}
+                          <div className="flex items-center gap-1 text-brand-blue text-xs font-medium mt-3 group-hover:gap-2 transition-all">
+                            <span>Read Article</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+          </>
         )}
 
         {/* Regular Plans — stats, workouts, diets */}
