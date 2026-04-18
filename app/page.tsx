@@ -22,6 +22,8 @@ import {
   HeartPulse,
   Trophy,
   GraduationCap,
+  Home as HomeIcon,
+  MessageCircle,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -56,6 +58,7 @@ export default function Home() {
   const { addToCart } = useCart();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [dbPlanIds, setDbPlanIds] = useState<Record<string, number>>({});
+  const [activePlanTab, setActivePlanTab] = useState<'gym' | 'home' | 'rehab' | 'live'>('gym');
 
   // Fetch real plan IDs from DB so payments always use the correct ID
   useEffect(() => {
@@ -344,6 +347,28 @@ export default function Home() {
       rehabilitation: true,
     },
     {
+      id: 12,
+      dbName: 'Couple Rehabilitation Plan',
+      title: 'Couple Rehabilitation',
+      duration: '3 Months',
+      price: '₹4,099',
+      priceValue: 4099,
+      description: 'For 2 People',
+      features: [
+        'Customised rehabilitation workouts for both',
+        'Specially designed for knee, spine, elbow, shoulder, ankle joints',
+        'No equipment needed',
+        'WhatsApp support',
+        'Exercise video tutorials',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'One-on-one consultation twice a month',
+        '💑 Recover Together, Grow Together',
+      ],
+      rehabilitation: true,
+      couple: true,
+    },
+    {
       id: 5,
       dbName: 'Home Workout Plan',
       title: 'Home Workout',
@@ -364,8 +389,30 @@ export default function Home() {
       homeWorkout: true,
     },
     {
-      id: 6,
-      dbName: 'Couple Strength Plan',
+      id: 11,
+      dbName: 'Couple Home Workout Plan',
+      title: 'Couple Home Workout',
+      duration: '3 Months',
+      price: '₹3,099',
+      priceValue: 3099,
+      description: 'For 2 People',
+      features: [
+        'Customised home workout plans for both',
+        'Personalised diet plans for both',
+        'Exercise video tutorials',
+        'WhatsApp support',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'Resistance band & TRX band based workout (no gym equipment needed)',
+        'One on one consultation twice a month',
+        '💑 Train Together, Grow Together',
+      ],
+      homeWorkout: true,
+      couple: true,
+    },
+    {
+      id: 8,
+      dbName: 'Rehabilitation Plan',
       title: 'Couple Strength',
       duration: '6 Months',
       price: '₹6,999',
@@ -406,6 +453,46 @@ export default function Home() {
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
       couple: true,
+    },
+    {
+      id: 9,
+      dbName: 'She Strong Program',
+      title: 'SHE STRONG PROGRAM',
+      duration: 'Month',
+      price: '₹999',
+      priceValue: 999,
+      description: 'For Housewives & Women',
+      features: [
+        'Live group workout sessions',
+        'Specially designed for women',
+        'No gym equipment needed',
+        'Fun & motivating group environment',
+        'Expert guidance by Coach Himanshu',
+        'WhatsApp community support',
+        'Flexible timing for homemakers',
+      ],
+      liveGroup: true,
+      whatsappOnly: true,
+    },
+    {
+      id: 10,
+      dbName: 'Active Parents Program',
+      title: 'ACTIVE PARENTS PROGRAM',
+      duration: 'Month',
+      price: '₹999',
+      priceValue: 999,
+      description: 'For Senior Citizens',
+      features: [
+        'Live group workout sessions',
+        'Safe exercises for seniors',
+        'Joint-friendly movements',
+        'Balance & mobility focused',
+        'Expert guidance by Coach Himanshu',
+        'WhatsApp community support',
+        'Low impact, high results',
+      ],
+      liveGroup: true,
+      whatsappOnly: true,
     },
   ];
 
@@ -1012,49 +1099,202 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Row 1 — Individual Plans */}
-          <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
-            <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
-            <span className="text-brand-gold font-semibold uppercase tracking-wider text-xs">Individual Plans</span>
-            <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
-          </motion.p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
-            {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
-              <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Row 2 — Specialty + Couple Plans (same 4-col grid = same card size) */}
-          <div className="mt-6 md:mt-8">
-            {/* Mobile/tablet: single combined label */}
-            <motion.div variants={itemVariants} className="lg:hidden flex items-center justify-center gap-2 mb-4">
-              <span className="flex-1 h-px bg-white/10"></span>
-              <span className="text-gray-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Specialty &amp; Couple Plans</span>
-              <span className="flex-1 h-px bg-white/10"></span>
-            </motion.div>
-            {/* Desktop: two labels aligned over their 2 columns each */}
-            <div className="hidden lg:grid lg:grid-cols-4 gap-4 mb-4">
-              <motion.div variants={itemVariants} className="col-span-2 flex items-center justify-center gap-2">
-                <span className="flex-1 h-px bg-cyan-500/20"></span>
-                <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Specialty Plans</span>
-                <span className="flex-1 h-px bg-cyan-500/20"></span>
-              </motion.div>
-              <motion.div variants={itemVariants} className="col-span-2 flex items-center justify-center gap-2">
-                <span className="flex-1 h-px bg-pink-500/20"></span>
-                <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plans</span>
-                <span className="flex-1 h-px bg-pink-500/20"></span>
-              </motion.div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
-              {plans.filter(p => p.rehabilitation || p.homeWorkout || p.couple).map((plan) => (
-                <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                  <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
-                </motion.div>
+          {/* Category Tabs */}
+          <motion.div variants={itemVariants} className="flex justify-center mb-8 md:mb-10">
+            <div className="inline-flex flex-wrap justify-center gap-2 p-1.5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
+              {[
+                { key: 'gym' as const, label: 'Gym Workout', icon: Dumbbell, color: 'brand-gold' },
+                { key: 'home' as const, label: 'Home Workout', icon: HomeIcon, color: 'emerald-400' },
+                { key: 'rehab' as const, label: 'Rehabilitation', icon: Activity, color: 'cyan-400' },
+                { key: 'live' as const, label: 'Live Group Classes', icon: Users, color: 'violet-400' },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActivePlanTab(tab.key)}
+                  className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                    activePlanTab === tab.key
+                      ? `bg-gradient-to-r ${
+                          tab.key === 'gym' ? 'from-brand-gold/20 to-yellow-400/10 text-brand-gold border border-brand-gold/30 shadow-lg shadow-brand-gold/10'
+                          : tab.key === 'home' ? 'from-emerald-500/20 to-green-400/10 text-emerald-400 border border-emerald-400/30 shadow-lg shadow-emerald-500/10'
+                          : tab.key === 'rehab' ? 'from-cyan-500/20 to-blue-400/10 text-cyan-400 border border-cyan-400/30 shadow-lg shadow-cyan-500/10'
+                          : 'from-violet-500/20 to-purple-400/10 text-violet-400 border border-violet-400/30 shadow-lg shadow-violet-500/10'
+                        }`
+                      : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                  }`}
+                >
+                  <tab.icon size={16} />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+                </button>
               ))}
             </div>
-          </div>
+          </motion.div>
+
+          {/* Gym Workout Plans */}
+          {activePlanTab === 'gym' && (
+            <motion.div
+              key="gym"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Individual Plans */}
+              <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+                <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
+                <span className="text-brand-gold font-semibold uppercase tracking-wider text-xs">Individual Plans</span>
+                <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
+              </motion.p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
+                {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation && !p.liveGroup).map((plan) => (
+                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Couple Plans */}
+              <div className="mt-6 md:mt-8">
+                <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+                  <span className="flex-1 h-px bg-pink-500/20 max-w-[80px]"></span>
+                  <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs">Couple Plans</span>
+                  <span className="flex-1 h-px bg-pink-500/20 max-w-[80px]"></span>
+                </motion.p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-2xl mx-auto">
+                  {plans.filter(p => p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
+                    <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Home Workout Plans */}
+          {activePlanTab === 'home' && (
+            <motion.div
+              key="home"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Desktop: side-by-side labels */}
+              <div className="hidden sm:grid sm:grid-cols-2 gap-4 mb-4 max-w-3xl mx-auto">
+                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                  <span className="flex-1 h-px bg-emerald-500/20"></span>
+                  <span className="text-emerald-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Individual Plan</span>
+                  <span className="flex-1 h-px bg-emerald-500/20"></span>
+                </motion.div>
+                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                  <span className="flex-1 h-px bg-pink-500/20"></span>
+                  <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plan</span>
+                  <span className="flex-1 h-px bg-pink-500/20"></span>
+                </motion.div>
+              </div>
+              {/* Mobile: stacked label */}
+              <motion.p variants={itemVariants} className="sm:hidden text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+                <span className="flex-1 h-px bg-emerald-500/20 max-w-[60px]"></span>
+                <span className="text-emerald-400 font-semibold uppercase tracking-wider text-xs">Individual & Couple</span>
+                <span className="flex-1 h-px bg-emerald-500/20 max-w-[60px]"></span>
+              </motion.p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
+                {plans.filter(p => p.homeWorkout && !p.couple).map((plan) => (
+                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                  </motion.div>
+                ))}
+                {plans.filter(p => p.homeWorkout && p.couple).map((plan) => (
+                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} homeWorkout={false} onAddToCart={addToCart} />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Rehabilitation Plans */}
+          {activePlanTab === 'rehab' && (
+            <motion.div
+              key="rehab"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Desktop: side-by-side labels */}
+              <div className="hidden sm:grid sm:grid-cols-2 gap-4 mb-4 max-w-3xl mx-auto">
+                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                  <span className="flex-1 h-px bg-cyan-500/20"></span>
+                  <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Individual Plan</span>
+                  <span className="flex-1 h-px bg-cyan-500/20"></span>
+                </motion.div>
+                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                  <span className="flex-1 h-px bg-pink-500/20"></span>
+                  <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plan</span>
+                  <span className="flex-1 h-px bg-pink-500/20"></span>
+                </motion.div>
+              </div>
+              {/* Mobile: stacked label */}
+              <motion.p variants={itemVariants} className="sm:hidden text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+                <span className="flex-1 h-px bg-cyan-500/20 max-w-[60px]"></span>
+                <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs">Individual & Couple</span>
+                <span className="flex-1 h-px bg-cyan-500/20 max-w-[60px]"></span>
+              </motion.p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
+                {plans.filter(p => p.rehabilitation && !p.couple).map((plan) => (
+                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                  </motion.div>
+                ))}
+                {plans.filter(p => p.rehabilitation && p.couple).map((plan) => (
+                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} rehabilitation={false} onAddToCart={addToCart} />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Live Group Classes — Coming Soon */}
+          {activePlanTab === 'live' && (
+            <motion.div
+              key="live"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col items-center justify-center py-16 md:py-24"
+            >
+              <motion.div variants={itemVariants} className="relative mb-6">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500/20 to-purple-600/20 border border-violet-500/30 flex items-center justify-center">
+                  <Users className="w-9 h-9 text-violet-400" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 flex items-center justify-center animate-pulse">
+                  <Sparkles className="w-3 h-3 text-white" />
+                </div>
+              </motion.div>
+              <motion.h3 variants={itemVariants} className="text-2xl sm:text-3xl font-bold text-white mb-3 text-center">
+                Coming Soon
+              </motion.h3>
+              <motion.p variants={itemVariants} className="text-gray-400 text-sm sm:text-base max-w-md text-center mb-2">
+                Live Group Classes are launching soon! Get ready for exciting group sessions including
+              </motion.p>
+              <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-2 mb-8">
+                <span className="px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-400 text-xs font-semibold">SHE STRONG PROGRAM</span>
+                <span className="px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-400 text-xs font-semibold">ACTIVE PARENTS PROGRAM</span>
+              </motion.div>
+              <motion.a
+                variants={itemVariants}
+                href="https://wa.me/917303484648?text=Hi%2C%20I%20want%20to%20know%20more%20about%20Live%20Group%20Classes"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-violet-500/20 transition-all"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Get Notified on WhatsApp
+              </motion.a>
+            </motion.div>
+          )}
         </motion.div>
       </section>
 

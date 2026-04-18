@@ -24,12 +24,14 @@ import {
   Trash2,
   UserPlus,
   Play,
+  CalendarCog,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import CreateClientModal from '@/components/admin/CreateClientModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
+import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
 import CreatePromoCodeModal from '@/components/admin/CreatePromoCodeModal';
 import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
 
@@ -111,6 +113,8 @@ export default function AdminDashboard() {
   const [createPromoOpen, setCreatePromoOpen] = useState(false);
   const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [invoiceSub, setInvoiceSub] = useState<Subscription | null>(null);
+  const [adjustDaysOpen, setAdjustDaysOpen] = useState(false);
+  const [adjustDaysSub, setAdjustDaysSub] = useState<Subscription | null>(null);
 
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [sendingReminder, setSendingReminder] = useState<number | null>(null);
@@ -593,6 +597,23 @@ export default function AdminDashboard() {
                                     <CreditCard className="h-4 w-4" /> Renew
                                   </button>
                                 )}
+                                {client.subscriptions.length > 0 && (
+                                  <button
+                                    onClick={() => {
+                                      const sub = client.subscriptions[0];
+                                      setAdjustDaysSub({
+                                        id: sub.id,
+                                        endDate: sub.endDate,
+                                        startDate: sub.startDate,
+                                        plan: sub.plan,
+                                        user: { id: client.id, name: client.name || 'Client', email: client.email },
+                                      } as any);
+                                      setAdjustDaysOpen(true);
+                                    }}
+                                    className="flex items-center gap-1 px-3 py-1.5 bg-violet-500/20 border border-violet-500/30 rounded-lg text-violet-400 hover:bg-violet-500/30 hover:text-violet-300 transition-all text-sm">
+                                    <CalendarCog className="h-4 w-4" /> Adjust Days
+                                  </button>
+                                )}
                               </div>
                             </div>
                           </motion.div>
@@ -672,6 +693,12 @@ export default function AdminDashboard() {
                                       Renew
                                     </button>
                                   )}
+                                  <button
+                                    onClick={() => { setAdjustDaysSub(sub); setAdjustDaysOpen(true); }}
+                                    className="px-3 py-1 bg-violet-500/20 border border-violet-500/30 rounded-lg text-violet-400 hover:bg-violet-500/30 text-xs transition-all flex items-center gap-1"
+                                    title="Adjust Days">
+                                    <CalendarCog className="h-3 w-3" /> Adjust
+                                  </button>
                                 </div>
                               </td>
                             </tr>
@@ -856,6 +883,12 @@ export default function AdminDashboard() {
       <CreatePromoCodeModal open={createPromoOpen} onOpenChange={setCreatePromoOpen}
         onSuccess={fetchPromoCodes} clients={clients.map((c) => ({ id: c.id, name: c.name || 'Unnamed', email: c.email }))} />
       <InvoicePreviewModal open={invoiceOpen} onOpenChange={setInvoiceOpen} subscription={invoiceSub} />
+      <AdjustDaysModal
+        open={adjustDaysOpen}
+        onOpenChange={setAdjustDaysOpen}
+        onSuccess={() => { fetchSubscriptions(); fetchClients(); }}
+        subscription={adjustDaysSub}
+      />
     </div>
   );
 }

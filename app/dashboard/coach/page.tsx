@@ -23,6 +23,7 @@ import {
   Mail,
   RefreshCw,
   Play,
+  CalendarCog,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
@@ -30,6 +31,7 @@ import CreateDietModal from '@/components/forms/CreateDietModal';
 import ClientManagementModal from '@/components/forms/ClientManagementModal';
 import SubscriptionManagementModal from '@/components/forms/SubscriptionManagementModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
+import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import CreateBlogModal from '@/components/CreateBlogModal';
 import NotificationModal from '@/components/NotificationModal';
@@ -64,6 +66,8 @@ export default function CoachDashboard() {
   const [renewSubOpen, setRenewSubOpen] = useState(false);
   const [renewSubClient, setRenewSubClient] = useState<{ id: number; name: string; email: string } | null>(null);
   const [subMode, setSubMode] = useState<'renew' | 'extend'>('renew');
+  const [adjustDaysOpen, setAdjustDaysOpen] = useState(false);
+  const [adjustDaysClient, setAdjustDaysClient] = useState<any>(null);
 
   const fetchEnrollments = async () => {
     try {
@@ -710,6 +714,23 @@ export default function CoachDashboard() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
+                                setAdjustDaysClient({
+                                  id: sub.id,
+                                  endDate: sub.endDate,
+                                  startDate: sub.startDate,
+                                  plan: sub.plan,
+                                  user: { id: client.id, name: client.name || 'Client', email: client.email },
+                                });
+                                setAdjustDaysOpen(true);
+                              }}
+                              className="px-2 py-1 text-xs bg-violet-500/20 text-violet-400 border border-violet-500/30 rounded hover:bg-violet-500/30 transition-all flex items-center gap-1"
+                              title="Adjust Days"
+                            >
+                              <CalendarCog className="w-3 h-3" /> Adjust
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 handleSendReminder(client);
                               }}
                               className="p-1.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded hover:bg-orange-500/30 transition-all"
@@ -1047,6 +1068,12 @@ export default function CoachDashboard() {
         plans={plans}
         mode={subMode}
         apiUrl="/api/admin/subscriptions"
+      />
+      <AdjustDaysModal
+        open={adjustDaysOpen}
+        onOpenChange={setAdjustDaysOpen}
+        onSuccess={fetchDashboardData}
+        subscription={adjustDaysClient}
       />
       <ClientDetailModal
         isOpen={isClientDetailModalOpen}
