@@ -975,7 +975,7 @@ export default function Home() {
             animate="visible"
             className="px-8 lg:px-12 max-w-7xl mx-auto w-full"
           >
-            <div className="flex items-center gap-12 xl:gap-16 pb-16">
+            <div className="flex items-center gap-12 xl:gap-16 pb-8">
               {/* LEFT — Text */}
               <div className="flex-1 max-w-[55%]">
                 <motion.div variants={itemVariants} className="mb-5">
@@ -1043,12 +1043,12 @@ export default function Home() {
               </div>
 
               {/* RIGHT — Video card */}
-              <motion.div variants={itemVariants} className="flex-1 max-w-[45%] max-h-[calc(100vh-14rem)]">
+              <motion.div variants={itemVariants} className="flex-1 max-w-[40%]">
                 <div className="relative">
                   <div className="absolute -inset-4 rounded-[2rem] blur-2xl opacity-40" style={{ background: 'radial-gradient(ellipse, rgba(23,95,255,0.15) 0%, transparent 70%)' }} />
                   <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
                     <div className="p-1.5">
-                      <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5] max-h-[calc(100vh-16rem)]">
+                      <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
                         <video
                           className="absolute w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                           autoPlay loop muted playsInline preload="auto"
