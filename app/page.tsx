@@ -252,7 +252,7 @@ export default function Home() {
 
   const plans = [
     {
-      id: 1,
+      id: 8,
       dbName: 'Kickstart Plan',
       title: 'Kickstart Plan',
       duration: 'Month',
@@ -270,7 +270,7 @@ export default function Home() {
       ],
     },
     {
-      id: 2,
+      id: 9,
       dbName: 'Consistency Plan',
       title: 'Consistency Plan',
       duration: '3 Months',
@@ -289,7 +289,7 @@ export default function Home() {
       popular: true,
     },
     {
-      id: 3,
+      id: 10,
       dbName: 'Strength Plan',
       title: 'Strength Plan',
       duration: '6 Months',
@@ -308,7 +308,7 @@ export default function Home() {
       ],
     },
     {
-      id: 4,
+      id: 11,
       dbName: 'Mastery Plan',
       title: 'Mastery Plan',
       duration: '12 Months',
@@ -327,7 +327,7 @@ export default function Home() {
       ],
     },
     {
-      id: 8,
+      id: 15,
       dbName: 'Rehabilitation Plan',
       title: 'Rehabilitation',
       duration: '3 Months',
@@ -347,7 +347,7 @@ export default function Home() {
       rehabilitation: true,
     },
     {
-      id: 12,
+      id: 19,
       dbName: 'Couple Rehabilitation Plan',
       title: 'Couple Rehabilitation',
       duration: '3 Months',
@@ -369,8 +369,8 @@ export default function Home() {
       couple: true,
     },
     {
-      id: 5,
-      dbName: 'Home Workout Plan',
+      id: 14,
+      dbName: 'Home Workout',
       title: 'Home Workout',
       duration: '3 Months',
       price: '₹1,799',
@@ -389,7 +389,7 @@ export default function Home() {
       homeWorkout: true,
     },
     {
-      id: 11,
+      id: 18,
       dbName: 'Couple Home Workout Plan',
       title: 'Couple Home Workout',
       duration: '3 Months',
@@ -411,8 +411,8 @@ export default function Home() {
       couple: true,
     },
     {
-      id: 8,
-      dbName: 'Rehabilitation Plan',
+      id: 12,
+      dbName: 'Couple Strength',
       title: 'Couple Strength',
       duration: '6 Months',
       price: '₹6,999',
@@ -433,8 +433,8 @@ export default function Home() {
       couple: true,
     },
     {
-      id: 7,
-      dbName: 'Couple Mastery Plan',
+      id: 13,
+      dbName: 'Couple Mastery',
       title: 'Couple Mastery',
       duration: '12 Months',
       price: '₹13,899',
@@ -455,7 +455,7 @@ export default function Home() {
       couple: true,
     },
     {
-      id: 9,
+      id: 16,
       dbName: 'She Strong Program',
       title: 'SHE STRONG PROGRAM',
       duration: 'Month',
@@ -476,7 +476,7 @@ export default function Home() {
       liveGroup: true,
     },
     {
-      id: 10,
+      id: 17,
       dbName: 'Active Parents Program',
       title: 'ACTIVE PARENTS PROGRAM',
       duration: 'Month',

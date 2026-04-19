@@ -8,8 +8,8 @@ const planUpdates: Record<string, { price: number; duration: number }> = {
   'Consistency Plan': { price: 2099, duration: 90 },
   'Strength Plan': { price: 3599, duration: 180 },
   'Mastery Plan': { price: 7499, duration: 365 },
-  'Couple Strength Plan': { price: 6999, duration: 180 },
-  'Couple Mastery Plan': { price: 13899, duration: 365 },
+  'Couple Strength': { price: 6999, duration: 180 },
+  'Couple Mastery': { price: 13899, duration: 365 },
   'Home Workout': { price: 1799, duration: 90 },
   'Rehabilitation Plan': { price: 2299, duration: 90 },
 };
