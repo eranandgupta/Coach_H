@@ -1019,6 +1019,7 @@ export default function ClientDashboard() {
           isOpen={isEditAssessmentOpen}
           onClose={() => setIsEditAssessmentOpen(false)}
           userId={user.id}
+          planName={planName}
         />
       )}
     </div>

@@ -9,9 +9,10 @@ interface EditAssessmentModalProps {
   isOpen: boolean;
   onClose: () => void;
   userId: number;
+  planName?: string;
 }
 
-export default function EditAssessmentModal({ isOpen, onClose, userId }: EditAssessmentModalProps) {
+export default function EditAssessmentModal({ isOpen, onClose, userId, planName }: EditAssessmentModalProps) {
   const [assessmentData, setAssessmentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -107,6 +108,7 @@ export default function EditAssessmentModal({ isOpen, onClose, userId }: EditAss
                   userId={userId}
                   initialData={assessmentData}
                   isEditMode={true}
+                  planName={planName}
                   onSuccess={handleSuccess}
                   onCancel={handleClose}
                 />

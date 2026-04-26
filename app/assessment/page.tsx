@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 export default function AssessmentPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<number | null>(null);
+  const [planName, setPlanName] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +34,18 @@ export default function AssessmentPage() {
     }
 
     setUserId(user.id);
+
+    // Fetch subscription to get plan name
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
+        .then(res => res.json())
+        .then(data => {
+          setPlanName(data.subscription?.subscription?.plan?.name || '');
+        })
+        .catch(() => {});
+    }
+
     setLoading(false);
   }, [router]);
 
@@ -47,5 +60,5 @@ export default function AssessmentPage() {
     );
   }
 
-  return <PreAssessmentForm userId={userId} />;
+  return <PreAssessmentForm userId={userId} planName={planName} />;
 }

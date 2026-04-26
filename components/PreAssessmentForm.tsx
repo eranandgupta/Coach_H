@@ -74,13 +74,15 @@ interface PreAssessmentFormProps {
   userId: number;
   initialData?: AssessmentData | null;
   isEditMode?: boolean;
+  planName?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
 type Step = 'personal' | 'parq' | 'lifestyle' | 'fitness' | 'nutrition' | 'goals';
 
-export default function PreAssessmentForm({ userId, initialData, isEditMode = false, onSuccess, onCancel }: PreAssessmentFormProps) {
+export default function PreAssessmentForm({ userId, initialData, isEditMode = false, planName = '', onSuccess, onCancel }: PreAssessmentFormProps) {
+  const isLiveSessionPlan = planName === 'She Strong Program' || planName === 'Active Parents Program';
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>('personal');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -174,7 +176,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     specialConditions: initialData?.specialConditions || '',
   });
 
-  const steps: { id: Step; title: string; icon: any }[] = [
+  const allSteps: { id: Step; title: string; icon: any }[] = [
     { id: 'personal', title: 'Personal Info', icon: User },
     { id: 'parq', title: 'Health Check', icon: Heart },
     { id: 'lifestyle', title: 'Lifestyle', icon: Activity },
@@ -182,6 +184,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     { id: 'nutrition', title: 'Nutrition', icon: Utensils },
     { id: 'goals', title: 'Your Goals', icon: Target },
   ];
+  const steps = isLiveSessionPlan ? allSteps.filter(s => s.id !== 'goals') : allSteps;
 
   const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
@@ -274,7 +277,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     if (formData.smoking && !formData.smokingAmount) stepErrors.push('Please specify how many cigarettes per day');
     if (formData.alcohol && !formData.alcoholGlassesPerWeek) stepErrors.push('Please specify alcohol glasses per week');
     if (!formData.sleepHours) stepErrors.push('Sleep hours is required');
-    if (!formData.jobType) stepErrors.push('Job type is required');
+    if (!isLiveSessionPlan && !formData.jobType) stepErrors.push('Job type is required');
     if (!formData.stressLevel) stepErrors.push('Stress level is required');
     if (formData.familyOverweight.length === 0) stepErrors.push('Please select family members who are overweight or select "None"');
     if (formData.overweightAsChild && !formData.overweightAges) stepErrors.push('Please specify at what age(s) you were overweight');
@@ -294,8 +297,8 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     if (!formData.eatLateNight) stepErrors.push('Please select late night eating frequency');
     if (formData.energyDrops && !formData.energyDropTime) stepErrors.push('Please specify when you feel energy drops');
     if (formData.takingSupplements && !formData.supplementsList) stepErrors.push('Please list your supplements');
-    if (!formData.mealLocation) stepErrors.push('Please select where you usually eat meals');
-    if (!formData.eatOutsidePerWeek && formData.eatOutsidePerWeek !== '0') stepErrors.push('Please specify how often you eat outside');
+    if (!isLiveSessionPlan && !formData.mealLocation) stepErrors.push('Please select where you usually eat meals');
+    if (!isLiveSessionPlan && !formData.eatOutsidePerWeek && formData.eatOutsidePerWeek !== '0') stepErrors.push('Please specify how often you eat outside');
     if (formData.eatingReasons.length === 0) stepErrors.push('Please select eating reasons or select "Hunger Only"');
     if (!formData.eatPastFullness) stepErrors.push('Please select how often you eat past fullness');
     if (!formData.highSugarFoods) stepErrors.push('Please select sugar consumption frequency');
@@ -656,63 +659,65 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                   />
                 </div>
 
-                {/* Job Type */}
-                <div>
-                  <label className="block text-gray-300 text-sm mb-2">What type of job do you have? <span className="text-red-400">*</span></label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {['sedentary', 'active', 'physically-demanding'].map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, jobType: type })}
-                        className={`px-4 py-3 rounded-lg capitalize ${
-                          formData.jobType === type
-                            ? 'bg-brand-blue text-white'
-                            : 'bg-brand-navy border border-white/10 text-gray-400'
-                        }`}
-                      >
-                        {type.replace('-', ' ')}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {/* Job Type, Job Description, Job Travel - hidden for live session plans */}
+                {!isLiveSessionPlan && (
+                  <>
+                    <div>
+                      <label className="block text-gray-300 text-sm mb-2">What type of job do you have? <span className="text-red-400">*</span></label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['sedentary', 'active', 'physically-demanding'].map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, jobType: type })}
+                            className={`px-4 py-3 rounded-lg capitalize ${
+                              formData.jobType === type
+                                ? 'bg-brand-blue text-white'
+                                : 'bg-brand-navy border border-white/10 text-gray-400'
+                            }`}
+                          >
+                            {type.replace('-', ' ')}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Job Description */}
-                <div>
-                  <label className="block text-gray-300 text-sm mb-2">Describe your job</label>
-                  <textarea
-                    value={formData.jobDescription || ''}
-                    onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
-                    className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue resize-none"
-                    placeholder="e.g. I work as a software engineer, sitting at a desk for 8-9 hours daily..."
-                    rows={3}
-                  />
-                </div>
+                    <div>
+                      <label className="block text-gray-300 text-sm mb-2">Describe your job</label>
+                      <textarea
+                        value={formData.jobDescription || ''}
+                        onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
+                        className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue resize-none"
+                        placeholder="e.g. I work as a software engineer, sitting at a desk for 8-9 hours daily..."
+                        rows={3}
+                      />
+                    </div>
 
-                {/* Job Travel */}
-                <div className="flex items-center justify-between p-4 bg-brand-navy/50 rounded-lg">
-                  <label className="text-white">Does your job require travel?</label>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, jobRequiresTravel: true })}
-                      className={`px-4 py-2 rounded-lg ${
-                        formData.jobRequiresTravel ? 'bg-brand-blue text-white' : 'bg-brand-navy border border-white/10 text-gray-400'
-                      }`}
-                    >
-                      Yes
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, jobRequiresTravel: false })}
-                      className={`px-4 py-2 rounded-lg ${
-                        !formData.jobRequiresTravel ? 'bg-brand-blue text-white' : 'bg-brand-navy border border-white/10 text-gray-400'
-                      }`}
-                    >
-                      No
-                    </button>
-                  </div>
-                </div>
+                    <div className="flex items-center justify-between p-4 bg-brand-navy/50 rounded-lg">
+                      <label className="text-white">Does your job require travel?</label>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, jobRequiresTravel: true })}
+                          className={`px-4 py-2 rounded-lg ${
+                            formData.jobRequiresTravel ? 'bg-brand-blue text-white' : 'bg-brand-navy border border-white/10 text-gray-400'
+                          }`}
+                        >
+                          Yes
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, jobRequiresTravel: false })}
+                          className={`px-4 py-2 rounded-lg ${
+                            !formData.jobRequiresTravel ? 'bg-brand-blue text-white' : 'bg-brand-navy border border-white/10 text-gray-400'
+                          }`}
+                        >
+                          No
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {/* Stress Level */}
                 <div>
@@ -1012,41 +1017,45 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                 )}
               </div>
 
-              <div>
-                <label className="block text-gray-300 text-sm mb-2">At work or school, do you usually: <span className="text-red-400">*</span></label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { value: 'eat-outside', label: 'Eat Outside' },
-                    { value: 'bring-food', label: 'Bring Food' },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, mealLocation: option.value })}
-                      className={`px-4 py-3 rounded-lg ${
-                        formData.mealLocation === option.value
-                          ? 'bg-brand-blue text-white'
-                          : 'bg-brand-navy border border-white/10 text-gray-400'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
+              {!isLiveSessionPlan && (
+                <div>
+                  <label className="block text-gray-300 text-sm mb-2">At work or school, do you usually: <span className="text-red-400">*</span></label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { value: 'eat-outside', label: 'Eat Outside' },
+                      { value: 'bring-food', label: 'Bring Food' },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, mealLocation: option.value })}
+                        className={`px-4 py-3 rounded-lg ${
+                          formData.mealLocation === option.value
+                            ? 'bg-brand-blue text-white'
+                            : 'bg-brand-navy border border-white/10 text-gray-400'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div>
-                <label className="block text-gray-300 text-sm mb-2">How many times per week do you eat outside? <span className="text-red-400">*</span></label>
-                <input
-                  type="number"
-                  value={formData.eatOutsidePerWeek}
-                  onChange={(e) => setFormData({ ...formData, eatOutsidePerWeek: e.target.value })}
-                  className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
-                  placeholder="3"
-                  min="0"
-                  required
-                />
-              </div>
+              {!isLiveSessionPlan && (
+                <div>
+                  <label className="block text-gray-300 text-sm mb-2">How many times per week do you eat outside? <span className="text-red-400">*</span></label>
+                  <input
+                    type="number"
+                    value={formData.eatOutsidePerWeek}
+                    onChange={(e) => setFormData({ ...formData, eatOutsidePerWeek: e.target.value })}
+                    className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                    placeholder="3"
+                    min="0"
+                    required
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-gray-300 text-sm mb-2">Besides hunger, what other reason(s) do you eat? <span className="text-red-400">*</span></label>
