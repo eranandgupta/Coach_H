@@ -421,7 +421,6 @@ export default function Home() {
       features: [
         'Personalized workout plans for both',
         'Customized meal plans for both',
-        'Daily progress tracking',
         'WhatsApp support',
         'Full video library access',
         'Weekly one-on-one consultations',
@@ -443,7 +442,6 @@ export default function Home() {
       features: [
         'Personalized workout plans for both',
         'Customized meal plans for both',
-        'Daily progress tracking',
         'WhatsApp support',
         'Full video library access',
         'Weekly one-on-one consultations',

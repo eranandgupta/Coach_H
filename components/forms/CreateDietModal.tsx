@@ -21,6 +21,7 @@ interface Meal {
   fats: string;
   ingredients: string;
   instructions: string;
+  alternatives: string;
   day: string;
   time: string;
 }
@@ -35,7 +36,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   const [targetCalories, setTargetCalories] = useState('');
   const [notes, setNotes] = useState('');
   const [meals, setMeals] = useState<Meal[]>([
-    { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', day: 'Monday', time: '' }
+    { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
   ]);
   const [clients, setClients] = useState<any[]>([]);
   const [clientsLoading, setClientsLoading] = useState(false);
@@ -61,7 +62,14 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         setNotes(diet.notes || '');
 
         if (diet.meals && diet.meals.length > 0) {
-          setMeals(diet.meals.map((meal: any) => ({
+          const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+          const mealTypeOrder = ['Breakfast', 'Mid-Morning Snack', 'Lunch', 'Evening Snack', 'Dinner', 'Post-Dinner'];
+          const sorted = [...diet.meals].sort((a: any, b: any) => {
+            const dayDiff = dayOrder.indexOf(a.day || 'Monday') - dayOrder.indexOf(b.day || 'Monday');
+            if (dayDiff !== 0) return dayDiff;
+            return mealTypeOrder.indexOf(a.mealType || 'Breakfast') - mealTypeOrder.indexOf(b.mealType || 'Breakfast');
+          });
+          setMeals(sorted.map((meal: any) => ({
             name: meal.name || '',
             description: meal.description || '',
             mealType: meal.mealType || 'Breakfast',
@@ -71,6 +79,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
             fats: meal.fats?.toString() || '',
             ingredients: meal.ingredients || '',
             instructions: meal.instructions || '',
+            alternatives: meal.alternatives || '',
             day: meal.day || 'Monday',
             time: meal.time || '',
           })));
@@ -83,7 +92,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         setWeekNumber('1');
         setTargetCalories('');
         setNotes('');
-        setMeals([{ name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', day: 'Monday', time: '' }]);
+        setMeals([{ name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }]);
 
         const today = new Date();
         const weekStart = new Date(today);
@@ -123,7 +132,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   const addMeal = () => {
     setMeals([
       ...meals,
-      { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', day: 'Monday', time: '' }
+      { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
     ]);
   };
 
@@ -186,7 +195,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
       setWeekNumber('1');
       setTargetCalories('');
       setNotes('');
-      setMeals([{ name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', day: 'Monday', time: '' }]);
+      setMeals([{ name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }]);
 
       onSuccess();
       onClose();
@@ -477,6 +486,14 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                             className="bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue md:col-span-2"
                             rows={2}
                             placeholder="Preparation instructions..."
+                          />
+
+                          <textarea
+                            value={meal.alternatives}
+                            onChange={(e) => updateMeal(index, 'alternatives', e.target.value)}
+                            className="bg-brand-navy/50 border border-yellow-500/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-yellow-500 md:col-span-2"
+                            rows={2}
+                            placeholder="Alternative food choices (e.g., swap chicken for paneer, rice for quinoa...)"
                           />
 
                           <textarea

@@ -38,6 +38,7 @@ interface AssessmentData {
   alcoholGlassesPerWeek?: string | number;
   sleepHours?: string | number;
   jobType?: string;
+  jobDescription?: string;
   jobRequiresTravel?: boolean;
   stressLevel?: string | number;
   familyOverweight?: string | string[];
@@ -66,6 +67,7 @@ interface AssessmentData {
   goalSportsTraining?: boolean;
   goalMuscleGain?: boolean;
   goalOther?: string;
+  specialConditions?: string;
 }
 
 interface PreAssessmentFormProps {
@@ -134,6 +136,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     alcoholGlassesPerWeek: initialData?.alcoholGlassesPerWeek?.toString() || '',
     sleepHours: initialData?.sleepHours?.toString() || '',
     jobType: initialData?.jobType || '',
+    jobDescription: initialData?.jobDescription || '',
     jobRequiresTravel: initialData?.jobRequiresTravel || false,
     stressLevel: initialData?.stressLevel?.toString() || '',
     familyOverweight: parseArrayField(initialData?.familyOverweight) as string[],
@@ -168,6 +171,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     goalSportsTraining: initialData?.goalSportsTraining || false,
     goalMuscleGain: initialData?.goalMuscleGain || false,
     goalOther: initialData?.goalOther || '',
+    specialConditions: initialData?.specialConditions || '',
   });
 
   const steps: { id: Step; title: string; icon: any }[] = [
@@ -654,7 +658,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
 
                 {/* Job Type */}
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">Describe your job <span className="text-red-400">*</span></label>
+                  <label className="block text-gray-300 text-sm mb-2">What type of job do you have? <span className="text-red-400">*</span></label>
                   <div className="grid grid-cols-3 gap-2">
                     {['sedentary', 'active', 'physically-demanding'].map((type) => (
                       <button
@@ -671,6 +675,18 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                       </button>
                     ))}
                   </div>
+                </div>
+
+                {/* Job Description */}
+                <div>
+                  <label className="block text-gray-300 text-sm mb-2">Describe your job</label>
+                  <textarea
+                    value={formData.jobDescription || ''}
+                    onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
+                    className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue resize-none"
+                    placeholder="e.g. I work as a software engineer, sitting at a desk for 8-9 hours daily..."
+                    rows={3}
+                  />
                 </div>
 
                 {/* Job Travel */}
@@ -1184,6 +1200,17 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                   className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                   rows={3}
                   placeholder="Any other specific goals or information you'd like to share..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-300 text-sm mb-2">Any special condition for workout & diet that your coach must know? (Optional)</label>
+                <textarea
+                  value={formData.specialConditions || ''}
+                  onChange={(e) => setFormData({ ...formData, specialConditions: e.target.value })}
+                  className="w-full bg-brand-navy border border-yellow-500/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+                  rows={4}
+                  placeholder="e.g., knee injury, back pain, food allergies, lactose intolerant, fasting days, any medical condition..."
                 />
               </div>
             </div>

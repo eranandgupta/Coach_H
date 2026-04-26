@@ -22,7 +22,7 @@ async function getHandler(request: NextRequest, context: any) {
           },
         },
         exercises: {
-          orderBy: [{ day: 'asc' }, { order: 'asc' }],
+          orderBy: { order: 'asc' },
         },
       },
       orderBy: {
@@ -99,6 +99,8 @@ async function postHandler(request: NextRequest, context: any) {
                 videoUrl: ex.videoUrl,
                 day: ex.day,
                 order: ex.order || index,
+                exerciseType: ex.exerciseType || 'normal',
+                supersetGroup: ex.supersetGroup ? parseInt(ex.supersetGroup) : null,
               })),
             }
           : undefined,
@@ -198,6 +200,8 @@ async function putHandler(request: NextRequest, context: any) {
                 videoUrl: ex.videoUrl,
                 day: ex.day,
                 order: ex.order || index,
+                exerciseType: ex.exerciseType || 'normal',
+                supersetGroup: ex.supersetGroup ? parseInt(ex.supersetGroup) : null,
               })),
             }
           : undefined,

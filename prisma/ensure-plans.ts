@@ -113,7 +113,6 @@ const requiredPlans = [
     features: [
       'Personalized workout plans for both',
       'Customized meal plans for both',
-      'Daily progress tracking',
       'WhatsApp support',
       'Full video library access',
       'Weekly one-on-one consultations',
@@ -129,7 +128,6 @@ const requiredPlans = [
     features: [
       'Personalized workout plans for both',
       'Customized meal plans for both',
-      'Daily progress tracking',
       'WhatsApp support',
       'Full video library access',
       'Weekly one-on-one consultations',

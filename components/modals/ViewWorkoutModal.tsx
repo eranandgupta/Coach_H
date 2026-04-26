@@ -107,63 +107,106 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail }
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {orderedDays.map((day) => (
+                    {orderedDays.map((day) => {
+                      // Group exercises: supersets together, others individually
+                      const dayExercises = exercisesByDay[day];
+                      const groups: any[] = [];
+                      const usedIndices = new Set<number>();
+
+                      dayExercises.forEach((exercise: any, idx: number) => {
+                        if (usedIndices.has(idx)) return;
+                        if (exercise.exerciseType === 'superset' && exercise.supersetGroup) {
+                          const supersetExercises = dayExercises.filter((ex: any, i: number) => {
+                            if (usedIndices.has(i)) return false;
+                            return ex.exerciseType === 'superset' && ex.supersetGroup === exercise.supersetGroup;
+                          });
+                          supersetExercises.forEach((_: any, i: number) => {
+                            const originalIdx = dayExercises.findIndex((ex: any, fi: number) => !usedIndices.has(fi) && ex === supersetExercises[i]);
+                            if (originalIdx !== -1) usedIndices.add(originalIdx);
+                          });
+                          groups.push({ type: 'superset', exercises: supersetExercises });
+                        } else {
+                          usedIndices.add(idx);
+                          groups.push({ type: exercise.exerciseType || 'normal', exercises: [exercise] });
+                        }
+                      });
+
+                      return (
                       <div key={day} className="bg-white/5 border border-white/10 rounded-xl p-5">
                         <h4 className="text-xl font-bold text-purple-400 mb-4">{day}</h4>
                         <div className="space-y-3">
-                          {exercisesByDay[day].map((exercise: any, idx: number) => (
-                            <div
-                              key={idx}
-                              className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-all"
-                            >
-                              <div className="flex items-start justify-between mb-2">
-                                <h5 className="text-lg font-semibold text-white">{exercise.name}</h5>
-                                <div className="flex gap-3 text-sm">
-                                  {exercise.sets && exercise.reps && (
-                                    <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full">
-                                      {exercise.sets}×{exercise.reps}
-                                    </span>
-                                  )}
-                                  {exercise.duration && exercise.sets && !exercise.reps && (
-                                    <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full">
-                                      {exercise.duration} min × {exercise.sets} sets
-                                    </span>
-                                  )}
-                                  {exercise.duration && !exercise.sets && (
-                                    <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full">
-                                      {exercise.duration} min
-                                    </span>
-                                  )}
+                          {groups.map((group: any, gIdx: number) => (
+                            <div key={gIdx}>
+                              {group.type === 'superset' && group.exercises.length > 1 && (
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="h-px flex-1 bg-orange-500/30"></div>
+                                  <span className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs font-semibold">SUPERSET</span>
+                                  <div className="h-px flex-1 bg-orange-500/30"></div>
                                 </div>
-                              </div>
-
-                              {exercise.description && (
-                                <p className="text-gray-400 text-sm mb-3">{exercise.description}</p>
                               )}
-
-                              <div className="flex flex-wrap gap-3 text-xs text-gray-500">
-                                {exercise.restTime && (
-                                  <div className="flex items-center gap-1">
-                                    <span className="text-gray-400">Rest:</span>
-                                    <span>{exercise.restTime}s</span>
-                                  </div>
-                                )}
-                                {exercise.videoUrl && (
-                                  <a
-                                    href={exercise.videoUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-brand-blue hover:text-blue-400 underline"
+                              <div className={group.type === 'superset' && group.exercises.length > 1 ? 'border-l-2 border-orange-500/40 pl-3 space-y-2' : 'space-y-3'}>
+                                {group.exercises.map((exercise: any, idx: number) => (
+                                  <div
+                                    key={idx}
+                                    className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-all"
                                   >
-                                    Watch Video
-                                  </a>
-                                )}
+                                    <div className="flex items-start justify-between mb-2">
+                                      <div className="flex items-center gap-2">
+                                        <h5 className="text-lg font-semibold text-white">{exercise.name}</h5>
+                                        {exercise.exerciseType === 'dropset' && (
+                                          <span className="px-2 py-0.5 bg-red-500/20 text-red-300 rounded text-xs font-semibold">DROP SET</span>
+                                        )}
+                                      </div>
+                                      <div className="flex gap-3 text-sm">
+                                        {exercise.sets && exercise.reps && (
+                                          <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full">
+                                            {exercise.sets}×{exercise.reps}
+                                          </span>
+                                        )}
+                                        {exercise.duration && exercise.sets && !exercise.reps && (
+                                          <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full">
+                                            {exercise.duration} min × {exercise.sets} sets
+                                          </span>
+                                        )}
+                                        {exercise.duration && !exercise.sets && (
+                                          <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full">
+                                            {exercise.duration} min
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {exercise.description && (
+                                      <p className="text-gray-400 text-sm mb-3">{exercise.description}</p>
+                                    )}
+
+                                    <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                                      {exercise.restTime && (
+                                        <div className="flex items-center gap-1">
+                                          <span className="text-gray-400">Rest:</span>
+                                          <span>{exercise.restTime}s</span>
+                                        </div>
+                                      )}
+                                      {exercise.videoUrl && (
+                                        <a
+                                          href={exercise.videoUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-brand-blue hover:text-blue-400 underline"
+                                        >
+                                          Watch Video
+                                        </a>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           ))}
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

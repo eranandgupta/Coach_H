@@ -20,6 +20,8 @@ interface Exercise {
   restTime: string;
   videoUrl: string;
   day: string;
+  exerciseType: string;
+  supersetGroup: string;
 }
 
 export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout }: CreateWorkoutModalProps) {
@@ -31,7 +33,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const [endDate, setEndDate] = useState('');
   const [notes, setNotes] = useState('');
   const [exercises, setExercises] = useState<Exercise[]>([
-    { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday' }
+    { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
   ]);
   const [clients, setClients] = useState<any[]>([]);
   const [clientsLoading, setClientsLoading] = useState(false);
@@ -55,7 +57,12 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         setNotes(workout.notes || '');
 
         if (workout.exercises && workout.exercises.length > 0) {
-          setExercises(workout.exercises.map((ex: any) => ({
+          const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+          const sorted = [...workout.exercises].sort((a: any, b: any) => {
+            const dayDiff = dayOrder.indexOf(a.day || 'Monday') - dayOrder.indexOf(b.day || 'Monday');
+            return dayDiff !== 0 ? dayDiff : (a.order || 0) - (b.order || 0);
+          });
+          setExercises(sorted.map((ex: any) => ({
             name: ex.name || '',
             description: ex.description || '',
             sets: ex.sets?.toString() || '',
@@ -64,6 +71,8 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
             restTime: ex.restTime?.toString() || '',
             videoUrl: ex.videoUrl || '',
             day: ex.day || 'Monday',
+            exerciseType: ex.exerciseType || 'normal',
+            supersetGroup: ex.supersetGroup?.toString() || '',
           })));
         }
       } else {
@@ -73,7 +82,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         setClientId('');
         setWeekNumber('1');
         setNotes('');
-        setExercises([{ name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday' }]);
+        setExercises([{ name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }]);
 
         const today = new Date();
         const weekStart = new Date(today);
@@ -113,7 +122,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const addExercise = () => {
     setExercises([
       ...exercises,
-      { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday' }
+      { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
     ]);
   };
 
@@ -346,7 +355,15 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                         className="bg-white/5 border border-white/10 rounded-lg p-4"
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <span className="text-purple-400 font-semibold">Exercise {index + 1}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-purple-400 font-semibold">Exercise {index + 1}</span>
+                            {exercise.exerciseType === 'superset' && (
+                              <span className="px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded text-xs font-medium">Superset</span>
+                            )}
+                            {exercise.exerciseType === 'dropset' && (
+                              <span className="px-2 py-0.5 bg-red-500/20 text-red-300 rounded text-xs font-medium">Drop Set</span>
+                            )}
+                          </div>
                           {exercises.length > 1 && (
                             <button
                               type="button"
@@ -355,6 +372,42 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                             >
                               <Trash2 size={18} />
                             </button>
+                          )}
+                        </div>
+
+                        {/* Exercise Type */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-gray-400 text-xs">Type:</span>
+                          {['normal', 'superset', 'dropset'].map((type) => (
+                            <button
+                              key={type}
+                              type="button"
+                              onClick={() => {
+                                const updated = [...exercises];
+                                updated[index].exerciseType = type;
+                                if (type !== 'superset') updated[index].supersetGroup = '';
+                                setExercises(updated);
+                              }}
+                              className={`px-3 py-1 rounded text-xs font-medium transition-all ${
+                                exercise.exerciseType === type
+                                  ? type === 'superset' ? 'bg-orange-500/30 text-orange-300 border border-orange-500/50'
+                                  : type === 'dropset' ? 'bg-red-500/30 text-red-300 border border-red-500/50'
+                                  : 'bg-purple-500/30 text-purple-300 border border-purple-500/50'
+                                  : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
+                              }`}
+                            >
+                              {type === 'normal' ? 'Normal' : type === 'superset' ? 'Superset' : 'Drop Set'}
+                            </button>
+                          ))}
+                          {exercise.exerciseType === 'superset' && (
+                            <input
+                              type="number"
+                              value={exercise.supersetGroup}
+                              onChange={(e) => updateExercise(index, 'supersetGroup', e.target.value)}
+                              className="w-20 bg-brand-navy/50 border border-orange-500/30 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-orange-500"
+                              placeholder="Group #"
+                              min="1"
+                            />
                           )}
                         </div>
 

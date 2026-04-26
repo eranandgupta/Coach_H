@@ -827,9 +827,17 @@ export default function ClientDashboard() {
                         key={idx}
                         className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
                       >
-                        <div>
-                          <p className="text-white font-medium">{exercise.name}</p>
-                          <p className="text-gray-400 text-xs">{exercise.day}</p>
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <p className="text-white font-medium">{exercise.name}</p>
+                            <p className="text-gray-400 text-xs">{exercise.day}</p>
+                          </div>
+                          {exercise.exerciseType === 'superset' && (
+                            <span className="px-1.5 py-0.5 bg-orange-500/20 text-orange-300 rounded text-[10px] font-semibold">SS</span>
+                          )}
+                          {exercise.exerciseType === 'dropset' && (
+                            <span className="px-1.5 py-0.5 bg-red-500/20 text-red-300 rounded text-[10px] font-semibold">DS</span>
+                          )}
                         </div>
                         <div className="text-gray-300 text-sm">
                           {exercise.sets && exercise.reps && `${exercise.sets}x${exercise.reps}`}

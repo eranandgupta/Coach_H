@@ -179,6 +179,12 @@ export default function AssessmentResultsModal({
                     </div>
                     <InfoRow label="Sleep Hours" value={assessment.sleepHours ? `${assessment.sleepHours} hours` : 'N/A'} />
                     <InfoRow label="Job Type" value={assessment.jobType ? assessment.jobType.replace('-', ' ').toUpperCase() : 'N/A'} />
+                    {assessment.jobDescription && (
+                      <div className="py-2 border-b border-white/5 col-span-1 md:col-span-2">
+                        <span className="text-gray-400 text-sm">Job Description: </span>
+                        <span className="text-white text-sm">{assessment.jobDescription}</span>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between py-2 border-b border-white/5">
                       <span className="text-gray-400 text-sm">Job Requires Travel</span>
                       <BooleanBadge value={assessment.jobRequiresTravel} />
@@ -344,6 +350,17 @@ export default function AssessmentResultsModal({
                     <p className="text-gray-500 text-sm">No specific goals selected</p>
                   )}
                 </div>
+
+                {/* Special Conditions */}
+                {assessment.specialConditions && (
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-5 mt-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-yellow-400 text-lg">⚠️</span>
+                      <h3 className="text-lg font-bold text-yellow-300">Special Conditions</h3>
+                    </div>
+                    <p className="text-yellow-200/80 text-sm whitespace-pre-wrap">{assessment.specialConditions}</p>
+                  </div>
+                )}
               </div>
             </div>
 

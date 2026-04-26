@@ -182,6 +182,14 @@ export default function ViewDietModal({ isOpen, onClose, diet, userEmail }: View
                                 </div>
                               )}
 
+                              {/* Alternative Food Choices */}
+                              {meal.alternatives && (
+                                <div className="mb-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+                                  <h6 className="text-yellow-300 text-sm font-semibold mb-1">Alternative Choices:</h6>
+                                  <p className="text-yellow-200/80 text-sm">{meal.alternatives}</p>
+                                </div>
+                              )}
+
                               {/* Time */}
                               {meal.time && (
                                 <div className="text-xs text-gray-500">

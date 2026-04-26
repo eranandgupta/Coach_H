@@ -25,7 +25,7 @@ async function handler(request: NextRequest, context: any) {
           },
         },
         exercises: {
-          orderBy: [{ day: 'asc' }, { order: 'asc' }],
+          orderBy: { order: 'asc' },
         },
       },
       orderBy: {

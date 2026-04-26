@@ -97,6 +97,8 @@ model Exercise {
   videoUrl      String?
   day           String
   order         Int         @default(0)
+  exerciseType  String      @default("normal")
+  supersetGroup Int?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   workoutPlan   WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
@@ -137,6 +139,7 @@ model Meal {
   fats         Decimal? @db.Decimal(10, 2)
   ingredients  String?  @db.Text
   instructions String?  @db.Text
+  alternatives String?  @db.Text
   day          String
   time         String?
   order        Int      @default(0)
@@ -192,6 +195,7 @@ model ClientAssessment {
   alcoholGlassesPerWeek  Int?
   sleepHours             Int?
   jobType                String?
+  jobDescription         String?   @db.Text
   jobRequiresTravel      Boolean   @default(false)
   stressLevel            Int?
   familyOverweight       String?   @db.Text
@@ -218,6 +222,7 @@ model ClientAssessment {
   goalSportsTraining     Boolean   @default(false)
   goalMuscleGain         Boolean   @default(false)
   goalOther              String?   @db.Text
+  specialConditions      String?   @db.Text
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
   dietPreference         String?

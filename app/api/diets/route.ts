@@ -22,7 +22,7 @@ async function getHandler(request: NextRequest, context: any) {
           },
         },
         meals: {
-          orderBy: [{ day: 'asc' }, { order: 'asc' }],
+          orderBy: { order: 'asc' },
         },
       },
       orderBy: {
@@ -108,6 +108,7 @@ async function postHandler(request: NextRequest, context: any) {
                 fats: parseDecimal(meal.fats),
                 ingredients: meal.ingredients || null,
                 instructions: meal.instructions || null,
+                alternatives: meal.alternatives || null,
                 day: meal.day,
                 time: meal.time || null,
                 order: meal.order || index,
@@ -219,6 +220,7 @@ async function putHandler(request: NextRequest, context: any) {
                 fats: parseDecimal(meal.fats),
                 ingredients: meal.ingredients || null,
                 instructions: meal.instructions || null,
+                alternatives: meal.alternatives || null,
                 day: meal.day,
                 time: meal.time || null,
                 order: meal.order || index,
