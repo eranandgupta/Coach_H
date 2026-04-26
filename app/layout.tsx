@@ -123,19 +123,46 @@ export default function RootLayout({
           <WhatsAppButton />
         </CartProvider>
 
-        {/* Service Worker Registration */}
+        {/* Service Worker Registration with Auto-Update */}
         <Script id="register-sw" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js').then(
                   function(registration) {
-                    console.log('Service Worker registration successful with scope: ', registration.scope);
+                    console.log('SW registered, scope:', registration.scope);
+
+                    // Check for updates immediately and every 60 seconds
+                    registration.update();
+                    setInterval(function() { registration.update(); }, 60 * 1000);
+
+                    // When a new SW is found and installed, reload to get fresh content
+                    registration.addEventListener('updatefound', function() {
+                      var newWorker = registration.installing;
+                      if (newWorker) {
+                        newWorker.addEventListener('statechange', function() {
+                          if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+                            console.log('New SW activated, reloading for fresh content');
+                            window.location.reload();
+                          }
+                        });
+                      }
+                    });
                   },
                   function(err) {
-                    console.log('Service Worker registration failed: ', err);
+                    console.log('SW registration failed:', err);
                   }
                 );
+
+                // Also reload if a new SW takes control (skipWaiting + clientsClaim)
+                var refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', function() {
+                  if (!refreshing) {
+                    refreshing = true;
+                    console.log('New SW controller, reloading');
+                    window.location.reload();
+                  }
+                });
               });
             }
           `}

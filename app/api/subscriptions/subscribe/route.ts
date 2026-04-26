@@ -34,11 +34,11 @@ async function handler(request: NextRequest, context: any) {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + plan.duration);
 
-    // Cancel any existing active subscriptions
+    // Cancel any existing active/future subscriptions
     await prisma.userSubscription.updateMany({
       where: {
         userId: user.userId,
-        status: 'active',
+        endDate: { gte: new Date() },
       },
       data: {
         status: 'cancelled',

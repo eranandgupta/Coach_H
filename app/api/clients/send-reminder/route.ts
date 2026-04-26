@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       include: {
         subscriptions: {
           where: {
-            status: 'active',
+            endDate: { gte: new Date() },
           },
           include: {
             plan: true,

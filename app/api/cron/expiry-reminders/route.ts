@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
     // Find all active subscriptions expiring in exactly 7 days
     const expiringSubscriptions = await prisma.userSubscription.findMany({
       where: {
-        status: 'active',
         endDate: {
           gte: sevenDaysFromNow,
           lt: eightDaysFromNow,

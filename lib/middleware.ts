@@ -38,16 +38,29 @@ export async function checkSubscription(userId: number): Promise<{
   message?: string;
 }> {
   try {
-    const subscription = await prisma.userSubscription.findFirst({
+    const now = new Date();
+
+    // Auto-expire any subscriptions that are past their end date but still marked active
+    await prisma.userSubscription.updateMany({
       where: {
         userId: userId,
         status: 'active',
+        endDate: { lt: now },
+      },
+      data: { status: 'expired' },
+    });
+
+    // Find any subscription with endDate in the future (source of truth is the date, not status field)
+    const subscription = await prisma.userSubscription.findFirst({
+      where: {
+        userId: userId,
+        endDate: { gte: now },
       },
       include: {
         plan: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        endDate: 'desc',
       },
     });
 
@@ -59,20 +72,13 @@ export async function checkSubscription(userId: number): Promise<{
       };
     }
 
-    // Check if subscription has expired
-    const now = new Date();
-    if (subscription.endDate < now) {
-      // Update subscription status to expired
+    // Ensure status is synced to 'active' if endDate is still in the future
+    if (subscription.status !== 'active') {
       await prisma.userSubscription.update({
         where: { id: subscription.id },
-        data: { status: 'expired' },
+        data: { status: 'active' },
       });
-
-      return {
-        isActive: false,
-        subscription: subscription,
-        message: 'Your subscription has expired. Please renew to continue.',
-      };
+      subscription.status = 'active';
     }
 
     return {

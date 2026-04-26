@@ -85,7 +85,6 @@ async function postHandler(request: NextRequest, context: any) {
       const activeSub = await prisma.userSubscription.findFirst({
         where: {
           userId: parseInt(clientId),
-          status: 'active',
           endDate: { gte: new Date() },
         },
         orderBy: { endDate: 'desc' },
