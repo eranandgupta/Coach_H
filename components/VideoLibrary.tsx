@@ -132,7 +132,7 @@ const categoryConfig: Record<string, { name: string; description: string; color:
   hw_cardio: { name: 'Cardio', description: 'Heart-pumping exercises', color: 'from-rose-500 to-red-600' },
   // Rehabilitation sub-categories
   rehab_spine: { name: 'Spine & Core', description: 'Spinal mobility & core rehab', color: 'from-cyan-500 to-blue-500' },
-  rehab_shoulder: { name: 'Shoulder', description: 'Shoulder rehabilitation', color: 'from-blue-500 to-indigo-500' },
+  rehab_shoulder: { name: 'Shoulder & Elbow', description: 'Shoulder & elbow rehabilitation', color: 'from-blue-500 to-indigo-500' },
   rehab_knee: { name: 'Knee & Hip', description: 'Knee & hip rehabilitation', color: 'from-teal-500 to-cyan-600' },
   rehab_ankle: { name: 'Ankle & Foot', description: 'Ankle & foot rehabilitation', color: 'from-emerald-500 to-teal-500' },
   rehabilitation: {
