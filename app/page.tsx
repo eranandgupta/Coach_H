@@ -1251,18 +1251,18 @@ export default function Home() {
           </motion.div>
 
           {/* Category Tabs */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-8 md:mb-10">
-            <div className="inline-flex flex-wrap justify-center gap-2 p-2 rounded-2xl border border-white/[0.06] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+          <motion.div variants={itemVariants} className="flex justify-center mb-8 md:mb-10 px-4">
+            <div className="grid grid-cols-4 gap-1.5 sm:inline-flex sm:gap-2 w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl border border-white/[0.06] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               {[
-                { key: 'gym' as const, label: 'Gym Workout', icon: Dumbbell, color: 'brand-gold' },
-                { key: 'home' as const, label: 'Home Workout', icon: HomeIcon, color: 'emerald-400' },
-                { key: 'rehab' as const, label: 'Rehabilitation', icon: Activity, color: 'cyan-400' },
-                { key: 'live' as const, label: 'Live Group Classes', icon: Users, color: 'violet-400' },
+                { key: 'gym' as const, label: 'Gym', labelFull: 'Gym Workout', icon: Dumbbell },
+                { key: 'home' as const, label: 'Home', labelFull: 'Home Workout', icon: HomeIcon },
+                { key: 'rehab' as const, label: 'Rehab', labelFull: 'Rehabilitation', icon: Activity },
+                { key: 'live' as const, label: 'Live', labelFull: 'Live Group Classes', icon: Users },
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActivePlanTab(tab.key)}
-                  className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                  className={`relative flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-sm font-semibold transition-all duration-300 ${
                     activePlanTab === tab.key
                       ? `bg-gradient-to-r ${
                           tab.key === 'gym' ? 'from-brand-gold/20 to-yellow-400/10 text-brand-gold border border-brand-gold/30 shadow-lg shadow-brand-gold/10'
@@ -1274,8 +1274,8 @@ export default function Home() {
                   }`}
                 >
                   <tab.icon size={16} />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+                  <span className="hidden sm:inline">{tab.labelFull}</span>
+                  <span className="sm:hidden">{tab.label}</span>
                 </button>
               ))}
             </div>
