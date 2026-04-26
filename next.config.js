@@ -5,7 +5,21 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
   clientsClaim: true,
   disable: process.env.NODE_ENV === 'development',
-  buildExcludes: [/middleware-manifest\.json$/],
+  buildExcludes: [
+    /middleware-manifest\.json$/,
+    /chunks\/.*$/,
+    /css\/.*$/,
+    /app-build-manifest\.json$/,
+    /build-manifest\.json$/,
+    /\/_next\/static\/.*$/,
+  ],
+  publicExcludes: [
+    '!icons/**',
+    '!logo.png',
+    '!favicon.png',
+    '!manifest.json',
+    '!offline.html',
+  ],
   fallbacks: {
     document: '/offline.html',
   },
@@ -133,9 +147,9 @@ const withPWA = require('next-pwa')({
         cacheName: 'apis',
         expiration: {
           maxEntries: 16,
-          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          maxAgeSeconds: 60 // 1 minute - API data should always be fresh
         },
-        networkTimeoutSeconds: 10 // fall back to cache if api does not response within 10 seconds
+        networkTimeoutSeconds: 10
       }
     },
     {
@@ -145,9 +159,9 @@ const withPWA = require('next-pwa')({
         cacheName: 'others',
         expiration: {
           maxEntries: 32,
-          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          maxAgeSeconds: 60 * 60 // 1 hour
         },
-        networkTimeoutSeconds: 10
+        networkTimeoutSeconds: 5
       }
     }
   ]
