@@ -368,8 +368,8 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                         </motion.div>
                       ))}
 
-                      {/* Promo Code Section - hidden for Home Workout plan */}
-                      {!isHomeWorkoutPlan && <div className="mt-6 pt-6 border-t border-white/10">
+                      {/* Promo Code Section */}
+                      <div className="mt-6 pt-6 border-t border-white/10">
                         <div className="flex items-center gap-2 mb-3">
                           <Tag className="w-5 h-5 text-brand-gold" />
                           <h3 className="text-white font-semibold">Have a Promo Code?</h3>
@@ -436,7 +436,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                             </div>
                           </div>
                         )}
-                      </div>}
+                      </div>
                     </div>
                   )}
                 </>

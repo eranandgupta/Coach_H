@@ -81,14 +81,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Block promo codes for Home Workout plan
-    if (planName && planName.toLowerCase().includes('home workout')) {
-      return NextResponse.json(
-        { error: 'Promo codes are not applicable on the Home Workout plan' },
-        { status: 400 }
-      );
-    }
-
     // Check if promo code is applicable to the selected plan
     if (promoCode.applicablePlans && planName) {
       try {
