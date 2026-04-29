@@ -66,7 +66,8 @@
       "Bash(npx next:*)",
       "Bash(lsof -ti:3000)",
       "Bash(xargs kill:*)",
-      "Bash(lsof -ti:3001)"
+      "Bash(lsof -ti:3001)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
