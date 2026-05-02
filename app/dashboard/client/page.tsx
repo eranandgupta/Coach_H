@@ -34,6 +34,7 @@ import VideoLibrary from '@/components/VideoLibrary';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
+import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
 
 export default function ClientDashboard() {
   const router = useRouter();
@@ -51,6 +52,7 @@ export default function ClientDashboard() {
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  const [completedSessions, setCompletedSessions] = useState<number[]>([]);
 
   // Push notifications
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
@@ -170,6 +172,16 @@ export default function ClientDashboard() {
         const blogData = await blogRes.json();
         setBlogPosts(blogData.slice(0, 6)); // Get latest 6 posts
       }
+
+      // Fetch completed sessions for Elite 1:1 plans
+      const subPlanName = userData.subscription?.subscription?.plan?.name || '';
+      if (isElitePlan(subPlanName) && userData.subscription?.subscription?.id) {
+        const sessRes = await fetch(`/api/sessions?subscriptionId=${userData.subscription.subscription.id}`);
+        if (sessRes.ok) {
+          const sessData = await sessRes.json();
+          setCompletedSessions(sessData.sessions.map((s: any) => s.sessionNumber));
+        }
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -199,6 +211,24 @@ export default function ClientDashboard() {
 
   const getWeekMilestones = () => {
     if (!subscription?.subscription) return [];
+    const pName = subscription.subscription.plan?.name || '';
+
+    // Elite 1:1 plans: session-based milestones (confirmed by coach)
+    if (isElitePlan(pName)) {
+      const total = getTotalSessions(pName) || 24;
+      const milestones = [];
+      for (let i = 1; i <= total; i++) {
+        milestones.push({
+          id: i,
+          label: `S${i}`,
+          progress: ((i - 1) / Math.max(total - 1, 1)) * 100,
+          isPassed: completedSessions.includes(i),
+          isCurrent: false,
+        });
+      }
+      return milestones;
+    }
+
     const start = new Date(subscription.subscription.startDate);
     const end = new Date(subscription.subscription.endDate);
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
@@ -670,9 +700,13 @@ export default function ClientDashboard() {
               </div>
             </div>
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">
-              <span className="hidden md:inline">Week </span><span className="md:hidden">W</span>{currentWorkout?.weekNumber || (subscription?.subscription?.startDate ? Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7))) : 1)}
+              {isEliteOneOnOnePlan ? (
+                <><span className="hidden md:inline">Session </span><span className="md:hidden">S</span>{completedSessions.length}</>
+              ) : (
+                <><span className="hidden md:inline">Week </span><span className="md:hidden">W</span>{currentWorkout?.weekNumber || (subscription?.subscription?.startDate ? Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7))) : 1)}</>
+              )}
             </h3>
-            <p className="text-gray-500 text-[11px] md:text-sm">Current Week</p>
+            <p className="text-gray-500 text-[11px] md:text-sm">{isEliteOneOnOnePlan ? 'Sessions Done' : 'Current Week'}</p>
           </motion.div>
         </div>
 
@@ -816,7 +850,7 @@ export default function ClientDashboard() {
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-2 text-gray-400">
                     <Calendar className="w-4 h-4" />
-                    <span>Week {currentWorkout.weekNumber}</span>
+                    <span>{isEliteOneOnOnePlan ? `Session ${currentWorkout.weekNumber}` : `Week ${currentWorkout.weekNumber}`}</span>
                   </div>
                   <div className="text-gray-400">
                     {getDaysRemaining(currentWorkout.endDate)} days left
@@ -921,7 +955,7 @@ export default function ClientDashboard() {
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-2 text-gray-400">
                     <Calendar className="w-4 h-4" />
-                    <span>Week {currentDiet.weekNumber}</span>
+                    <span>{isEliteOneOnOnePlan ? `Session ${currentDiet.weekNumber}` : `Week ${currentDiet.weekNumber}`}</span>
                   </div>
                   {currentDiet.targetCalories && (
                     <div className="text-gray-400">
@@ -985,12 +1019,14 @@ export default function ClientDashboard() {
         onClose={() => setIsWorkoutModalOpen(false)}
         workout={currentWorkout}
         userEmail={user?.email}
+        isElitePlan={isEliteOneOnOnePlan}
       />
       <ViewDietModal
         isOpen={isDietModalOpen}
         onClose={() => setIsDietModalOpen(false)}
         diet={currentDiet}
         userEmail={user?.email}
+        isElitePlan={isEliteOneOnOnePlan}
       />
 
       {/* Latest Blog Widget */}

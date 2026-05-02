@@ -1,9 +1,10 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check } from 'lucide-react';
+import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
+import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
 
 interface ClientDetailModalProps {
   isOpen: boolean;
@@ -39,10 +40,20 @@ export default function ClientDetailModal({
   const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState(false);
   const [isSendingCredentials, setIsSendingCredentials] = useState(false);
   const [credentialsSent, setCredentialsSent] = useState(false);
+  const [completedSessions, setCompletedSessions] = useState<any[]>([]);
+  const [sessionLoading, setSessionLoading] = useState(false);
+
+  const clientPlanName = client?.subscriptions?.[0]?.plan?.name || '';
+  const clientIsElite = isElitePlan(clientPlanName);
+  const totalSessions = getTotalSessions(clientPlanName) || 0;
+  const subscriptionId = client?.subscriptions?.[0]?.id;
 
   useEffect(() => {
     if (isOpen && client) {
       fetchAssessment();
+      if (clientIsElite && subscriptionId) {
+        fetchSessions();
+      }
     }
   }, [isOpen, client]);
 
@@ -64,6 +75,62 @@ export default function ClientDetailModal({
       setAssessment(null);
     } finally {
       setAssessmentLoading(false);
+    }
+  };
+
+  const fetchSessions = async () => {
+    setSessionLoading(true);
+    try {
+      const res = await fetch(`/api/sessions?subscriptionId=${subscriptionId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCompletedSessions(data.sessions || []);
+      }
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    } finally {
+      setSessionLoading(false);
+    }
+  };
+
+  const handleConfirmSession = async (sessionNumber: number) => {
+    const notes = prompt(`Mark Session ${sessionNumber} as complete?\n\nAdd notes (optional):`);
+    if (notes === null) return; // cancelled
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ subscriptionId, sessionNumber, notes: notes || undefined }),
+      });
+
+      if (res.ok) {
+        fetchSessions();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to confirm session');
+      }
+    } catch (error) {
+      alert('Error confirming session');
+    }
+  };
+
+  const handleUndoSession = async (session: any) => {
+    if (!confirm(`Undo Session ${session.sessionNumber} completion?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/sessions?id=${session.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        fetchSessions();
+      }
+    } catch (error) {
+      alert('Error undoing session');
     }
   };
 
@@ -218,6 +285,68 @@ export default function ClientDetailModal({
                 )}
               </div>
 
+              {/* Session Tracker — Elite 1:1 only */}
+              {clientIsElite && totalSessions > 0 && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Target className="w-5 h-5 text-violet-400" />
+                      <h3 className="text-xl font-bold text-white">Session Tracker</h3>
+                      <span className="px-2 py-1 bg-violet-500/20 text-violet-300 rounded text-xs font-medium">
+                        {completedSessions.length}/{totalSessions}
+                      </span>
+                    </div>
+                  </div>
+
+                  {sessionLoading ? (
+                    <div className="flex items-center justify-center py-8 bg-white/5 rounded-lg border border-white/5">
+                      <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                    </div>
+                  ) : (
+                    <>
+                      {/* Progress bar */}
+                      <div className="mb-4">
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-violet-500 to-purple-400 rounded-full transition-all duration-500"
+                            style={{ width: `${(completedSessions.length / totalSessions) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Session grid */}
+                      <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${Math.min(totalSessions, 12)}, 1fr)` }}>
+                        {Array.from({ length: totalSessions }, (_, i) => i + 1).map((num) => {
+                          const session = completedSessions.find((s: any) => s.sessionNumber === num);
+                          const isCompleted = !!session;
+                          return (
+                            <button
+                              key={num}
+                              onClick={() => isCompleted ? handleUndoSession(session) : handleConfirmSession(num)}
+                              title={isCompleted ? `Session ${num} — Completed ${new Date(session.completedAt).toLocaleDateString()}${session.notes ? `\nNotes: ${session.notes}` : ''}\nClick to undo` : `Click to mark Session ${num} as complete`}
+                              className={`relative flex items-center justify-center h-9 rounded-lg text-[11px] font-bold transition-all duration-200 ${
+                                isCompleted
+                                  ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30 hover:border-red-500/30 hover:text-red-400'
+                                  : 'bg-white/5 text-gray-500 border border-white/10 hover:bg-violet-500/10 hover:text-violet-400 hover:border-violet-500/30'
+                              }`}
+                            >
+                              S{num}
+                              {isCompleted && (
+                                <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full flex items-center justify-center">
+                                  <svg className="w-1.5 h-1.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
               {/* Workouts Section */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
@@ -239,7 +368,7 @@ export default function ClientDetailModal({
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <p className="text-purple-300 text-sm font-semibold">Week {workout.weekNumber}</p>
+                            <p className="text-purple-300 text-sm font-semibold">{clientIsElite ? 'Session' : 'Week'} {workout.weekNumber}</p>
                             <p className="text-white font-medium">{workout.title}</p>
                             {workout.description && (
                               <p className="text-gray-400 text-xs mt-1">{workout.description}</p>
@@ -299,7 +428,7 @@ export default function ClientDetailModal({
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <p className="text-green-300 text-sm font-semibold">Week {diet.weekNumber}</p>
+                            <p className="text-green-300 text-sm font-semibold">{clientIsElite ? 'Session' : 'Week'} {diet.weekNumber}</p>
                             <p className="text-white font-medium">{diet.title}</p>
                             {diet.description && (
                               <p className="text-gray-400 text-xs mt-1">{diet.description}</p>

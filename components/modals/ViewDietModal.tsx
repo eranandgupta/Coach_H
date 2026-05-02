@@ -10,9 +10,10 @@ interface ViewDietModalProps {
   onClose: () => void;
   diet: any;
   userEmail?: string;
+  isElitePlan?: boolean;
 }
 
-export default function ViewDietModal({ isOpen, onClose, diet, userEmail }: ViewDietModalProps) {
+export default function ViewDietModal({ isOpen, onClose, diet, userEmail, isElitePlan = false }: ViewDietModalProps) {
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -85,7 +86,7 @@ export default function ViewDietModal({ isOpen, onClose, diet, userEmail }: View
                   <div className="flex flex-wrap items-center gap-4 text-sm">
                     <div className="flex items-center gap-2 text-gray-400">
                       <Calendar className="w-4 h-4" />
-                      <span>Week {diet.weekNumber}</span>
+                      <span>{isElitePlan ? `Session ${diet.weekNumber}` : `Week ${diet.weekNumber}`}</span>
                     </div>
                     {diet.targetCalories && (
                       <div className="flex items-center gap-2 text-orange-400">

@@ -10,9 +10,10 @@ interface ViewWorkoutModalProps {
   onClose: () => void;
   workout: any;
   userEmail?: string;
+  isElitePlan?: boolean;
 }
 
-export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail }: ViewWorkoutModalProps) {
+export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, isElitePlan = false }: ViewWorkoutModalProps) {
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -77,7 +78,7 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail }
                   <div className="flex flex-wrap items-center gap-4 text-sm">
                     <div className="flex items-center gap-2 text-gray-400">
                       <Calendar className="w-4 h-4" />
-                      <span>Week {workout.weekNumber}</span>
+                      <span>{isElitePlan ? `Session ${workout.weekNumber}` : `Week ${workout.weekNumber}`}</span>
                     </div>
                     <div className="text-gray-400">
                       {new Date(workout.startDate).toLocaleDateString()} - {new Date(workout.endDate).toLocaleDateString()}

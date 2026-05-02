@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import { isElitePlan } from '@/lib/planUtils';
 
 interface CreateDietModalProps {
   isOpen: boolean;
@@ -45,6 +46,8 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const mealTypes = ['Breakfast', 'Mid-Morning Snack', 'Lunch', 'Evening Snack', 'Dinner', 'Post-Dinner'];
+  const selectedClient = clients.find(c => c.id.toString() === clientId);
+  const selectedClientIsElite = isElitePlan(selectedClient?.subscriptions?.[0]?.plan?.name || '');
 
   useEffect(() => {
     if (isOpen) {
@@ -315,7 +318,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Week Number *
+                      {selectedClientIsElite ? 'Session Number' : 'Week Number'} *
                     </label>
                     <input
                       type="number"

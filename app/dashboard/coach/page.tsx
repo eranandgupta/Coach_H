@@ -42,6 +42,7 @@ import DashboardLoader from '@/components/DashboardLoader';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { isElitePlan } from '@/lib/planUtils';
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -378,6 +379,11 @@ export default function CoachDashboard() {
 
   const getClientDiets = (clientId: number) => {
     return diets.filter((d) => d.clientId === clientId);
+  };
+
+  const isClientElite = (clientId: number) => {
+    const client = clients.find(c => c.id === clientId);
+    return isElitePlan(client?.subscriptions?.[0]?.plan?.name || '');
   };
 
   if (loading) {
@@ -837,7 +843,7 @@ export default function CoachDashboard() {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <h3 className="text-white font-semibold">{workout.title}</h3>
-                      <span className="text-xs text-gray-400">Week {workout.weekNumber}</span>
+                      <span className="text-xs text-gray-400">{isClientElite(workout.clientId) ? 'Session' : 'Week'} {workout.weekNumber}</span>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
@@ -885,7 +891,7 @@ export default function CoachDashboard() {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <h3 className="text-white font-semibold">{diet.title}</h3>
-                      <span className="text-xs text-gray-400">Week {diet.weekNumber}</span>
+                      <span className="text-xs text-gray-400">{isClientElite(diet.clientId) ? 'Session' : 'Week'} {diet.weekNumber}</span>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button

@@ -22,10 +22,10 @@ model User {
   assessment          ClientAssessment?
   dietPlans           DietPlan[]         @relation("ClientDiets")
   createdDiets        DietPlan[]         @relation("CoachDiets")
+  targetedPromoCodes  PromoCode[]
   subscriptions       UserSubscription[]
   workoutPlans        WorkoutPlan[]      @relation("ClientWorkouts")
   createdWorkouts     WorkoutPlan[]      @relation("CoachWorkouts")
-  targetedPromoCodes  PromoCode[]
 }
 
 model SubscriptionPlan {
@@ -42,27 +42,43 @@ model SubscriptionPlan {
 }
 
 model UserSubscription {
-  id            Int              @id @default(autoincrement())
-  userId        Int
-  planId        Int
-  status        String           @default("active")
-  startDate     DateTime         @default(now())
-  endDate       DateTime
-  transactionId      String?
-  paymentMode        String?
-  razorpayOrderId    String?
-  razorpayPaymentId  String?
-  paidAmount         Decimal?  @db.Decimal(10, 2)
-  customerGoal       String?
-  customerNotes      String?   @db.Text
-  razorpaySignature  String?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  plan          SubscriptionPlan @relation(fields: [planId], references: [id])
-  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  planId            Int
+  status            String            @default("active")
+  startDate         DateTime          @default(now())
+  endDate           DateTime
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  paymentMode       String?
+  transactionId     String?
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  customerGoal      String?
+  customerNotes     String?           @db.Text
+  paidAmount        Decimal?          @db.Decimal(10, 2)
+  razorpaySignature String?
+  sessionTrackings  SessionTracking[]
+  plan              SubscriptionPlan  @relation(fields: [planId], references: [id])
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([planId])
+}
+
+model SessionTracking {
+  id                 Int              @id @default(autoincrement())
+  subscriptionId     Int
+  sessionNumber      Int
+  completedAt        DateTime         @default(now())
+  confirmedByCoachId Int
+  notes              String?          @db.Text
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  subscription       UserSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, sessionNumber])
+  @@index([subscriptionId])
 }
 
 model WorkoutPlan {
@@ -97,10 +113,10 @@ model Exercise {
   videoUrl      String?
   day           String
   order         Int         @default(0)
-  exerciseType  String      @default("normal")
-  supersetGroup Int?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  exerciseType  String      @default("normal")
+  supersetGroup Int?
   workoutPlan   WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
 
   @@index([workoutPlanId])
@@ -139,12 +155,12 @@ model Meal {
   fats         Decimal? @db.Decimal(10, 2)
   ingredients  String?  @db.Text
   instructions String?  @db.Text
-  alternatives String?  @db.Text
   day          String
   time         String?
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  alternatives String?  @db.Text
   dietPlan     DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
 
   @@index([dietPlanId])
@@ -195,7 +211,6 @@ model ClientAssessment {
   alcoholGlassesPerWeek  Int?
   sleepHours             Int?
   jobType                String?
-  jobDescription         String?   @db.Text
   jobRequiresTravel      Boolean   @default(false)
   stressLevel            Int?
   familyOverweight       String?   @db.Text
@@ -222,11 +237,12 @@ model ClientAssessment {
   goalSportsTraining     Boolean   @default(false)
   goalMuscleGain         Boolean   @default(false)
   goalOther              String?   @db.Text
-  specialConditions      String?   @db.Text
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
   dietPreference         String?
   nonVegRestrictedDays   String?   @db.Text
+  jobDescription         String?   @db.Text
+  specialConditions      String?   @db.Text
   user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Trash2, Dumbbell, Calendar, User } from 'lucide-react';
+import { isElitePlan } from '@/lib/planUtils';
 
 interface CreateWorkoutModalProps {
   isOpen: boolean;
@@ -41,6 +42,8 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const [error, setError] = useState('');
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedClient = clients.find(c => c.id.toString() === clientId);
+  const selectedClientIsElite = isElitePlan(selectedClient?.subscriptions?.[0]?.plan?.name || '');
 
   useEffect(() => {
     if (isOpen) {
@@ -295,7 +298,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Week Number *
+                      {selectedClientIsElite ? 'Session Number' : 'Week Number'} *
                     </label>
                     <input
                       type="number"
