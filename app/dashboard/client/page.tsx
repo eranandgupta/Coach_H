@@ -246,6 +246,7 @@ export default function ClientDashboard() {
   const currentDiet = diets[selectedDietIndex] || diets[0];
   const planName = subscription?.subscription?.plan?.name || '';
   const isLiveSessionPlan = planName === 'She Strong Program' || planName === 'Active Parents Program';
+  const isEliteOneOnOnePlan = planName.startsWith('Elite 1:1');
 
   return (
     <div className="min-h-screen bg-brand-navy">
@@ -500,8 +501,13 @@ export default function ClientDashboard() {
         {/* Fun Fact Widget — shown for all plans */}
         <FunFactWidget />
 
+        {/* Elite 1:1 Plans — show live session widget alongside regular dashboard */}
+        {isEliteOneOnOnePlan && isSubscriptionActive && (
+          <LiveSessionWidget planName={planName} />
+        )}
+
         {/* Live Session Plans — show different dashboard */}
-        {isLiveSessionPlan && isSubscriptionActive && (
+        {isLiveSessionPlan && !isEliteOneOnOnePlan && isSubscriptionActive && (
           <>
           <LiveSessionWidget planName={planName} />
 
@@ -615,8 +621,8 @@ export default function ClientDashboard() {
           </>
         )}
 
-        {/* Regular Plans — stats, workouts, diets */}
-        {!isLiveSessionPlan && (
+        {/* Regular Plans — stats, workouts, diets (also shown for Elite 1:1) */}
+        {(!isLiveSessionPlan || isEliteOneOnOnePlan) && (
         <>
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">

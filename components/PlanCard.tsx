@@ -17,6 +17,7 @@ interface PlanCardProps {
   homeWorkout?: boolean;
   rehabilitation?: boolean;
   liveGroup?: boolean;
+  liveOneOnOne?: boolean;
   whatsappOnly?: boolean;
   onAddToCart?: (plan: {
     id: number;
@@ -40,6 +41,7 @@ export default function PlanCard({
   homeWorkout = false,
   rehabilitation = false,
   liveGroup = false,
+  liveOneOnOne = false,
   whatsappOnly = false,
   onAddToCart,
 }: PlanCardProps) {
@@ -163,7 +165,7 @@ export default function PlanCard({
         </motion.div>
       )}
 
-      {/* Live Group badge */}
+      {/* Live badge */}
       {liveGroup && (
         <motion.div
           initial={{ y: -50, opacity: 0 }}
@@ -173,11 +175,11 @@ export default function PlanCard({
         >
           <div className="bg-gradient-to-r from-violet-500 via-purple-400 to-violet-500 px-4 py-1 rounded-b-lg shadow-lg">
             <div className="flex items-center gap-1.5">
-              <Users size={12} className="text-white" />
+              {liveOneOnOne ? <Crown size={12} className="text-white" /> : <Users size={12} className="text-white" />}
               <span className="text-white font-bold text-xs uppercase tracking-wider">
-                Live Group
+                {liveOneOnOne ? '1:1 Elite' : 'Live Group'}
               </span>
-              <Users size={12} className="text-white" />
+              {liveOneOnOne ? <Crown size={12} className="text-white" /> : <Users size={12} className="text-white" />}
             </div>
           </div>
         </motion.div>
@@ -237,10 +239,10 @@ export default function PlanCard({
           </div>
         )}
 
-        {/* Users icon for live group */}
+        {/* Icon for live plans */}
         {liveGroup && (
           <div className="absolute top-4 right-4 text-violet-400 opacity-15 group-hover:opacity-30 transition-opacity">
-            <Users size={32} />
+            {liveOneOnOne ? <Crown size={32} /> : <Users size={32} />}
           </div>
         )}
 

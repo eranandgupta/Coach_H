@@ -295,8 +295,35 @@ export default function TermsOfService() {
                 </p>
               </section>
 
+              <section className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4">19. Payment Disclaimer</h2>
+                <ul className="list-disc list-inside text-gray-300 space-y-2">
+                  <li>Coach Himanshu Platform is solely liable for payments made to official company accounts only.</li>
+                  <li>Official payment methods will be communicated at the time of enrollment.</li>
+                  <li>Any payment made directly to a trainer, coach, or any individual — by cash, UPI, bank transfer, or any other mode — is done entirely at the client&apos;s own risk.</li>
+                  <li>Coach Himanshu Platform holds no responsibility, obligation, or liability for such unauthorized transactions.</li>
+                  <li>In case of fraud via unauthorized payment, the platform will not be held liable for refund or compensation.</li>
+                  <li>Clients are advised to always verify official payment details before transferring any amount.</li>
+                </ul>
+              </section>
+
+              <section className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4">20. Physical Safety & Liability</h2>
+                <p className="text-gray-300 leading-relaxed mb-4">
+                  No trainer or representative of Coach Himanshu Platform is physically present at the client&apos;s location at any time. The client is solely responsible for:
+                </p>
+                <ul className="list-disc list-inside text-gray-300 space-y-2">
+                  <li>Ensuring their workout space is safe and hazard-free.</li>
+                  <li>Using proper equipment in good condition.</li>
+                  <li>Consulting a doctor before starting any fitness program, especially if they have pre-existing medical conditions.</li>
+                </ul>
+                <p className="text-gray-300 leading-relaxed mt-4">
+                  Coach Himanshu Platform, its trainers, and employees shall not be held liable for any injury, accident, health complication, or damage — direct or indirect — arising during or after workout sessions. By enrolling, the client acknowledges and accepts full personal responsibility for their physical safety.
+                </p>
+              </section>
+
               <section>
-                <h2 className="text-2xl font-bold text-white mb-4">19. Contact Information</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">21. Contact Information</h2>
                 <p className="text-gray-300 leading-relaxed mb-4">
                   For questions about these Terms, please contact us:
                 </p>

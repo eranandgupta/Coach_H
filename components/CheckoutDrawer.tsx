@@ -17,6 +17,7 @@ export default function CheckoutDrawer() {
     email: '',
     goal: '',
     notes: '',
+    acceptTerms: false,
     // Partner 2 details for couple plans
     partner2Name: '',
     partner2Whatsapp: '',
@@ -40,6 +41,8 @@ export default function CheckoutDrawer() {
   const isCouplePlan = cartItems[0]?.name?.toLowerCase().includes('couple');
   // Check if current plan is a home workout plan
   const isHomeWorkoutPlan = cartItems[0]?.name?.toLowerCase().includes('home workout');
+  // Check if current plan is a 1:1 elite plan
+  const isOneOnOnePlan = cartItems[0]?.name?.toLowerCase().includes('one-on-one elite');
 
   const validateForm = () => {
     const newErrors: any = {};
@@ -57,6 +60,7 @@ export default function CheckoutDrawer() {
       newErrors.email = 'Please enter a valid email';
     }
     if (!formData.goal.trim()) newErrors.goal = 'Fitness goal is required';
+    if (!formData.acceptTerms) newErrors.acceptTerms = 'You must accept the terms & conditions';
 
     // Partner 2 validation (only for couple plans)
     if (isCouplePlan) {
@@ -257,7 +261,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const handleClose = () => {
     closeCheckout();
     setCurrentStep('cart');
-    setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
+    setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', acceptTerms: false, partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
     setErrors({});
     setPromoCode('');
     setAppliedPromo(null);
@@ -632,6 +636,49 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                       placeholder={isCouplePlan ? "Any special requirements or medical conditions for either partner..." : "Any special requirements or medical conditions..."}
                     />
                   </div>
+
+                  {/* 1:1 Training Terms — shown only for elite plans */}
+                  {isOneOnOnePlan && (
+                    <div className="mt-4">
+                      <details className="group">
+                        <summary className="flex items-center justify-center gap-2 cursor-pointer text-violet-400 hover:text-violet-300 transition-colors text-sm font-medium">
+                          <span>1:1 Training Terms &amp; Conditions</span>
+                          <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div className="mt-3 p-4 rounded-xl border border-violet-500/20 bg-violet-500/5 text-gray-300 text-xs space-y-2.5 leading-relaxed">
+                          <p>• All sessions must be completed within 30 days of enrollment. Sessions do not carry forward and will expire after 30 days — no exceptions.</p>
+                          <p>• It is the sole responsibility of the client to complete all sessions within the given timeframe. No extensions will be granted under any circumstance.</p>
+                          <p>• Extensions will only be provided if a session is missed due to trainer unavailability or any issue caused by Coach Himanshu Platform — strictly equal to sessions missed from our side only.</p>
+                          <p>• Any change in your fixed session time must be communicated at least 24 hours in advance. Last-minute reschedule requests will not be entertained.</p>
+                          <p>• If a client joins the session late, the session will end at the originally scheduled time. No extra time will be given.</p>
+                          <p>• Each session is of 60 minutes duration.</p>
+                          <p>• Once purchased, the 1:1 training plan is completely non-refundable under any circumstance — no exceptions.</p>
+                        </div>
+                      </details>
+                    </div>
+                  )}
+
+                  {/* Terms & Conditions Checkbox */}
+                  <div className="mt-4">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.acceptTerms}
+                        onChange={(e) => setFormData({ ...formData, acceptTerms: e.target.checked })}
+                        className="mt-1 w-4 h-4 rounded border-white/20 bg-brand-navy/50 text-brand-blue focus:ring-brand-blue focus:ring-offset-0 cursor-pointer accent-brand-blue"
+                      />
+                      <span className="text-gray-300 text-sm leading-relaxed">
+                        I accept the{' '}
+                        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">
+                          Terms &amp; Conditions
+                        </a>
+                        {isOneOnOnePlan && (
+                          <span className="text-gray-400"> including the 1:1 training session policy, non-refundable policy, and all applicable guidelines</span>
+                        )}
+                      </span>
+                    </label>
+                    {errors.acceptTerms && <p className="text-red-400 text-xs mt-1 ml-7">{errors.acceptTerms}</p>}
+                  </div>
                 </div>
               )}
 
@@ -804,7 +851,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                       clearCart();
                       closeCheckout();
                       setCurrentStep('cart');
-                      setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
+                      setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', acceptTerms: false, partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
                       setPaymentReceipt(null);
                       router.push('/');
                     }}

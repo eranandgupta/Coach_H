@@ -749,7 +749,7 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     id: 'rehabilitation',
     name: 'Rehabilitation',
     folderName: 'Rehabilitation',
-    requiredPlans: ['Rehabilitation Plan'],
+    requiredPlans: ['Rehabilitation Plan', 'Couple Rehabilitation Plan'],
     videos: [],
     subCategories: [
       {
@@ -823,7 +823,7 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     id: 'homeWorkout',
     name: 'Home Workout',
     folderName: 'Home Workout',
-    requiredPlans: ['Home Workout', 'Mastery Plan'],
+    requiredPlans: ['Home Workout', 'Home Workout Plan', 'Couple Home Workout Plan', 'Mastery Plan'],
     videos: [],
     subCategories: [
       {

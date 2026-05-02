@@ -494,6 +494,91 @@ export default function Home() {
       ],
       liveGroup: true,
     },
+    {
+      id: 18,
+      dbName: 'Elite 1:1 - 1 Month (24 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING',
+      duration: 'Month',
+      price: '₹9,999',
+      priceValue: 9999,
+      description: '24 Sessions · Just ₹416/session',
+      features: [
+        'Live 1:1 personal training sessions',
+        'Fully customised workout plan',
+        'Personalised diet strategy',
+        'Supplement & lifestyle guidance',
+        'Real time form & technique correction',
+        'Complete accountability system',
+        'Dedicated WhatsApp support',
+        '24 sessions in 30 days · 60 min each',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
+    },
+    {
+      id: 19,
+      dbName: 'Elite 1:1 - 1 Month (12 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING',
+      duration: 'Month',
+      price: '₹5,999',
+      priceValue: 5999,
+      description: '12 Sessions · Just ₹499/session',
+      features: [
+        'Live 1:1 personal training sessions',
+        'Fully customised workout plan',
+        'Personalised diet strategy',
+        'Supplement & lifestyle guidance',
+        'Real time form & technique correction',
+        'Complete accountability system',
+        'Dedicated WhatsApp support',
+        '12 sessions in 30 days · 60 min each',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
+    },
+    {
+      id: 20,
+      dbName: 'Elite 1:1 - 3 Months (72 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING',
+      duration: '3 Months',
+      price: '₹23,999',
+      priceValue: 23999,
+      description: '72 Sessions · Just ₹333/session',
+      features: [
+        'Live 1:1 personal training sessions',
+        'Fully customised workout plan',
+        'Personalised diet strategy',
+        'Supplement & lifestyle guidance',
+        'Real time form & technique correction',
+        'Complete accountability system',
+        'Dedicated WhatsApp support',
+        '72 sessions in 90 days · 60 min each',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
+      popular: true,
+    },
+    {
+      id: 21,
+      dbName: 'Elite 1:1 - 3 Months (36 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING',
+      duration: '3 Months',
+      price: '₹15,999',
+      priceValue: 15999,
+      description: '36 Sessions · Just ₹444/session',
+      features: [
+        'Live 1:1 personal training sessions',
+        'Fully customised workout plan',
+        'Personalised diet strategy',
+        'Supplement & lifestyle guidance',
+        'Real time form & technique correction',
+        'Complete accountability system',
+        'Dedicated WhatsApp support',
+        '36 sessions in 90 days · 60 min each',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
+    },
   ];
 
   const stats = [
@@ -1257,7 +1342,7 @@ export default function Home() {
                 { key: 'gym' as const, label: 'Gym', labelFull: 'Gym Workout', icon: Dumbbell },
                 { key: 'home' as const, label: 'Home', labelFull: 'Home Workout', icon: HomeIcon },
                 { key: 'rehab' as const, label: 'Rehab', labelFull: 'Rehabilitation', icon: Activity },
-                { key: 'live' as const, label: 'Live', labelFull: 'Live Group Classes', icon: Users },
+                { key: 'live' as const, label: 'Live', labelFull: 'Live Training', icon: Users },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -1405,7 +1490,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {/* Live Group Classes */}
+          {/* Live Plans */}
           {activePlanTab === 'live' && (
             <motion.div
               key="live"
@@ -1413,13 +1498,51 @@ export default function Home() {
               initial="hidden"
               animate="visible"
             >
+              {/* One-on-One Elite Coaching Section */}
+              <motion.div variants={itemVariants} className="mb-6 md:mb-8">
+                <div className="text-center mb-4 px-4">
+                  <p className="flex items-center justify-center gap-2 mb-2">
+                    <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
+                    <span className="text-violet-400 font-semibold uppercase tracking-wider text-xs">One-on-One Elite Coaching</span>
+                    <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
+                  </p>
+                  <p className="text-gray-400 text-xs italic">Not for everyone — only for serious individuals</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
+                  {plans.filter(p => p.liveOneOnOne).map((plan) => (
+                    <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                    </motion.div>
+                  ))}
+                </div>
+                {/* Terms & Conditions */}
+                <motion.div variants={itemVariants} className="mt-4 max-w-3xl mx-auto">
+                  <details className="group">
+                    <summary className="flex items-center justify-center gap-2 cursor-pointer text-gray-500 hover:text-gray-300 transition-colors text-xs">
+                      <span className="font-medium">Terms & Conditions</span>
+                      <svg className="w-3 h-3 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </summary>
+                    <div className="mt-3 p-4 rounded-xl border border-amber-500/10 bg-amber-500/5 text-gray-400 text-xs space-y-1.5">
+                      <p>• A total of 24 sessions are scheduled per month (30 days). All sessions must be completed within 30 days of enrollment — sessions do not carry forward and will expire after 30 days, no exceptions.</p>
+                      <p>• It is the sole responsibility of the client to complete all sessions within the given timeframe. No extensions will be granted under any circumstance.</p>
+                      <p>• Extensions will only be provided if a session is missed due to trainer unavailability or any issue caused by Coach Himanshu Platform — strictly equal to sessions missed from our side only.</p>
+                      <p>• Any change in your fixed session time must be communicated at least 24 hours in advance. Last-minute reschedule requests will not be entertained.</p>
+                      <p>• If a client joins the session late, the session will end at the originally scheduled time. No extra time will be given.</p>
+                      <p>• Each session is of 60 minutes duration.</p>
+                      <p>• Once purchased, the 1:1 training plan is completely non-refundable under any circumstance — no exceptions.</p>
+                    </div>
+                  </details>
+                </motion.div>
+              </motion.div>
+
+              {/* Live Group Sessions Section */}
               <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
                 <span className="text-violet-400 font-semibold uppercase tracking-wider text-xs">Live Group Sessions</span>
                 <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
               </motion.p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
-                {plans.filter(p => p.liveGroup).map((plan) => (
+                {plans.filter(p => p.liveGroup && !p.liveOneOnOne).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
                   </motion.div>
