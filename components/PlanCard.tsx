@@ -6,6 +6,7 @@ import { Check, Crown, Sparkles, Heart, Home, MessageCircle, Activity, Users } f
 
 interface PlanCardProps {
   id: number;
+  dbName?: string;
   title: string;
   duration: string;
   price: string;
@@ -22,6 +23,7 @@ interface PlanCardProps {
   onAddToCart?: (plan: {
     id: number;
     name: string;
+    dbName?: string;
     price: number;
     duration: string;
     features: string[];
@@ -30,6 +32,7 @@ interface PlanCardProps {
 
 export default function PlanCard({
   id,
+  dbName,
   title,
   duration,
   price,
@@ -50,6 +53,7 @@ export default function PlanCard({
       onAddToCart({
         id,
         name: title,
+        dbName,
         price: priceValue,
         duration,
         features,

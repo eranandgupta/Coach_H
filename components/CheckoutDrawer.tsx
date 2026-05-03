@@ -109,7 +109,7 @@ const handleApplyPromo = async () => {
         body: JSON.stringify({
           code: promoCode.toUpperCase(),
           cartTotal: getTotalPrice(),
-          planName: cartItems[0]?.name || null,
+          planName: cartItems[0]?.dbName || cartItems[0]?.name || null,
         }),
       });
 

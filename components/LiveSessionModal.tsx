@@ -21,6 +21,10 @@ interface LiveSessionModalProps {
 const LIVE_PLANS = [
   { name: 'She Strong Program', label: 'She Strong Program', color: 'violet' },
   { name: 'Active Parents Program', label: 'Active Parents Program', color: 'emerald' },
+  { name: 'Elite 1:1 - 1 Month (24 Sessions)', label: '1:1 Elite (24 Sessions)', color: 'amber' },
+  { name: 'Elite 1:1 - 1 Month (12 Sessions)', label: '1:1 Elite (12 Sessions)', color: 'amber' },
+  { name: 'Elite 1:1 - 3 Months (72 Sessions)', label: '1:1 Elite (72 Sessions)', color: 'amber' },
+  { name: 'Elite 1:1 - 3 Months (36 Sessions)', label: '1:1 Elite (36 Sessions)', color: 'amber' },
 ];
 
 export default function LiveSessionModal({ isOpen, onClose }: LiveSessionModalProps) {
