@@ -11,8 +11,11 @@ interface LiveSessionWidgetProps {
 export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) {
   const [sessionLink, setSessionLink] = useState<{ link: string; title: string | null; updatedAt: string } | null>(null);
 
+  const isElite = planName.startsWith('Elite 1:1');
   const isSheSstrong = planName === 'She Strong Program';
-  const schedule = isSheSstrong
+  const schedule = isElite
+    ? { days: 'As per your schedule', time: 'Personalised' }
+    : isSheSstrong
     ? { days: 'Monday & Wednesday', time: '8 sessions/month' }
     : { days: 'Tuesday & Thursday', time: '8 sessions/month' };
 
@@ -109,13 +112,13 @@ export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) 
         <div className="glass-card p-5">
           <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-brand-blue" />
-            Session Schedule
+            {isElite ? '1:1 Session Info' : 'Session Schedule'}
           </h3>
           <div className="space-y-2.5">
             <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
               <div className="flex items-center gap-2.5">
                 <Calendar className="w-4 h-4 text-violet-400" />
-                <span className="text-white/80 text-sm">Days</span>
+                <span className="text-white/80 text-sm">{isElite ? 'Schedule' : 'Days'}</span>
               </div>
               <span className="text-white font-medium text-sm">{schedule.days}</span>
             </div>
@@ -124,15 +127,25 @@ export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) 
                 <Clock className="w-4 h-4 text-blue-400" />
                 <span className="text-white/80 text-sm">Duration</span>
               </div>
-              <span className="text-white font-medium text-sm">1 Hour</span>
+              <span className="text-white font-medium text-sm">{isElite ? '60 Minutes' : '1 Hour'}</span>
             </div>
-            <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-              <div className="flex items-center gap-2.5">
-                <Users className="w-4 h-4 text-emerald-400" />
-                <span className="text-white/80 text-sm">Group Size</span>
+            {isElite ? (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                <div className="flex items-center gap-2.5">
+                  <Users className="w-4 h-4 text-amber-400" />
+                  <span className="text-white/80 text-sm">Type</span>
+                </div>
+                <span className="text-white font-medium text-sm">1-on-1 Personal</span>
               </div>
-              <span className="text-white font-medium text-sm">Max 10</span>
-            </div>
+            ) : (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                <div className="flex items-center gap-2.5">
+                  <Users className="w-4 h-4 text-emerald-400" />
+                  <span className="text-white/80 text-sm">Group Size</span>
+                </div>
+                <span className="text-white font-medium text-sm">Max 10</span>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>

@@ -27,8 +27,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ link: null });
     }
 
+    // For 1:1 plans, fetch client-specific link first, then fall back to plan-wide link
+    const isElite = planName.startsWith('Elite 1:1');
+    if (isElite) {
+      const clientLink = await prisma.liveSessionLink.findFirst({
+        where: { planName, clientId: authUser.userId, isActive: true },
+        orderBy: { updatedAt: 'desc' },
+      });
+      if (clientLink) return NextResponse.json({ link: clientLink });
+    }
+
     const link = await prisma.liveSessionLink.findFirst({
-      where: { planName, isActive: true },
+      where: { planName, isActive: true, clientId: null },
       orderBy: { updatedAt: 'desc' },
     });
 
@@ -39,7 +49,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST — coach sets/updates a live session link for a plan
+// POST — coach sets/updates a live session link for a plan (optionally per-client)
 export async function POST(request: NextRequest) {
   try {
     const authUser = await getAuthUser(request);
@@ -47,15 +57,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { link, title, planName } = await request.json();
+    const { link, title, planName, clientId } = await request.json();
 
     if (!link?.trim() || !planName?.trim()) {
       return NextResponse.json({ error: 'Link and plan name are required' }, { status: 400 });
     }
 
-    // Deactivate any existing link for this plan
+    // Deactivate existing link for this plan + client combination
     await prisma.liveSessionLink.updateMany({
-      where: { planName, isActive: true },
+      where: {
+        planName,
+        isActive: true,
+        clientId: clientId || null,
+      },
       data: { isActive: false },
     });
 
@@ -66,6 +80,7 @@ export async function POST(request: NextRequest) {
         link: link.trim(),
         title: title?.trim() || null,
         planName: planName.trim(),
+        clientId: clientId || null,
         isActive: true,
       },
     });

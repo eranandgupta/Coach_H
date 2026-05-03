@@ -315,6 +315,7 @@ model ContactSubmission {
 model LiveSessionLink {
   id        Int      @id @default(autoincrement())
   coachId   Int
+  clientId  Int?
   link      String   @db.Text
   title     String?
   isActive  Boolean  @default(true)
@@ -323,6 +324,7 @@ model LiveSessionLink {
   updatedAt DateTime @updatedAt
 
   @@index([coachId])
+  @@index([clientId])
   @@index([planName])
   @@index([isActive])
 }
