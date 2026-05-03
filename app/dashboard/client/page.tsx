@@ -819,8 +819,9 @@ export default function ClientDashboard() {
         )}
 
         {/* Current Plans Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          {/* Current Workout */}
+        <div className={`grid grid-cols-1 ${isEliteOneOnOnePlan ? '' : 'lg:grid-cols-2'} gap-4 md:gap-6`}>
+          {/* Current Workout — hidden for 1:1 Elite plans */}
+          {!isEliteOneOnOnePlan && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -906,6 +907,7 @@ export default function ClientDashboard() {
               </div>
             )}
           </motion.div>
+          )}
 
           {/* Current Diet */}
           <motion.div
