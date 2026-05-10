@@ -4,9 +4,15 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = 'trainer@coachhimanshu.com';
-  const password = 'Trainer@123';
+  const email = process.env.TRAINER_EMAIL || 'trainer@coachhimanshu.com';
+  const password = process.env.TRAINER_PASSWORD;
   const name = 'Trainer';
+
+  if (!password) {
+    console.error('Error: TRAINER_PASSWORD environment variable is required.');
+    console.error('Usage: TRAINER_PASSWORD=yourpassword npx tsx scripts/create-trainer.ts');
+    process.exit(1);
+  }
 
   // Check if trainer already exists
   const existing = await prisma.user.findUnique({
@@ -37,7 +43,6 @@ async function main() {
 
   console.log('Trainer created successfully:');
   console.log(`  Email: ${email}`);
-  console.log(`  Password: ${password}`);
   console.log(`  ID: ${trainer.id}`);
 }
 
