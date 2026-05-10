@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const planName = searchParams.get('planName');
 
-    if (authUser.role === 'coach') {
+    if (authUser.role === 'coach' || authUser.role === 'trainer') {
       // Coach gets all live session links
       const links = await prisma.liveSessionLink.findMany({
         where: { isActive: true },
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const authUser = await getAuthUser(request);
-    if (!authUser || authUser.role !== 'coach') {
+    if (!authUser || (authUser.role !== 'coach' && authUser.role !== 'trainer')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const authUser = await getAuthUser(request);
-    if (!authUser || authUser.role !== 'coach') {
+    if (!authUser || (authUser.role !== 'coach' && authUser.role !== 'trainer')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

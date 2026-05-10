@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireCoach } from '@/lib/middleware';
+import { requireCoach, requireCoachOrTrainer } from '@/lib/middleware';
 import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
@@ -10,6 +10,8 @@ async function getHandler(request: NextRequest, context: any) {
   try {
     const { user } = context;
 
+    const isTrainer = user.role === 'trainer';
+
     // Get all users with role 'user' (clients)
     const clients = await prisma.user.findMany({
       where: {
@@ -18,8 +20,8 @@ async function getHandler(request: NextRequest, context: any) {
       select: {
         id: true,
         name: true,
-        email: true,
-        phone: true,
+        email: !isTrainer,
+        phone: !isTrainer,
         image: true,
         createdAt: true,
         subscriptions: {
@@ -265,7 +267,7 @@ async function deleteHandler(request: NextRequest, context: any) {
   }
 }
 
-export const GET = requireCoach(getHandler);
+export const GET = requireCoachOrTrainer(getHandler);
 export const POST = requireCoach(postHandler);
 export const PUT = requireCoach(putHandler);
 export const DELETE = requireCoach(deleteHandler);

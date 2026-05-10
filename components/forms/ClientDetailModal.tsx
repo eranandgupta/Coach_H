@@ -19,6 +19,7 @@ interface ClientDetailModalProps {
   onEditClient: (client: any) => void;
   onDeleteClient: (clientId: number) => void;
   onAddSubscription: (client: any) => void;
+  isTrainer?: boolean;
 }
 
 export default function ClientDetailModal({
@@ -34,6 +35,7 @@ export default function ClientDetailModal({
   onEditClient,
   onDeleteClient,
   onAddSubscription,
+  isTrainer = false,
 }: ClientDetailModalProps) {
   const [assessment, setAssessment] = useState<any>(null);
   const [assessmentLoading, setAssessmentLoading] = useState(false);
@@ -201,8 +203,8 @@ export default function ClientDetailModal({
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-white">{client.name || 'Client'}</h2>
-                    <p className="text-gray-400">{client.email}</p>
-                    {client.phone && (
+                    {!isTrainer && <p className="text-gray-400">{client.email}</p>}
+                    {!isTrainer && client.phone && (
                       <p className="text-gray-500 text-sm">{client.phone}</p>
                     )}
                   </div>
@@ -472,6 +474,7 @@ export default function ClientDetailModal({
             </div>
 
             {/* Footer Actions */}
+            {!isTrainer && (
             <div className="flex-shrink-0 bg-brand-navy/90 backdrop-blur-md border-t border-white/10 p-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <button
@@ -524,6 +527,7 @@ export default function ClientDetailModal({
                 </button>
               </div>
             </div>
+            )}
           </motion.div>
 
           {/* Assessment Results Modal */}

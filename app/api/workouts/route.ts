@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireCoach } from '@/lib/middleware';
+import { requireCoach, requireCoachOrTrainer } from '@/lib/middleware';
 
 
 export const dynamic = 'force-dynamic';
@@ -9,8 +9,9 @@ async function getHandler(request: NextRequest, context: any) {
   try {
     const { user } = context;
 
+    // Trainers see all workouts; coaches see only their own
     const workouts = await prisma.workoutPlan.findMany({
-      where: {
+      where: user.role === 'trainer' ? {} : {
         coachId: user.userId,
       },
       include: {
@@ -156,12 +157,11 @@ async function putHandler(request: NextRequest, context: any) {
       );
     }
 
-    // Check if workout exists and belongs to this coach
+    // Check if workout exists (trainers can edit any, coaches only their own)
     const existingWorkout = await prisma.workoutPlan.findFirst({
-      where: {
-        id: parseInt(id),
-        coachId: user.userId,
-      },
+      where: user.role === 'trainer'
+        ? { id: parseInt(id) }
+        : { id: parseInt(id), coachId: user.userId },
     });
 
     if (!existingWorkout) {
@@ -281,7 +281,7 @@ async function deleteHandler(request: NextRequest, context: any) {
   }
 }
 
-export const GET = requireCoach(getHandler);
-export const POST = requireCoach(postHandler);
-export const PUT = requireCoach(putHandler);
+export const GET = requireCoachOrTrainer(getHandler);
+export const POST = requireCoachOrTrainer(postHandler);
+export const PUT = requireCoachOrTrainer(putHandler);
 export const DELETE = requireCoach(deleteHandler);

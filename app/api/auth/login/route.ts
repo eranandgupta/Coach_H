@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     // Check subscription status (only for regular users, not coaches/admins)
     let subscriptionStatus = null;
-    if (user.role !== 'coach' && user.role !== 'admin') {
+    if (user.role !== 'coach' && user.role !== 'admin' && user.role !== 'trainer') {
       console.log('Checking subscription status...');
       subscriptionStatus = await checkSubscription(user.id);
       console.log('Subscription status:', subscriptionStatus);

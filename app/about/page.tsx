@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Award, BookOpen, Users, Target, TrendingUp, Youtube, Dumbbell, GraduationCap, Heart, Sparkles, Quote, ArrowRight, Apple, Activity, HeartPulse, Trophy } from 'lucide-react';
+import { Award, BookOpen, Users, Target, TrendingUp, Youtube, Dumbbell, GraduationCap, Heart, Sparkles, Quote, ArrowRight, Apple, Activity, HeartPulse, Trophy, Crown, Headphones, Scale, DollarSign, Megaphone, Monitor, Gem } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
@@ -74,6 +74,65 @@ const qualifications = [
   { title: 'Diploma in TRX Suspension Training', icon: Activity },
   { title: 'Diploma in Special Population Training', icon: HeartPulse },
   { title: 'NASM Certified Bodybuilding Preparation Coach (USA)', icon: Trophy }
+];
+
+const teamMembers = [
+  {
+    name: 'Himanshu',
+    role: 'Founder & Head Coach',
+    description: 'Former fitness educator and lecturer turned full-time coach. The expertise behind every plan, every transformation, every result you see on this platform.',
+    icon: Crown,
+    gradient: 'from-brand-gold to-yellow-600',
+    shadow: 'shadow-brand-gold/40',
+  },
+  {
+    name: 'Mahima Yadav',
+    role: 'Sales & Support',
+    description: 'Your first point of contact. Guides clients through the right plan and ensures every query gets answered with care.',
+    icon: Headphones,
+    gradient: 'from-pink-500 to-rose-600',
+    shadow: 'shadow-pink-500/40',
+  },
+  {
+    name: 'Vijay Arora',
+    role: 'Legal Advisor',
+    description: 'Keeping Coach Himanshu compliant, protected, and built to last \u2014 so you can train with trust.',
+    icon: Scale,
+    gradient: 'from-slate-400 to-slate-600',
+    shadow: 'shadow-slate-400/40',
+  },
+  {
+    name: 'Mansi Tewatia',
+    role: 'Finance & Accounts Head',
+    description: 'The financial backbone of the team, ensuring smooth operations behind every plan and transaction.',
+    icon: DollarSign,
+    gradient: 'from-emerald-500 to-green-600',
+    shadow: 'shadow-emerald-500/40',
+  },
+  {
+    name: 'Himanshu Singh',
+    role: 'Content & Marketing Head',
+    description: 'The voice of the brand. Crafting content that educates, motivates, and builds the Coach Himanshu community.',
+    icon: Megaphone,
+    gradient: 'from-orange-500 to-amber-600',
+    shadow: 'shadow-orange-500/40',
+  },
+  {
+    name: 'Komal Gupta',
+    role: 'Digital Operations Manager',
+    description: 'Running the digital engine \u2014 from website to workflows, keeping everything seamless for clients.',
+    icon: Monitor,
+    gradient: 'from-brand-blue to-cyan-500',
+    shadow: 'shadow-brand-blue/40',
+  },
+  {
+    name: 'Rhynogrip',
+    role: 'Brand Partner',
+    description: 'Premium gym gear engineered for performance. The official fitness gear partner of Coach Himanshu.',
+    icon: Gem,
+    gradient: 'from-violet-500 to-purple-600',
+    shadow: 'shadow-violet-500/40',
+  },
 ];
 
 export default function AboutPage() {
@@ -565,6 +624,85 @@ export default function AboutPage() {
                 </motion.div>
               </div>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Meet the Squad Section */}
+      <section className="py-12 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="inline-block mb-6"
+            >
+              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-md text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
+                OUR TEAM
+              </span>
+            </motion.div>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Meet the Squad
+            </h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-brand-blue to-brand-gold mx-auto mb-6"></div>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              The people powering your transformation journey
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {/* Founder Card - Full width on first row */}
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ scale: 1.03, y: -8 }}
+              className="md:col-span-2 lg:col-span-3"
+            >
+              <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-brand-gold/30 rounded-3xl p-8 md:p-10 group hover:border-brand-gold/50 transition-all duration-300">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                  <div className={`w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br ${teamMembers[0].gradient} rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:shadow-lg ${teamMembers[0].shadow} transition-all duration-300`}>
+                    <Crown className="w-10 h-10 md:w-12 md:h-12 text-white" />
+                  </div>
+                  <div className="text-center md:text-left">
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">{teamMembers[0].name}</h3>
+                    <p className="text-brand-gold font-semibold text-lg mb-3">{teamMembers[0].role}</p>
+                    <p className="text-gray-300 text-lg leading-relaxed max-w-3xl">{teamMembers[0].description}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Other Team Members */}
+            {teamMembers.slice(1).map((member, index) => {
+              const MemberIcon = member.icon;
+              return (
+                <motion.div
+                  key={member.name}
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.03, y: -8 }}
+                >
+                  <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-full group hover:border-white/20 transition-all duration-300">
+                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${member.gradient} rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                    <div className="relative z-10">
+                      <div className={`w-14 h-14 bg-gradient-to-br ${member.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>
+                        <MemberIcon className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
+                      <p className="text-brand-blue font-semibold text-sm mb-3">{member.role}</p>
+                      <p className="text-gray-400 leading-relaxed">{member.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>

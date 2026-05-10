@@ -47,6 +47,9 @@ export default function DashboardRedirect() {
         } else if (userRole === 'coach') {
           console.log('Redirecting to coach dashboard');
           router.push('/dashboard/coach');
+        } else if (userRole === 'trainer') {
+          console.log('Redirecting to trainer dashboard');
+          router.push('/dashboard/trainer');
         } else {
           // Check if client has completed assessment
           if (!assessmentCompleted) {

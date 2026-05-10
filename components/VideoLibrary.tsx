@@ -193,7 +193,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
         const data = await response.json();
         const categoriesWithConfig = data.categories
           .filter((cat: any) => {
-            if (userRole === 'admin' || userRole === 'coach') return true;
+            if (userRole === 'admin' || userRole === 'coach' || userRole === 'trainer') return true;
             // Rehab plan clients only see the rehabilitation section
             if (userPlan === 'Rehabilitation Plan') return cat.id === 'rehabilitation';
             // Home Workout plan clients only see the home workout section
