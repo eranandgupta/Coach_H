@@ -1,8 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, Calendar } from 'lucide-react';
-import { useEffect } from 'react';
+import { X, Dumbbell, Calendar, Play } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import ProtectedContent from '@/components/ProtectedContent';
 
 interface ViewWorkoutModalProps {
@@ -14,6 +14,8 @@ interface ViewWorkoutModalProps {
 }
 
 export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, isElitePlan = false }: ViewWorkoutModalProps) {
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -189,16 +191,46 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, 
                                         </div>
                                       )}
                                       {exercise.videoUrl && (
-                                        <a
-                                          href={exercise.videoUrl}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-brand-blue hover:text-blue-400 underline"
+                                        <button
+                                          onClick={() => setPlayingVideoId(
+                                            playingVideoId === exercise.id ? null : exercise.id
+                                          )}
+                                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all font-medium ${
+                                            playingVideoId === exercise.id
+                                              ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                              : 'bg-brand-blue/20 text-brand-blue border border-brand-blue/30 hover:bg-brand-blue/30'
+                                          }`}
                                         >
-                                          Watch Video
-                                        </a>
+                                          {playingVideoId === exercise.id ? (
+                                            <>
+                                              <X className="w-3 h-3" />
+                                              Close Video
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Play className="w-3 h-3" fill="currentColor" />
+                                              Play Video
+                                            </>
+                                          )}
+                                        </button>
                                       )}
                                     </div>
+
+                                    {/* Inline Video Player */}
+                                    {exercise.videoUrl && playingVideoId === exercise.id && (
+                                      <div className="mt-3 rounded-lg overflow-hidden border border-white/10 bg-black">
+                                        <div className="aspect-video w-full">
+                                          <iframe
+                                            src={`${exercise.videoUrl}?autoplay=1`}
+                                            className="w-full h-full"
+                                            frameBorder="0"
+                                            allow="autoplay; fullscreen"
+                                            allowFullScreen
+                                            title={exercise.name}
+                                          />
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 ))}
                               </div>

@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, Dumbbell, Calendar, User } from 'lucide-react';
+import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
+import VideoPickerModal from '@/components/modals/VideoPickerModal';
+import { VIDEO_CATEGORIES, ScreenPalVideo } from '@/lib/screenpal';
 
 interface CreateWorkoutModalProps {
   isOpen: boolean;
@@ -40,6 +42,46 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const [clientsLoading, setClientsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [videoPickerIndex, setVideoPickerIndex] = useState<number | null>(null);
+
+  // Flatten all videos from library for auto-matching
+  const allLibraryVideos = useMemo(() => {
+    const videos: { title: string; embedUrl: string }[] = [];
+    const collectVideos = (cats: typeof VIDEO_CATEGORIES) => {
+      for (const cat of cats) {
+        videos.push(...cat.videos);
+        if (cat.subCategories) collectVideos(cat.subCategories);
+      }
+    };
+    collectVideos(VIDEO_CATEGORIES);
+    return videos;
+  }, []);
+
+  // Find matching videos for a given exercise name (returns multiple)
+  const findMatchingVideos = (name: string) => {
+    if (!name || name.trim().length < 3) return [];
+    const lower = name.trim().toLowerCase();
+    const words = lower.split(/\s+/).filter(w => w.length >= 2);
+
+    return allLibraryVideos
+      .map(v => {
+        const titleLower = v.title.toLowerCase();
+        // Score: exact match = 100, contains full name = 50, contains name = 30, word matches
+        let score = 0;
+        if (titleLower === lower) score = 100;
+        else if (titleLower.includes(lower)) score = 50;
+        else if (lower.includes(titleLower)) score = 30;
+        else {
+          // Count how many words from the exercise name appear in the video title
+          const matchedWords = words.filter(w => titleLower.includes(w));
+          score = matchedWords.length * 10;
+        }
+        return { ...v, score };
+      })
+      .filter(v => v.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+  };
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const selectedClient = clients.find(c => c.id.toString() === clientId);
@@ -190,6 +232,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   };
 
   return (
+    <>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -415,14 +458,52 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          <input
-                            type="text"
-                            value={exercise.name}
-                            onChange={(e) => updateExercise(index, 'name', e.target.value)}
-                            className="bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue"
-                            placeholder="Exercise name *"
-                            required
-                          />
+                          <div>
+                            <input
+                              type="text"
+                              value={exercise.name}
+                              onChange={(e) => updateExercise(index, 'name', e.target.value)}
+                              className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue"
+                              placeholder="Exercise name *"
+                              required
+                            />
+                            {/* Auto-suggestions dropdown when exercise name matches videos */}
+                            {exercise.name.trim().length >= 3 && !exercise.videoUrl && (() => {
+                              const matches = findMatchingVideos(exercise.name);
+                              if (matches.length === 0) return null;
+                              return (
+                                <div className="mt-1.5 border border-green-500/30 rounded-lg overflow-hidden bg-brand-navy/80 backdrop-blur-sm">
+                                  <div className="px-2.5 py-1.5 bg-green-500/10 border-b border-green-500/20">
+                                    <span className="text-green-300 text-xs font-medium">{matches.length} video{matches.length > 1 ? 's' : ''} found</span>
+                                  </div>
+                                  <div className="max-h-36 overflow-y-auto">
+                                    {matches.map((match) => (
+                                      <button
+                                        key={match.embedUrl}
+                                        type="button"
+                                        onClick={() => updateExercise(index, 'videoUrl', match.embedUrl)}
+                                        className="flex items-center gap-2 w-full px-2.5 py-2 text-left hover:bg-green-500/15 transition-all group border-b border-white/5 last:border-b-0"
+                                      >
+                                        <Play className="w-3.5 h-3.5 text-green-400 flex-shrink-0" fill="currentColor" />
+                                        <span className="text-gray-200 text-xs truncate flex-1">{match.title}</span>
+                                        <span className="text-green-400 text-[10px] font-medium flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">Attach</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            })()}
+                            {exercise.videoUrl && (() => {
+                              const match = allLibraryVideos.find(v => v.embedUrl === exercise.videoUrl);
+                              if (!match) return null;
+                              return (
+                                <div className="mt-1.5 flex items-center gap-2 px-2.5 py-1.5 bg-brand-blue/10 border border-brand-blue/20 rounded-lg">
+                                  <Check className="w-3.5 h-3.5 text-brand-blue flex-shrink-0" />
+                                  <span className="text-brand-blue text-xs truncate">{match.title}</span>
+                                </div>
+                              );
+                            })()}
+                          </div>
 
                           <select
                             value={exercise.day}
@@ -466,13 +547,23 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                             placeholder="Rest time (seconds)"
                           />
 
-                          <input
-                            type="url"
-                            value={exercise.videoUrl}
-                            onChange={(e) => updateExercise(index, 'videoUrl', e.target.value)}
-                            className="bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue md:col-span-2"
-                            placeholder="Video URL (optional)"
-                          />
+                          <div className="md:col-span-2 flex gap-2">
+                            <input
+                              type="url"
+                              value={exercise.videoUrl}
+                              onChange={(e) => updateExercise(index, 'videoUrl', e.target.value)}
+                              className="flex-1 bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue"
+                              placeholder="Video URL (optional)"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setVideoPickerIndex(index)}
+                              className="flex items-center gap-1.5 bg-brand-blue/20 text-brand-blue px-3 py-2 rounded-lg hover:bg-brand-blue/30 transition-all text-sm font-medium whitespace-nowrap border border-brand-blue/30"
+                            >
+                              <Film size={16} />
+                              Browse
+                            </button>
+                          </div>
 
                           <textarea
                             value={exercise.description}
@@ -522,5 +613,19 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         </>
       )}
     </AnimatePresence>
+
+    {/* Video Picker Modal */}
+    <VideoPickerModal
+      isOpen={videoPickerIndex !== null}
+      onClose={() => setVideoPickerIndex(null)}
+      onSelect={(videoUrl) => {
+        if (videoPickerIndex !== null) {
+          updateExercise(videoPickerIndex, 'videoUrl', videoUrl);
+        }
+      }}
+      currentVideoUrl={videoPickerIndex !== null ? exercises[videoPickerIndex]?.videoUrl : undefined}
+      exerciseName={videoPickerIndex !== null ? exercises[videoPickerIndex]?.name : undefined}
+    />
+    </>
   );
 }
