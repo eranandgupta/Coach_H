@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { put } from '@vercel/blob';
+import imagekit from '@/lib/imagekit';
+import { toFile } from '@imagekit/nodejs';
 
 // POST - Submit new feedback
 export async function POST(request: NextRequest) {
@@ -45,19 +46,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Helper function to upload file to Vercel Blob
+    // Helper function to upload file to ImageKit
     const uploadFile = async (file: File, prefix: string) => {
+      const arrayBuffer = await file.arrayBuffer();
       const timestamp = Date.now();
-      const fileName = `feedback/${prefix}_${timestamp}_${file.name}`;
+      const fileName = `${prefix}_${timestamp}_${file.name}`;
 
-      const blob = await put(fileName, file, {
-        access: 'public',
+      const uploadableFile = await toFile(arrayBuffer, fileName, {
+        type: file.type,
       });
 
-      return blob.url;
+      const result = await imagekit.files.upload({
+        file: uploadableFile,
+        fileName,
+        folder: '/feedback',
+      });
+
+      return result.url;
     };
 
-    // Upload files to Vercel Blob
+    // Upload files to ImageKit
     let profilePhotoUrl = null;
     let beforePhotoUrl = null;
     let afterPhotoUrl = null;

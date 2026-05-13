@@ -466,7 +466,7 @@ export default function AdminDashboard() {
       <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center flex-shrink-0">
-            <Image src="/logo.png" alt="Coach Himanshu" width={90} height={90} className="object-contain" />
+            <Image src="https://ik.imagekit.io/oeagl0l4x/public/logo.png" alt="Coach Himanshu" width={90} height={90} className="object-contain" />
           </Link>
           <div className="flex-1 text-center hidden md:block">
             <h1 className="text-xl lg:text-2xl font-bold text-white leading-tight">Admin Panel</h1>

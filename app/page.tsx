@@ -671,21 +671,21 @@ export default function Home() {
       icon: Award,
       title: 'Certified Expertise',
       description: 'NASM Certified with 6+ professional diplomas in fitness science, nutrition, and specialized training',
-      image: '/CH11.jpeg',
+      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH11.jpeg',
       imagePosition: 'object-top',
     },
     {
       icon: Target,
       title: 'Science-Backed Approach',
       description: 'Evidence-based training methods focused on sustainable results, not shortcuts',
-      image: '/CH2.jpeg',
+      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH2.jpeg',
       imagePosition: 'object-[center_20%]',
     },
     {
       icon: Users,
       title: 'Proven Track Record',
       description: 'Former fitness educator and lecturer with hundreds of successful client transformations',
-      image: '/CH4.jpeg',
+      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH4.jpeg',
       imagePosition: 'object-top',
     },
   ];
@@ -997,7 +997,7 @@ export default function Home() {
               style={{ pointerEvents: 'none' }}
               onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
             >
-              <source src="/intro2.mp4" type="video/mp4" />
+              <source src="https://ik.imagekit.io/oeagl0l4x/public/intro2.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
             <div className="absolute inset-0 bg-brand-navy/30" />
@@ -1218,7 +1218,7 @@ export default function Home() {
                           style={{ pointerEvents: 'none' }}
                           onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
                         >
-                          <source src="/intro2.mp4" type="video/mp4" />
+                          <source src="https://ik.imagekit.io/oeagl0l4x/public/intro2.mp4" type="video/mp4" />
                         </video>
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent" />
                         <div className="absolute bottom-4 left-4 right-4">
@@ -1841,7 +1841,7 @@ export default function Home() {
 
             <div className="flex items-center justify-center gap-3 mb-3">
               <img
-                src="/Rhynogrip.png"
+                src="https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png"
                 alt="Rhynogrip Premium Gym Gear Logo - Professional Fitness Equipment Partner"
                 className="h-10 md:h-12 object-contain"
                 loading="lazy"
@@ -1887,7 +1887,7 @@ export default function Home() {
                     });
                   }}
                 >
-                  <source src="/RHYNOGRIP_VIDEO.mp4" type="video/mp4" />
+                  <source src="https://ik.imagekit.io/oeagl0l4x/public/RHYNOGRIP_VIDEO.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
@@ -2177,7 +2177,7 @@ export default function Home() {
                     });
                   }}
                 >
-                  <source src="/train today.mp4" type="video/mp4" />
+                  <source src="https://ik.imagekit.io/oeagl0l4x/public/train_today.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>

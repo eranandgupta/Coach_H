@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2, Image as ImageIcon } from 'lucide-react';
 import Button from './Button';
+import ImageKitUpload from './ImageKitUpload';
 
 interface BlogPost {
   id: number;
@@ -191,21 +192,36 @@ export default function CreateBlogModal({
                   />
                 </div>
 
-                {/* Cover Image URL */}
+                {/* Cover Image Upload */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Cover Image URL
+                    Cover Image
                   </label>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      name="coverImage"
-                      value={formData.coverImage}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 pl-10 bg-brand-navy border border-brand-navy-light/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue transition-colors"
-                      placeholder="https://example.com/image.jpg"
-                    />
-                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  <ImageKitUpload
+                    onUploadSuccess={(url) =>
+                      setFormData((prev) => ({ ...prev, coverImage: url }))
+                    }
+                    onRemove={() =>
+                      setFormData((prev) => ({ ...prev, coverImage: '' }))
+                    }
+                    currentImageUrl={formData.coverImage || undefined}
+                    folder="/blog"
+                    label="Upload cover image"
+                    maxSizeMB={10}
+                  />
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-500 mb-1">Or paste an image URL:</p>
+                    <div className="relative">
+                      <input
+                        type="url"
+                        name="coverImage"
+                        value={formData.coverImage}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 pl-10 bg-brand-navy border border-brand-navy-light/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue transition-colors text-sm"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                      <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    </div>
                   </div>
                 </div>
 

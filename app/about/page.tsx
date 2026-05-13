@@ -244,7 +244,7 @@ export default function AboutPage() {
             >
               <div className="relative h-[400px] lg:h-[600px]">
                 <img
-                  src="/CH3.jpeg"
+                  src="https://ik.imagekit.io/oeagl0l4x/public/CH3.jpeg"
                   alt="Coach Himanshu - Fitness Journey"
                   className="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-700"
                 />
@@ -409,7 +409,7 @@ export default function AboutPage() {
             >
               <div className="absolute inset-0">
                 <img
-                  src="/CH7.jpeg"
+                  src="https://ik.imagekit.io/oeagl0l4x/public/CH7.jpeg"
                   alt="Coach Himanshu - Professional Qualifications"
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />

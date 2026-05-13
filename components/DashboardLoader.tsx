@@ -68,7 +68,7 @@ export default function DashboardLoader() {
             className="relative w-24 h-24 rounded-full bg-brand-navy border border-white/10 flex items-center justify-center overflow-hidden"
           >
             <Image
-              src="/logo.png"
+              src="https://ik.imagekit.io/oeagl0l4x/public/logo.png"
               alt="Coach Himanshu"
               width={80}
               height={80}

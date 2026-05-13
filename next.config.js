@@ -58,6 +58,17 @@ const withPWA = require('next-pwa')({
       }
     },
     {
+      urlPattern: /^https:\/\/ik\.imagekit\.io\/.*/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'imagekit-assets',
+        expiration: {
+          maxEntries: 128,
+          maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+        }
+      }
+    },
+    {
       urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
       handler: 'StaleWhileRevalidate',
       options: {
@@ -172,8 +183,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true,
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ik.imagekit.io',
+        pathname: '/**',
+      },
       {
         protocol: 'https',
         hostname: 'screenpal.com',

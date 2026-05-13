@@ -160,7 +160,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     className="mb-8"
                   >
                     <Image
-                      src="/logo.png"
+                      src="https://ik.imagekit.io/oeagl0l4x/public/logo.png"
                       alt="Coach Himanshu"
                       width={120}
                       height={120}
