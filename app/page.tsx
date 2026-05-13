@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -24,6 +24,10 @@ import {
   GraduationCap,
   Home as HomeIcon,
   MessageCircle,
+  Timer,
+  Copy,
+  Check,
+  Clock,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -59,6 +63,61 @@ export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [dbPlanIds, setDbPlanIds] = useState<Record<string, number>>({});
   const [activePlanTab, setActivePlanTab] = useState<'gym' | 'home' | 'rehab' | 'live'>('gym');
+  const [saleSlide, setSaleSlide] = useState(0);
+  const [codeCopied, setCodeCopied] = useState(false);
+
+  const saleSlides = [
+    {
+      title: 'MAY SUMMER SALE IS LIVE 🔥',
+      subtitle: '⏳ Valid Till May 31 Only',
+      description: 'This is the perfect time to start your fitness journey and transform yourself physically and mentally before summer ends.',
+      highlights: ['Gym Workout Plans', 'Home Workout Plans', 'Rehabilitation Programs', '1:1 Elite Personal Training', 'Fat Loss / Muscle Gain', 'Diet Guidance & Support', 'Beginner Friendly Programs'],
+    },
+    {
+      title: '🏋️ GYM WORKOUT PLANS',
+      items: [
+        { label: '1 Month', original: '₹999', sale: '₹949', off: '5% OFF' },
+        { label: '3 Months', original: '₹2,099', sale: '₹1,889', off: '10% OFF' },
+        { label: '6 Months', original: '₹3,599', sale: '₹3,059', off: '15% OFF' },
+        { label: '12 Months', original: '₹7,499', sale: '₹5,999', off: '20% OFF' },
+      ],
+    },
+    {
+      title: '🏠 HOME WORKOUT PLANS',
+      items: [
+        { label: '3 Months', original: '₹1,799', sale: '₹1,529', off: '15% OFF' },
+      ],
+      extra: '💪 1:1 ELITE PERSONAL TRAINING',
+      extraItems: [
+        { label: '1M · 12 Sessions', original: '₹5,999', sale: '₹5,399', off: '10% OFF' },
+        { label: '1M · 24 Sessions', original: '₹9,999', sale: '₹7,999', off: '20% OFF' },
+        { label: '3M · 36 Sessions', original: '₹15,999', sale: '₹14,399', off: '10% OFF' },
+        { label: '3M · 72 Sessions', original: '₹23,999', sale: '₹19,199', off: '20% OFF' },
+      ],
+    },
+    {
+      title: '🎁 REFER & EARN OFFER',
+      referral: true,
+      description: 'Refer a friend and BOTH get EXTRA 15 DAYS added to your plan.',
+      cta: 'Your body, health and confidence are long-term investments. Start now instead of waiting for the "perfect time."',
+    },
+  ];
+
+  const totalSaleSlides = saleSlides.length;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSaleSlide((prev) => (prev + 1) % totalSaleSlides);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [totalSaleSlides]);
+
+  const handleCopyCode = useCallback(() => {
+    navigator.clipboard.writeText('SUMMER').then(() => {
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2000);
+    }).catch(() => {});
+  }, []);
 
   // Fetch real plan IDs from DB so payments always use the correct ID
   useEffect(() => {
@@ -267,6 +326,7 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'One on one consultation weekly',
+        '📋 Free Habit Tracker',
       ],
     },
     {
@@ -285,6 +345,7 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'One on one consultation weekly',
+        '📋 Free Habit Tracker',
       ],
       popular: true,
     },
@@ -304,6 +365,7 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'One on one consultation weekly',
+        '📋 Free Habit Tracker',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
     },
@@ -323,6 +385,7 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'One on one consultation weekly',
+        '📋 Free Habit Tracker',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
     },
@@ -343,6 +406,7 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'One-on-one consultation twice a month',
+        '📋 Free Habit Tracker',
       ],
       rehabilitation: true,
     },
@@ -363,6 +427,7 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'One-on-one consultation twice a month',
+        '📋 Free Habit Tracker',
         '💑 Recover Together, Grow Together',
       ],
       rehabilitation: true,
@@ -385,6 +450,7 @@ export default function Home() {
         'Lifestyle guidance',
         'Resistance band & TRX band based workout (no gym equipment needed)',
         'One on one consultation twice a month',
+        '📋 Free Habit Tracker',
       ],
       homeWorkout: true,
     },
@@ -405,6 +471,7 @@ export default function Home() {
         'Lifestyle guidance',
         'Resistance band & TRX band based workout (no gym equipment needed)',
         'One on one consultation twice a month',
+        '📋 Free Habit Tracker',
         '💑 Train Together, Grow Together',
       ],
       homeWorkout: true,
@@ -426,6 +493,7 @@ export default function Home() {
         'Weekly one-on-one consultations',
         'Supplement guidance',
         'Lifestyle coaching',
+        '📋 Free Habit Tracker',
         '💑 Train Together, Grow Together',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
@@ -447,6 +515,7 @@ export default function Home() {
         'Weekly one-on-one consultations',
         'Supplement guidance',
         'Lifestyle coaching',
+        '📋 Free Habit Tracker',
         '💑 Train Together, Grow Together',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
@@ -470,6 +539,7 @@ export default function Home() {
         'Max 10 members per group',
         'Expert guidance by Coach Himanshu',
         'WhatsApp community support',
+        '📋 Free Habit Tracker',
       ],
       liveGroup: true,
     },
@@ -491,6 +561,7 @@ export default function Home() {
         'Max 10 members per group',
         'Expert guidance by Coach Himanshu',
         'WhatsApp community support',
+        '📋 Free Habit Tracker',
       ],
       liveGroup: true,
     },
@@ -511,6 +582,8 @@ export default function Home() {
         'Complete accountability system',
         'Dedicated WhatsApp support',
         '24 sessions in 30 days · 60 min each',
+        '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -532,6 +605,8 @@ export default function Home() {
         'Complete accountability system',
         'Dedicated WhatsApp support',
         '12 sessions in 30 days · 60 min each',
+        '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -553,6 +628,8 @@ export default function Home() {
         'Complete accountability system',
         'Dedicated WhatsApp support',
         '72 sessions in 90 days · 60 min each',
+        '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -575,6 +652,8 @@ export default function Home() {
         'Complete accountability system',
         'Dedicated WhatsApp support',
         '36 sessions in 90 days · 60 min each',
+        '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1194,6 +1273,187 @@ export default function Home() {
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ========= SUMMER SALE BANNER ========= */}
+      <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label="Summer Sale" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
+        {/* Animated background effects */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-orange-500/[0.04] rounded-full blur-[150px] animate-glow-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-gold/[0.05] rounded-full blur-[130px] animate-glow-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-500/[0.03] rounded-full blur-[180px]" />
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          {/* Sale Header */}
+          <div className="text-center mb-6 md:mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/20 backdrop-blur-md mb-4"
+              style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(201,166,70,0.08) 100%)' }}
+            >
+              <Flame size={14} className="text-orange-400 animate-pulse" />
+              <span className="text-orange-300 text-xs font-bold tracking-wider uppercase">Limited Time Offer</span>
+              <Flame size={14} className="text-orange-400 animate-pulse" />
+            </motion.div>
+
+            {/* Coupon Code */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="flex items-center justify-center gap-3 mb-4"
+            >
+              <span className="text-gray-400 text-sm font-medium">Use Code:</span>
+              <button
+                onClick={handleCopyCode}
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-dashed border-brand-gold/40 hover:border-brand-gold/70 transition-all duration-300"
+                style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.12) 0%, rgba(201,166,70,0.04) 100%)' }}
+              >
+                <span className="text-brand-gold font-extrabold text-lg tracking-[0.2em]">SUMMER</span>
+                {codeCopied ? (
+                  <Check size={16} className="text-green-400" />
+                ) : (
+                  <Copy size={16} className="text-brand-gold/60 group-hover:text-brand-gold transition-colors" />
+                )}
+              </button>
+              {codeCopied && <span className="text-green-400 text-xs font-medium">Copied!</span>}
+            </motion.div>
+          </div>
+
+          {/* Carousel Container */}
+          <div className="relative">
+            <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(26,37,64,0.5) 0%, rgba(10,15,31,0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
+              <div className="relative min-h-[520px] md:min-h-[400px]">
+                {saleSlides.map((slide, index) => (
+                  <motion.div
+                    key={index}
+                    initial={false}
+                    animate={{
+                      opacity: saleSlide === index ? 1 : 0,
+                      x: saleSlide === index ? 0 : saleSlide > index ? -40 : 40,
+                    }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    className={`absolute inset-0 p-6 md:p-10 ${saleSlide === index ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                  >
+                    {/* Slide 0: Main headline */}
+                    {index === 0 && (
+                      <div className="text-center h-full flex flex-col justify-center">
+                        <h3 className="text-2xl md:text-4xl font-extrabold text-white mb-2">{slide.title}</h3>
+                        <p className="text-orange-400 font-bold text-base md:text-lg mb-3">{slide.subtitle}</p>
+                        <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto mb-5 leading-relaxed">{slide.description}</p>
+                        <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+                          {slide.highlights?.map((h, i) => (
+                            <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-green-300 border border-green-500/20" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                              ✅ {h}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Slide 1: Gym Plans */}
+                    {index === 1 && (
+                      <div className="h-full flex flex-col justify-center">
+                        <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6">{slide.title}</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                          {slide.items?.map((item, i) => (
+                            <div key={i} className="relative rounded-2xl border border-white/[0.08] p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+                              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>{item.off}</span>
+                              <p className="text-gray-400 text-xs font-medium mb-2 mt-1">{item.label}</p>
+                              <p className="text-gray-500 text-sm line-through">{item.original}</p>
+                              <p className="text-brand-gold font-extrabold text-xl">{item.sale}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Slide 2: Home + Elite */}
+                    {index === 2 && (
+                      <div className="h-full flex flex-col justify-center">
+                        <div className="grid grid-cols-2 gap-4 md:gap-6">
+                          {/* Home Workout */}
+                          <div>
+                            <h3 className="text-sm md:text-xl font-extrabold text-white mb-2 md:mb-3">{slide.title}</h3>
+                            {slide.items?.map((item, i) => (
+                              <div key={i} className="rounded-xl border border-white/[0.08] p-3 md:p-4 flex items-center justify-between" style={{ background: 'rgba(26,37,64,0.4)' }}>
+                                <div>
+                                  <p className="text-gray-400 text-[10px] md:text-xs font-medium">{item.label}</p>
+                                  <p className="text-gray-500 text-xs md:text-sm line-through">{item.original}</p>
+                                </div>
+                                <div className="text-right">
+                                  <span className="inline-block px-1.5 md:px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold text-white mb-1" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>{item.off}</span>
+                                  <p className="text-brand-gold font-extrabold text-sm md:text-lg">{item.sale}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          {/* Elite 1:1 */}
+                          <div>
+                            <h3 className="text-sm md:text-xl font-extrabold text-white mb-2 md:mb-3">{slide.extra}</h3>
+                            <div className="space-y-1.5 md:space-y-2">
+                              {slide.extraItems?.map((item, i) => (
+                                <div key={i} className="rounded-xl border border-white/[0.08] p-2 md:p-3 flex items-center justify-between" style={{ background: 'rgba(26,37,64,0.4)' }}>
+                                  <div>
+                                    <p className="text-gray-400 text-[10px] md:text-xs font-medium">{item.label}</p>
+                                    <p className="text-gray-500 text-[10px] md:text-xs line-through">{item.original}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="inline-block px-1.5 md:px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold text-white mb-0.5" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>{item.off}</span>
+                                    <p className="text-brand-gold font-bold text-sm md:text-base">{item.sale}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Slide 3: Referral + CTA */}
+                    {index === 3 && (
+                      <div className="text-center h-full flex flex-col justify-center">
+                        <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4">{slide.title}</h3>
+                        <p className="text-gray-300 text-base md:text-lg mb-6 max-w-lg mx-auto">{slide.description}</p>
+                        <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-green-500/20 mx-auto mb-6" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                          <Sparkles size={16} className="text-green-400" />
+                          <span className="text-green-300 font-medium text-sm">Both you and your friend get 15 extra days!</span>
+                        </div>
+                        <p className="text-gray-400 text-sm md:text-base italic max-w-md mx-auto mb-6">{slide.cta}</p>
+                        <a href="#plans" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-orange-500/20" style={{ background: 'linear-gradient(135deg, #f97316, #ef4444)' }}>
+                          Grab The Offer Now
+                          <ArrowRight size={16} />
+                        </a>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Slide Indicators */}
+            <div className="flex items-center justify-center gap-2 mt-5">
+              {saleSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSaleSlide(index)}
+                  className={`transition-all duration-300 rounded-full ${saleSlide === index ? 'w-8 h-2.5 bg-gradient-to-r from-orange-500 to-brand-gold' : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'}`}
+                />
+              ))}
+            </div>
+
+            {/* Timer badge */}
+            <div className="flex justify-center mt-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/20 backdrop-blur-md" style={{ background: 'rgba(249,115,22,0.08)' }}>
+                <Clock size={14} className="text-orange-400" />
+                <span className="text-orange-300 text-xs font-medium">Sale ends May 31, 2026</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
