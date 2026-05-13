@@ -67,7 +67,9 @@
       "Bash(lsof -ti:3000)",
       "Bash(xargs kill:*)",
       "Bash(lsof -ti:3001)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node scripts/upload-to-imagekit.js)"
     ],
     "deny": [],
     "ask": []
