@@ -25,6 +25,25 @@ import {
   UserPlus,
   Play,
   CalendarCog,
+  Megaphone,
+  GripVertical,
+  Eye,
+  EyeOff,
+  Pencil,
+  Save,
+  X,
+  Gauge,
+  Sparkles,
+  Youtube,
+  Instagram,
+  Gift,
+  TagIcon,
+  Flame,
+  Heart,
+  Star,
+  Zap,
+  Trophy,
+  MessageCircle,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
@@ -126,6 +145,17 @@ export default function AdminDashboard() {
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState('');
 
+  // Announcement bar state
+  const [announcements, setAnnouncements] = useState<Array<{ id: number; icon: string; text: string; isActive: boolean; sortOrder: number }>>([]);
+  const [marqueeSpeed, setMarqueeSpeed] = useState('30');
+  const [newAnnouncementText, setNewAnnouncementText] = useState('');
+  const [newAnnouncementIcon, setNewAnnouncementIcon] = useState('sparkles');
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState<number | null>(null);
+  const [editingAnnouncementText, setEditingAnnouncementText] = useState('');
+  const [editingAnnouncementIcon, setEditingAnnouncementIcon] = useState('');
+  const [savingSpeed, setSavingSpeed] = useState(false);
+  const [addingAnnouncement, setAddingAnnouncement] = useState(false);
+
   const getToken = () => localStorage.getItem('token');
 
   const authHeaders = useCallback(() => ({
@@ -144,7 +174,7 @@ export default function AdminDashboard() {
 
   const fetchAllData = async () => {
     setLoading(true);
-    await Promise.all([fetchClients(), fetchSubscriptions(), fetchPromoCodes(), fetchPlans(), fetchEnrollments()]);
+    await Promise.all([fetchClients(), fetchSubscriptions(), fetchPromoCodes(), fetchPlans(), fetchEnrollments(), fetchAnnouncements()]);
     setLoading(false);
   };
 
@@ -280,6 +310,114 @@ export default function AdminDashboard() {
     } catch (error) {
       alert('Failed to delete promo code');
     }
+  };
+
+  // Announcement bar handlers
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await fetch('/api/admin/announcements', { headers: authHeaders() });
+      const data = await res.json();
+      setAnnouncements(data.messages || []);
+      setMarqueeSpeed(data.marqueeSpeed || '30');
+    } catch (error) {
+      console.error('Error fetching announcements:', error);
+    }
+  };
+
+  const handleAddAnnouncement = async () => {
+    if (!newAnnouncementText.trim()) return;
+    setAddingAnnouncement(true);
+    try {
+      const res = await fetch('/api/admin/announcements', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ text: newAnnouncementText, icon: newAnnouncementIcon }),
+      });
+      if (res.ok) {
+        setNewAnnouncementText('');
+        setNewAnnouncementIcon('sparkles');
+        fetchAnnouncements();
+      }
+    } catch (error) {
+      alert('Failed to add announcement');
+    }
+    setAddingAnnouncement(false);
+  };
+
+  const handleUpdateAnnouncement = async (id: number, data: any) => {
+    try {
+      await fetch('/api/admin/announcements', {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify({ id, ...data }),
+      });
+      fetchAnnouncements();
+    } catch (error) {
+      alert('Failed to update announcement');
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id: number) => {
+    if (!confirm('Delete this announcement?')) return;
+    try {
+      await fetch(`/api/admin/announcements?id=${id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      fetchAnnouncements();
+    } catch (error) {
+      alert('Failed to delete announcement');
+    }
+  };
+
+  const handleSaveSpeed = async () => {
+    setSavingSpeed(true);
+    try {
+      await fetch('/api/admin/announcements', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ marqueeSpeed }),
+      });
+    } catch (error) {
+      alert('Failed to save speed');
+    }
+    setSavingSpeed(false);
+  };
+
+  const startEditing = (ann: typeof announcements[0]) => {
+    setEditingAnnouncementId(ann.id);
+    setEditingAnnouncementText(ann.text);
+    setEditingAnnouncementIcon(ann.icon);
+  };
+
+  const saveEditing = async () => {
+    if (editingAnnouncementId === null) return;
+    await handleUpdateAnnouncement(editingAnnouncementId, {
+      text: editingAnnouncementText,
+      icon: editingAnnouncementIcon,
+    });
+    setEditingAnnouncementId(null);
+  };
+
+  const iconOptions = [
+    { value: 'sparkles', label: 'Sparkles', Icon: Sparkles },
+    { value: 'gift', label: 'Gift', Icon: Gift },
+    { value: 'tag', label: 'Tag', Icon: TagIcon },
+    { value: 'flame', label: 'Flame', Icon: Flame },
+    { value: 'youtube', label: 'YouTube', Icon: Youtube },
+    { value: 'instagram', label: 'Instagram', Icon: Instagram },
+    { value: 'bell', label: 'Bell', Icon: Bell },
+    { value: 'heart', label: 'Heart', Icon: Heart },
+    { value: 'star', label: 'Star', Icon: Star },
+    { value: 'zap', label: 'Zap', Icon: Zap },
+    { value: 'trophy', label: 'Trophy', Icon: Trophy },
+    { value: 'megaphone', label: 'Megaphone', Icon: Megaphone },
+    { value: 'message', label: 'Message', Icon: MessageCircle },
+  ];
+
+  const getIconComponent = (iconName: string) => {
+    const found = iconOptions.find(o => o.value === iconName);
+    return found ? found.Icon : Sparkles;
   };
 
   // Computed stats
@@ -436,6 +574,9 @@ export default function AdminDashboard() {
                 </TabsTrigger>
                 <TabsTrigger value="reminders" className="flex-1 gap-1.5 text-xs sm:text-sm text-gray-400 data-[state=active]:bg-brand-blue data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-2.5">
                   <Bell className="h-4 w-4" /> <span className="hidden sm:inline">Reminders</span>
+                </TabsTrigger>
+                <TabsTrigger value="announcements" className="flex-1 gap-1.5 text-xs sm:text-sm text-gray-400 data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-2.5">
+                  <Megaphone className="h-4 w-4" /> <span className="hidden sm:inline">Announcements</span>
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="flex-1 gap-1.5 text-xs sm:text-sm text-gray-400 data-[state=active]:bg-brand-blue data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-2.5">
                   <Settings className="h-4 w-4" /> <span className="hidden sm:inline">Settings</span>
@@ -832,6 +973,202 @@ export default function AdminDashboard() {
               </TabsContent>
 
               {/* ===== Tab 5: Settings ===== */}
+              {/* ===== Tab: Announcements ===== */}
+              <TabsContent value="announcements">
+                <div className="space-y-6">
+                  {/* Marquee Speed Control */}
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                      <Gauge className="h-5 w-5 text-orange-400" /> Marquee Speed
+                    </h2>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <label className="block text-sm text-gray-400 mb-2">Speed (seconds for one full scroll) — Lower = Faster</label>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-gray-500">Fast</span>
+                          <input
+                            type="range"
+                            min="10"
+                            max="80"
+                            value={marqueeSpeed}
+                            onChange={(e) => setMarqueeSpeed(e.target.value)}
+                            className="flex-1 accent-orange-500"
+                          />
+                          <span className="text-xs text-gray-500">Slow</span>
+                          <span className="text-white font-bold text-lg min-w-[3rem] text-center">{marqueeSpeed}s</span>
+                        </div>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleSaveSpeed}
+                        disabled={savingSpeed}
+                        className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {savingSpeed ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                        Save
+                      </motion.button>
+                    </div>
+                  </div>
+
+                  {/* Add New Announcement */}
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                      <Plus className="h-5 w-5 text-green-400" /> Add Announcement
+                    </h2>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      {/* Icon Selector */}
+                      <div className="flex-shrink-0">
+                        <label className="block text-xs text-gray-400 mb-1">Icon</label>
+                        <select
+                          value={newAnnouncementIcon}
+                          onChange={(e) => setNewAnnouncementIcon(e.target.value)}
+                          className="w-full sm:w-36 px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-orange-500 text-sm"
+                        >
+                          {iconOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value} className="bg-gray-900">{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      {/* Text Input */}
+                      <div className="flex-1">
+                        <label className="block text-xs text-gray-400 mb-1">Message Text</label>
+                        <input
+                          type="text"
+                          value={newAnnouncementText}
+                          onChange={(e) => setNewAnnouncementText(e.target.value)}
+                          placeholder="e.g., Subscribe on YouTube: Coach Himanshu Kataria"
+                          className="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 text-sm"
+                          onKeyDown={(e) => e.key === 'Enter' && handleAddAnnouncement()}
+                        />
+                      </div>
+                      <div className="flex-shrink-0 flex items-end">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={handleAddAnnouncement}
+                          disabled={addingAnnouncement || !newAnnouncementText.trim()}
+                          className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {addingAnnouncement ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                          Add
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Announcement Messages List */}
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <Megaphone className="h-5 w-5 text-orange-400" /> Messages ({announcements.length})
+                      </h2>
+                      <button onClick={fetchAnnouncements} className="text-gray-400 hover:text-white transition-colors">
+                        <RefreshCw className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    {announcements.length === 0 ? (
+                      <p className="text-gray-500 text-center py-8">No announcement messages yet. Add one above.</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {announcements.map((ann) => {
+                          const IconComp = getIconComponent(ann.icon);
+                          const isEditing = editingAnnouncementId === ann.id;
+
+                          return (
+                            <div
+                              key={ann.id}
+                              className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
+                                ann.isActive
+                                  ? 'bg-white/5 border-white/10'
+                                  : 'bg-white/[0.02] border-white/[0.05] opacity-60'
+                              }`}
+                            >
+                              {/* Drag Handle */}
+                              <GripVertical className="h-4 w-4 text-gray-600 flex-shrink-0 cursor-grab" />
+
+                              {/* Icon */}
+                              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                                <IconComp className="h-4 w-4 text-orange-400" />
+                              </div>
+
+                              {/* Content */}
+                              {isEditing ? (
+                                <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                                  <select
+                                    value={editingAnnouncementIcon}
+                                    onChange={(e) => setEditingAnnouncementIcon(e.target.value)}
+                                    className="w-full sm:w-32 px-2 py-1.5 bg-white/10 border border-white/20 rounded-lg text-white text-xs focus:outline-none focus:border-orange-500"
+                                  >
+                                    {iconOptions.map((opt) => (
+                                      <option key={opt.value} value={opt.value} className="bg-gray-900">{opt.label}</option>
+                                    ))}
+                                  </select>
+                                  <input
+                                    type="text"
+                                    value={editingAnnouncementText}
+                                    onChange={(e) => setEditingAnnouncementText(e.target.value)}
+                                    className="flex-1 px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-orange-500"
+                                    onKeyDown={(e) => e.key === 'Enter' && saveEditing()}
+                                  />
+                                  <div className="flex gap-1">
+                                    <button onClick={saveEditing} className="p-1.5 rounded-lg bg-green-500/20 text-green-400 hover:bg-green-500/30 transition-colors">
+                                      <Save className="h-4 w-4" />
+                                    </button>
+                                    <button onClick={() => setEditingAnnouncementId(null)} className="p-1.5 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors">
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <p className="flex-1 text-sm text-gray-300 truncate">{ann.text}</p>
+                              )}
+
+                              {/* Actions */}
+                              {!isEditing && (
+                                <div className="flex items-center gap-1.5 flex-shrink-0">
+                                  {/* Toggle Active */}
+                                  <button
+                                    onClick={() => handleUpdateAnnouncement(ann.id, { isActive: !ann.isActive })}
+                                    className={`p-1.5 rounded-lg transition-colors ${
+                                      ann.isActive
+                                        ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                                        : 'bg-gray-500/20 text-gray-500 hover:bg-gray-500/30'
+                                    }`}
+                                    title={ann.isActive ? 'Visible — click to hide' : 'Hidden — click to show'}
+                                  >
+                                    {ann.isActive ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                                  </button>
+                                  {/* Edit */}
+                                  <button
+                                    onClick={() => startEditing(ann)}
+                                    className="p-1.5 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors"
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </button>
+                                  {/* Delete */}
+                                  <button
+                                    onClick={() => handleDeleteAnnouncement(ann.id)}
+                                    className="p-1.5 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <p className="text-gray-600 text-xs mt-4">
+                      Note: Active promo codes from the Promos tab are automatically shown in the announcement bar alongside these messages.
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+
               <TabsContent value="settings">
                 <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 max-w-md">
                   <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">

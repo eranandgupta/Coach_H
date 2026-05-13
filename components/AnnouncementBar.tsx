@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect, ReactNode } from 'react';
-import { Sparkles, Youtube, Instagram, Gift, Tag } from 'lucide-react';
+import {
+  Sparkles, Youtube, Instagram, Gift, Tag, Flame, Bell,
+  Heart, Star, Zap, Trophy, Megaphone, MessageCircle,
+} from 'lucide-react';
 
 interface PromoCode {
   code: string;
@@ -11,10 +14,51 @@ interface PromoCode {
   applicablePlans: string | null;
 }
 
+interface DbAnnouncement {
+  id: number;
+  icon: string;
+  text: string;
+}
+
+const iconMap: Record<string, React.ComponentType<any>> = {
+  sparkles: Sparkles,
+  gift: Gift,
+  tag: Tag,
+  flame: Flame,
+  youtube: Youtube,
+  instagram: Instagram,
+  bell: Bell,
+  heart: Heart,
+  star: Star,
+  zap: Zap,
+  trophy: Trophy,
+  megaphone: Megaphone,
+  message: MessageCircle,
+};
+
+const iconColorMap: Record<string, string> = {
+  sparkles: 'text-brand-gold',
+  gift: 'text-orange-400',
+  tag: 'text-brand-gold',
+  flame: 'text-orange-400',
+  youtube: 'text-red-500',
+  instagram: 'text-pink-500',
+  bell: 'text-yellow-400',
+  heart: 'text-red-400',
+  star: 'text-yellow-400',
+  zap: 'text-yellow-300',
+  trophy: 'text-brand-gold',
+  megaphone: 'text-blue-400',
+  message: 'text-green-400',
+};
+
 export default function AnnouncementBar() {
   const [promoMessages, setPromoMessages] = useState<{ icon: ReactNode; text: ReactNode }[]>([]);
+  const [dbMessages, setDbMessages] = useState<{ icon: ReactNode; text: ReactNode }[]>([]);
+  const [speed, setSpeed] = useState(40);
 
   useEffect(() => {
+    // Fetch promo codes
     fetch('/api/promo-codes/active')
       .then((res) => res.json())
       .then((data) => {
@@ -52,37 +96,30 @@ export default function AnnouncementBar() {
         setPromoMessages(msgs);
       })
       .catch(() => {});
+
+    // Fetch DB announcement messages + speed
+    fetch('/api/announcements/active')
+      .then((res) => res.json())
+      .then((data) => {
+        const msgs: DbAnnouncement[] = data.messages || [];
+        setSpeed(parseInt(data.marqueeSpeed) || 40);
+        setDbMessages(
+          msgs.map((msg) => {
+            const IconComp = iconMap[msg.icon] || Sparkles;
+            const colorClass = iconColorMap[msg.icon] || 'text-brand-gold';
+            return {
+              icon: <IconComp className={`w-3 h-3 ${colorClass}`} />,
+              text: <>{msg.text}</>,
+            };
+          })
+        );
+      })
+      .catch(() => {});
   }, []);
 
-  const staticMessages = [
-    {
-      icon: <Gift className="w-3 h-3 text-orange-400" />,
-      text: (
-        <>
-          <span className="font-bold text-orange-400">FREE RhynoGrip Gear!</span> Join our <span className="font-bold bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded border border-orange-400/30">6-Month</span> or <span className="font-bold bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded border border-orange-400/30">12-Month</span> plan & get exclusive fitness gear!
-        </>
-      )
-    },
-    {
-      icon: <Youtube className="w-3 h-3 text-red-500" />,
-      text: (
-        <>
-          Subscribe on YouTube: <span className="font-bold text-red-400">Coach Himanshu Kataria</span> - Free Fitness Knowledge!
-        </>
-      )
-    },
-    {
-      icon: <Instagram className="w-3 h-3 text-pink-500" />,
-      text: (
-        <>
-          Follow on Instagram: <span className="font-bold text-pink-400">@coachhimanshusquad_</span> - Daily Fitness Tips!
-        </>
-      )
-    }
-  ];
+  const messages = [...promoMessages, ...dbMessages];
 
-  // Remove the old hardcoded coupon messages - promos now come from DB
-  const messages = [...promoMessages, ...staticMessages];
+  if (messages.length === 0) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] text-white py-1.5 px-3 overflow-hidden border-b border-white/[0.04] backdrop-blur-2xl" style={{ background: 'linear-gradient(90deg, rgba(7,10,21,0.95) 0%, rgba(10,15,31,0.9) 50%, rgba(7,10,21,0.95) 100%)' }}>
@@ -92,7 +129,10 @@ export default function AnnouncementBar() {
       <div className="relative z-10 flex items-center">
         {/* Running text container */}
         <div className="flex-1 overflow-hidden">
-          <div className="flex animate-marquee-slow whitespace-nowrap">
+          <div
+            className="flex whitespace-nowrap hover:[animation-play-state:paused]"
+            style={{ animation: `marquee ${speed}s linear infinite` }}
+          >
             {/* First set of messages */}
             {messages.map((message, index) => (
               <div key={index} className="inline-flex items-center gap-1.5 mx-4 md:mx-8">

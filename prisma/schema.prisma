@@ -344,6 +344,29 @@ model FunFact {
   @@index([publishedAt])
 }
 
+model AnnouncementMessage {
+  id        Int      @id @default(autoincrement())
+  icon      String   @default("sparkles") // lucide icon name
+  text      String   @db.Text
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
 model Feedback {
   id             Int      @id @default(autoincrement())
   name           String
