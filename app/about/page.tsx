@@ -78,12 +78,13 @@ const qualifications = [
 
 const teamMembers = [
   {
-    name: 'Himanshu',
+    name: 'Himanshu Kataria',
     role: 'Founder & Head Coach',
     description: 'Former fitness educator and lecturer turned full-time coach. The expertise behind every plan, every transformation, every result you see on this platform.',
     icon: Crown,
     gradient: 'from-brand-gold to-yellow-600',
     shadow: 'shadow-brand-gold/40',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/himanshu-kataria.png',
   },
   {
     name: 'Mahima Yadav',
@@ -92,6 +93,7 @@ const teamMembers = [
     icon: Headphones,
     gradient: 'from-pink-500 to-rose-600',
     shadow: 'shadow-pink-500/40',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/mahima.png',
   },
   {
     name: 'Vijay Arora',
@@ -100,6 +102,7 @@ const teamMembers = [
     icon: Scale,
     gradient: 'from-slate-400 to-slate-600',
     shadow: 'shadow-slate-400/40',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/vijay-arora.png',
   },
   {
     name: 'Mansi Tewatia',
@@ -108,6 +111,7 @@ const teamMembers = [
     icon: DollarSign,
     gradient: 'from-emerald-500 to-green-600',
     shadow: 'shadow-emerald-500/40',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/mansi.png',
   },
   {
     name: 'Himanshu Singh',
@@ -116,6 +120,7 @@ const teamMembers = [
     icon: Megaphone,
     gradient: 'from-orange-500 to-amber-600',
     shadow: 'shadow-orange-500/40',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/himanshu-singh.png',
   },
   {
     name: 'Komal Gupta',
@@ -132,6 +137,7 @@ const teamMembers = [
     icon: Gem,
     gradient: 'from-violet-500 to-purple-600',
     shadow: 'shadow-violet-500/40',
+    image: 'https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png',
   },
 ];
 
@@ -668,8 +674,8 @@ export default function AboutPage() {
               <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-brand-gold/30 rounded-3xl p-8 md:p-10 group hover:border-brand-gold/50 transition-all duration-300">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
-                  <div className={`w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br ${teamMembers[0].gradient} rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:shadow-lg ${teamMembers[0].shadow} transition-all duration-300`}>
-                    <Crown className="w-10 h-10 md:w-12 md:h-12 text-white" />
+                  <div className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden flex-shrink-0 ring-2 ring-brand-gold/30 group-hover:ring-brand-gold/60 group-hover:shadow-lg ${teamMembers[0].shadow} transition-all duration-300`}>
+                    <img src={teamMembers[0].image} alt={teamMembers[0].name} className="w-full h-full object-cover object-top" loading="lazy" />
                   </div>
                   <div className="text-center md:text-left">
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">{teamMembers[0].name}</h3>
@@ -692,9 +698,15 @@ export default function AboutPage() {
                   <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-full group hover:border-white/20 transition-all duration-300">
                     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${member.gradient} rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
                     <div className="relative z-10">
-                      <div className={`w-14 h-14 bg-gradient-to-br ${member.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>
-                        <MemberIcon className="w-7 h-7 text-white" />
-                      </div>
+                      {member.image ? (
+                        <div className={`w-14 h-14 rounded-xl mb-4 overflow-hidden ring-2 ring-white/10 group-hover:ring-white/20 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>
+                          <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top" loading="lazy" />
+                        </div>
+                      ) : (
+                        <div className={`w-14 h-14 bg-gradient-to-br ${member.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>
+                          <MemberIcon className="w-7 h-7 text-white" />
+                        </div>
+                      )}
                       <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
                       <p className="text-brand-blue font-semibold text-sm mb-3">{member.role}</p>
                       <p className="text-gray-400 leading-relaxed">{member.description}</p>
