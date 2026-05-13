@@ -138,6 +138,7 @@ const teamMembers = [
     gradient: 'from-violet-500 to-purple-600',
     shadow: 'shadow-violet-500/40',
     image: 'https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png',
+    isLogo: true,
   },
 ];
 
@@ -699,8 +700,8 @@ export default function AboutPage() {
                     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${member.gradient} rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
                     <div className="relative z-10">
                       {member.image ? (
-                        <div className={`w-14 h-14 rounded-xl mb-4 overflow-hidden ring-2 ring-white/10 group-hover:ring-white/20 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>
-                          <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top" loading="lazy" />
+                        <div className={`w-14 h-14 rounded-xl mb-4 overflow-hidden ring-2 ring-white/10 group-hover:ring-white/20 group-hover:shadow-lg ${member.shadow} transition-all duration-300 ${member.isLogo ? 'bg-brand-navy p-1.5' : ''}`}>
+                          <img src={member.image} alt={member.name} className={`w-full h-full ${member.isLogo ? 'object-contain' : 'object-cover object-top'}`} loading="lazy" />
                         </div>
                       ) : (
                         <div className={`w-14 h-14 bg-gradient-to-br ${member.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>
