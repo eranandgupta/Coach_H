@@ -1300,28 +1300,7 @@ export default function Home() {
               <Flame size={14} className="text-orange-400 animate-pulse" />
             </motion.div>
 
-            {/* Coupon Code */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="flex items-center justify-center gap-3 mb-4"
-            >
-              <span className="text-gray-400 text-sm font-medium">Use Code:</span>
-              <button
-                onClick={handleCopyCode}
-                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-dashed border-brand-gold/40 hover:border-brand-gold/70 transition-all duration-300"
-                style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.12) 0%, rgba(201,166,70,0.04) 100%)' }}
-              >
-                <span className="text-brand-gold font-extrabold text-lg tracking-[0.2em]">SUMMER</span>
-                {codeCopied ? (
-                  <Check size={16} className="text-green-400" />
-                ) : (
-                  <Copy size={16} className="text-brand-gold/60 group-hover:text-brand-gold transition-colors" />
-                )}
-              </button>
-              {codeCopied && <span className="text-green-400 text-xs font-medium">Copied!</span>}
-            </motion.div>
+            {/* Coupon Code - hidden, kept for future use */}
           </div>
 
           {/* Carousel Container */}
