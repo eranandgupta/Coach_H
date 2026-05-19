@@ -985,19 +985,19 @@ export default function Home() {
         <AnnouncementBar />
         <Navbar />
 
-      <section className="relative pb-0 overflow-hidden h-[100svh] flex flex-col" aria-label="Hero section">
+      <section className="relative pb-0 overflow-hidden h-dvh flex flex-col" aria-label="Hero section">
         {/* Background */}
         <div className="absolute inset-0 z-0 bg-brand-navy">
           {/* Mobile: video background with strong overlay to let text breathe */}
           <div className="absolute inset-0 lg:hidden overflow-hidden">
             <video
-              className="absolute w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
+              className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
               autoPlay loop muted playsInline preload="metadata"
               disablePictureInPicture disableRemotePlayback
-              style={{ pointerEvents: 'none' }}
+              style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
               onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
             >
-              <source src="https://ik.imagekit.io/oeagl0l4x/public/intro2.mp4?tr=q-70" type="video/mp4" />
+              <source src="/intro2.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
             <div className="absolute inset-0 bg-brand-navy/30" />
@@ -1212,13 +1212,13 @@ export default function Home() {
                     <div className="p-1.5">
                       <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
                         <video
-                          className="absolute w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
+                          className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                           autoPlay loop muted playsInline preload="metadata"
                           disablePictureInPicture disableRemotePlayback
-                          style={{ pointerEvents: 'none' }}
+                          style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
                           onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
                         >
-                          <source src="https://ik.imagekit.io/oeagl0l4x/public/intro2.mp4?tr=q-70" type="video/mp4" />
+                          <source src="/intro2.mp4" type="video/mp4" />
                         </video>
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent" />
                         <div className="absolute bottom-4 left-4 right-4">
@@ -1866,7 +1866,7 @@ export default function Home() {
                     });
                   }}
                 >
-                  <source src="https://ik.imagekit.io/oeagl0l4x/public/RHYNOGRIP_VIDEO.mp4?tr=q-70" type="video/mp4" />
+                  <source src="/RHYNOGRIP_VIDEO.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
@@ -2156,7 +2156,7 @@ export default function Home() {
                     });
                   }}
                 >
-                  <source src="https://ik.imagekit.io/oeagl0l4x/public/train_today.mp4?tr=q-70" type="video/mp4" />
+                  <source src="/train_today.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>

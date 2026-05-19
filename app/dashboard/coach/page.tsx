@@ -43,6 +43,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { isElitePlan } from '@/lib/planUtils';
+import MobileBottomNav from '@/components/MobileBottomNav';
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -423,7 +424,7 @@ export default function CoachDashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="pt-28 pb-20 px-4">
+      <div className="pt-28 pb-28 lg:pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Dashboard Header & Action Buttons */}
           <motion.div
@@ -544,7 +545,7 @@ export default function CoachDashboard() {
           </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div id="section-home" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {/* Total Clients */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -634,6 +635,7 @@ export default function CoachDashboard() {
 
         {/* Clients Section */}
         <motion.div
+          id="section-clients"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -829,7 +831,7 @@ export default function CoachDashboard() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
         >
           {/* Recent Workouts */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div id="section-workouts" className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <Dumbbell className="w-6 h-6 text-purple-400" />
               Recent Workouts
@@ -877,7 +879,7 @@ export default function CoachDashboard() {
           </div>
 
           {/* Recent Diets */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div id="section-diets" className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <UtensilsCrossed className="w-6 h-6 text-green-400" />
               Recent Diets
@@ -992,6 +994,7 @@ export default function CoachDashboard() {
 
         {/* Manage Blogs Section */}
         <motion.div
+          id="section-blogs"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
@@ -1150,6 +1153,15 @@ export default function CoachDashboard() {
       <LiveSessionModal
         isOpen={isLiveSessionModalOpen}
         onClose={() => setIsLiveSessionModalOpen(false)}
+      />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav
+        role="coach"
+        onTabChange={(tab) => {
+          const el = document.getElementById(`section-${tab}`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }}
       />
     </div>
   );

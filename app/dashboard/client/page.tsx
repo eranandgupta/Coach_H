@@ -18,7 +18,12 @@ import {
   FileText,
   Clock,
   ChevronRight,
-  Edit3
+  Edit3,
+  User,
+  Mail,
+  Phone,
+  Shield,
+  ClipboardList,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -35,6 +40,7 @@ import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
+import MobileBottomNav from '@/components/MobileBottomNav';
 
 export default function ClientDashboard() {
   const router = useRouter();
@@ -49,6 +55,7 @@ export default function ClientDashboard() {
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [activeView, setActiveView] = useState<'dashboard' | 'profile'>('dashboard');
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
@@ -342,7 +349,8 @@ export default function ClientDashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="pt-24 md:pt-28 pb-20 px-3 md:px-4">
+      {activeView === 'dashboard' && (
+      <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Welcome (shown only on small screens) */}
           <div className="md:hidden mb-5">
@@ -353,6 +361,7 @@ export default function ClientDashboard() {
           </div>
 
         {/* Subscription Status Card - Compact & Aesthetic */}
+        <div id="section-home" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -711,6 +720,7 @@ export default function ClientDashboard() {
         </div>
 
         {/* Blog Posts Carousel */}
+        <div id="section-blog" />
         {blogPosts.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -819,7 +829,7 @@ export default function ClientDashboard() {
         )}
 
         {/* Current Plans Section */}
-        <div className={`grid grid-cols-1 ${isEliteOneOnOnePlan ? '' : 'lg:grid-cols-2'} gap-4 md:gap-6`}>
+        <div id="section-workout" className={`grid grid-cols-1 ${isEliteOneOnOnePlan ? '' : 'lg:grid-cols-2'} gap-4 md:gap-6`}>
           {/* Current Workout — hidden for 1:1 Elite plans */}
           {!isEliteOneOnOnePlan && (
           <motion.div
@@ -910,6 +920,7 @@ export default function ClientDashboard() {
           )}
 
           {/* Current Diet */}
+          <div id="section-diet" />
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -1012,8 +1023,157 @@ export default function ClientDashboard() {
         </div>
         </>
         )}
+
         </div>
       </div>
+      )}
+
+      {/* Profile View */}
+      {activeView === 'profile' && (
+      <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
+        <div className="max-w-2xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            {/* Profile Header */}
+            <div className="flex flex-col items-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue-dark flex items-center justify-center mb-3 border-2 border-white/10">
+                <span className="text-3xl font-bold text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+              </div>
+              <h2 className="text-xl font-bold text-white">{user?.name || 'User'}</h2>
+              <p className="text-gray-400 text-sm">{user?.email}</p>
+            </div>
+
+            {/* User Info */}
+            <div className="glass-card p-5 mb-4">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Personal Info</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                  <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Name</p>
+                    <p className="text-white text-sm font-medium truncate">{user?.name || 'N/A'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                  <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Email</p>
+                    <p className="text-white text-sm font-medium truncate">{user?.email || 'N/A'}</p>
+                  </div>
+                </div>
+                {user?.phone && (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                    <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Phone</p>
+                      <p className="text-white text-sm font-medium">{user.phone}</p>
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                  <Crown className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Plan</p>
+                    <p className="text-white text-sm font-medium truncate">{planName || 'No active plan'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Subscription Info */}
+            {subscription?.subscription && (
+              <div className="glass-card p-5 mb-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                    <Shield className="w-4 h-4" /> Subscription
+                  </h3>
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${isSubscriptionActive ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                    {isSubscriptionActive ? 'Active' : 'Expired'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                    <p className="text-gray-500 text-xs mb-0.5">Start Date</p>
+                    <p className="text-gray-300">{new Date(subscription.subscription.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                    <p className="text-gray-500 text-xs mb-0.5">End Date</p>
+                    <p className="text-gray-300">{new Date(subscription.subscription.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                  </div>
+                  {isSubscriptionActive && (
+                    <div className="col-span-2 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                      <p className="text-gray-500 text-xs mb-0.5">Days Remaining</p>
+                      <p className="text-white font-semibold">{getDaysRemaining(subscription.subscription.endDate)} days</p>
+                    </div>
+                  )}
+                </div>
+                {!isSubscriptionActive && (
+                  <Link
+                    href="/#plans"
+                    className="mt-4 w-full flex items-center justify-center gap-2 bg-brand-blue text-white px-4 py-3 rounded-xl text-sm font-semibold hover:bg-blue-600 transition-all"
+                  >
+                    Renew Subscription <ArrowRight className="w-4 h-4" />
+                  </Link>
+                )}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="glass-card p-5">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Quick Actions</h3>
+              <div className="space-y-2">
+                {user?.assessmentCompleted && (
+                  <button
+                    onClick={() => setIsEditAssessmentOpen(true)}
+                    className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08] hover:border-brand-blue/30 transition-all group"
+                    style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.06) 0%, rgba(23,95,255,0.02) 100%)' }}
+                  >
+                    <div className="p-2 rounded-lg bg-brand-blue/15">
+                      <ClipboardList className="w-4 h-4 text-brand-blue" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-white text-sm font-medium">Assessment Form</p>
+                      <p className="text-gray-500 text-xs">View & edit your assessment</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-500 ml-auto group-hover:text-brand-blue transition-colors" />
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsChangePasswordOpen(true)}
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08] hover:border-yellow-500/30 transition-all group"
+                  style={{ background: 'linear-gradient(135deg, rgba(234,179,8,0.06) 0%, rgba(234,179,8,0.02) 100%)' }}
+                >
+                  <div className="p-2 rounded-lg bg-yellow-500/15">
+                    <Key className="w-4 h-4 text-yellow-400" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white text-sm font-medium">Change Password</p>
+                    <p className="text-gray-500 text-xs">Update your password</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto group-hover:text-yellow-400 transition-colors" />
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08] hover:border-red-500/30 transition-all group"
+                  style={{ background: 'linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(239,68,68,0.02) 100%)' }}
+                >
+                  <div className="p-2 rounded-lg bg-red-500/15">
+                    <LogOut className="w-4 h-4 text-red-400" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white text-sm font-medium">Logout</p>
+                    <p className="text-gray-500 text-xs">Sign out of your account</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto group-hover:text-red-400 transition-colors" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      )}
 
       {/* Modals */}
       <ViewWorkoutModal
@@ -1066,6 +1226,31 @@ export default function ClientDashboard() {
           planName={planName}
         />
       )}
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav
+        role="client"
+        activeTab={activeView === 'profile' ? 'profile' : undefined}
+        onTabChange={(tab) => {
+          if (tab === 'profile') {
+            setActiveView('profile');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+          if (activeView === 'profile') {
+            setActiveView('dashboard');
+            setTimeout(() => {
+              if (tab !== 'home') {
+                const el = document.getElementById(`section-${tab}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 100);
+            return;
+          }
+          const el = document.getElementById(`section-${tab}`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }}
+      />
     </div>
   );
 }

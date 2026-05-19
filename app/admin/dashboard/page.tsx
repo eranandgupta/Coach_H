@@ -48,6 +48,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
+import MobileBottomNav from '@/components/MobileBottomNav';
 import CreateClientModal from '@/components/admin/CreateClientModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
@@ -483,7 +484,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="pt-28 pb-20 px-4">
+      <div className="pt-28 pb-28 lg:pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Title */}
           <div className="md:hidden mb-6">
@@ -1225,6 +1226,29 @@ export default function AdminDashboard() {
         onOpenChange={setAdjustDaysOpen}
         onSuccess={() => { fetchSubscriptions(); fetchClients(); }}
         subscription={adjustDaysSub}
+      />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav
+        role="admin"
+        activeTab={activeTab === 'clients' || activeTab === 'enrollments' ? 'clients' : activeTab === 'subscriptions' ? 'subscriptions' : activeTab === 'promos' ? 'promoCodes' : activeTab === 'settings' || activeTab === 'announcements' || activeTab === 'reminders' ? 'settings' : 'home'}
+        onTabChange={(tab) => {
+          if (tab === 'home') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+          const tabMap: Record<string, string> = {
+            clients: 'clients',
+            subscriptions: 'subscriptions',
+            promoCodes: 'promos',
+            settings: 'settings',
+          };
+          if (tabMap[tab]) {
+            setActiveTab(tabMap[tab]);
+            const el = document.querySelector('[role="tablist"]');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }}
       />
     </div>
   );

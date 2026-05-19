@@ -77,7 +77,8 @@
       "Bash(node scripts/upload-team-photos.js)",
       "Bash(rm -v CH1.jpeg CH2.jpeg CH3.jpeg CH4.jpeg CH5.jpeg CH6.jpeg CH7.jpeg CH8.jpeg CH9.jpeg CH10.jpeg CH11.jpeg CH12.jpeg logo.png Rhynogrip.png rhynogrip_products.png \"full imag.png\" intro.mp4 intro2.mp4 RHYNOGRIP_VIDEO.mp4 \"train today.mp4\")",
       "Bash(rm -rv QR/)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
