@@ -132,9 +132,19 @@ export default function RootLayout({
                   function(registration) {
                     console.log('SW registered, scope:', registration.scope);
 
-                    // Check for updates immediately and every 60 seconds
+                    // Check for updates immediately and every 5 minutes (not 60s to save resources)
                     registration.update();
-                    setInterval(function() { registration.update(); }, 60 * 1000);
+                    var swInterval = setInterval(function() { registration.update(); }, 5 * 60 * 1000);
+
+                    // Clean up interval when page is hidden/unloaded to prevent memory leak
+                    document.addEventListener('visibilitychange', function() {
+                      if (document.hidden) {
+                        clearInterval(swInterval);
+                      } else {
+                        registration.update();
+                        swInterval = setInterval(function() { registration.update(); }, 5 * 60 * 1000);
+                      }
+                    });
 
                     // When a new SW is found and installed, reload to get fresh content
                     registration.addEventListener('updatefound', function() {

@@ -226,9 +226,32 @@
   @media (max-width: 640px) {
     .glass-card {
       border-radius: 1rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .glass-card-strong {
       border-radius: 1rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    /* Disable expensive infinite animations on mobile */
+    .animate-glow-pulse,
+    .animate-drift,
+    .animate-float,
+    .animate-shimmer {
+      animation: none !important;
+    }
+  }
+
+  /* Respect user preference for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee,
+    .animate-marquee-slow,
+    .animate-shimmer,
+    .animate-float,
+    .animate-glow-pulse,
+    .animate-drift {
+      animation: none !important;
     }
   }
 

@@ -73,19 +73,39 @@ export default function ClientDashboard() {
     fetchDashboardData();
     fetchNotificationCount();
 
-    // Auto-refresh notifications every 30 seconds
-    const notificationInterval = setInterval(() => {
-      fetchNotificationCount();
-    }, 30000);
+    let notificationInterval: ReturnType<typeof setInterval>;
+    let dashboardInterval: ReturnType<typeof setInterval>;
 
-    // Auto-refresh dashboard data every 2 minutes
-    const dashboardInterval = setInterval(() => {
-      fetchDashboardData();
-    }, 120000);
+    // Only poll when the page is visible to prevent request stacking on mobile
+    const startPolling = () => {
+      notificationInterval = setInterval(() => {
+        fetchNotificationCount();
+      }, 30000);
+      dashboardInterval = setInterval(() => {
+        fetchDashboardData();
+      }, 120000);
+    };
 
-    return () => {
+    const stopPolling = () => {
       clearInterval(notificationInterval);
       clearInterval(dashboardInterval);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchNotificationCount();
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
@@ -470,7 +490,7 @@ export default function ClientDashboard() {
                     transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1], delay: 0.3 }}
                     className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-500 rounded-full shadow-lg shadow-green-500/30"
                   />
-                  {/* Shimmer Effect */}
+                  {/* Shimmer Effect - runs 3 times then stops to save mobile resources */}
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${getSubscriptionProgress()}%` }}
@@ -479,7 +499,7 @@ export default function ClientDashboard() {
                   >
                     <motion.div
                       animate={{ x: ['-200%', '200%'] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', delay: 1.5 }}
+                      transition={{ duration: 2.5, repeat: 3, ease: 'linear', delay: 1.5 }}
                       className="absolute inset-0 w-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
                     />
                   </motion.div>
