@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: 'Coach Himanshu',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'Coach Himanshu - NASM Certified Fitness Expert',
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach',
     description: 'Transform your fitness with personalized coaching. 1000+ transformations. Start at ₹799/month.',
-    images: ['/og-image.jpg'],
+    images: ['/opengraph-image'],
     creator: '@coach_himanshu_',
   },
   robots: {
@@ -89,10 +89,8 @@ export const metadata: Metadata = {
     shortcut: '/favicon.png',
     apple: '/favicon.png',
   },
-  verification: {
-    google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
+  alternates: {
+    canonical: 'https://coachhimanshu.com',
   },
 };
 
@@ -104,7 +102,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#175FFF" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />

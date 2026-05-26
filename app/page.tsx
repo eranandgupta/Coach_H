@@ -1033,7 +1033,7 @@ export default function Home() {
         </div>
 
         {/* ========= MOBILE HERO (lg:hidden) ========= */}
-        <div className="relative z-10 flex-1 flex flex-col justify-end lg:hidden pt-24">
+        <div className="relative z-10 flex-1 flex flex-col lg:hidden pt-24">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -1115,7 +1115,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-6"
+            className="mt-auto"
           >
             <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.5) 0%, rgba(10,15,31,0.85) 100%)' }}>
               {stats.map((stat, index) => (
@@ -1130,16 +1130,16 @@ export default function Home() {
         </div>
 
         {/* ========= DESKTOP HERO (hidden lg:flex) ========= */}
-        <div className="relative z-10 hidden lg:flex flex-1 flex-col justify-center pt-28">
+        <div className="relative z-10 hidden lg:flex flex-1 flex-col justify-center pt-32 pb-6">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="px-8 lg:px-12 max-w-7xl mx-auto w-full"
           >
-            <div className="flex items-center gap-12 xl:gap-16 pb-8">
+            <div className="flex items-center gap-12 xl:gap-16">
               {/* LEFT — Text */}
-              <div className="flex-1 max-w-[55%]">
+              <div className="flex-1 min-w-0">
                 <motion.div variants={itemVariants} className="mb-5">
                   <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}>
                     <span className="relative flex h-1.5 w-1.5">
@@ -1205,7 +1205,7 @@ export default function Home() {
               </div>
 
               {/* RIGHT — Video card */}
-              <motion.div variants={itemVariants} className="flex-1 max-w-[40%]">
+              <motion.div variants={itemVariants} className="w-[38%] flex-shrink-0">
                 <div className="relative">
                   <div className="absolute -inset-4 rounded-[2rem] blur-2xl opacity-40" style={{ background: 'radial-gradient(ellipse, rgba(23,95,255,0.15) 0%, transparent 70%)' }} />
                   <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
