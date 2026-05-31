@@ -1471,10 +1471,10 @@ export default function Home() {
       <section className="py-5 border-y border-white/[0.04] overflow-hidden relative" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(26,37,64,0.15) 50%, rgba(10,15,31,0.95) 100%)' }}>
         <div className="relative">
           {/* Gradient overlays for fade effect */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-brand-navy to-transparent z-10"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-brand-navy to-transparent z-10"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-brand-navy to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-brand-navy to-transparent z-10"></div>
 
-          <div className="flex animate-marquee whitespace-nowrap">
+          <div className="animate-marquee whitespace-nowrap" style={{ display: 'inline-flex', minWidth: '200%' }}>
             {/* First set of qualifications */}
             {[
               { icon: Trophy, text: 'NASM Certified Bodybuilding Coach' },
@@ -1486,12 +1486,12 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="inline-flex items-center gap-2 mx-3 px-4 py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-4 h-4 text-white" />
+                <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
                 </div>
-                <span className="text-gray-300 font-medium text-xs">{item.text}</span>
+                <span className="text-gray-300 font-medium text-[11px] md:text-xs">{item.text}</span>
               </div>
             ))}
             {/* Duplicate set for seamless loop */}
@@ -1505,12 +1505,12 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={`dup-${index}`}
-                className="inline-flex items-center gap-2 mx-3 px-4 py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-4 h-4 text-white" />
+                <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
                 </div>
-                <span className="text-gray-300 font-medium text-xs">{item.text}</span>
+                <span className="text-gray-300 font-medium text-[11px] md:text-xs">{item.text}</span>
               </div>
             ))}
           </div>
