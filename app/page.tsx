@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  Zap,
   Target,
   TrendingUp,
   Award,
@@ -22,8 +21,9 @@ import {
   Trophy,
   GraduationCap,
   Home as HomeIcon,
-  MessageCircle,
-  Timer,
+  Flame,
+  Clock,
+  Leaf,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -59,6 +59,66 @@ export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [dbPlanIds, setDbPlanIds] = useState<Record<string, number>>({});
   const [activePlanTab, setActivePlanTab] = useState<'gym' | 'home' | 'rehab' | 'live'>('gym');
+  const [saleSlide, setSaleSlide] = useState(0);
+
+  // Determine which sale is active based on current date
+  const activeSale = useMemo(() => {
+    const now = new Date();
+    const month = now.getMonth(); // 0-indexed, June = 5
+    const day = now.getDate();
+    if (month !== 5) return null; // Only June
+
+    const commonOffers = [
+      { label: '3M Gym Plan', off: '10% OFF' },
+      { label: '3M Home Plan', off: '10% OFF' },
+      { label: '3M Rehab Plan', off: '10% OFF' },
+      { label: '6M Gym Plan', off: '12% OFF' },
+      { label: '12M Gym Plan', off: '15% OFF' },
+      { label: '12 Sessions', off: '10% OFF' },
+      { label: '36 Sessions', off: '10% OFF' },
+      { label: '24 Sessions', off: '20% OFF' },
+      { label: '72 Sessions', off: '20% OFF' },
+    ];
+
+    if (day >= 1 && day <= 7) {
+      return {
+        theme: 'environment' as const,
+        title: 'WORLD ENVIRONMENT DAY SALE 🌿',
+        subtitle: 'Valid June 1 - 7 Only',
+        endDate: 'June 7, 2026',
+        offers: commonOffers,
+        specials: null,
+      };
+    }
+    if (day >= 20 && day <= 30) {
+      const isJune21 = day === 21;
+      return {
+        theme: 'yoga' as const,
+        title: 'WORLD YOGA DAY SALE 🧘',
+        subtitle: 'Valid June 20 - 30 Only',
+        endDate: 'June 30, 2026',
+        offers: commonOffers,
+        specials: isJune21
+          ? [
+              '🧘 Free 1 hour yoga class for everyone',
+              '👨 Free counselling sessions for all fathers — Father\'s Day Special',
+              '🔥 50% OFF 1 month gym & home workout for all fathers (today only!)',
+            ]
+          : null,
+      };
+    }
+    return null;
+  }, []);
+
+  const totalSaleSlides = activeSale?.specials ? 3 : activeSale ? 2 : 0;
+
+  useEffect(() => {
+    if (totalSaleSlides === 0) return;
+    const timer = setInterval(() => {
+      setSaleSlide((prev) => (prev + 1) % totalSaleSlides);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [totalSaleSlides]);
 
   // Fetch real plan IDs from DB so payments always use the correct ID
   useEffect(() => {
@@ -1205,6 +1265,137 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* ========= DATE-AWARE SALE BANNER ========= */}
+      {activeSale && (
+        <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
+          {/* Animated background effects */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] ${activeSale.theme === 'environment' ? 'bg-green-500/[0.04]' : 'bg-purple-500/[0.04]'} rounded-full blur-[150px] animate-glow-pulse`} />
+            <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] ${activeSale.theme === 'environment' ? 'bg-emerald-500/[0.05]' : 'bg-violet-500/[0.05]'} rounded-full blur-[130px] animate-glow-pulse`} style={{ animationDelay: '2s' }} />
+          </div>
+
+          <div className="max-w-5xl mx-auto relative z-10">
+            {/* Sale Header */}
+            <div className="text-center mb-6 md:mb-8">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${activeSale.theme === 'environment' ? 'border-green-500/20' : 'border-purple-500/20'} backdrop-blur-md mb-4`}
+                style={{ background: activeSale.theme === 'environment' ? 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(16,185,129,0.08) 100%)' : 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.08) 100%)' }}
+              >
+                {activeSale.theme === 'environment' ? (
+                  <Leaf size={14} className="text-green-400 animate-pulse" />
+                ) : (
+                  <Flame size={14} className="text-purple-400 animate-pulse" />
+                )}
+                <span className={`${activeSale.theme === 'environment' ? 'text-green-300' : 'text-purple-300'} text-xs font-bold tracking-wider uppercase`}>Limited Time Offer</span>
+                {activeSale.theme === 'environment' ? (
+                  <Leaf size={14} className="text-green-400 animate-pulse" />
+                ) : (
+                  <Flame size={14} className="text-purple-400 animate-pulse" />
+                )}
+              </motion.div>
+            </div>
+
+            {/* Carousel Container */}
+            <div className="relative">
+              <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(26,37,64,0.5) 0%, rgba(10,15,31,0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
+                <div className="relative min-h-[520px] md:min-h-[400px]">
+                  {/* Slide 0: Main Headline */}
+                  <motion.div
+                    initial={false}
+                    animate={{ opacity: saleSlide === 0 ? 1 : 0, x: saleSlide === 0 ? 0 : -40 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    className={`absolute inset-0 p-6 md:p-10 ${saleSlide === 0 ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                  >
+                    <div className="text-center h-full flex flex-col justify-center">
+                      <h3 className="text-2xl md:text-4xl font-extrabold text-white mb-2">{activeSale.title}</h3>
+                      <p className={`${activeSale.theme === 'environment' ? 'text-green-400' : 'text-purple-400'} font-bold text-base md:text-lg mb-3`}>⏳ {activeSale.subtitle}</p>
+                      <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto mb-5 leading-relaxed">
+                        Start your fitness journey this June with exclusive discounts on all plans. Transform yourself physically and mentally — the best time to begin is now.
+                      </p>
+                      <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+                        {['Gym Workout Plans', 'Home Workout Plans', 'Rehabilitation Programs', '1:1 Elite Training', 'Diet & Nutrition', 'Beginner Friendly'].map((h, i) => (
+                          <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-green-300 border border-green-500/20" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                            ✅ {h}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Slide 1: Discount Grid */}
+                  <motion.div
+                    initial={false}
+                    animate={{ opacity: saleSlide === 1 ? 1 : 0, x: saleSlide === 1 ? 0 : 40 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    className={`absolute inset-0 p-6 md:p-10 ${saleSlide === 1 ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                  >
+                    <div className="h-full flex flex-col justify-center">
+                      <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6">📋 DISCOUNTS ON ALL PLANS</h3>
+                      <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
+                        {activeSale.offers.map((offer, i) => (
+                          <div key={i} className="relative rounded-2xl border border-white/[0.08] p-3 md:p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+                            <span className={`absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white`} style={{ background: activeSale.theme === 'environment' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>{offer.off}</span>
+                            <p className="text-gray-400 text-xs font-medium mt-2">{offer.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Slide 2: June 21 Specials (only shown on June 21) */}
+                  {activeSale.specials && (
+                    <motion.div
+                      initial={false}
+                      animate={{ opacity: saleSlide === 2 ? 1 : 0, x: saleSlide === 2 ? 0 : 40 }}
+                      transition={{ duration: 0.5, ease: 'easeInOut' }}
+                      className={`absolute inset-0 p-6 md:p-10 ${saleSlide === 2 ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                    >
+                      <div className="text-center h-full flex flex-col justify-center">
+                        <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-2">🎉 JUNE 21 SPECIALS</h3>
+                        <p className="text-purple-400 font-bold text-base mb-6">World Yoga Day + Father&apos;s Day</p>
+                        <div className="space-y-3 max-w-lg mx-auto mb-6">
+                          {activeSale.specials.map((special, i) => (
+                            <div key={i} className="rounded-xl border border-white/[0.08] p-4 text-left" style={{ background: 'rgba(26,37,64,0.4)' }}>
+                              <p className="text-white font-medium text-sm md:text-base">{special}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <a href="#plans" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-500/20" style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>
+                          Grab The Offer Now
+                          <ArrowRight size={16} />
+                        </a>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+
+              {/* Slide Indicators */}
+              <div className="flex items-center justify-center gap-2 mt-5">
+                {Array.from({ length: totalSaleSlides }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSaleSlide(index)}
+                    className={`transition-all duration-300 rounded-full ${saleSlide === index ? `w-8 h-2.5 ${activeSale.theme === 'environment' ? 'bg-gradient-to-r from-green-500 to-emerald-400' : 'bg-gradient-to-r from-purple-500 to-violet-400'}` : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'}`}
+                  />
+                ))}
+              </div>
+
+              {/* Timer badge */}
+              <div className="flex justify-center mt-4">
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${activeSale.theme === 'environment' ? 'border-green-500/20' : 'border-purple-500/20'} backdrop-blur-md`} style={{ background: activeSale.theme === 'environment' ? 'rgba(34,197,94,0.08)' : 'rgba(139,92,246,0.08)' }}>
+                  <Clock size={14} className={activeSale.theme === 'environment' ? 'text-green-400' : 'text-purple-400'} />
+                  <span className={`${activeSale.theme === 'environment' ? 'text-green-300' : 'text-purple-300'} text-xs font-medium`}>Sale ends {activeSale.endDate}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
         {/* Background ambient glow */}
