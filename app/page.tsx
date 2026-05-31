@@ -9,7 +9,6 @@ import {
   TrendingUp,
   Award,
   Users,
-  Flame,
   ShoppingBag,
   Sparkles,
   Star,
@@ -25,9 +24,6 @@ import {
   Home as HomeIcon,
   MessageCircle,
   Timer,
-  Copy,
-  Check,
-  Clock,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -63,61 +59,6 @@ export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [dbPlanIds, setDbPlanIds] = useState<Record<string, number>>({});
   const [activePlanTab, setActivePlanTab] = useState<'gym' | 'home' | 'rehab' | 'live'>('gym');
-  const [saleSlide, setSaleSlide] = useState(0);
-  const [codeCopied, setCodeCopied] = useState(false);
-
-  const saleSlides = [
-    {
-      title: 'MAY SUMMER SALE IS LIVE 🔥',
-      subtitle: '⏳ Valid Till May 31 Only',
-      description: 'This is the perfect time to start your fitness journey and transform yourself physically and mentally before summer ends.',
-      highlights: ['Gym Workout Plans', 'Home Workout Plans', 'Rehabilitation Programs', '1:1 Elite Personal Training', 'Fat Loss / Muscle Gain', 'Diet Guidance & Support', 'Beginner Friendly Programs'],
-    },
-    {
-      title: '🏋️ GYM WORKOUT PLANS',
-      items: [
-        { label: '1 Month', original: '₹999', sale: '₹949', off: '5% OFF' },
-        { label: '3 Months', original: '₹2,099', sale: '₹1,889', off: '10% OFF' },
-        { label: '6 Months', original: '₹3,599', sale: '₹3,059', off: '15% OFF' },
-        { label: '12 Months', original: '₹7,499', sale: '₹5,999', off: '20% OFF' },
-      ],
-    },
-    {
-      title: '🏠 HOME WORKOUT PLANS',
-      items: [
-        { label: '3 Months', original: '₹1,799', sale: '₹1,529', off: '15% OFF' },
-      ],
-      extra: '💪 1:1 ELITE PERSONAL TRAINING',
-      extraItems: [
-        { label: '1M · 12 Sessions', original: '₹5,999', sale: '₹5,399', off: '10% OFF' },
-        { label: '1M · 24 Sessions', original: '₹9,999', sale: '₹7,999', off: '20% OFF' },
-        { label: '3M · 36 Sessions', original: '₹15,999', sale: '₹14,399', off: '10% OFF' },
-        { label: '3M · 72 Sessions', original: '₹23,999', sale: '₹19,199', off: '20% OFF' },
-      ],
-    },
-    {
-      title: '🎁 REFER & EARN OFFER',
-      referral: true,
-      description: 'Refer a friend and BOTH get EXTRA 15 DAYS added to your plan.',
-      cta: 'Your body, health and confidence are long-term investments. Start now instead of waiting for the "perfect time."',
-    },
-  ];
-
-  const totalSaleSlides = saleSlides.length;
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSaleSlide((prev) => (prev + 1) % totalSaleSlides);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [totalSaleSlides]);
-
-  const handleCopyCode = useCallback(() => {
-    navigator.clipboard.writeText('SUMMER').then(() => {
-      setCodeCopied(true);
-      setTimeout(() => setCodeCopied(false), 2000);
-    }).catch(() => {});
-  }, []);
 
   // Fetch real plan IDs from DB so payments always use the correct ID
   useEffect(() => {
@@ -184,7 +125,7 @@ export default function Home() {
         image: 'https://coachhimanshu.com/logo.png',
         url: 'https://coachhimanshu.com',
         telephone: '+91-XXXXXXXXXX',
-        priceRange: '₹799-₹10998',
+        priceRange: '₹999-₹29999',
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'IN',
@@ -203,8 +144,8 @@ export default function Home() {
         offers: {
           '@type': 'AggregateOffer',
           priceCurrency: 'INR',
-          lowPrice: '799',
-          highPrice: '10998',
+          lowPrice: '999',
+          highPrice: '29999',
           offerCount: '7',
         },
         aggregateRating: {
@@ -249,7 +190,7 @@ export default function Home() {
             position: 1,
             name: 'Kickstart Plan',
             description: 'Monthly fitness coaching plan with personalized workout and meal plans',
-            price: '799',
+            price: '1099',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -259,7 +200,7 @@ export default function Home() {
             position: 2,
             name: 'Consistency Plan',
             description: '3 months fitness coaching with comprehensive support',
-            price: '1799',
+            price: '2499',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -269,7 +210,7 @@ export default function Home() {
             position: 3,
             name: 'Strength Plan',
             description: '6 months intensive fitness transformation program with FREE RhynoGrip fitness gear',
-            price: '2999',
+            price: '4299',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -279,7 +220,7 @@ export default function Home() {
             position: 4,
             name: 'Mastery Plan',
             description: '12 months comprehensive fitness mastery program with FREE RhynoGrip fitness gear',
-            price: '5499',
+            price: '8999',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -289,7 +230,7 @@ export default function Home() {
             position: 5,
             name: 'Rehabilitation Plan',
             description: '3 months rehabilitation and injury recovery program with personalized exercises',
-            price: '1799',
+            price: '2999',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -299,7 +240,7 @@ export default function Home() {
             position: 6,
             name: 'Home Workout Plan',
             description: '3 months home workout plan — no gym or equipment needed',
-            price: '1500',
+            price: '2199',
             priceCurrency: 'INR',
             availability: 'https://schema.org/InStock',
             url: 'https://coachhimanshu.com/#plans',
@@ -315,17 +256,17 @@ export default function Home() {
       dbName: 'Kickstart Plan',
       title: 'Kickstart Plan',
       duration: 'Month',
-      price: '₹999',
-      priceValue: 999,
+      price: '₹1,099',
+      priceValue: 1099,
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
         'Personalised diet plan',
-        'Exercise video tutorial',
-        'WhatsApp support',
+        'Gym workout video tutorial',
+        'One on one consultation weekly (4/month)',
         'Supplement guidance',
+        'WhatsApp support',
         'Lifestyle guidance',
-        'One on one consultation weekly',
         '📋 Free Habit Tracker',
       ],
     },
@@ -334,17 +275,17 @@ export default function Home() {
       dbName: 'Consistency Plan',
       title: 'Consistency Plan',
       duration: '3 Months',
-      price: '₹2,099',
-      priceValue: 2099,
+      price: '₹2,499',
+      priceValue: 2499,
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
         'Personalised diet plan',
-        'Exercise video tutorial',
-        'WhatsApp support',
+        'Gym workout video tutorial',
+        'One on one consultation weekly (4/month)',
         'Supplement guidance',
+        'WhatsApp support',
         'Lifestyle guidance',
-        'One on one consultation weekly',
         '📋 Free Habit Tracker',
       ],
       popular: true,
@@ -354,17 +295,18 @@ export default function Home() {
       dbName: 'Strength Plan',
       title: 'Strength Plan',
       duration: '6 Months',
-      price: '₹3,599',
-      priceValue: 3599,
+      price: '₹4,299',
+      priceValue: 4299,
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
         'Personalised diet plan',
-        'Exercise video tutorial',
-        'WhatsApp support',
+        'Gym workout video tutorial',
+        'One on one consultation weekly (6/month)',
         'Supplement guidance',
+        'WhatsApp support',
         'Lifestyle guidance',
-        'One on one consultation weekly',
+        '⏸️ Pause option (7 days)',
         '📋 Free Habit Tracker',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
@@ -374,17 +316,18 @@ export default function Home() {
       dbName: 'Mastery Plan',
       title: 'Mastery Plan',
       duration: '12 Months',
-      price: '₹7,499',
-      priceValue: 7499,
+      price: '₹8,999',
+      priceValue: 8999,
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
         'Personalised diet plan',
-        'Exercise video tutorial',
-        'WhatsApp support',
+        'Full video library (gym, home, rehab)',
+        'One on one consultation weekly (6/month)',
         'Supplement guidance',
+        'WhatsApp support',
         'Lifestyle guidance',
-        'One on one consultation weekly',
+        '⏸️ Pause option (15 days)',
         '📋 Free Habit Tracker',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
@@ -394,18 +337,16 @@ export default function Home() {
       dbName: 'Rehabilitation Plan',
       title: 'Rehabilitation',
       duration: '3 Months',
-      price: '₹2,299',
-      priceValue: 2299,
+      price: '₹2,999',
+      priceValue: 2999,
       description: 'Recovery & Healing',
       features: [
         'Customised rehabilitation workout',
-        'Specially designed for knee, spine, elbow, shoulder, ankle joints',
-        'No equipment needed',
-        'WhatsApp support',
-        'Exercise video tutorials',
-        'Supplement guidance',
-        'Lifestyle guidance',
+        'Rehabilitation workout video tutorial',
         'One-on-one consultation twice a month',
+        'Supplement guidance',
+        'WhatsApp support',
+        'Lifestyle guidance',
         '📋 Free Habit Tracker',
       ],
       rehabilitation: true,
@@ -415,18 +356,16 @@ export default function Home() {
       dbName: 'Couple Rehabilitation Plan',
       title: 'Couple Rehabilitation',
       duration: '3 Months',
-      price: '₹4,099',
-      priceValue: 4099,
+      price: '₹5,299',
+      priceValue: 5299,
       description: 'For 2 People',
       features: [
         'Customised rehabilitation workouts for both',
-        'Specially designed for knee, spine, elbow, shoulder, ankle joints',
-        'No equipment needed',
-        'WhatsApp support',
-        'Exercise video tutorials',
-        'Supplement guidance',
-        'Lifestyle guidance',
+        'Rehabilitation workout video tutorial',
         'One-on-one consultation twice a month',
+        'Supplement guidance',
+        'WhatsApp support',
+        'Lifestyle guidance',
         '📋 Free Habit Tracker',
         '💑 Recover Together, Grow Together',
       ],
@@ -438,18 +377,17 @@ export default function Home() {
       dbName: 'Home Workout',
       title: 'Home Workout',
       duration: '3 Months',
-      price: '₹1,799',
-      priceValue: 1799,
+      price: '₹2,199',
+      priceValue: 2199,
       description: 'Home Workout',
       features: [
         'Customised home workout plan',
         'Personalised diet plan',
-        'Exercise video tutorial',
-        'WhatsApp support',
-        'Supplement guidance',
-        'Lifestyle guidance',
-        'Resistance band & TRX band based workout (no gym equipment needed)',
+        'Home workout video tutorial',
         'One on one consultation twice a month',
+        'Supplement guidance',
+        'WhatsApp support',
+        'Lifestyle guidance',
         '📋 Free Habit Tracker',
       ],
       homeWorkout: true,
@@ -459,18 +397,17 @@ export default function Home() {
       dbName: 'Couple Home Workout Plan',
       title: 'Couple Home Workout',
       duration: '3 Months',
-      price: '₹3,099',
-      priceValue: 3099,
+      price: '₹3,799',
+      priceValue: 3799,
       description: 'For 2 People',
       features: [
         'Customised home workout plans for both',
         'Personalised diet plans for both',
-        'Exercise video tutorials',
-        'WhatsApp support',
-        'Supplement guidance',
-        'Lifestyle guidance',
-        'Resistance band & TRX band based workout (no gym equipment needed)',
+        'Home workout video tutorial',
         'One on one consultation twice a month',
+        'Supplement guidance',
+        'WhatsApp support',
+        'Lifestyle guidance',
         '📋 Free Habit Tracker',
         '💑 Train Together, Grow Together',
       ],
@@ -482,17 +419,18 @@ export default function Home() {
       dbName: 'Couple Strength',
       title: 'Couple Strength',
       duration: '6 Months',
-      price: '₹6,999',
-      priceValue: 6999,
+      price: '₹7,999',
+      priceValue: 7999,
       description: 'For 2 People',
       features: [
         'Personalized workout plans for both',
         'Customized meal plans for both',
-        'WhatsApp support',
-        'Full video library access',
-        'Weekly one-on-one consultations',
+        'Gym workout video tutorial',
+        'One on one consultation weekly (6/month)',
         'Supplement guidance',
+        'WhatsApp support',
         'Lifestyle coaching',
+        '⏸️ Pause option (7 days)',
         '📋 Free Habit Tracker',
         '💑 Train Together, Grow Together',
         '🎁 FREE RhynoGrip Fitness Gear',
@@ -504,17 +442,18 @@ export default function Home() {
       dbName: 'Couple Mastery',
       title: 'Couple Mastery',
       duration: '12 Months',
-      price: '₹13,899',
-      priceValue: 13899,
+      price: '₹15,999',
+      priceValue: 15999,
       description: 'For 2 People',
       features: [
         'Personalized workout plans for both',
         'Customized meal plans for both',
-        'WhatsApp support',
-        'Full video library access',
-        'Weekly one-on-one consultations',
+        'Full video library (gym, home, rehab)',
+        'One on one consultation weekly (6/month)',
         'Supplement guidance',
+        'WhatsApp support',
         'Lifestyle coaching',
+        '⏸️ Pause option (15 days)',
         '📋 Free Habit Tracker',
         '💑 Train Together, Grow Together',
         '🎁 FREE RhynoGrip Fitness Gear',
@@ -530,16 +469,13 @@ export default function Home() {
       priceValue: 999,
       description: 'For Housewives Below 50 · Just ₹124/session',
       features: [
-        'Mon & Wed live classes (8 sessions/month)',
-        '1 hour per session',
-        'HIIT & bodyweight training',
-        'Focus: fat loss, endurance & strength',
-        'Heart & lungs health improvement',
+        'Monday & Wednesday classes',
+        '60 min per session',
+        'WhatsApp support',
+        'HIIT & Bodyweight training',
+        'Focus: fat loss, endurance, heart & lungs health',
         'No equipment needed',
         'Max 10 members per group',
-        'Expert guidance by Coach Himanshu',
-        'WhatsApp community support',
-        '📋 Free Habit Tracker',
       ],
       liveGroup: true,
     },
@@ -552,16 +488,13 @@ export default function Home() {
       priceValue: 999,
       description: 'For Adults 50+ (Men & Women) · Just ₹124/session',
       features: [
-        'Tue & Thu live classes (8 sessions/month)',
-        '1 hour per session',
-        'Joint strengthening & flexibility',
-        'Muscle strengthening exercises',
-        'Balance & coordination training',
-        'Mind-muscle connection focus',
+        'Tuesday & Thursday classes',
+        '60 min per session',
+        'WhatsApp support',
+        'Bodyweight training',
+        'Focus: Joints & muscle strengthening, balancing & coordination',
+        'No equipment needed',
         'Max 10 members per group',
-        'Expert guidance by Coach Himanshu',
-        'WhatsApp community support',
-        '📋 Free Habit Tracker',
       ],
       liveGroup: true,
     },
@@ -570,20 +503,18 @@ export default function Home() {
       dbName: 'Elite 1:1 - 1 Month (24 Sessions)',
       title: 'ONE-ON-ONE ELITE COACHING',
       duration: 'Month',
-      price: '₹9,999',
-      priceValue: 9999,
-      description: '24 Sessions · Just ₹416/session',
+      price: '₹11,999',
+      priceValue: 11999,
+      description: '24 Sessions · Just ₹499/session',
       features: [
-        'Live 1:1 personal training sessions',
-        'Fully customised workout plan',
-        'Personalised diet strategy',
-        'Supplement & lifestyle guidance',
-        'Real time form & technique correction',
-        'Complete accountability system',
-        'Dedicated WhatsApp support',
-        '24 sessions in 30 days · 60 min each',
+        'Live 1:1 personal training',
+        'Personalised diet plan',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
         '📋 Free Habit Tracker',
-        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -593,20 +524,18 @@ export default function Home() {
       dbName: 'Elite 1:1 - 1 Month (12 Sessions)',
       title: 'ONE-ON-ONE ELITE COACHING',
       duration: 'Month',
-      price: '₹5,999',
-      priceValue: 5999,
-      description: '12 Sessions · Just ₹499/session',
+      price: '₹7,499',
+      priceValue: 7499,
+      description: '12 Sessions · Just ₹624/session',
       features: [
-        'Live 1:1 personal training sessions',
-        'Fully customised workout plan',
-        'Personalised diet strategy',
-        'Supplement & lifestyle guidance',
-        'Real time form & technique correction',
-        'Complete accountability system',
-        'Dedicated WhatsApp support',
-        '12 sessions in 30 days · 60 min each',
+        'Live 1:1 personal training',
+        'Personalised diet plan',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
         '📋 Free Habit Tracker',
-        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -616,18 +545,18 @@ export default function Home() {
       dbName: 'Elite 1:1 - 3 Months (72 Sessions)',
       title: 'ONE-ON-ONE ELITE COACHING',
       duration: '3 Months',
-      price: '₹23,999',
-      priceValue: 23999,
-      description: '72 Sessions · Just ₹333/session',
+      price: '₹29,999',
+      priceValue: 29999,
+      description: '72 Sessions · Just ₹416/session',
       features: [
-        'Live 1:1 personal training sessions',
-        'Fully customised workout plan',
-        'Personalised diet strategy',
-        'Supplement & lifestyle guidance',
-        'Real time form & technique correction',
-        'Complete accountability system',
-        'Dedicated WhatsApp support',
-        '72 sessions in 90 days · 60 min each',
+        'Live 1:1 personal training',
+        'Personalised diet plan',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
+        '⏸️ Pause option (7 days)',
         '📋 Free Habit Tracker',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
@@ -640,18 +569,18 @@ export default function Home() {
       dbName: 'Elite 1:1 - 3 Months (36 Sessions)',
       title: 'ONE-ON-ONE ELITE COACHING',
       duration: '3 Months',
-      price: '₹15,999',
-      priceValue: 15999,
-      description: '36 Sessions · Just ₹444/session',
+      price: '₹18,999',
+      priceValue: 18999,
+      description: '36 Sessions · Just ₹527/session',
       features: [
-        'Live 1:1 personal training sessions',
-        'Fully customised workout plan',
-        'Personalised diet strategy',
-        'Supplement & lifestyle guidance',
-        'Real time form & technique correction',
-        'Complete accountability system',
-        'Dedicated WhatsApp support',
-        '36 sessions in 90 days · 60 min each',
+        'Live 1:1 personal training',
+        'Personalised diet plan',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
+        '⏸️ Pause option (7 days)',
         '📋 Free Habit Tracker',
         '🎁 FREE RhynoGrip Fitness Gear',
       ],
@@ -1276,165 +1205,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ========= SUMMER SALE BANNER ========= */}
-      <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label="Summer Sale" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
-        {/* Animated background effects */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-orange-500/[0.04] rounded-full blur-[150px] animate-glow-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-gold/[0.05] rounded-full blur-[130px] animate-glow-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-500/[0.03] rounded-full blur-[180px]" />
-        </div>
-
-        <div className="max-w-5xl mx-auto relative z-10">
-          {/* Sale Header */}
-          <div className="text-center mb-6 md:mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/20 backdrop-blur-md mb-4"
-              style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(201,166,70,0.08) 100%)' }}
-            >
-              <Flame size={14} className="text-orange-400 animate-pulse" />
-              <span className="text-orange-300 text-xs font-bold tracking-wider uppercase">Limited Time Offer</span>
-              <Flame size={14} className="text-orange-400 animate-pulse" />
-            </motion.div>
-
-            {/* Coupon Code - hidden, kept for future use */}
-          </div>
-
-          {/* Carousel Container */}
-          <div className="relative">
-            <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(26,37,64,0.5) 0%, rgba(10,15,31,0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
-              <div className="relative min-h-[520px] md:min-h-[400px]">
-                {saleSlides.map((slide, index) => (
-                  <motion.div
-                    key={index}
-                    initial={false}
-                    animate={{
-                      opacity: saleSlide === index ? 1 : 0,
-                      x: saleSlide === index ? 0 : saleSlide > index ? -40 : 40,
-                    }}
-                    transition={{ duration: 0.5, ease: 'easeInOut' }}
-                    className={`absolute inset-0 p-6 md:p-10 ${saleSlide === index ? 'pointer-events-auto' : 'pointer-events-none'}`}
-                  >
-                    {/* Slide 0: Main headline */}
-                    {index === 0 && (
-                      <div className="text-center h-full flex flex-col justify-center">
-                        <h3 className="text-2xl md:text-4xl font-extrabold text-white mb-2">{slide.title}</h3>
-                        <p className="text-orange-400 font-bold text-base md:text-lg mb-3">{slide.subtitle}</p>
-                        <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto mb-5 leading-relaxed">{slide.description}</p>
-                        <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-                          {slide.highlights?.map((h, i) => (
-                            <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-green-300 border border-green-500/20" style={{ background: 'rgba(34,197,94,0.08)' }}>
-                              ✅ {h}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Slide 1: Gym Plans */}
-                    {index === 1 && (
-                      <div className="h-full flex flex-col justify-center">
-                        <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6">{slide.title}</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                          {slide.items?.map((item, i) => (
-                            <div key={i} className="relative rounded-2xl border border-white/[0.08] p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
-                              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>{item.off}</span>
-                              <p className="text-gray-400 text-xs font-medium mb-2 mt-1">{item.label}</p>
-                              <p className="text-gray-500 text-sm line-through">{item.original}</p>
-                              <p className="text-brand-gold font-extrabold text-xl">{item.sale}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Slide 2: Home + Elite */}
-                    {index === 2 && (
-                      <div className="h-full flex flex-col justify-center">
-                        <div className="grid grid-cols-2 gap-4 md:gap-6">
-                          {/* Home Workout */}
-                          <div>
-                            <h3 className="text-sm md:text-xl font-extrabold text-white mb-2 md:mb-3">{slide.title}</h3>
-                            {slide.items?.map((item, i) => (
-                              <div key={i} className="rounded-xl border border-white/[0.08] p-3 md:p-4 flex items-center justify-between" style={{ background: 'rgba(26,37,64,0.4)' }}>
-                                <div>
-                                  <p className="text-gray-400 text-[10px] md:text-xs font-medium">{item.label}</p>
-                                  <p className="text-gray-500 text-xs md:text-sm line-through">{item.original}</p>
-                                </div>
-                                <div className="text-right">
-                                  <span className="inline-block px-1.5 md:px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold text-white mb-1" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>{item.off}</span>
-                                  <p className="text-brand-gold font-extrabold text-sm md:text-lg">{item.sale}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          {/* Elite 1:1 */}
-                          <div>
-                            <h3 className="text-sm md:text-xl font-extrabold text-white mb-2 md:mb-3">{slide.extra}</h3>
-                            <div className="space-y-1.5 md:space-y-2">
-                              {slide.extraItems?.map((item, i) => (
-                                <div key={i} className="rounded-xl border border-white/[0.08] p-2 md:p-3 flex items-center justify-between" style={{ background: 'rgba(26,37,64,0.4)' }}>
-                                  <div>
-                                    <p className="text-gray-400 text-[10px] md:text-xs font-medium">{item.label}</p>
-                                    <p className="text-gray-500 text-[10px] md:text-xs line-through">{item.original}</p>
-                                  </div>
-                                  <div className="text-right">
-                                    <span className="inline-block px-1.5 md:px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold text-white mb-0.5" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>{item.off}</span>
-                                    <p className="text-brand-gold font-bold text-sm md:text-base">{item.sale}</p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Slide 3: Referral + CTA */}
-                    {index === 3 && (
-                      <div className="text-center h-full flex flex-col justify-center">
-                        <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4">{slide.title}</h3>
-                        <p className="text-gray-300 text-base md:text-lg mb-6 max-w-lg mx-auto">{slide.description}</p>
-                        <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-green-500/20 mx-auto mb-6" style={{ background: 'rgba(34,197,94,0.08)' }}>
-                          <Sparkles size={16} className="text-green-400" />
-                          <span className="text-green-300 font-medium text-sm">Both you and your friend get 15 extra days!</span>
-                        </div>
-                        <p className="text-gray-400 text-sm md:text-base italic max-w-md mx-auto mb-6">{slide.cta}</p>
-                        <a href="#plans" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-orange-500/20" style={{ background: 'linear-gradient(135deg, #f97316, #ef4444)' }}>
-                          Grab The Offer Now
-                          <ArrowRight size={16} />
-                        </a>
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Slide Indicators */}
-            <div className="flex items-center justify-center gap-2 mt-5">
-              {saleSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSaleSlide(index)}
-                  className={`transition-all duration-300 rounded-full ${saleSlide === index ? 'w-8 h-2.5 bg-gradient-to-r from-orange-500 to-brand-gold' : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'}`}
-                />
-              ))}
-            </div>
-
-            {/* Timer badge */}
-            <div className="flex justify-center mt-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/20 backdrop-blur-md" style={{ background: 'rgba(249,115,22,0.08)' }}>
-                <Clock size={14} className="text-orange-400" />
-                <span className="text-orange-300 text-xs font-medium">Sale ends May 31, 2026</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
         {/* Background ambient glow */}
