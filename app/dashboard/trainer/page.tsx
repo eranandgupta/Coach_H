@@ -371,10 +371,11 @@ export default function TrainerDashboard() {
                       {client.subscriptions && client.subscriptions.length > 0 && (() => {
                         const sub = client.subscriptions[0];
                         const isActive = new Date(sub.endDate) >= now;
+                        const isPaused = sub.status === 'paused';
                         return (
-                        <div className={`mb-3 p-2 rounded border ${isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                          <p className={`text-xs font-medium ${isActive ? 'text-green-400' : 'text-red-400'}`}>
-                            {sub.plan.name} - {isActive ? 'active' : 'expired'}
+                        <div className={`mb-3 p-2 rounded border ${isPaused ? 'bg-yellow-500/10 border-yellow-500/30' : isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                          <p className={`text-xs font-medium ${isPaused ? 'text-yellow-400' : isActive ? 'text-green-400' : 'text-red-400'}`}>
+                            {sub.plan.name} - {isPaused ? 'paused' : isActive ? 'active' : 'expired'}
                           </p>
                           <p className="text-gray-400 text-xs">
                             Expires: {new Date(sub.endDate).toLocaleDateString()}

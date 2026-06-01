@@ -295,7 +295,7 @@ export default function Contact() {
                     onChange={handleInputChange}
                     disabled={isSubmitting}
                     className="w-full px-4 py-3 bg-brand-navy border border-brand-navy-light/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-brand-blue transition-colors disabled:opacity-50"
-                    placeholder="+91 XXXXX XXXXX"
+                    placeholder="e.g. +91 98765 43210 or +61 403 820 843"
                   />
                 </div>
 

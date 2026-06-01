@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { verifyToken } from './auth';
 import { prisma } from './prisma';
+import { getMaxPauseDays } from './planUtils';
 
 export interface AuthUser {
   userId: number;
@@ -40,17 +41,18 @@ export async function checkSubscription(userId: number): Promise<{
   try {
     const now = new Date();
 
-    // Auto-expire any subscriptions that are past their end date but still marked active
+    // Auto-expire any subscriptions that are past their end date but still marked active or paused
     await prisma.userSubscription.updateMany({
       where: {
         userId: userId,
-        status: 'active',
+        status: { in: ['active', 'paused'] },
         endDate: { lt: now },
       },
-      data: { status: 'expired' },
+      data: { status: 'expired', pausedAt: null },
     });
 
     // Find any subscription with endDate in the future (source of truth is the date, not status field)
+    // Also include paused subscriptions (they have endDate in future)
     const subscription = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
@@ -69,6 +71,37 @@ export async function checkSubscription(userId: number): Promise<{
         isActive: false,
         subscription: null,
         message: 'No active subscription found. Please subscribe to continue.',
+      };
+    }
+
+    // If paused, check if max pause days exceeded — auto-resume if so
+    if (subscription.status === 'paused' && subscription.pausedAt) {
+      const pausedAt = new Date(subscription.pausedAt);
+      const daysPaused = Math.ceil((now.getTime() - pausedAt.getTime()) / (1000 * 60 * 60 * 24));
+      const maxPause = getMaxPauseDays(subscription.plan.duration, subscription.plan.name);
+
+      if (daysPaused >= maxPause) {
+        // Auto-resume: extend endDate by maxPause days, mark active
+        const currentEndDate = new Date(subscription.endDate);
+        const newEndDate = new Date(currentEndDate.getTime() + maxPause * 24 * 60 * 60 * 1000);
+        await prisma.userSubscription.update({
+          where: { id: subscription.id },
+          data: {
+            status: 'active',
+            pausedAt: null,
+            pauseDaysUsed: maxPause,
+            endDate: newEndDate,
+          },
+        });
+        subscription.status = 'active';
+        subscription.pausedAt = null;
+        subscription.pauseDaysUsed = maxPause;
+        subscription.endDate = newEndDate;
+      }
+
+      return {
+        isActive: true,
+        subscription: subscription,
       };
     }
 

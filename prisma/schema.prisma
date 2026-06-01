@@ -58,6 +58,8 @@ model UserSubscription {
   customerNotes     String?           @db.Text
   paidAmount        Decimal?          @db.Decimal(10, 2)
   razorpaySignature String?
+  pausedAt          DateTime?
+  pauseDaysUsed     Int               @default(0)
   sessionTrackings  SessionTracking[]
   plan              SubscriptionPlan  @relation(fields: [planId], references: [id])
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)

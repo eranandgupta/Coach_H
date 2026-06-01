@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
         }
 
         await tx.userSubscription.updateMany({
-          where: { userId: user.id, status: 'active' },
+          where: { userId: user.id, status: { in: ['active', 'paused'] } },
           data: { status: 'cancelled' },
         });
 

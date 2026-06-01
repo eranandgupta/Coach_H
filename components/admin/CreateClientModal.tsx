@@ -152,12 +152,13 @@ export default function CreateClientModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">Phone (with country code)</Label>
             <Input
               id="phone"
+              type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter phone number"
+              placeholder="e.g. +91 98765 43210 or +61 403820843"
             />
           </div>
 

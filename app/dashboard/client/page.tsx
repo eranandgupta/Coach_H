@@ -24,6 +24,8 @@ import {
   Phone,
   Shield,
   ClipboardList,
+  Pause,
+  PlayCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -39,7 +41,7 @@ import VideoLibrary from '@/components/VideoLibrary';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
-import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
+import { isElitePlan, getTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 
 export default function ClientDashboard() {
@@ -60,6 +62,8 @@ export default function ClientDashboard() {
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [completedSessions, setCompletedSessions] = useState<number[]>([]);
+  const [pauseLoading, setPauseLoading] = useState(false);
+  const [showPauseConfirm, setShowPauseConfirm] = useState(false);
 
   // Push notifications
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
@@ -223,6 +227,57 @@ export default function ClientDashboard() {
     return diff;
   };
 
+  const handlePauseSubscription = async () => {
+    setPauseLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/subscriptions/pause', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setShowPauseConfirm(false);
+        fetchDashboardData();
+      } else {
+        alert(data.error || 'Failed to pause subscription');
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setPauseLoading(false);
+    }
+  };
+
+  const handleResumeSubscription = async () => {
+    setPauseLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/subscriptions/pause', {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        fetchDashboardData();
+      } else {
+        alert(data.error || 'Failed to resume subscription');
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setPauseLoading(false);
+    }
+  };
+
+  const getPauseDaysElapsed = () => {
+    if (!subscription?.subscription?.pausedAt) return 0;
+    const pausedAt = new Date(subscription.subscription.pausedAt);
+    const now = new Date();
+    return Math.ceil((now.getTime() - pausedAt.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
   const getSubscriptionProgress = () => {
     if (!subscription?.subscription) return 0;
     const start = new Date(subscription.subscription.startDate).getTime();
@@ -304,6 +359,11 @@ export default function ClientDashboard() {
   const planName = subscription?.subscription?.plan?.name || '';
   const isLiveSessionPlan = planName === 'She Strong Program' || planName === 'Active Parents Program';
   const isEliteOneOnOnePlan = planName.startsWith('Elite 1:1');
+  const planDuration = subscription?.subscription?.plan?.duration || 0;
+  const maxPauseDays = getMaxPauseDays(planDuration, planName);
+  const isPaused = subscription?.subscription?.status === 'paused';
+  const hasUsedPause = (subscription?.subscription?.pauseDaysUsed || 0) > 0;
+  const canPause = isSubscriptionActive && maxPauseDays > 0 && !isPaused && !hasUsedPause;
 
   return (
     <div className="min-h-screen bg-brand-navy">
@@ -387,7 +447,9 @@ export default function ClientDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className={`mb-6 md:mb-8 p-4 md:p-5 rounded-2xl backdrop-blur-xl border overflow-hidden glass-card ${
-            isSubscriptionActive
+            isPaused
+              ? 'border-yellow-500/15'
+              : isSubscriptionActive
               ? 'border-green-500/15'
               : 'border-red-500/15'
           }`}
@@ -395,14 +457,16 @@ export default function ClientDashboard() {
           {/* Header Row */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-start gap-3 flex-1 min-w-0">
-              {isSubscriptionActive ? (
+              {isPaused ? (
+                <Pause className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 flex-shrink-0 mt-0.5" />
+              ) : isSubscriptionActive ? (
                 <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 flex-shrink-0 mt-0.5" />
               ) : (
                 <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-400 flex-shrink-0 mt-0.5" />
               )}
               <div className="flex-1 min-w-0">
                 <h3 className="text-base sm:text-lg font-bold text-white mb-1.5">
-                  {isSubscriptionActive ? 'Active Subscription' : 'Subscription Expired'}
+                  {isPaused ? 'Subscription Paused' : isSubscriptionActive ? 'Active Subscription' : 'Subscription Expired'}
                 </h3>
                 <p className="text-xs text-gray-400 mb-2">
                   {isSubscriptionActive
@@ -429,30 +493,97 @@ export default function ClientDashboard() {
               </div>
             </div>
 
-            {/* Right Side - Assessment Badge with Edit Button */}
-            {user?.assessmentCompleted && (
-              <button
-                onClick={() => setIsEditAssessmentOpen(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg backdrop-blur-sm flex-shrink-0 hover:bg-brand-blue/30 transition-all group"
-                title="Click to edit your assessment"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-white flex-shrink-0" />
-                <span className="text-white text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment ✓</span>
-                <Edit3 className="w-3 h-3 text-white" />
-              </button>
-            )}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Assessment Badge with Edit Button */}
+              {user?.assessmentCompleted && (
+                <button
+                  onClick={() => setIsEditAssessmentOpen(true)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg backdrop-blur-sm hover:bg-brand-blue/30 transition-all group"
+                  title="Click to edit your assessment"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-white flex-shrink-0" />
+                  <span className="text-white text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment ✓</span>
+                  <Edit3 className="w-3 h-3 text-white" />
+                </button>
+              )}
 
-            {/* Renew Button (if expired) */}
-            {!isSubscriptionActive && (
-              <Link
-                href="/#plans"
-                className="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-all flex items-center gap-1.5 flex-shrink-0"
-              >
-                Renew
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            )}
+              {/* Renew Button (if expired) */}
+              {!isSubscriptionActive && (
+                <Link
+                  href="/#plans"
+                  className="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-all flex items-center gap-1.5 flex-shrink-0"
+                >
+                  Renew
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
+            </div>
           </div>
+
+          {/* Pause/Resume Section */}
+          {isPaused && (
+            <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Pause className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-yellow-400 text-sm font-semibold">Subscription Paused</p>
+                    <p className="text-yellow-400/70 text-xs">
+                      Day {Math.min(getPauseDaysElapsed(), maxPauseDays)} of {maxPauseDays} — your end date will be extended when you resume
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleResumeSubscription}
+                  disabled={pauseLoading}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-semibold hover:bg-green-600 transition-all flex-shrink-0 disabled:opacity-50"
+                >
+                  <PlayCircle className="w-3.5 h-3.5" />
+                  {pauseLoading ? 'Resuming...' : 'Resume'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {canPause && !showPauseConfirm && (
+            <div className="mt-3 flex items-center justify-between">
+              <p className="text-gray-500 text-xs">
+                You can pause your subscription for up to {maxPauseDays} days (one-time)
+              </p>
+              <button
+                onClick={() => setShowPauseConfirm(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg text-xs font-medium hover:bg-yellow-500/20 transition-all flex-shrink-0"
+              >
+                <Pause className="w-3 h-3" />
+                Pause
+              </button>
+            </div>
+          )}
+
+          {showPauseConfirm && (
+            <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+              <p className="text-yellow-400 text-sm font-semibold mb-1">Confirm Pause</p>
+              <p className="text-gray-400 text-xs mb-3">
+                Your subscription will be paused for up to {maxPauseDays} days. You can resume anytime and your end date will be extended by the paused duration. This can only be used once.
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePauseSubscription}
+                  disabled={pauseLoading}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-500 text-black rounded-lg text-xs font-semibold hover:bg-yellow-400 transition-all disabled:opacity-50"
+                >
+                  <Pause className="w-3 h-3" />
+                  {pauseLoading ? 'Pausing...' : 'Yes, Pause'}
+                </button>
+                <button
+                  onClick={() => setShowPauseConfirm(false)}
+                  className="px-3 py-1.5 text-gray-400 text-xs font-medium hover:text-white transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Timeline Section */}
           {isSubscriptionActive && subscription?.subscription && (
@@ -1109,8 +1240,8 @@ export default function ClientDashboard() {
                   <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
                     <Shield className="w-4 h-4" /> Subscription
                   </h3>
-                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${isSubscriptionActive ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
-                    {isSubscriptionActive ? 'Active' : 'Expired'}
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${isPaused ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : isSubscriptionActive ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                    {isPaused ? 'Paused' : isSubscriptionActive ? 'Active' : 'Expired'}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">

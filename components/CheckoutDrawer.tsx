@@ -1,10 +1,148 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, ArrowLeft, Tag, Loader2, Heart, Users, CreditCard } from 'lucide-react';
+import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, ArrowLeft, Tag, Loader2, Heart, Users, CreditCard, ChevronDown, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+
+const COUNTRY_CODES = [
+  { code: '+91', flag: '🇮🇳', name: 'India', short: 'IN' },
+  { code: '+1', flag: '🇺🇸', name: 'United States', short: 'US' },
+  { code: '+44', flag: '🇬🇧', name: 'United Kingdom', short: 'GB' },
+  { code: '+61', flag: '🇦🇺', name: 'Australia', short: 'AU' },
+  { code: '+1', flag: '🇨🇦', name: 'Canada', short: 'CA' },
+  { code: '+971', flag: '🇦🇪', name: 'UAE', short: 'AE' },
+  { code: '+966', flag: '🇸🇦', name: 'Saudi Arabia', short: 'SA' },
+  { code: '+65', flag: '🇸🇬', name: 'Singapore', short: 'SG' },
+  { code: '+60', flag: '🇲🇾', name: 'Malaysia', short: 'MY' },
+  { code: '+974', flag: '🇶🇦', name: 'Qatar', short: 'QA' },
+  { code: '+968', flag: '🇴🇲', name: 'Oman', short: 'OM' },
+  { code: '+973', flag: '🇧🇭', name: 'Bahrain', short: 'BH' },
+  { code: '+965', flag: '🇰🇼', name: 'Kuwait', short: 'KW' },
+  { code: '+49', flag: '🇩🇪', name: 'Germany', short: 'DE' },
+  { code: '+33', flag: '🇫🇷', name: 'France', short: 'FR' },
+  { code: '+39', flag: '🇮🇹', name: 'Italy', short: 'IT' },
+  { code: '+81', flag: '🇯🇵', name: 'Japan', short: 'JP' },
+  { code: '+82', flag: '🇰🇷', name: 'South Korea', short: 'KR' },
+  { code: '+86', flag: '🇨🇳', name: 'China', short: 'CN' },
+  { code: '+64', flag: '🇳🇿', name: 'New Zealand', short: 'NZ' },
+  { code: '+27', flag: '🇿🇦', name: 'South Africa', short: 'ZA' },
+  { code: '+234', flag: '🇳🇬', name: 'Nigeria', short: 'NG' },
+  { code: '+254', flag: '🇰🇪', name: 'Kenya', short: 'KE' },
+  { code: '+977', flag: '🇳🇵', name: 'Nepal', short: 'NP' },
+  { code: '+94', flag: '🇱🇰', name: 'Sri Lanka', short: 'LK' },
+  { code: '+880', flag: '🇧🇩', name: 'Bangladesh', short: 'BD' },
+  { code: '+92', flag: '🇵🇰', name: 'Pakistan', short: 'PK' },
+  { code: '+63', flag: '🇵🇭', name: 'Philippines', short: 'PH' },
+  { code: '+66', flag: '🇹🇭', name: 'Thailand', short: 'TH' },
+  { code: '+62', flag: '🇮🇩', name: 'Indonesia', short: 'ID' },
+  { code: '+84', flag: '🇻🇳', name: 'Vietnam', short: 'VN' },
+  { code: '+353', flag: '🇮🇪', name: 'Ireland', short: 'IE' },
+  { code: '+31', flag: '🇳🇱', name: 'Netherlands', short: 'NL' },
+  { code: '+46', flag: '🇸🇪', name: 'Sweden', short: 'SE' },
+  { code: '+41', flag: '🇨🇭', name: 'Switzerland', short: 'CH' },
+  { code: '+34', flag: '🇪🇸', name: 'Spain', short: 'ES' },
+  { code: '+351', flag: '🇵🇹', name: 'Portugal', short: 'PT' },
+  { code: '+48', flag: '🇵🇱', name: 'Poland', short: 'PL' },
+  { code: '+7', flag: '🇷🇺', name: 'Russia', short: 'RU' },
+  { code: '+90', flag: '🇹🇷', name: 'Turkey', short: 'TR' },
+  { code: '+55', flag: '🇧🇷', name: 'Brazil', short: 'BR' },
+  { code: '+52', flag: '🇲🇽', name: 'Mexico', short: 'MX' },
+  { code: '+20', flag: '🇪🇬', name: 'Egypt', short: 'EG' },
+  { code: '+852', flag: '🇭🇰', name: 'Hong Kong', short: 'HK' },
+  { code: '+47', flag: '🇳🇴', name: 'Norway', short: 'NO' },
+  { code: '+45', flag: '🇩🇰', name: 'Denmark', short: 'DK' },
+  { code: '+358', flag: '🇫🇮', name: 'Finland', short: 'FI' },
+  { code: '+43', flag: '🇦🇹', name: 'Austria', short: 'AT' },
+  { code: '+32', flag: '🇧🇪', name: 'Belgium', short: 'BE' },
+];
+
+function CountryCodeSelector({ value, onChange, borderColor = 'brand-blue' }: { value: string; onChange: (code: string, short: string) => void; borderColor?: string }) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const ref = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const selected = COUNTRY_CODES.find(c => c.short === value) || COUNTRY_CODES[0];
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (open && searchRef.current) searchRef.current.focus();
+  }, [open]);
+
+  const filtered = search
+    ? COUNTRY_CODES.filter(c =>
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.code.includes(search) ||
+        c.short.toLowerCase().includes(search.toLowerCase())
+      )
+    : COUNTRY_CODES;
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => { setOpen(!open); setSearch(''); }}
+        className={`flex items-center gap-1.5 px-2.5 py-3 bg-brand-navy/50 border border-white/10 rounded-l-lg hover:border-white/20 transition-all h-full focus:outline-none focus:border-${borderColor}`}
+      >
+        <span className="text-lg leading-none">{selected.flag}</span>
+        <span className="text-gray-300 text-sm">{selected.code}</span>
+        <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 mt-1 w-64 bg-brand-navy border border-white/15 rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden"
+          >
+            <div className="p-2 border-b border-white/10">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
+                <input
+                  ref={searchRef}
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search country..."
+                  className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue placeholder:text-gray-500"
+                />
+              </div>
+            </div>
+            <div className="max-h-52 overflow-y-auto scrollbar-hide">
+              {filtered.map((country) => (
+                <button
+                  key={country.short}
+                  type="button"
+                  onClick={() => { onChange(country.code, country.short); setOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/10 transition-colors text-left ${selected.short === country.short ? 'bg-brand-blue/15' : ''}`}
+                >
+                  <span className="text-lg leading-none">{country.flag}</span>
+                  <span className="text-white text-sm flex-1">{country.name}</span>
+                  <span className="text-gray-400 text-xs">{country.code}</span>
+                </button>
+              ))}
+              {filtered.length === 0 && (
+                <p className="text-gray-500 text-sm text-center py-4">No country found</p>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 type CheckoutStep = 'cart' | 'details' | 'payment' | 'success';
 
@@ -14,6 +152,7 @@ export default function CheckoutDrawer() {
   const [formData, setFormData] = useState({
     name: '',
     whatsapp: '',
+    countryCode: 'IN',
     email: '',
     goal: '',
     notes: '',
@@ -21,6 +160,7 @@ export default function CheckoutDrawer() {
     // Partner 2 details for couple plans
     partner2Name: '',
     partner2Whatsapp: '',
+    partner2CountryCode: 'IN',
     partner2Email: '',
     partner2Goal: '',
   });
@@ -51,8 +191,8 @@ export default function CheckoutDrawer() {
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.whatsapp.trim()) {
       newErrors.whatsapp = 'WhatsApp number is required';
-    } else if (!/^\d{10}$/.test(formData.whatsapp)) {
-      newErrors.whatsapp = 'Please enter a valid 10-digit number';
+    } else if (!/^\d{4,14}$/.test(formData.whatsapp.replace(/[\s-]/g, ''))) {
+      newErrors.whatsapp = 'Please enter a valid phone number';
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
@@ -67,8 +207,8 @@ export default function CheckoutDrawer() {
       if (!formData.partner2Name.trim()) newErrors.partner2Name = 'Partner 2 name is required';
       if (!formData.partner2Whatsapp.trim()) {
         newErrors.partner2Whatsapp = 'Partner 2 WhatsApp number is required';
-      } else if (!/^\d{10}$/.test(formData.partner2Whatsapp)) {
-        newErrors.partner2Whatsapp = 'Please enter a valid 10-digit number';
+      } else if (!/^\d{4,14}$/.test(formData.partner2Whatsapp.replace(/[\s-]/g, ''))) {
+        newErrors.partner2Whatsapp = 'Please enter a valid phone number';
       }
       if (!formData.partner2Email.trim()) {
         newErrors.partner2Email = 'Partner 2 email is required';
@@ -189,7 +329,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
         prefill: {
           name: formData.name,
           email: formData.email,
-          contact: `91${formData.whatsapp}`,
+          contact: `${(COUNTRY_CODES.find(c => c.short === formData.countryCode)?.code || '+91').replace('+', '')}${formData.whatsapp.replace(/[\s-]/g, '')}`,
         },
         theme: { color: '#175FFF' },
         handler: async (response: any) => {
@@ -206,12 +346,12 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                 planId: plan.id,
                 name: formData.name,
                 email: formData.email,
-                whatsapp: formData.whatsapp,
+                whatsapp: `${COUNTRY_CODES.find(c => c.short === formData.countryCode)?.code || '+91'} ${formData.whatsapp}`,
                 goal: formData.goal,
                 notes: formData.notes,
                 partner2Name: formData.partner2Name,
                 partner2Email: formData.partner2Email,
-                partner2Whatsapp: formData.partner2Whatsapp,
+                partner2Whatsapp: formData.partner2Whatsapp ? `${COUNTRY_CODES.find(c => c.short === formData.partner2CountryCode)?.code || '+91'} ${formData.partner2Whatsapp}` : '',
                 partner2Goal: formData.partner2Goal,
               }),
             });
@@ -261,7 +401,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const handleClose = () => {
     closeCheckout();
     setCurrentStep('cart');
-    setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', acceptTerms: false, partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
+    setFormData({ name: '', whatsapp: '', countryCode: 'IN', email: '', goal: '', notes: '', acceptTerms: false, partner2Name: '', partner2Whatsapp: '', partner2CountryCode: 'IN', partner2Email: '', partner2Goal: '' });
     setErrors({});
     setPromoCode('');
     setAppliedPromo(null);
@@ -491,14 +631,20 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                       <Phone className="w-4 h-4 inline mr-2" />
                       WhatsApp Number *
                     </label>
-                    <input
-                      type="tel"
-                      value={formData.whatsapp}
-                      onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value.replace(/\D/g, '') })}
-                      maxLength={10}
-                      className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
-                      placeholder="10-digit mobile number"
-                    />
+                    <div className="flex">
+                      <CountryCodeSelector
+                        value={formData.countryCode}
+                        onChange={(_code, short) => setFormData({ ...formData, countryCode: short })}
+                      />
+                      <input
+                        type="tel"
+                        value={formData.whatsapp}
+                        onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value.replace(/[^\d\s-]/g, '') })}
+                        maxLength={14}
+                        className="flex-1 bg-brand-navy/50 border border-white/10 border-l-0 rounded-r-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                        placeholder="Phone number"
+                      />
+                    </div>
                     {errors.whatsapp && <p className="text-red-400 text-xs mt-1">{errors.whatsapp}</p>}
                   </div>
 
@@ -571,14 +717,21 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                           <Phone className="w-4 h-4 inline mr-2" />
                           WhatsApp Number *
                         </label>
-                        <input
-                          type="tel"
-                          value={formData.partner2Whatsapp}
-                          onChange={(e) => setFormData({ ...formData, partner2Whatsapp: e.target.value.replace(/\D/g, '') })}
-                          maxLength={10}
-                          className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400"
-                          placeholder="10-digit mobile number"
-                        />
+                        <div className="flex">
+                          <CountryCodeSelector
+                            value={formData.partner2CountryCode}
+                            onChange={(_code, short) => setFormData({ ...formData, partner2CountryCode: short })}
+                            borderColor="pink-400"
+                          />
+                          <input
+                            type="tel"
+                            value={formData.partner2Whatsapp}
+                            onChange={(e) => setFormData({ ...formData, partner2Whatsapp: e.target.value.replace(/[^\d\s-]/g, '') })}
+                            maxLength={14}
+                            className="flex-1 bg-brand-navy/50 border border-white/10 border-l-0 rounded-r-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400"
+                            placeholder="Phone number"
+                          />
+                        </div>
                         {errors.partner2Whatsapp && <p className="text-red-400 text-xs mt-1">{errors.partner2Whatsapp}</p>}
                       </div>
 
@@ -851,7 +1004,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                       clearCart();
                       closeCheckout();
                       setCurrentStep('cart');
-                      setFormData({ name: '', whatsapp: '', email: '', goal: '', notes: '', acceptTerms: false, partner2Name: '', partner2Whatsapp: '', partner2Email: '', partner2Goal: '' });
+                      setFormData({ name: '', whatsapp: '', countryCode: 'IN', email: '', goal: '', notes: '', acceptTerms: false, partner2Name: '', partner2Whatsapp: '', partner2CountryCode: 'IN', partner2Email: '', partner2Goal: '' });
                       setPaymentReceipt(null);
                       router.push('/');
                     }}

@@ -71,7 +71,7 @@ export default function LiveSessionModal({ isOpen, onClose }: LiveSessionModalPr
         const data = await res.json();
         const clients = (data.clients || []).filter((c: any) => {
           const planName = c.subscriptions?.[0]?.plan?.name || '';
-          return planName.startsWith('Elite 1:1') && c.subscriptions?.[0]?.status === 'active';
+          return planName.startsWith('Elite 1:1') && (c.subscriptions?.[0]?.status === 'active' || c.subscriptions?.[0]?.status === 'paused');
         });
         setEliteClients(clients);
       }

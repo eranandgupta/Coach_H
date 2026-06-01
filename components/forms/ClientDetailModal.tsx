@@ -221,18 +221,24 @@ export default function ClientDetailModal({
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-6">
               {/* Subscription Info */}
-              {client.subscriptions && client.subscriptions.length > 0 && (
-                <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
-                  <h3 className="text-green-400 font-semibold mb-2">Active Subscription</h3>
-                  <p className="text-white font-medium">{client.subscriptions[0].plan.name}</p>
-                  <p className="text-gray-400 text-sm">
-                    Status: <span className="text-green-400">{client.subscriptions[0].status}</span>
-                  </p>
-                  <p className="text-gray-400 text-sm">
-                    Expires: {new Date(client.subscriptions[0].endDate).toLocaleDateString()}
-                  </p>
-                </div>
-              )}
+              {client.subscriptions && client.subscriptions.length > 0 && (() => {
+                const sub = client.subscriptions[0];
+                const isPaused = sub.status === 'paused';
+                const statusColor = isPaused ? 'yellow' : sub.status === 'active' ? 'green' : 'red';
+                const statusLabel = isPaused ? 'Paused' : sub.status === 'active' ? 'Active' : 'Expired';
+                return (
+                  <div className={`mb-6 p-4 bg-${statusColor}-500/10 border border-${statusColor}-500/30 rounded-xl`}>
+                    <h3 className={`text-${statusColor}-400 font-semibold mb-2`}>{isPaused ? 'Paused Subscription' : sub.status === 'active' ? 'Active Subscription' : 'Expired Subscription'}</h3>
+                    <p className="text-white font-medium">{sub.plan.name}</p>
+                    <p className="text-gray-400 text-sm">
+                      Status: <span className={`text-${statusColor}-400`}>{statusLabel}</span>
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      Expires: {new Date(sub.endDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                );
+              })()}
 
               {/* Pre-Assessment Section */}
               <div className="mb-6">

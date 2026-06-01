@@ -306,7 +306,7 @@ export default function FeedbackPage() {
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-brand-navy border border-brand-navy-light/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold/50 transition-colors"
-                  placeholder="+91 XXXXXXXXXX"
+                  placeholder="e.g. +91 98765 43210 or +61 403820843"
                 />
               </div>
 

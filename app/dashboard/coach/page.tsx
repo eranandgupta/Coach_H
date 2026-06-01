@@ -955,7 +955,7 @@ export default function CoachDashboard() {
           ) : (
             <div className="space-y-3">
               {enrollments.map((enr, idx) => {
-                const isActive = enr.status === 'active' && new Date(enr.endDate) >= now;
+                const isActive = (enr.status === 'active' || enr.status === 'paused') && new Date(enr.endDate) >= now;
                 return (
                   <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
                     className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
@@ -967,8 +967,8 @@ export default function CoachDashboard() {
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
                             <h3 className="font-semibold text-white">{enr.user?.name || 'Unnamed'}</h3>
-                            <span className={`text-xs px-2 py-0.5 rounded-full border ${isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
-                              {isActive ? 'Active' : 'Expired'}
+                            <span className={`text-xs px-2 py-0.5 rounded-full border ${enr.status === 'paused' ? 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30' : isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
+                              {enr.status === 'paused' ? 'Paused' : isActive ? 'Active' : 'Expired'}
                             </span>
                           </div>
                           <p className="text-sm text-gray-400">{enr.user?.email}</p>

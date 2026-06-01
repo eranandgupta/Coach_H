@@ -55,8 +55,8 @@ async function putHandler(request: NextRequest, context: any) {
       where: { id: parseInt(subscriptionId) },
       data: {
         endDate: newEndDate,
-        // If removing days pushed it into the past, mark as expired
-        status: newEndDate < new Date() ? 'expired' : 'active',
+        // If removing days pushed it into the past, mark as expired; otherwise preserve current status (active/paused)
+        ...(newEndDate < new Date() ? { status: 'expired' } : {}),
       },
       include: {
         plan: true,

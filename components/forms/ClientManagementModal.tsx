@@ -248,7 +248,7 @@ export default function ClientManagementModal({
               <div>
                 <label className="block text-gray-300 text-sm font-medium mb-2">
                   <Phone className="w-4 h-4 inline mr-2" />
-                  Phone Number
+                  Phone Number (with country code)
                 </label>
                 <input
                   type="tel"
@@ -257,7 +257,7 @@ export default function ClientManagementModal({
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
-                  placeholder="Enter phone number"
+                  placeholder="e.g. +91 98765 43210 or +61 403820843"
                 />
                 {errors.phone && (
                   <p className="text-red-400 text-xs mt-1">{errors.phone}</p>

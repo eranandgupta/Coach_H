@@ -425,19 +425,19 @@ export default function AdminDashboard() {
   const now = new Date();
   const totalClients = clients.length;
   const activeClients = clients.filter((c) =>
-    c.subscriptions?.some((s) => s.status === 'active' && new Date(s.endDate) >= now)
+    c.subscriptions?.some((s) => (s.status === 'active' || s.status === 'paused') && new Date(s.endDate) >= now)
   ).length;
   const inactiveClients = totalClients - activeClients;
-  const activeSubscriptions = subscriptions.filter((s) => s.status === 'active' && new Date(s.endDate) >= now).length;
+  const activeSubscriptions = subscriptions.filter((s) => (s.status === 'active' || s.status === 'paused') && new Date(s.endDate) >= now).length;
   const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const expiringSoon = subscriptions.filter(
-    (s) => s.status === 'active' && new Date(s.endDate) <= sevenDaysFromNow && new Date(s.endDate) >= now
+    (s) => (s.status === 'active' || s.status === 'paused') && new Date(s.endDate) <= sevenDaysFromNow && new Date(s.endDate) >= now
   ).length;
   const totalPromoCodes = promoCodes.length;
 
   const fourteenDaysFromNow = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
   const expiringSubscriptions = subscriptions.filter(
-    (s) => s.status === 'active' && new Date(s.endDate) <= fourteenDaysFromNow && new Date(s.endDate) >= now
+    (s) => (s.status === 'active' || s.status === 'paused') && new Date(s.endDate) <= fourteenDaysFromNow && new Date(s.endDate) >= now
   );
 
   const filteredClients = searchQuery
@@ -452,7 +452,8 @@ export default function AdminDashboard() {
     new Date(dateStr).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
   const getSubscriptionStatus = (client: Client) => {
-    const activeSub = client.subscriptions?.find((s) => s.status === 'active' && new Date(s.endDate) >= now);
+    const activeSub = client.subscriptions?.find((s) => (s.status === 'active' || s.status === 'paused') && new Date(s.endDate) >= now);
+    if (activeSub && activeSub.status === 'paused') return { label: 'Paused', color: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30', plan: activeSub.plan.name };
     if (activeSub) return { label: 'Active', color: 'text-green-400 bg-green-500/20 border-green-500/30', plan: activeSub.plan.name };
     const lastSub = client.subscriptions?.[0];
     if (lastSub) return { label: 'Expired', color: 'text-red-400 bg-red-500/20 border-red-500/30', plan: lastSub.plan.name };
@@ -606,7 +607,7 @@ export default function AdminDashboard() {
                   ) : (
                     <div className="space-y-3">
                       {enrollments.map((enr, idx) => {
-                        const isActive = enr.status === 'active' && new Date(enr.endDate) >= now;
+                        const isActive = (enr.status === 'active' || enr.status === 'paused') && new Date(enr.endDate) >= now;
                         return (
                           <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
                             className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
@@ -618,8 +619,8 @@ export default function AdminDashboard() {
                                 <div>
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <h3 className="font-semibold text-white">{enr.user?.name || 'Unnamed'}</h3>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full border ${isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
-                                      {isActive ? 'Active' : 'Expired'}
+                                    <span className={`text-xs px-2 py-0.5 rounded-full border ${enr.status === 'paused' ? 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30' : isActive ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
+                                      {enr.status === 'paused' ? 'Paused' : isActive ? 'Active' : 'Expired'}
                                     </span>
                                   </div>
                                   <p className="text-sm text-gray-400">{enr.user?.email}</p>
@@ -806,8 +807,8 @@ export default function AdminDashboard() {
                               </td>
                               <td className="py-3 pr-4 text-gray-300">{sub.plan.name}</td>
                               <td className="py-3 pr-4">
-                                <span className={`text-xs px-2 py-0.5 rounded-full border ${sub.status === 'active' && new Date(sub.endDate) >= now ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
-                                  {sub.status === 'active' && new Date(sub.endDate) >= now ? 'active' : 'expired'}
+                                <span className={`text-xs px-2 py-0.5 rounded-full border ${sub.status === 'paused' ? 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30' : (sub.status === 'active' || sub.status === 'paused') && new Date(sub.endDate) >= now ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
+                                  {sub.status === 'paused' ? 'paused' : (sub.status === 'active') && new Date(sub.endDate) >= now ? 'active' : 'expired'}
                                 </span>
                               </td>
                               <td className="py-3 pr-4 text-gray-400">{formatDate(sub.startDate)}</td>
@@ -822,7 +823,7 @@ export default function AdminDashboard() {
                                     className="px-3 py-1 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-400 hover:bg-amber-500/30 text-xs transition-all">
                                     Invoice
                                   </button>
-                                  {sub.status === 'active' && new Date(sub.endDate) >= now ? (
+                                  {(sub.status === 'active' || sub.status === 'paused') && new Date(sub.endDate) >= now ? (
                                     <button
                                       onClick={() => { setRenewSubClient({ id: sub.user.id, name: sub.user.name || 'Client', email: sub.user.email }); setSubMode('extend'); setRenewSubOpen(true); }}
                                       className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 hover:bg-green-500/30 text-xs transition-all">
