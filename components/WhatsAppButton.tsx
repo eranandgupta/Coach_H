@@ -12,7 +12,7 @@ export default function WhatsAppButton() {
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-[72px] right-4 lg:bottom-8 md:right-6 z-40 group"
+      className="fixed bottom-6 right-4 lg:bottom-8 md:right-6 z-40 group"
       aria-label="Chat on WhatsApp"
     >
       <div className="relative">

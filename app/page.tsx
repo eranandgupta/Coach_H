@@ -2103,8 +2103,8 @@ export default function Home() {
               ))}
             </motion.div>
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-center gap-4 mt-8">
+            {/* Navigation Buttons - hidden on mobile */}
+            <div className="hidden md:flex justify-center gap-4 mt-8">
               <button
                 onClick={prevTestimonial}
                 className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group backdrop-blur-md"
@@ -2124,15 +2124,15 @@ export default function Home() {
             </div>
 
             {/* Indicator Dots */}
-            <div className="flex justify-center gap-2.5 mt-6">
+            <div className="flex justify-center gap-2 mt-6 md:mt-4">
               {Array.from({ length: totalPages }).map((_, pageIndex) => (
                 <button
                   key={pageIndex}
                   onClick={() => setCurrentTestimonial(pageIndex * TESTIMONIALS_PER_PAGE)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
                     pageIndex === currentPage
-                      ? 'w-8 bg-brand-blue'
-                      : 'w-2 bg-white/15 hover:bg-white/30'
+                      ? 'w-6 bg-brand-blue'
+                      : 'w-1.5 bg-white/15 hover:bg-white/30'
                   }`}
                   aria-label={`Go to page ${pageIndex + 1}`}
                 />

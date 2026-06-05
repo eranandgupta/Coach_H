@@ -4,7 +4,7 @@ import { Instagram, Youtube, Mail, Phone, Facebook, Twitter } from 'lucide-react
 
 export default function Footer() {
   return (
-    <footer className="relative py-8 md:py-16 pb-20 lg:pb-16 border-t border-white/[0.04]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(7,10,21,1) 100%)' }}>
+    <footer className="relative py-8 md:py-16 border-t border-white/[0.04]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(7,10,21,1) 100%)' }}>
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* About Section - Full width on mobile */}
         <div className="mb-6 md:mb-0 md:hidden">

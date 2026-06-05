@@ -43,10 +43,10 @@
     @apply border-border;
   }
   html {
-    @apply scroll-smooth;
+    @apply scroll-smooth overflow-x-hidden;
   }
   body {
-    @apply bg-brand-navy text-white font-sans antialiased;
+    @apply bg-brand-navy text-white font-sans antialiased overflow-x-hidden;
   }
 }
 
@@ -240,12 +240,6 @@
     .animate-float,
     .animate-shimmer {
       animation: none !important;
-    }
-    /* Ensure minimum touch targets on mobile (44px recommended by Apple/Google) */
-    button,
-    a[role="button"],
-    summary {
-      min-height: 44px;
     }
     /* Better text readability on small screens */
     p, li, span {

@@ -94,7 +94,7 @@ export default function PWAInstallPrompt() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-[60px] left-0 right-0 z-50 p-3 md:p-4 md:bottom-4 md:left-auto md:right-4 md:max-w-md lg:bottom-4"
+          className="fixed bottom-0 left-0 right-0 z-50 p-3 md:p-4 md:bottom-4 md:left-auto md:right-4 md:max-w-md"
         >
           <div className="bg-gradient-to-br from-brand-navy-light to-brand-navy border border-brand-blue/30 rounded-2xl shadow-2xl overflow-hidden">
             {/* Close button */}
