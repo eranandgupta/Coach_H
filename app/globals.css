@@ -241,6 +241,16 @@
     .animate-shimmer {
       animation: none !important;
     }
+    /* Ensure minimum touch targets on mobile (44px recommended by Apple/Google) */
+    button,
+    a[role="button"],
+    summary {
+      min-height: 44px;
+    }
+    /* Better text readability on small screens */
+    p, li, span {
+      -webkit-text-size-adjust: 100%;
+    }
   }
 
   /* Respect user preference for reduced motion */

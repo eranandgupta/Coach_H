@@ -310,6 +310,76 @@ export default function Home() {
     ],
   };
 
+  // FAQ Schema for rich snippets
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How does online fitness coaching with Coach Himanshu work?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Once you subscribe to a plan, you receive a customised workout plan and personalised diet plan on WhatsApp. You get weekly one-on-one consultations, video tutorials for exercises, supplement guidance, and 24/7 WhatsApp support from Coach Himanshu.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What certifications does Coach Himanshu have?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Coach Himanshu is a NASM Certified Bodybuilding Coach with 6+ professional diplomas including Diploma in Personal Training, Diploma in Sports Nutrition, and certifications in TRX training and rehabilitation.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the cost of online fitness coaching in India?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Coach Himanshu offers affordable plans starting at just ₹1,099/month for the Kickstart Plan. The Consistency Plan is ₹2,499 for 3 months, the Strength Plan is ₹4,299 for 6 months, and the Mastery Plan is ₹8,999 for 12 months. Home workout and rehabilitation plans are also available.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do I need a gym to follow Coach Himanshu\'s workout plans?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No! Coach Himanshu offers dedicated Home Workout Plans that require no gym or equipment. You can train from home with bodyweight exercises and minimal equipment. Gym plans are also available for those who prefer working out at a gym.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I get a personalised diet plan for Indian food?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, all diet plans are personalised based on your goals, preferences, and Indian food habits. Whether you are vegetarian, non-vegetarian, or vegan, Coach Himanshu creates meal plans using Indian foods you actually enjoy eating.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How many clients has Coach Himanshu trained?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Coach Himanshu has successfully helped 1000+ clients achieve their fitness transformations. From fat loss and muscle building to rehabilitation and sports performance, clients across India have benefited from his personalised coaching approach.',
+        },
+      },
+    ],
+  };
+
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://coachhimanshu.com',
+      },
+    ],
+  };
+
   const plans = [
     {
       id: 8,
@@ -969,6 +1039,14 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
       <div className="min-h-screen bg-brand-navy">
         <AnnouncementBar />
@@ -1111,7 +1189,7 @@ export default function Home() {
                 <div key={index} className="flex flex-col items-center justify-center py-4 px-2">
                   <stat.icon size={16} className="text-brand-blue/70 mb-1.5" />
                   <div className="text-base font-bold text-white leading-none">{stat.value}</div>
-                  <div className="text-gray-500 text-[9px] mt-0.5 font-medium">{stat.label}</div>
+                  <div className="text-gray-500 text-[10px] mt-1 font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -1302,7 +1380,7 @@ export default function Home() {
             {/* Carousel Container */}
             <div className="relative">
               <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(26,37,64,0.5) 0%, rgba(10,15,31,0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
-                <div className="relative min-h-[520px] md:min-h-[400px]">
+                <div className="relative min-h-[420px] md:min-h-[400px]">
                   {/* Slide 0: Main Headline */}
                   <motion.div
                     initial={false}
@@ -1397,7 +1475,7 @@ export default function Home() {
         </section>
       )}
 
-      <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
+      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
         {/* Background ambient glow */}
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] pointer-events-none" />
@@ -1409,12 +1487,12 @@ export default function Home() {
           viewport={{ once: true }}
           className="max-w-6xl mx-auto relative z-10"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+          <motion.div variants={itemVariants} className="text-center mb-8 md:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-4 md:mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               <Award size={14} className="text-brand-blue" />
               <span className="text-blue-300/80 text-xs font-medium tracking-wider uppercase">Why Choose Us</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-5 text-white">
+            <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-5 text-white">
               Why Choose Coach Himanshu?
             </h2>
             <p className="text-sm md:text-lg text-gray-400/80 max-w-3xl mx-auto leading-relaxed px-2">
@@ -1754,7 +1832,7 @@ export default function Home() {
       </section>
 
       {/* Rhynogrip Fitness Gear Partner Section */}
-      <section className="py-16 px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Fitness gear partner Rhynogrip">
+      <section className="py-12 md:py-16 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Fitness gear partner Rhynogrip">
         {/* Ambient glow effects */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] animate-glow-pulse"></div>
@@ -1908,7 +1986,7 @@ export default function Home() {
       </section>
 
       {/* Client Testimonials Section */}
-      <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Client testimonials">
+      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Client testimonials">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -1916,7 +1994,7 @@ export default function Home() {
           viewport={{ once: true }}
           className="max-w-7xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
+          <motion.div variants={itemVariants} className="text-center mb-8 md:mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-6" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.06) 0%, rgba(201,166,70,0.02) 100%)' }}>
               <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
               <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Client Success Stories</span>
@@ -2046,15 +2124,15 @@ export default function Home() {
             </div>
 
             {/* Indicator Dots */}
-            <div className="flex justify-center gap-2 mt-6">
+            <div className="flex justify-center gap-2.5 mt-6">
               {Array.from({ length: totalPages }).map((_, pageIndex) => (
                 <button
                   key={pageIndex}
                   onClick={() => setCurrentTestimonial(pageIndex * TESTIMONIALS_PER_PAGE)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                  className={`h-2 rounded-full transition-all duration-300 ${
                     pageIndex === currentPage
                       ? 'w-8 bg-brand-blue'
-                      : 'w-1.5 bg-white/10 hover:bg-white/20'
+                      : 'w-2 bg-white/15 hover:bg-white/30'
                   }`}
                   aria-label={`Go to page ${pageIndex + 1}`}
                 />
@@ -2063,8 +2141,8 @@ export default function Home() {
           </div>
 
           {/* Call to Action - Share Your Story */}
-          <motion.div variants={itemVariants} className="text-center mt-16">
-            <p className="text-gray-400 mb-6 text-lg">
+          <motion.div variants={itemVariants} className="text-center mt-10 md:mt-16">
+            <p className="text-gray-400 mb-4 md:mb-6 text-sm md:text-lg">
               Want to share your transformation story?
             </p>
             <a href="/feedback">
@@ -2077,7 +2155,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-16 md:py-24 px-4 md:px-6 relative overflow-hidden border-t border-white/[0.04]" aria-label="Get started with transformation">
+      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden border-t border-white/[0.04]" aria-label="Get started with transformation">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -2087,7 +2165,7 @@ export default function Home() {
         >
           <motion.h2
             variants={itemVariants}
-            className="text-4xl md:text-5xl font-bold mb-12 text-white text-center"
+            className="text-2xl sm:text-3xl md:text-5xl font-bold mb-8 md:mb-12 text-white text-center"
           >
             Ready to Start Your Transformation?
           </motion.h2>
@@ -2125,10 +2203,10 @@ export default function Home() {
 
             {/* Right Section - Get Started Today */}
             <motion.div variants={itemVariants} className="text-center lg:text-left">
-              <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+              <h3 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-white">
                 Get Started Today
               </h3>
-              <p className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed">
+              <p className="text-base md:text-xl text-gray-400 mb-6 md:mb-8 leading-relaxed">
                 Join hundreds of satisfied clients who have achieved their fitness
                 goals with expert coaching and personalized support.
               </p>
@@ -2143,6 +2221,40 @@ export default function Home() {
             </motion.div>
           </div>
         </motion.div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 px-4 bg-brand-navy" aria-label="Frequently asked questions">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2
+            className="text-2xl md:text-4xl font-bold text-white text-center mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Frequently Asked Questions
+          </motion.h2>
+          <div className="space-y-4">
+            {faqSchema.mainEntity.map((faq, index) => (
+              <motion.details
+                key={index}
+                className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <summary className="flex items-center justify-between cursor-pointer px-4 md:px-6 py-4 text-white font-medium text-sm md:text-lg hover:bg-white/5 transition-colors">
+                  <span className="pr-2">{faq.name}</span>
+                  <ChevronRight className="w-5 h-5 text-brand-blue transition-transform group-open:rotate-90 flex-shrink-0" />
+                </summary>
+                <div className="px-4 md:px-6 pb-4 text-gray-300 text-sm md:text-base leading-relaxed">
+                  {faq.acceptedAnswer.text}
+                </div>
+              </motion.details>
+            ))}
+          </div>
+        </div>
       </section>
 
       <Footer />

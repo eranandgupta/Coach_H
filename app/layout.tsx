@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { CartProvider } from '@/contexts/CartContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import MobileAppNav from '@/components/MobileAppNav';
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -92,6 +93,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://coachhimanshu.com',
   },
+  verification: {
+    google: 'YOUR_GOOGLE_VERIFICATION_CODE', // Replace with code from Google Search Console
+    other: {
+      'msvalidate.01': 'YOUR_BING_VERIFICATION_CODE', // Replace with code from Bing Webmaster Tools
+    },
+  },
 };
 
 export default function RootLayout({
@@ -117,9 +124,24 @@ export default function RootLayout({
       <body className={inter.className}>
         <CartProvider>
           {children}
+          <MobileAppNav />
           <PWAInstallPrompt />
           <WhatsAppButton />
         </CartProvider>
+
+        {/* Google Analytics 4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        </Script>
 
         {/* Service Worker Registration with Auto-Update */}
         <Script id="register-sw" strategy="afterInteractive">

@@ -94,42 +94,43 @@ export default function PWAInstallPrompt() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 right-0 z-50 p-4 md:bottom-4 md:left-auto md:right-4 md:max-w-md"
+          className="fixed bottom-[60px] left-0 right-0 z-50 p-3 md:p-4 md:bottom-4 md:left-auto md:right-4 md:max-w-md lg:bottom-4"
         >
           <div className="bg-gradient-to-br from-brand-navy-light to-brand-navy border border-brand-blue/30 rounded-2xl shadow-2xl overflow-hidden">
             {/* Close button */}
             <button
               onClick={handleDismiss}
-              className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors z-10"
+              className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/5"
             >
-              <X size={20} />
+              <X size={16} />
             </button>
 
-            <div className="p-6">
-              {/* Header */}
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-brand-blue to-purple-500 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Download size={32} className="text-white" />
+            <div className="p-4 md:p-6">
+              {/* Header - compact on mobile */}
+              <div className="flex items-center gap-3 mb-3 md:mb-4">
+                <div className="w-11 h-11 md:w-14 md:h-14 bg-gradient-to-br from-brand-blue to-purple-500 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <Download size={22} className="text-white md:hidden" />
+                  <Download size={28} className="text-white hidden md:block" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-lg">Install App</h3>
-                  <p className="text-gray-400 text-sm">Quick access anytime</p>
+                  <h3 className="text-white font-bold text-base md:text-lg">Install App</h3>
+                  <p className="text-gray-400 text-xs md:text-sm">Quick access anytime</p>
                 </div>
               </div>
 
               {/* Content based on device */}
               {isIOS && (
-                <div className="bg-white/5 rounded-xl p-4 mb-4">
-                  <p className="text-white text-sm mb-3">
+                <div className="bg-white/5 rounded-xl p-3 md:p-4 mb-3 md:mb-4">
+                  <p className="text-white text-xs md:text-sm mb-2 md:mb-3">
                     Install this app on your iPhone:
                   </p>
-                  <ol className="space-y-2 text-sm text-gray-300">
+                  <ol className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-300">
                     <li className="flex items-start gap-2">
                       <span className="flex-shrink-0 w-5 h-5 bg-brand-blue/20 text-brand-blue rounded-full flex items-center justify-center text-xs font-bold">
                         1
                       </span>
                       <span>
-                        Tap the <Share size={14} className="inline mx-1" /> share button at the bottom
+                        Tap the <Share size={12} className="inline mx-0.5" /> share button
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -137,7 +138,7 @@ export default function PWAInstallPrompt() {
                         2
                       </span>
                       <span>
-                        Scroll and tap "Add to Home Screen" <Plus size={14} className="inline mx-1" />
+                        Tap "Add to Home Screen" <Plus size={12} className="inline mx-0.5" />
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -151,17 +152,17 @@ export default function PWAInstallPrompt() {
               )}
 
               {isAndroid && !deferredPrompt && (
-                <div className="bg-white/5 rounded-xl p-4 mb-4">
-                  <p className="text-white text-sm mb-3">
+                <div className="bg-white/5 rounded-xl p-3 md:p-4 mb-3 md:mb-4">
+                  <p className="text-white text-xs md:text-sm mb-2 md:mb-3">
                     Install this app on your Android:
                   </p>
-                  <ol className="space-y-2 text-sm text-gray-300">
+                  <ol className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-300">
                     <li className="flex items-start gap-2">
                       <span className="flex-shrink-0 w-5 h-5 bg-brand-blue/20 text-brand-blue rounded-full flex items-center justify-center text-xs font-bold">
                         1
                       </span>
                       <span>
-                        Tap the <MoreVertical size={14} className="inline mx-1" /> menu button
+                        Tap the <MoreVertical size={12} className="inline mx-0.5" /> menu button
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -181,11 +182,11 @@ export default function PWAInstallPrompt() {
               )}
 
               {deferredPrompt && (
-                <div className="bg-white/5 rounded-xl p-4 mb-4">
-                  <p className="text-gray-300 text-sm">
+                <div className="bg-white/5 rounded-xl p-3 md:p-4 mb-3 md:mb-4">
+                  <p className="text-gray-300 text-xs md:text-sm">
                     Get instant access to your fitness journey. Install now for:
                   </p>
-                  <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                  <ul className="mt-2 md:mt-3 space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-300">
                     <li className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-brand-green rounded-full"></div>
                       Quick access from home screen
@@ -203,19 +204,19 @@ export default function PWAInstallPrompt() {
               )}
 
               {/* Action buttons */}
-              <div className="flex gap-3">
+              <div className="flex gap-2 md:gap-3">
                 {deferredPrompt && (
                   <button
                     onClick={handleInstallClick}
-                    className="flex-1 bg-gradient-to-r from-brand-blue to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-brand-blue-dark hover:to-purple-600 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 bg-gradient-to-r from-brand-blue to-purple-500 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base hover:from-brand-blue-dark hover:to-purple-600 transition-all flex items-center justify-center gap-2"
                   >
-                    <Download size={18} />
+                    <Download size={16} />
                     Install Now
                   </button>
                 )}
                 <button
                   onClick={handleDismiss}
-                  className="px-6 py-3 bg-white/5 text-gray-300 rounded-xl font-semibold hover:bg-white/10 transition-all"
+                  className="px-4 md:px-6 py-2.5 md:py-3 bg-white/5 text-gray-300 rounded-xl font-semibold text-sm md:text-base hover:bg-white/10 transition-all"
                 >
                   {deferredPrompt ? 'Later' : 'Got it'}
                 </button>
