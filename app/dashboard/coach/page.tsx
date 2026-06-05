@@ -44,6 +44,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { isElitePlan } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import ChatContainer from '@/components/chat/ChatContainer';
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -75,6 +76,8 @@ export default function CoachDashboard() {
   const [subMode, setSubMode] = useState<'renew' | 'extend'>('renew');
   const [adjustDaysOpen, setAdjustDaysOpen] = useState(false);
   const [adjustDaysClient, setAdjustDaysClient] = useState<any>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
 
   const fetchEnrollments = async () => {
     try {
@@ -105,10 +108,25 @@ export default function CoachDashboard() {
     }
   };
 
+  const fetchUnreadChat = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('/api/chat/unread', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (typeof data.unreadCount === 'number') setUnreadChatCount(data.unreadCount);
+    } catch {}
+  };
+
   useEffect(() => {
     fetchDashboardData();
     fetchEnrollments();
     fetchPlans();
+    fetchUnreadChat();
+    const chatInterval = setInterval(fetchUnreadChat, 10000);
+    return () => clearInterval(chatInterval);
   }, []);
 
   const fetchDashboardData = async () => {
@@ -1155,12 +1173,31 @@ export default function CoachDashboard() {
         onClose={() => setIsLiveSessionModalOpen(false)}
       />
 
+      {/* Chat View */}
+      {isChatOpen && user && (
+        <div className="fixed inset-0 z-40 bg-brand-navy">
+          <ChatContainer userId={user.id} userRole={user.role} />
+        </div>
+      )}
+
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav
         role="coach"
+        activeTab={isChatOpen ? 'chat' : undefined}
+        badges={{ chat: unreadChatCount }}
         onTabChange={(tab) => {
-          const el = document.getElementById(`section-${tab}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (tab === 'chat') {
+            setIsChatOpen(true);
+            return;
+          }
+          if (isChatOpen) {
+            setIsChatOpen(false);
+            fetchUnreadChat();
+          }
+          setTimeout(() => {
+            const el = document.getElementById(`section-${tab}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
         }}
       />
     </div>

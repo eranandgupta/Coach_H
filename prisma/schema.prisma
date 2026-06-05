@@ -26,6 +26,8 @@ model User {
   subscriptions       UserSubscription[]
   workoutPlans        WorkoutPlan[]      @relation("ClientWorkouts")
   createdWorkouts     WorkoutPlan[]      @relation("CoachWorkouts")
+  coachConversations  Conversation[]     @relation("CoachConversations")
+  clientConversations Conversation[]     @relation("ClientConversations")
 }
 
 model SubscriptionPlan {
@@ -367,6 +369,34 @@ model SiteSetting {
   updatedAt DateTime @updatedAt
 
   @@index([key])
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  coachId   Int
+  clientId  Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  coach     User      @relation("CoachConversations", fields: [coachId], references: [id])
+  client    User      @relation("ClientConversations", fields: [clientId], references: [id])
+  messages  Message[]
+
+  @@unique([coachId, clientId])
+  @@index([coachId])
+  @@index([clientId])
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversationId Int
+  senderId       Int
+  content        String       @db.Text
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([senderId])
 }
 
 model Feedback {

@@ -43,6 +43,7 @@ import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 import { isElitePlan, getTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import ChatContainer from '@/components/chat/ChatContainer';
 
 export default function ClientDashboard() {
   const router = useRouter();
@@ -57,7 +58,8 @@ export default function ClientDashboard() {
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'dashboard' | 'profile'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat'>('dashboard');
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
@@ -73,12 +75,26 @@ export default function ClientDashboard() {
     router.push('/');
   };
 
+  const fetchUnreadChat = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('/api/chat/unread', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (typeof data.unreadCount === 'number') setUnreadChatCount(data.unreadCount);
+    } catch {}
+  };
+
   useEffect(() => {
     fetchDashboardData();
     fetchNotificationCount();
+    fetchUnreadChat();
 
     let notificationInterval: ReturnType<typeof setInterval>;
     let dashboardInterval: ReturnType<typeof setInterval>;
+    let chatInterval: ReturnType<typeof setInterval>;
 
     // Only poll when the page is visible to prevent request stacking on mobile
     const startPolling = () => {
@@ -88,11 +104,15 @@ export default function ClientDashboard() {
       dashboardInterval = setInterval(() => {
         fetchDashboardData();
       }, 120000);
+      chatInterval = setInterval(() => {
+        fetchUnreadChat();
+      }, 10000);
     };
 
     const stopPolling = () => {
       clearInterval(notificationInterval);
       clearInterval(dashboardInterval);
+      clearInterval(chatInterval);
     };
 
     const handleVisibilityChange = () => {
@@ -100,6 +120,7 @@ export default function ClientDashboard() {
         stopPolling();
       } else {
         fetchNotificationCount();
+        fetchUnreadChat();
         startPolling();
       }
     };
@@ -1378,17 +1399,29 @@ export default function ClientDashboard() {
         />
       )}
 
+      {/* Chat View */}
+      {activeView === 'chat' && user && (
+        <div className="fixed inset-0 z-40 bg-brand-navy" style={{ top: 0 }}>
+          <ChatContainer userId={user.id} userRole={user.role} />
+        </div>
+      )}
+
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav
         role="client"
-        activeTab={activeView === 'profile' ? 'profile' : undefined}
+        activeTab={activeView === 'profile' ? 'profile' : activeView === 'chat' ? 'chat' : undefined}
+        badges={{ chat: unreadChatCount }}
         onTabChange={(tab) => {
+          if (tab === 'chat') {
+            setActiveView('chat');
+            return;
+          }
           if (tab === 'profile') {
             setActiveView('profile');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
           }
-          if (activeView === 'profile') {
+          if (activeView !== 'dashboard') {
             setActiveView('dashboard');
             setTimeout(() => {
               if (tab !== 'home') {

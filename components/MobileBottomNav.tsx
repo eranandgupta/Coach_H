@@ -29,9 +29,10 @@ type MobileBottomNavProps = {
   activeTab?: string;
   onTabChange?: (tab: string) => void;
   onAction?: (action: string) => void;
+  badges?: Record<string, number>;
 };
 
-export default function MobileBottomNav({ role, activeTab, onTabChange, onAction }: MobileBottomNavProps) {
+export default function MobileBottomNav({ role, activeTab, onTabChange, onAction, badges }: MobileBottomNavProps) {
   const [active, setActive] = useState(activeTab || 'home');
 
   useEffect(() => {
@@ -52,15 +53,15 @@ export default function MobileBottomNav({ role, activeTab, onTabChange, onAction
       { id: 'home', label: 'Home', icon: LayoutGrid },
       { id: 'workout', label: 'Workout', icon: Dumbbell },
       { id: 'diet', label: 'Diet', icon: UtensilsCrossed },
-      { id: 'blog', label: 'Blog', icon: FileText },
+      { id: 'chat', label: 'Chat', icon: MessageSquare },
       { id: 'profile', label: 'Profile', icon: User },
     ],
     coach: [
       { id: 'home', label: 'Home', icon: LayoutGrid },
       { id: 'clients', label: 'Clients', icon: Users },
+      { id: 'chat', label: 'Chat', icon: MessageSquare },
       { id: 'workouts', label: 'Workouts', icon: Dumbbell },
       { id: 'diets', label: 'Diets', icon: UtensilsCrossed },
-      { id: 'blogs', label: 'Blogs', icon: FileText },
     ],
     trainer: [
       { id: 'home', label: 'Home', icon: LayoutGrid },
@@ -119,7 +120,14 @@ export default function MobileBottomNav({ role, activeTab, onTabChange, onAction
                   }}
                 />
               )}
-              <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+              <div className="relative">
+                <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                {badges && badges[item.id] > 0 && (
+                  <div className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 bg-red-500 rounded-full flex items-center justify-center px-1">
+                    <span className="text-[9px] font-bold text-white">{badges[item.id] > 9 ? '9+' : badges[item.id]}</span>
+                  </div>
+                )}
+              </div>
               <span
                 className={`mt-1 text-[10px] font-medium tracking-wide ${
                   isActive ? 'text-blue-300' : ''
