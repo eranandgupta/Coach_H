@@ -28,6 +28,7 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedConv, setSelectedConv] = useState<ConversationItem | null>(null);
   const [coachInfo, setCoachInfo] = useState<Participant | null>(null);
+  const [availableClients, setAvailableClients] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const pollRef = useRef<NodeJS.Timeout>();
 
@@ -45,6 +46,9 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
       }
       if (data.coachInfo) {
         setCoachInfo(data.coachInfo);
+      }
+      if (data.availableClients) {
+        setAvailableClients(data.availableClients);
       }
     } catch (error) {
       console.error('Failed to fetch conversations:', error);
@@ -98,6 +102,34 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
     setSelectedConv(conv);
   };
 
+  const handleStartChat = async (client: Participant) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/chat/conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ coachId: userId, clientId: client.id }),
+      });
+      const data = await res.json();
+      if (data.conversation) {
+        await fetchConversations();
+        // Find the newly created conversation and select it
+        setSelectedConv({
+          id: data.conversation.id,
+          participant: client,
+          lastMessage: null,
+          unreadCount: 0,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      console.error('Failed to start conversation:', error);
+    }
+  };
+
   const handleBack = () => {
     setSelectedConv(null);
     fetchConversations(); // Refresh unread counts
@@ -137,6 +169,8 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
           selectedId={selectedConv?.id}
           onSelect={handleSelect}
           showSearch={isCoach}
+          availableClients={isCoach ? availableClients : []}
+          onStartChat={handleStartChat}
         />
       </div>
 

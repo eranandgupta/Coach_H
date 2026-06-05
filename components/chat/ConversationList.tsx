@@ -11,11 +11,19 @@ interface ConversationItem {
   updatedAt: string;
 }
 
+interface AvailableClient {
+  id: number;
+  name: string | null;
+  image: string | null;
+}
+
 interface ConversationListProps {
   conversations: ConversationItem[];
   selectedId?: number;
   onSelect: (conversation: ConversationItem) => void;
   showSearch?: boolean;
+  availableClients?: AvailableClient[];
+  onStartChat?: (client: AvailableClient) => void;
 }
 
 function timeAgo(dateStr: string) {
@@ -35,6 +43,8 @@ export default function ConversationList({
   selectedId,
   onSelect,
   showSearch = false,
+  availableClients = [],
+  onStartChat,
 }: ConversationListProps) {
   const [search, setSearch] = useState('');
 
@@ -43,6 +53,12 @@ export default function ConversationList({
         c.participant.name?.toLowerCase().includes(search.toLowerCase())
       )
     : conversations;
+
+  const filteredAvailable = search
+    ? availableClients.filter((c) =>
+        c.name?.toLowerCase().includes(search.toLowerCase())
+      )
+    : availableClients;
 
   return (
     <div className="flex flex-col h-full bg-brand-navy">
@@ -65,7 +81,7 @@ export default function ConversationList({
 
       {/* List */}
       <div className="flex-1 overflow-y-auto scrollbar-hide">
-        {filtered.length === 0 ? (
+        {filtered.length === 0 && filteredAvailable.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6 py-12">
             <div className="w-14 h-14 rounded-full bg-brand-blue/10 flex items-center justify-center mb-3">
               <MessageSquare size={24} className="text-brand-blue/50" />
@@ -134,6 +150,37 @@ export default function ConversationList({
               </button>
             );
           })
+        )}
+
+        {/* Available clients without conversations */}
+        {filteredAvailable.length > 0 && (
+          <div>
+            <div className="px-4 py-2 border-b border-white/[0.04]">
+              <p className="text-[10px] uppercase tracking-wider text-white/30 font-semibold">Your Clients</p>
+            </div>
+            {filteredAvailable.map((client) => {
+              const initials = (client.name || '?').charAt(0).toUpperCase();
+              return (
+                <button
+                  key={client.id}
+                  onClick={() => onStartChat?.(client)}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.04] transition-colors text-left border-b border-white/[0.04]"
+                >
+                  {client.image ? (
+                    <img src={client.image} alt={client.name || ''} className="w-12 h-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/50 to-cyan-500/50 flex items-center justify-center text-white font-bold text-lg">
+                      {initials}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white/70 font-medium truncate">{client.name || 'Unknown'}</p>
+                    <p className="text-xs text-white/30 mt-0.5">Tap to start chatting</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>

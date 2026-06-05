@@ -43,7 +43,7 @@ async function getHandler(request: NextRequest, context: any) {
       })
     );
 
-    // For clients: also return coach info if no conversation exists yet
+    // For clients: return coach info if no conversation exists yet
     let coachInfo = null;
     if (!isCoach && conversations.length === 0) {
       const workoutPlan = await prisma.workoutPlan.findFirst({
@@ -65,7 +65,38 @@ async function getHandler(request: NextRequest, context: any) {
       }
     }
 
-    return Response.json({ conversations: conversationsWithUnread, coachInfo });
+    // For coaches: also return all 1:1 clients who don't have a conversation yet
+    let availableClients: { id: number; name: string | null; image: string | null }[] = [];
+    if (isCoach) {
+      // Get all unique client IDs that have workout or diet plans from this coach
+      const workoutClients = await prisma.workoutPlan.findMany({
+        where: { coachId: user.userId },
+        select: { clientId: true, client: { select: { id: true, name: true, image: true } } },
+        distinct: ['clientId'],
+      });
+      const dietClients = await prisma.dietPlan.findMany({
+        where: { coachId: user.userId },
+        select: { clientId: true, client: { select: { id: true, name: true, image: true } } },
+        distinct: ['clientId'],
+      });
+
+      // Merge and deduplicate
+      const existingConvClientIds = new Set(conversations.map((c) => c.clientId));
+      const allClientMap = new Map<number, { id: number; name: string | null; image: string | null }>();
+      for (const wp of workoutClients) {
+        if (!existingConvClientIds.has(wp.clientId)) {
+          allClientMap.set(wp.clientId, wp.client);
+        }
+      }
+      for (const dp of dietClients) {
+        if (!existingConvClientIds.has(dp.clientId)) {
+          allClientMap.set(dp.clientId, dp.client);
+        }
+      }
+      availableClients = Array.from(allClientMap.values());
+    }
+
+    return Response.json({ conversations: conversationsWithUnread, coachInfo, availableClients });
   } catch (error) {
     console.error('Error fetching conversations:', error);
     return Response.json({ error: 'Failed to fetch conversations' }, { status: 500 });
