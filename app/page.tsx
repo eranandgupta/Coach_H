@@ -1100,7 +1100,7 @@ export default function Home() {
         </div>
 
         {/* ========= MOBILE HERO (lg:hidden) ========= */}
-        <div className="relative z-10 flex-1 flex flex-col lg:hidden pt-24">
+        <div className="relative z-10 flex-1 flex flex-col lg:hidden pt-28">
           <motion.div
             variants={containerVariants}
             initial="hidden"
