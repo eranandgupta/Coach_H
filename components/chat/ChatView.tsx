@@ -35,8 +35,9 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<NodeJS.Timeout>();
-
   const mountedRef = useRef(true);
+  // Track optimistic (pending) message IDs so polls don't wipe them
+  const pendingIdsRef = useRef<Set<number>>(new Set());
 
   const fetchMessages = useCallback(async () => {
     if (!mountedRef.current) return;
@@ -48,7 +49,16 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
       });
       if (!res.ok || !mountedRef.current) return;
       const data = await res.json();
-      if (data.messages) setMessages(data.messages);
+      if (data.messages) {
+        setMessages((prev) => {
+          // Keep any pending optimistic messages that the server doesn't have yet
+          const serverIds = new Set(data.messages.map((m: ChatMessage) => m.id));
+          const pendingMessages = prev.filter(
+            (m) => m.id < 0 && pendingIdsRef.current.has(m.id) && !serverIds.has(m.id)
+          );
+          return [...data.messages, ...pendingMessages];
+        });
+      }
     } catch {
       // silent fail
     } finally {
@@ -97,13 +107,15 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
     setSending(true);
 
     // Optimistic update
+    const tempId = -Date.now();
     const tempMessage: ChatMessage = {
-      id: -Date.now(),
+      id: tempId,
       senderId: userId,
       content,
       isRead: false,
       createdAt: new Date().toISOString(),
     };
+    pendingIdsRef.current.add(tempId);
     setMessages((prev) => [...prev, tempMessage]);
 
     try {
@@ -118,15 +130,14 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
       });
       const data = await res.json();
       if (data.message) {
-        // Replace temp message with real one
+        pendingIdsRef.current.delete(tempId);
         setMessages((prev) =>
-          prev.map((m) => (m.id === tempMessage.id ? data.message : m))
+          prev.map((m) => (m.id === tempId ? data.message : m))
         );
       }
-    } catch (error) {
-      // Remove temp message on failure
-      setMessages((prev) => prev.filter((m) => m.id !== tempMessage.id));
-      console.error('Failed to send message:', error);
+    } catch {
+      pendingIdsRef.current.delete(tempId);
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
     } finally {
       setSending(false);
     }
@@ -164,27 +175,30 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
     >
       {/* Header */}
       <div
-        className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.08] flex-shrink-0"
+        className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06] flex-shrink-0"
         style={{
-          background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(10,15,31,0.85) 100%)',
+          background: 'linear-gradient(135deg, rgba(99,145,255,0.04) 0%, rgba(10,15,31,0.95) 100%)',
           backdropFilter: 'blur(20px)',
         }}
       >
         {onBack && (
-          <button onClick={onBack} className="text-white/60 hover:text-white transition-colors p-1">
-            <ArrowLeft size={22} />
+          <button onClick={onBack} className="text-white/60 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/[0.06]">
+            <ArrowLeft size={20} />
           </button>
         )}
-        {participant.image ? (
-          <img src={participant.image} alt={participant.name || ''} className="w-9 h-9 rounded-full object-cover" />
-        ) : (
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-blue to-purple-500 flex items-center justify-center text-white font-bold text-sm">
-            {initials}
-          </div>
-        )}
+        <div className="relative">
+          {participant.image ? (
+            <img src={participant.image} alt={participant.name || ''} className="w-9 h-9 rounded-full object-cover ring-1 ring-white/[0.1]" />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-blue to-purple-500 flex items-center justify-center text-white font-bold text-sm ring-1 ring-white/[0.1]">
+              {initials}
+            </div>
+          )}
+          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-brand-navy" />
+        </div>
         <div className="flex-1">
           <p className="text-white font-semibold text-sm">{participant.name || 'Unknown'}</p>
-          <p className="text-white/40 text-[10px]">Online</p>
+          <p className="text-emerald-400/70 text-[10px] font-medium">Online</p>
         </div>
         {showWhatsApp && (
           <a

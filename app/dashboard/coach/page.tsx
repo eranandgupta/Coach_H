@@ -1187,25 +1187,62 @@ export default function CoachDashboard() {
         onClose={() => setIsLiveSessionModalOpen(false)}
       />
 
-      {/* Chat View */}
-      {isChatOpen && user && (
-        <div className="fixed inset-0 z-[55] bg-brand-navy flex flex-col">
-          {/* Desktop close bar */}
-          <div className="hidden lg:flex items-center justify-between px-6 py-3 border-b border-white/[0.06] flex-shrink-0"
-            style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(10,15,31,0.9) 100%)' }}>
-            <h2 className="text-white font-bold text-lg">Messages</h2>
-            <button
-              onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
-              className="px-4 py-2 text-sm text-white/60 hover:text-white border border-white/[0.08] rounded-lg hover:bg-white/5 transition-all"
-            >
-              ← Back to Dashboard
-            </button>
+      {/* Chat Panel – Premium Right-Side Slide */}
+      {/* Backdrop overlay for mobile */}
+      {isChatOpen && (
+        <div
+          className="fixed inset-0 z-[54] bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
+        />
+      )}
+      {/* Panel */}
+      <div
+        className={`fixed top-0 right-0 z-[55] h-full flex flex-col transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isChatOpen ? 'translate-x-0' : 'translate-x-full'
+        } w-full sm:w-[420px] lg:w-[460px]`}
+        style={{
+          background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(7,10,21,0.99) 100%)',
+          boxShadow: isChatOpen ? '-8px 0 40px rgba(0,0,0,0.5), -1px 0 0 rgba(99,145,255,0.08)' : 'none',
+        }}
+      >
+        {/* Premium Glass Header */}
+        <div
+          className="flex items-center justify-between px-5 py-3.5 flex-shrink-0 border-b border-white/[0.06]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(99,145,255,0.06) 0%, rgba(139,92,246,0.04) 50%, rgba(10,15,31,0.95) 100%)',
+            backdropFilter: 'blur(20px)',
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-blue to-purple-500 flex items-center justify-center">
+              <MessageSquare className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h2 className="text-white font-bold text-sm tracking-wide">Messages</h2>
+              {unreadChatCount > 0 && (
+                <p className="text-brand-blue text-[10px] font-medium">{unreadChatCount} unread</p>
+              )}
+            </div>
           </div>
+          <button
+            onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
+            className="group flex items-center gap-1.5 px-3 py-1.5 text-xs text-white/50 hover:text-white border border-white/[0.08] rounded-lg hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:translate-x-0.5"><path d="M13 17l5-5-5-5"/><path d="M6 17l5-5-5-5"/></svg>
+            <span className="hidden sm:inline">Close</span>
+          </button>
+        </div>
+
+        {/* Chat Content */}
+        {user && (
           <div className="flex-1 overflow-hidden">
             <ChatContainer userId={user.id} userRole={user.role} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Bottom accent line */}
+        <div className="h-[1px] flex-shrink-0" style={{ background: 'linear-gradient(90deg, transparent, rgba(99,145,255,0.15), transparent)' }} />
+      </div>
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav

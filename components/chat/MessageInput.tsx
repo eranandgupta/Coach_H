@@ -57,7 +57,7 @@ export default function MessageInput({ onSend, disabled }: MessageInputProps) {
       <button
         onClick={handleSend}
         disabled={!text.trim() || disabled}
-        className="w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center flex-shrink-0 disabled:opacity-30 hover:bg-brand-blue/80 transition-colors"
+        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 disabled:opacity-20 transition-all duration-200 disabled:bg-white/[0.06] bg-gradient-to-br from-brand-blue to-blue-600 hover:shadow-lg hover:shadow-brand-blue/25 active:scale-95"
       >
         <Send size={18} className="text-white ml-0.5" />
       </button>
