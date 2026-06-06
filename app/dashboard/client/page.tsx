@@ -14,6 +14,7 @@ import {
   LogOut,
   Bell,
   Key,
+  MessageSquare,
   Play,
   FileText,
   Clock,
@@ -436,6 +437,19 @@ export default function ClientDashboard() {
               title="Change Password"
             >
               <Key className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
+            </button>
+            <button
+              onClick={() => setActiveView('chat')}
+              className="relative flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-xl border border-white/[0.08] hover:border-brand-blue/30 transition-all flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
+            >
+              <MessageSquare className="w-4 h-4 md:w-5 md:h-5 text-brand-blue" />
+              <span className="hidden lg:inline text-brand-blue text-sm font-medium">Chat</span>
+              {unreadChatCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center px-1">
+                  <span className="text-[10px] font-bold text-white">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>
+                </span>
+              )}
             </button>
             <button
               onClick={handleLogout}
@@ -1401,8 +1415,21 @@ export default function ClientDashboard() {
 
       {/* Chat View */}
       {activeView === 'chat' && user && (
-        <div className="fixed inset-0 z-40 bg-brand-navy" style={{ top: 0 }}>
-          <ChatContainer userId={user.id} userRole={user.role} />
+        <div className="fixed inset-0 z-[55] bg-brand-navy flex flex-col">
+          {/* Desktop close bar */}
+          <div className="hidden lg:flex items-center justify-between px-6 py-3 border-b border-white/[0.06] flex-shrink-0"
+            style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(10,15,31,0.9) 100%)' }}>
+            <h2 className="text-white font-bold text-lg">Chat with Coach</h2>
+            <button
+              onClick={() => { setActiveView('dashboard'); fetchUnreadChat(); }}
+              className="px-4 py-2 text-sm text-white/60 hover:text-white border border-white/[0.08] rounded-lg hover:bg-white/5 transition-all"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <ChatContainer userId={user.id} userRole={user.role} />
+          </div>
         </div>
       )}
 

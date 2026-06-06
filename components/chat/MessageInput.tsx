@@ -51,7 +51,7 @@ export default function MessageInput({ onSend, disabled }: MessageInputProps) {
         onInput={handleInput}
         placeholder="Type a message..."
         rows={1}
-        className="flex-1 bg-white/[0.06] border border-white/[0.08] rounded-full px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-brand-blue/50 resize-none scrollbar-hide"
+        className="flex-1 bg-white/[0.06] border border-white/[0.08] rounded-full px-4 py-2.5 text-base text-white placeholder-white/30 focus:outline-none focus:border-brand-blue/50 resize-none scrollbar-hide"
         style={{ maxHeight: '120px' }}
       />
       <button

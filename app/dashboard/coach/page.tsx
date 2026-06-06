@@ -431,13 +431,27 @@ export default function CoachDashboard() {
             <p className="text-gray-300 text-xs lg:text-sm">Manage your clients and create personalized plans</p>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all flex-shrink-0"
-          >
-            <LogOut className="w-5 h-5" />
-            <span className="hidden lg:inline">Logout</span>
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="relative flex items-center gap-2 px-4 py-2 bg-brand-blue/20 text-brand-blue border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all"
+            >
+              <MessageSquare className="w-5 h-5" />
+              <span className="hidden lg:inline">Chat</span>
+              {unreadChatCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center px-1">
+                  <span className="text-[10px] font-bold text-white">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>
+                </span>
+              )}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="hidden lg:inline">Logout</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1175,8 +1189,21 @@ export default function CoachDashboard() {
 
       {/* Chat View */}
       {isChatOpen && user && (
-        <div className="fixed inset-0 z-40 bg-brand-navy">
-          <ChatContainer userId={user.id} userRole={user.role} />
+        <div className="fixed inset-0 z-[55] bg-brand-navy flex flex-col">
+          {/* Desktop close bar */}
+          <div className="hidden lg:flex items-center justify-between px-6 py-3 border-b border-white/[0.06] flex-shrink-0"
+            style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(10,15,31,0.9) 100%)' }}>
+            <h2 className="text-white font-bold text-lg">Messages</h2>
+            <button
+              onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
+              className="px-4 py-2 text-sm text-white/60 hover:text-white border border-white/[0.08] rounded-lg hover:bg-white/5 transition-all"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <ChatContainer userId={user.id} userRole={user.role} />
+          </div>
         </div>
       )}
 
