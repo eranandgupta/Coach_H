@@ -22,72 +22,79 @@ interface ConversationItem {
 interface ChatContainerProps {
   userId: number;
   userRole: string;
+  onClose?: () => void;
 }
 
-export default function ChatContainer({ userId, userRole }: ChatContainerProps) {
+export default function ChatContainer({ userId, userRole, onClose }: ChatContainerProps) {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedConv, setSelectedConv] = useState<ConversationItem | null>(null);
   const [coachInfo, setCoachInfo] = useState<Participant | null>(null);
   const [availableClients, setAvailableClients] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const pollRef = useRef<NodeJS.Timeout>();
+  const mountedRef = useRef(true);
 
   const isCoach = userRole === 'coach' || userRole === 'admin';
 
   const fetchConversations = useCallback(async () => {
+    if (!mountedRef.current) return;
     try {
       const token = localStorage.getItem('token');
+      if (!token) return;
       const res = await fetch('/api/chat/conversations', {
         headers: { Authorization: `Bearer ${token}` },
       });
+      if (!res.ok || !mountedRef.current) return;
       const data = await res.json();
-      if (data.conversations) {
-        setConversations(data.conversations);
-      }
-      if (data.coachInfo) {
-        setCoachInfo(data.coachInfo);
-      }
-      if (data.availableClients) {
-        setAvailableClients(data.availableClients);
-      }
-    } catch (error) {
-      console.error('Failed to fetch conversations:', error);
+      if (data.conversations) setConversations(data.conversations);
+      if (data.coachInfo) setCoachInfo(data.coachInfo);
+      if (data.availableClients) setAvailableClients(data.availableClients);
+    } catch {
+      // silent fail
     } finally {
-      setLoading(false);
+      if (mountedRef.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    mountedRef.current = true;
     fetchConversations();
-    pollRef.current = setInterval(fetchConversations, 5000);
+
+    // Poll conversation list every 15s (lightweight - just list + last message)
+    pollRef.current = setInterval(fetchConversations, 15000);
+
+    // Pause polling when tab is hidden
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (pollRef.current) clearInterval(pollRef.current);
+      } else {
+        fetchConversations();
+        pollRef.current = setInterval(fetchConversations, 15000);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
     return () => {
+      mountedRef.current = false;
       if (pollRef.current) clearInterval(pollRef.current);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [fetchConversations]);
 
-  // For clients: auto-create conversation with coach if none exists
+  // For clients: auto-create conversation with coach if none exists (one-time)
+  const createdRef = useRef(false);
   useEffect(() => {
-    if (!isCoach && !loading && conversations.length === 0 && coachInfo) {
-      const createConversation = async () => {
-        try {
-          const token = localStorage.getItem('token');
-          const res = await fetch('/api/chat/conversations', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ coachId: coachInfo.id, clientId: userId }),
-          });
-          const data = await res.json();
-          if (data.conversation) {
-            fetchConversations();
-          }
-        } catch (error) {
-          console.error('Failed to create conversation:', error);
-        }
-      };
-      createConversation();
+    if (!isCoach && !loading && conversations.length === 0 && coachInfo && !createdRef.current) {
+      createdRef.current = true;
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      fetch('/api/chat/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ coachId: coachInfo.id, clientId: userId }),
+      })
+        .then(() => fetchConversations())
+        .catch(() => {});
     }
   }, [isCoach, loading, conversations.length, coachInfo, userId, fetchConversations]);
 
@@ -107,16 +114,12 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
       const token = localStorage.getItem('token');
       const res = await fetch('/api/chat/conversations', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ coachId: userId, clientId: client.id }),
       });
       const data = await res.json();
       if (data.conversation) {
         await fetchConversations();
-        // Find the newly created conversation and select it
         setSelectedConv({
           id: data.conversation.id,
           participant: client,
@@ -125,14 +128,14 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
           updatedAt: new Date().toISOString(),
         });
       }
-    } catch (error) {
-      console.error('Failed to start conversation:', error);
+    } catch {
+      // silent fail
     }
   };
 
   const handleBack = () => {
     setSelectedConv(null);
-    fetchConversations(); // Refresh unread counts
+    fetchConversations();
   };
 
   if (loading) {
@@ -143,22 +146,21 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
     );
   }
 
-  // Client: go straight to chat (no list needed for single coach)
+  // Client: go straight to chat
   if (!isCoach && selectedConv) {
     return (
       <ChatView
         conversationId={selectedConv.id}
         participant={selectedConv.participant}
         userId={userId}
+        showWhatsApp
+        onBack={onClose}
       />
     );
   }
 
-  // Mobile layout: show list or chat
-  // Desktop layout: side by side
   return (
     <div className="flex h-full bg-brand-navy">
-      {/* Conversation List */}
       <div
         className={`${
           selectedConv ? 'hidden lg:flex' : 'flex'
@@ -174,7 +176,6 @@ export default function ChatContainer({ userId, userRole }: ChatContainerProps) 
         />
       </div>
 
-      {/* Chat View */}
       <div className={`${selectedConv ? 'flex' : 'hidden lg:flex'} flex-col flex-1`}>
         <AnimatePresence mode="wait">
           {selectedConv ? (

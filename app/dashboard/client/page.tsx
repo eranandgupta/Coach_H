@@ -107,7 +107,7 @@ export default function ClientDashboard() {
       }, 120000);
       chatInterval = setInterval(() => {
         fetchUnreadChat();
-      }, 10000);
+      }, 30000);
     };
 
     const stopPolling = () => {
@@ -1428,7 +1428,7 @@ export default function ClientDashboard() {
             </button>
           </div>
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} />
+            <ChatContainer userId={user.id} userRole={user.role} onClose={() => { setActiveView('dashboard'); fetchUnreadChat(); }} />
           </div>
         </div>
       )}

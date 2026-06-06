@@ -8,27 +8,20 @@ async function getHandler(request: NextRequest, context: any) {
   try {
     const isCoach = user.role === 'coach' || user.role === 'admin';
 
-    const conversations = await prisma.conversation.findMany({
-      where: isCoach ? { coachId: user.userId } : { clientId: user.userId },
-      select: { id: true },
-    });
-
-    if (conversations.length === 0) {
-      return Response.json({ unreadCount: 0 });
-    }
-
+    // Single query: count unread messages across all user's conversations
     const unreadCount = await prisma.message.count({
       where: {
-        conversationId: { in: conversations.map((c) => c.id) },
+        conversation: isCoach
+          ? { coachId: user.userId }
+          : { clientId: user.userId },
         senderId: { not: user.userId },
         isRead: false,
       },
     });
 
     return Response.json({ unreadCount });
-  } catch (error) {
-    console.error('Error fetching unread count:', error);
-    return Response.json({ error: 'Failed to fetch unread count' }, { status: 500 });
+  } catch {
+    return Response.json({ unreadCount: 0 });
   }
 }
 

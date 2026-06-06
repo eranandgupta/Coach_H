@@ -38,15 +38,18 @@ async function getHandler(request: NextRequest, context: any) {
       },
     });
 
-    // Mark unread messages from the other party as read
-    await prisma.message.updateMany({
-      where: {
-        conversationId: id,
-        senderId: { not: user.userId },
-        isRead: false,
-      },
-      data: { isRead: true },
-    });
+    // Mark unread messages as read only if there are any
+    const hasUnread = messages.some((m) => m.senderId !== user.userId && !m.isRead);
+    if (hasUnread) {
+      await prisma.message.updateMany({
+        where: {
+          conversationId: id,
+          senderId: { not: user.userId },
+          isRead: false,
+        },
+        data: { isRead: true },
+      });
+    }
 
     return Response.json({ messages });
   } catch (error) {

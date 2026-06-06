@@ -125,7 +125,7 @@ export default function CoachDashboard() {
     fetchEnrollments();
     fetchPlans();
     fetchUnreadChat();
-    const chatInterval = setInterval(fetchUnreadChat, 10000);
+    const chatInterval = setInterval(fetchUnreadChat, 30000);
     return () => clearInterval(chatInterval);
   }, []);
 
@@ -1202,7 +1202,7 @@ export default function CoachDashboard() {
             </button>
           </div>
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} />
+            <ChatContainer userId={user.id} userRole={user.role} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
           </div>
         </div>
       )}
