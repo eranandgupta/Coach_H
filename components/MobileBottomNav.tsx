@@ -93,7 +93,7 @@ export default function MobileBottomNav({ role, activeTab, onTabChange, onAction
               <button
                 key={item.id}
                 onClick={() => handleTap(item)}
-                className={`relative flex flex-1 flex-col items-center justify-center pt-2 transition-colors duration-200 ${
+                className={`relative flex flex-1 flex-col items-center justify-center py-3 transition-colors duration-200 ${
                   isActive
                     ? 'text-blue-400'
                     : 'text-white/40 hover:text-white/60'
