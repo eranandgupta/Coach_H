@@ -202,7 +202,9 @@ export default function ChatView({ conversationId, participant, userId, onBack }
       </div>
 
       {/* Input */}
-      <MessageInput onSend={handleSend} disabled={sending} />
+      <div className="pb-16 lg:pb-0">
+        <MessageInput onSend={handleSend} disabled={sending} />
+      </div>
     </motion.div>
   );
 }

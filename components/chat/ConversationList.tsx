@@ -80,7 +80,7 @@ export default function ConversationList({
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
+      <div className="flex-1 overflow-y-auto scrollbar-hide pb-16 lg:pb-0">
         {filtered.length === 0 && filteredAvailable.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6 py-12">
             <div className="w-14 h-14 rounded-full bg-brand-blue/10 flex items-center justify-center mb-3">
