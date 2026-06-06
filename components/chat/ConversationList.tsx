@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, MessageSquare } from 'lucide-react';
+import { Search, MessageSquare, ArrowLeft } from 'lucide-react';
 
 interface ConversationItem {
   id: number;
@@ -24,6 +24,7 @@ interface ConversationListProps {
   showSearch?: boolean;
   availableClients?: AvailableClient[];
   onStartChat?: (client: AvailableClient) => void;
+  onBack?: () => void;
 }
 
 function timeAgo(dateStr: string) {
@@ -45,6 +46,7 @@ export default function ConversationList({
   showSearch = false,
   availableClients = [],
   onStartChat,
+  onBack,
 }: ConversationListProps) {
   const [search, setSearch] = useState('');
 
@@ -64,7 +66,14 @@ export default function ConversationList({
     <div className="flex flex-col h-full bg-brand-navy">
       {/* Header */}
       <div className="px-4 pt-4 pb-2 flex-shrink-0">
-        <h2 className="text-white font-bold text-xl mb-3">Messages</h2>
+        <div className="flex items-center gap-3 mb-3">
+          {onBack && (
+            <button onClick={onBack} className="text-white/60 hover:text-white transition-colors p-1 -ml-1">
+              <ArrowLeft size={22} />
+            </button>
+          )}
+          <h2 className="text-white font-bold text-xl">Messages</h2>
+        </div>
         {showSearch && (
           <div className="relative mb-2">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />

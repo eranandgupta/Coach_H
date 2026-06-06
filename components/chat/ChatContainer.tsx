@@ -173,6 +173,7 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
           showSearch={isCoach}
           availableClients={isCoach ? availableClients : []}
           onStartChat={handleStartChat}
+          onBack={onClose}
         />
       </div>
 
