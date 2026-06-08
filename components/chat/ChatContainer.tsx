@@ -35,6 +35,8 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
   const mountedRef = useRef(true);
 
   const isCoach = userRole === 'coach' || userRole === 'admin';
+  const isTrainer = userRole === 'trainer';
+  const isStaff = isCoach || isTrainer;
 
   const fetchConversations = useCallback(async () => {
     if (!mountedRef.current) return;
@@ -84,7 +86,7 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
   // For clients: auto-create conversation with coach if none exists (one-time)
   const createdRef = useRef(false);
   useEffect(() => {
-    if (!isCoach && !loading && conversations.length === 0 && coachInfo && !createdRef.current) {
+    if (!isStaff && !loading && conversations.length === 0 && coachInfo && !createdRef.current) {
       createdRef.current = true;
       const token = localStorage.getItem('token');
       if (!token) return;
@@ -96,14 +98,14 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
         .then(() => fetchConversations())
         .catch(() => {});
     }
-  }, [isCoach, loading, conversations.length, coachInfo, userId, fetchConversations]);
+  }, [isStaff, loading, conversations.length, coachInfo, userId, fetchConversations]);
 
   // For clients: auto-select the single conversation
   useEffect(() => {
-    if (!isCoach && conversations.length === 1 && !selectedConv) {
+    if (!isStaff && conversations.length === 1 && !selectedConv) {
       setSelectedConv(conversations[0]);
     }
-  }, [isCoach, conversations, selectedConv]);
+  }, [isStaff, conversations, selectedConv]);
 
   const handleSelect = (conv: ConversationItem) => {
     setSelectedConv(conv);
@@ -112,10 +114,13 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
   const handleStartChat = async (client: Participant) => {
     try {
       const token = localStorage.getItem('token');
+      const body = isTrainer
+        ? { trainerId: userId, clientId: client.id }
+        : { coachId: userId, clientId: client.id };
       const res = await fetch('/api/chat/conversations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ coachId: userId, clientId: client.id }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (data.conversation) {
@@ -147,7 +152,7 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
   }
 
   // Client: go straight to chat
-  if (!isCoach && selectedConv) {
+  if (!isStaff && selectedConv) {
     return (
       <ChatView
         conversationId={selectedConv.id}
@@ -170,8 +175,8 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
           conversations={conversations}
           selectedId={selectedConv?.id}
           onSelect={handleSelect}
-          showSearch={isCoach}
-          availableClients={isCoach ? availableClients : []}
+          showSearch={isStaff}
+          availableClients={isStaff ? availableClients : []}
           onStartChat={handleStartChat}
           onBack={onClose}
         />
@@ -185,7 +190,7 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
               conversationId={selectedConv.id}
               participant={selectedConv.participant}
               userId={userId}
-              onBack={isCoach ? handleBack : undefined}
+              onBack={isStaff ? handleBack : undefined}
             />
           ) : (
             <div className="flex items-center justify-center h-full text-center">

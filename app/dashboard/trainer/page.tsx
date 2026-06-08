@@ -12,6 +12,7 @@ import {
   LogOut,
   Edit,
   Play,
+  MessageSquare,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import LiveSessionModal from '@/components/LiveSessionModal';
@@ -19,6 +20,7 @@ import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import DashboardLoader from '@/components/DashboardLoader';
+import ChatContainer from '@/components/chat/ChatContainer';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -41,14 +43,31 @@ export default function TrainerDashboard() {
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     router.push('/');
   };
 
+  const fetchUnreadChat = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('/api/chat/unread', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (typeof data.unreadCount === 'number') setUnreadChatCount(data.unreadCount);
+    } catch {}
+  };
+
   useEffect(() => {
     fetchDashboardData();
+    fetchUnreadChat();
+    const chatInterval = setInterval(fetchUnreadChat, 30000);
+    return () => clearInterval(chatInterval);
   }, []);
 
   const fetchDashboardData = async () => {
@@ -73,7 +92,7 @@ export default function TrainerDashboard() {
 
       setUser(userData.user);
 
-      // Fetch clients
+      // Fetch assigned clients only
       const clientRes = await fetch('/api/clients', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -171,13 +190,29 @@ export default function TrainerDashboard() {
             <p className="text-gray-300 text-xs lg:text-sm">Manage workouts, diets, and sessions</p>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all flex-shrink-0"
-          >
-            <LogOut className="w-5 h-5" />
-            <span className="hidden lg:inline">Logout</span>
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Chat Button */}
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="relative flex items-center gap-2 px-4 py-2 bg-brand-blue/20 text-brand-blue border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all"
+            >
+              <MessageSquare className="w-5 h-5" />
+              <span className="hidden lg:inline">Chat</span>
+              {unreadChatCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center px-1">
+                  <span className="text-[9px] font-bold text-white">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="hidden lg:inline">Logout</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -260,7 +295,7 @@ export default function TrainerDashboard() {
                 <Users className="w-5 h-5 text-blue-300" />
               </div>
               <h3 className="text-3xl font-bold text-white mb-1">{clients.length}</h3>
-              <p className="text-gray-300 text-sm">Total Clients</p>
+              <p className="text-gray-300 text-sm">Assigned Clients</p>
             </motion.div>
 
             <motion.div
@@ -312,7 +347,7 @@ export default function TrainerDashboard() {
             className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-8"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-              <h2 className="text-2xl font-bold text-white">Clients</h2>
+              <h2 className="text-2xl font-bold text-white">My Assigned Clients</h2>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -328,9 +363,9 @@ export default function TrainerDashboard() {
             {filteredClients.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 mb-2">No clients found</p>
+                <p className="text-gray-400 mb-2">No clients assigned</p>
                 <p className="text-gray-500 text-sm">
-                  {searchTerm ? 'Try a different search term' : 'No clients available'}
+                  {searchTerm ? 'Try a different search term' : 'Ask your coach to assign clients to you'}
                 </p>
               </div>
             ) : (
@@ -576,16 +611,80 @@ export default function TrainerDashboard() {
         onClose={() => setIsLiveSessionModalOpen(false)}
       />
 
+      {/* Chat Panel – Right-Side Slide */}
+      {isChatOpen && (
+        <div
+          className="fixed inset-0 z-[54] bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
+        />
+      )}
+      <div
+        className={`fixed top-0 right-0 z-[55] h-full flex flex-col transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isChatOpen ? 'translate-x-0' : 'translate-x-full'
+        } w-full sm:w-[420px] lg:w-[460px]`}
+        style={{
+          background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(7,10,21,0.99) 100%)',
+          boxShadow: isChatOpen ? '-8px 0 40px rgba(0,0,0,0.5), -1px 0 0 rgba(99,145,255,0.08)' : 'none',
+        }}
+      >
+        <div
+          className="flex items-center justify-between px-5 py-3.5 flex-shrink-0 border-b border-white/[0.06]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(99,145,255,0.06) 0%, rgba(139,92,246,0.04) 50%, rgba(10,15,31,0.95) 100%)',
+            backdropFilter: 'blur(20px)',
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-blue to-purple-500 flex items-center justify-center">
+              <MessageSquare className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h2 className="text-white font-bold text-sm tracking-wide">Messages</h2>
+              {unreadChatCount > 0 && (
+                <p className="text-brand-blue text-[10px] font-medium">{unreadChatCount} unread</p>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
+            className="group flex items-center gap-1.5 px-3 py-1.5 text-xs text-white/50 hover:text-white border border-white/[0.08] rounded-lg hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:translate-x-0.5"><path d="M13 17l5-5-5-5"/><path d="M6 17l5-5-5-5"/></svg>
+            <span className="hidden sm:inline">Close</span>
+          </button>
+        </div>
+
+        {user && (
+          <div className="flex-1 overflow-hidden">
+            <ChatContainer userId={user.id} userRole={user.role} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
+          </div>
+        )}
+
+        <div className="h-[1px] flex-shrink-0" style={{ background: 'linear-gradient(90deg, transparent, rgba(99,145,255,0.15), transparent)' }} />
+      </div>
+
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav
         role="trainer"
+        activeTab={isChatOpen ? 'chat' : undefined}
+        badges={{ chat: unreadChatCount }}
         onTabChange={(tab) => {
+          if (tab === 'chat') {
+            setIsChatOpen(true);
+            return;
+          }
           if (tab === 'sessions') {
             setIsLiveSessionModalOpen(true);
             return;
           }
-          const el = document.getElementById(`section-${tab}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (isChatOpen) {
+            setIsChatOpen(false);
+            fetchUnreadChat();
+          }
+          setTimeout(() => {
+            const el = document.getElementById(`section-${tab}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
         }}
       />
     </div>

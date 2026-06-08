@@ -16,7 +16,7 @@ async function getHandler(request: NextRequest, context: any) {
       where: { id },
     });
 
-    if (!conversation || (conversation.coachId !== user.userId && conversation.clientId !== user.userId)) {
+    if (!conversation || (conversation.coachId !== user.userId && conversation.trainerId !== user.userId && conversation.clientId !== user.userId)) {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -72,7 +72,7 @@ async function postHandler(request: NextRequest, context: any) {
       where: { id },
     });
 
-    if (!conversation || (conversation.coachId !== user.userId && conversation.clientId !== user.userId)) {
+    if (!conversation || (conversation.coachId !== user.userId && conversation.trainerId !== user.userId && conversation.clientId !== user.userId)) {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 

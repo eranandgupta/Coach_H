@@ -66,9 +66,9 @@ export default function MobileBottomNav({ role, activeTab, onTabChange, onAction
     trainer: [
       { id: 'home', label: 'Home', icon: LayoutGrid },
       { id: 'clients', label: 'Clients', icon: Users },
+      { id: 'chat', label: 'Chat', icon: MessageSquare },
       { id: 'workouts', label: 'Workouts', icon: Dumbbell },
       { id: 'diets', label: 'Diets', icon: UtensilsCrossed },
-      { id: 'sessions', label: 'Sessions', icon: Play },
     ],
     admin: [
       { id: 'home', label: 'Home', icon: LayoutGrid },

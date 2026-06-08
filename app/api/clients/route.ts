@@ -12,11 +12,23 @@ async function getHandler(request: NextRequest, context: any) {
 
     const isTrainer = user.role === 'trainer';
 
-    // Get all users with role 'user' (clients)
+    // Trainers only see clients assigned to them
+    let clientFilter: any = { role: 'user' };
+    if (isTrainer) {
+      const assignments = await prisma.trainerClient.findMany({
+        where: { trainerId: user.userId },
+        select: { clientId: true },
+      });
+      const assignedIds = assignments.map((a) => a.clientId);
+      if (assignedIds.length === 0) {
+        return NextResponse.json({ clients: [] }, { status: 200 });
+      }
+      clientFilter.id = { in: assignedIds };
+    }
+
+    // Get clients - trainers don't see email/phone
     const clients = await prisma.user.findMany({
-      where: {
-        role: 'user',
-      },
+      where: clientFilter,
       select: {
         id: true,
         name: true,

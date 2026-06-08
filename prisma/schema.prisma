@@ -26,8 +26,11 @@ model User {
   subscriptions       UserSubscription[]
   workoutPlans        WorkoutPlan[]      @relation("ClientWorkouts")
   createdWorkouts     WorkoutPlan[]      @relation("CoachWorkouts")
-  coachConversations  Conversation[]     @relation("CoachConversations")
-  clientConversations Conversation[]     @relation("ClientConversations")
+  coachConversations   Conversation[]     @relation("CoachConversations")
+  trainerConversations Conversation[]     @relation("TrainerConversations")
+  clientConversations  Conversation[]     @relation("ClientConversations")
+  trainerAssignments   TrainerClient[]    @relation("TrainerAssignments")
+  clientAssignments    TrainerClient[]    @relation("ClientAssignments")
 }
 
 model SubscriptionPlan {
@@ -371,18 +374,36 @@ model SiteSetting {
   @@index([key])
 }
 
+model TrainerClient {
+  id        Int      @id @default(autoincrement())
+  trainerId Int
+  clientId  Int
+  assignedBy Int
+  createdAt DateTime @default(now())
+  trainer   User     @relation("TrainerAssignments", fields: [trainerId], references: [id], onDelete: Cascade)
+  client    User     @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([trainerId, clientId])
+  @@index([trainerId])
+  @@index([clientId])
+}
+
 model Conversation {
   id        Int       @id @default(autoincrement())
-  coachId   Int
+  coachId   Int?
+  trainerId Int?
   clientId  Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  coach     User      @relation("CoachConversations", fields: [coachId], references: [id])
+  coach     User?     @relation("CoachConversations", fields: [coachId], references: [id])
+  trainer   User?     @relation("TrainerConversations", fields: [trainerId], references: [id])
   client    User      @relation("ClientConversations", fields: [clientId], references: [id])
   messages  Message[]
 
   @@unique([coachId, clientId])
+  @@unique([trainerId, clientId])
   @@index([coachId])
+  @@index([trainerId])
   @@index([clientId])
 }
 

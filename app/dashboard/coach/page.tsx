@@ -45,6 +45,7 @@ import Link from 'next/link';
 import { isElitePlan } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
+import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -78,6 +79,7 @@ export default function CoachDashboard() {
   const [adjustDaysClient, setAdjustDaysClient] = useState<any>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  const [isTrainerAssignmentOpen, setIsTrainerAssignmentOpen] = useState(false);
 
   const fetchEnrollments = async () => {
     try {
@@ -572,6 +574,16 @@ export default function CoachDashboard() {
               >
                 <Play className="w-5 h-5" />
                 <span className="text-sm">Live Sessions</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsTrainerAssignmentOpen(true)}
+                className="relative bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-teal-500/30 hover:shadow-xl hover:shadow-teal-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Users className="w-5 h-5" />
+                <span className="text-sm">Assign Trainer</span>
               </motion.button>
             </div>
           </motion.div>
@@ -1185,6 +1197,11 @@ export default function CoachDashboard() {
       <LiveSessionModal
         isOpen={isLiveSessionModalOpen}
         onClose={() => setIsLiveSessionModalOpen(false)}
+      />
+
+      <TrainerAssignmentModal
+        isOpen={isTrainerAssignmentOpen}
+        onClose={() => setIsTrainerAssignmentOpen(false)}
       />
 
       {/* Chat Panel – Premium Right-Side Slide */}

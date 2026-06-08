@@ -7,11 +7,22 @@ async function getHandler(request: NextRequest, context: any) {
 
   try {
     const isCoach = user.role === 'coach' || user.role === 'admin';
+    const isTrainer = user.role === 'trainer';
+
+    let whereClause: any;
+    if (isCoach) {
+      whereClause = { coachId: user.userId };
+    } else if (isTrainer) {
+      whereClause = { trainerId: user.userId };
+    } else {
+      whereClause = { clientId: user.userId };
+    }
 
     const conversations = await prisma.conversation.findMany({
-      where: isCoach ? { coachId: user.userId } : { clientId: user.userId },
+      where: whereClause,
       include: {
         coach: { select: { id: true, name: true, image: true } },
+        trainer: { select: { id: true, name: true, image: true } },
         client: { select: { id: true, name: true, image: true } },
         messages: {
           orderBy: { createdAt: 'desc' },
@@ -33,9 +44,20 @@ async function getHandler(request: NextRequest, context: any) {
           },
         });
 
+        // Determine the other participant
+        let participant;
+        if (isCoach) {
+          participant = conv.client;
+        } else if (isTrainer) {
+          participant = conv.client;
+        } else {
+          // Client: show coach or trainer as participant
+          participant = conv.coach || conv.trainer;
+        }
+
         return {
           id: conv.id,
-          participant: isCoach ? conv.client : conv.coach,
+          participant,
           lastMessage: conv.messages[0] || null,
           unreadCount,
           updatedAt: conv.updatedAt,
@@ -43,9 +65,9 @@ async function getHandler(request: NextRequest, context: any) {
       })
     );
 
-    // For clients: return coach info if no conversation exists yet
+    // For clients: return coach/trainer info if no conversation exists yet
     let coachInfo = null;
-    if (!isCoach && conversations.length === 0) {
+    if (!isCoach && !isTrainer && conversations.length === 0) {
       const workoutPlan = await prisma.workoutPlan.findFirst({
         where: { clientId: user.userId },
         orderBy: { createdAt: 'desc' },
@@ -65,10 +87,9 @@ async function getHandler(request: NextRequest, context: any) {
       }
     }
 
-    // For coaches: also return all 1:1 clients who don't have a conversation yet
+    // For coaches: return available clients without conversations
     let availableClients: { id: number; name: string | null; image: string | null }[] = [];
     if (isCoach) {
-      // Get all unique client IDs that have workout or diet plans from this coach
       const workoutClients = await prisma.workoutPlan.findMany({
         where: { coachId: user.userId },
         select: { clientId: true, client: { select: { id: true, name: true, image: true } } },
@@ -80,7 +101,6 @@ async function getHandler(request: NextRequest, context: any) {
         distinct: ['clientId'],
       });
 
-      // Merge and deduplicate
       const existingConvClientIds = new Set(conversations.map((c) => c.clientId));
       const allClientMap = new Map<number, { id: number; name: string | null; image: string | null }>();
       for (const wp of workoutClients) {
@@ -96,6 +116,18 @@ async function getHandler(request: NextRequest, context: any) {
       availableClients = Array.from(allClientMap.values());
     }
 
+    // For trainers: return assigned clients without conversations
+    if (isTrainer) {
+      const assignments = await prisma.trainerClient.findMany({
+        where: { trainerId: user.userId },
+        include: { client: { select: { id: true, name: true, image: true } } },
+      });
+      const existingConvClientIds = new Set(conversations.map((c) => c.clientId));
+      availableClients = assignments
+        .filter((a) => !existingConvClientIds.has(a.clientId))
+        .map((a) => a.client);
+    }
+
     return Response.json({ conversations: conversationsWithUnread, coachInfo, availableClients });
   } catch (error) {
     console.error('Error fetching conversations:', error);
@@ -107,42 +139,64 @@ async function postHandler(request: NextRequest, context: any) {
   const user = context.user;
 
   try {
-    const { coachId, clientId } = await request.json();
+    const { coachId, trainerId, clientId } = await request.json();
 
-    if (!coachId || !clientId) {
-      return Response.json({ error: 'coachId and clientId required' }, { status: 400 });
+    if (!clientId || (!coachId && !trainerId)) {
+      return Response.json({ error: 'clientId and either coachId or trainerId required' }, { status: 400 });
     }
 
     // Verify the requesting user is one of the participants
-    if (user.userId !== coachId && user.userId !== clientId) {
+    const participantId = coachId || trainerId;
+    if (user.userId !== participantId && user.userId !== clientId) {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Verify coach-client relationship exists
-    const relationship = await prisma.workoutPlan.findFirst({
-      where: { coachId, clientId },
-    });
-    if (!relationship) {
-      const dietRelationship = await prisma.dietPlan.findFirst({
+    if (trainerId) {
+      // Trainer-client conversation: verify assignment exists
+      const assignment = await prisma.trainerClient.findUnique({
+        where: { trainerId_clientId: { trainerId, clientId } },
+      });
+      if (!assignment) {
+        return Response.json({ error: 'Client is not assigned to this trainer' }, { status: 403 });
+      }
+
+      const conversation = await prisma.conversation.upsert({
+        where: { trainerId_clientId: { trainerId, clientId } },
+        create: { trainerId, clientId },
+        update: {},
+        include: {
+          trainer: { select: { id: true, name: true, image: true } },
+          client: { select: { id: true, name: true, image: true } },
+        },
+      });
+
+      return Response.json({ conversation });
+    } else {
+      // Coach-client conversation: verify relationship exists
+      const relationship = await prisma.workoutPlan.findFirst({
         where: { coachId, clientId },
       });
-      if (!dietRelationship) {
-        return Response.json({ error: 'No coach-client relationship found' }, { status: 403 });
+      if (!relationship) {
+        const dietRelationship = await prisma.dietPlan.findFirst({
+          where: { coachId, clientId },
+        });
+        if (!dietRelationship) {
+          return Response.json({ error: 'No coach-client relationship found' }, { status: 403 });
+        }
       }
+
+      const conversation = await prisma.conversation.upsert({
+        where: { coachId_clientId: { coachId, clientId } },
+        create: { coachId, clientId },
+        update: {},
+        include: {
+          coach: { select: { id: true, name: true, image: true } },
+          client: { select: { id: true, name: true, image: true } },
+        },
+      });
+
+      return Response.json({ conversation });
     }
-
-    // Upsert conversation
-    const conversation = await prisma.conversation.upsert({
-      where: { coachId_clientId: { coachId, clientId } },
-      create: { coachId, clientId },
-      update: {},
-      include: {
-        coach: { select: { id: true, name: true, image: true } },
-        client: { select: { id: true, name: true, image: true } },
-      },
-    });
-
-    return Response.json({ conversation });
   } catch (error) {
     console.error('Error creating conversation:', error);
     return Response.json({ error: 'Failed to create conversation' }, { status: 500 });

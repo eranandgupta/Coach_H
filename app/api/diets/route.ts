@@ -9,17 +9,25 @@ async function getHandler(request: NextRequest, context: any) {
   try {
     const { user } = context;
 
-    // Trainers see all diets; coaches see only their own
+    // Trainers see only assigned clients' diets; coaches see their own
+    let whereClause: any = { coachId: user.userId };
+    if (user.role === 'trainer') {
+      const assignments = await prisma.trainerClient.findMany({
+        where: { trainerId: user.userId },
+        select: { clientId: true },
+      });
+      const assignedIds = assignments.map((a) => a.clientId);
+      whereClause = assignedIds.length > 0 ? { clientId: { in: assignedIds } } : { id: -1 };
+    }
+
     const diets = await prisma.dietPlan.findMany({
-      where: user.role === 'trainer' ? {} : {
-        coachId: user.userId,
-      },
+      where: whereClause,
       include: {
         client: {
           select: {
             id: true,
             name: true,
-            email: true,
+            email: user.role !== 'trainer',
           },
         },
         meals: {

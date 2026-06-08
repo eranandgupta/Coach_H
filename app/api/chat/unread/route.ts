@@ -7,13 +7,20 @@ async function getHandler(request: NextRequest, context: any) {
 
   try {
     const isCoach = user.role === 'coach' || user.role === 'admin';
+    const isTrainer = user.role === 'trainer';
 
-    // Single query: count unread messages across all user's conversations
+    let conversationFilter: any;
+    if (isCoach) {
+      conversationFilter = { coachId: user.userId };
+    } else if (isTrainer) {
+      conversationFilter = { trainerId: user.userId };
+    } else {
+      conversationFilter = { clientId: user.userId };
+    }
+
     const unreadCount = await prisma.message.count({
       where: {
-        conversation: isCoach
-          ? { coachId: user.userId }
-          : { clientId: user.userId },
+        conversation: conversationFilter,
         senderId: { not: user.userId },
         isRead: false,
       },
