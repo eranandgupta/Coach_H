@@ -11,6 +11,39 @@ interface MessageBubbleProps {
   senderName?: string;
 }
 
+const URL_REGEX = /(https?:\/\/[^\s]+|(?:www\.)[^\s]+|[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.(?:com|org|net|io|dev|app|life|in|co|me|info|xyz|tech|ai|gg|tv|cc|us|uk|ca|au|de|fr|es|it|nl|be|ch|at|se|no|dk|fi|pl|cz|pt|br|jp|kr|cn|ru|za|nz|ie|sg|hk|tw|my|ph|th|vn|id|ae|sa|eg|ke|ng|gh|tz|ug)(?:\/[^\s]*)?)/gi;
+
+function renderWithLinks(text: string, isSender: boolean) {
+  const parts: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  URL_REGEX.lastIndex = 0;
+  while ((match = URL_REGEX.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const url = match[0];
+    const href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+    parts.push(
+      <a
+        key={match.index}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`underline break-all ${isSender ? 'text-white/90 hover:text-white' : 'text-brand-blue hover:text-blue-400'}`}
+      >
+        {url}
+      </a>
+    );
+    lastIndex = match.index + url.length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return parts.length > 0 ? parts : [text];
+}
+
 export default function MessageBubble({
   content,
   createdAt,
@@ -35,7 +68,7 @@ export default function MessageBubble({
               : 'bg-white/[0.08] text-white rounded-2xl rounded-bl-sm'
           }`}
         >
-          {content}
+          {renderWithLinks(content, isSender)}
         </div>
 
         {/* Timestamp + read indicator */}
