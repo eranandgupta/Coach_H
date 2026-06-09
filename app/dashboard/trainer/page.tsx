@@ -621,7 +621,7 @@ export default function TrainerDashboard() {
       <div
         className={`fixed top-0 right-0 z-[55] h-full flex flex-col transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isChatOpen ? 'translate-x-0' : 'translate-x-full'
-        } w-full sm:w-[420px] lg:w-[460px]`}
+        } w-full sm:w-[420px] lg:w-[780px]`}
         style={{
           background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(7,10,21,0.99) 100%)',
           boxShadow: isChatOpen ? '-8px 0 40px rgba(0,0,0,0.5), -1px 0 0 rgba(99,145,255,0.08)' : 'none',
