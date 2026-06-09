@@ -140,6 +140,11 @@ export default function LiveSessionModal({ isOpen, onClose }: LiveSessionModalPr
   const getLinkForPlan = (planName: string) => links.find(l => l.planName === planName && !l.clientId);
   const getLinkForClient = (clientId: number) => links.find(l => l.clientId === clientId);
 
+  const ensureProtocol = (url: string) => {
+    if (!/^https?:\/\//i.test(url)) return `https://${url}`;
+    return url;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -236,7 +241,7 @@ export default function LiveSessionModal({ isOpen, onClose }: LiveSessionModalPr
                                 <p className="text-white/70 text-xs mb-1">{activeLink.title}</p>
                               )}
                               <div className="flex items-center gap-2">
-                                <a href={activeLink.link} target="_blank" rel="noopener noreferrer" className="flex-1 text-brand-blue text-xs truncate hover:underline">
+                                <a href={ensureProtocol(activeLink.link)} target="_blank" rel="noopener noreferrer" className="flex-1 text-brand-blue text-xs truncate hover:underline">
                                   {activeLink.link}
                                 </a>
                                 <button onClick={() => handleDelete(activeLink.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-gray-500 hover:text-red-400 transition-colors">
@@ -354,7 +359,7 @@ export default function LiveSessionModal({ isOpen, onClose }: LiveSessionModalPr
                                   <p className="text-white/70 text-xs mb-1">{activeLink.title}</p>
                                 )}
                                 <div className="flex items-center gap-2">
-                                  <a href={activeLink.link} target="_blank" rel="noopener noreferrer" className="flex-1 text-brand-blue text-xs truncate hover:underline">
+                                  <a href={ensureProtocol(activeLink.link)} target="_blank" rel="noopener noreferrer" className="flex-1 text-brand-blue text-xs truncate hover:underline">
                                     {activeLink.link}
                                   </a>
                                   <button onClick={() => handleDelete(activeLink.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-gray-500 hover:text-red-400 transition-colors">

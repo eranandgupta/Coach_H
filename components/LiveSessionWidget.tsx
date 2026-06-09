@@ -11,6 +11,11 @@ interface LiveSessionWidgetProps {
 export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) {
   const [sessionLink, setSessionLink] = useState<{ link: string; title: string | null; updatedAt: string } | null>(null);
 
+  const ensureProtocol = (url: string) => {
+    if (!/^https?:\/\//i.test(url)) return `https://${url}`;
+    return url;
+  };
+
   const isElite = planName.startsWith('Elite 1:1');
   const isSheSstrong = planName === 'She Strong Program';
   const schedule = isElite
@@ -80,7 +85,7 @@ export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) 
                   <p className="text-white/80 text-sm font-medium">{sessionLink.title}</p>
                 )}
                 <a
-                  href={sessionLink.link}
+                  href={ensureProtocol(sessionLink.link)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30"
