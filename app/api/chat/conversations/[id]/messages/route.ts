@@ -11,12 +11,19 @@ async function getHandler(request: NextRequest, context: any) {
   }
 
   try {
-    // Verify user is participant
+    // Verify user is participant (or coach viewing trainer conversation)
     const conversation = await prisma.conversation.findUnique({
       where: { id },
     });
 
-    if (!conversation || (conversation.coachId !== user.userId && conversation.trainerId !== user.userId && conversation.clientId !== user.userId)) {
+    const isParticipant = conversation && (
+      conversation.coachId === user.userId ||
+      conversation.trainerId === user.userId ||
+      conversation.clientId === user.userId
+    );
+    const isCoachViewing = conversation && (user.role === 'coach' || user.role === 'admin') && conversation.trainerId !== null;
+
+    if (!conversation || (!isParticipant && !isCoachViewing)) {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -38,20 +45,22 @@ async function getHandler(request: NextRequest, context: any) {
       },
     });
 
-    // Mark unread messages as read only if there are any
-    const hasUnread = messages.some((m) => m.senderId !== user.userId && !m.isRead);
-    if (hasUnread) {
-      await prisma.message.updateMany({
-        where: {
-          conversationId: id,
-          senderId: { not: user.userId },
-          isRead: false,
-        },
-        data: { isRead: true },
-      });
+    // Mark unread messages as read only if user is a participant (not coach viewing)
+    if (isParticipant) {
+      const hasUnread = messages.some((m) => m.senderId !== user.userId && !m.isRead);
+      if (hasUnread) {
+        await prisma.message.updateMany({
+          where: {
+            conversationId: id,
+            senderId: { not: user.userId },
+            isRead: false,
+          },
+          data: { isRead: true },
+        });
+      }
     }
 
-    return Response.json({ messages });
+    return Response.json({ messages, isReadOnly: isCoachViewing && !isParticipant });
   } catch (error) {
     console.error('Error fetching messages:', error);
     return Response.json({ error: 'Failed to fetch messages' }, { status: 500 });
@@ -67,7 +76,7 @@ async function postHandler(request: NextRequest, context: any) {
   }
 
   try {
-    // Verify user is participant
+    // Verify user is a direct participant (coach cannot send in trainer conversations)
     const conversation = await prisma.conversation.findUnique({
       where: { id },
     });

@@ -913,6 +913,11 @@ export default function CoachDashboard() {
                     <Calendar className="w-3 h-3" />
                     {new Date(workout.startDate).toLocaleDateString()} -{' '}
                     {new Date(workout.endDate).toLocaleDateString()}
+                    {workout.coach && workout.coach.id !== user?.id && (
+                      <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-[10px] font-semibold ml-auto">
+                        By {workout.coach.name || 'Trainer'}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -964,6 +969,11 @@ export default function CoachDashboard() {
                     </div>
                     {diet.targetCalories && (
                       <div>{diet.targetCalories} cal/day</div>
+                    )}
+                    {diet.coach && diet.coach.id !== user?.id && (
+                      <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-[10px] font-semibold ml-auto">
+                        By {diet.coach.name || 'Trainer'}
+                      </span>
                     )}
                   </div>
                 </div>

@@ -17,6 +17,8 @@ interface ConversationItem {
   lastMessage: { content: string; createdAt: string; senderId: number; isRead: boolean } | null;
   unreadCount: number;
   updatedAt: string;
+  isTrainerConversation?: boolean;
+  trainer?: Participant;
 }
 
 interface ChatContainerProps {
@@ -191,6 +193,9 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
               participant={selectedConv.participant}
               userId={userId}
               onBack={isStaff ? handleBack : undefined}
+              readOnly={selectedConv.isTrainerConversation}
+              trainerName={selectedConv.isTrainerConversation ? (selectedConv.trainer?.name || 'Trainer') : undefined}
+              trainerUserId={selectedConv.isTrainerConversation ? selectedConv.trainer?.id : undefined}
             />
           ) : (
             <div className="flex items-center justify-center h-full text-center">

@@ -11,7 +11,13 @@ async function getHandler(request: NextRequest, context: any) {
 
     let whereClause: any;
     if (isCoach) {
-      whereClause = { coachId: user.userId };
+      // Coach sees their own conversations AND all trainer-client conversations
+      whereClause = {
+        OR: [
+          { coachId: user.userId },
+          { trainerId: { not: null } },
+        ],
+      };
     } else if (isTrainer) {
       whereClause = { trainerId: user.userId };
     } else {
@@ -55,12 +61,17 @@ async function getHandler(request: NextRequest, context: any) {
           participant = conv.coach || conv.trainer;
         }
 
+        // For coach: flag trainer conversations and include trainer info
+        const isTrainerConversation = isCoach && conv.trainerId !== null && conv.coachId !== user.userId;
+
         return {
           id: conv.id,
           participant,
           lastMessage: conv.messages[0] || null,
           unreadCount,
           updatedAt: conv.updatedAt,
+          isTrainerConversation,
+          trainer: isTrainerConversation ? conv.trainer : undefined,
         };
       })
     );

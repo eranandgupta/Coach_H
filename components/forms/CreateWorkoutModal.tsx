@@ -87,6 +87,50 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const selectedClient = clients.find(c => c.id.toString() === clientId);
   const selectedClientIsElite = isElitePlan(selectedClient?.subscriptions?.[0]?.plan?.name || '');
 
+  // Auto-increment week/session number when client is selected (only for new workouts)
+  useEffect(() => {
+    if (!clientId || workout) return;
+    const client = clients.find(c => c.id.toString() === clientId);
+    const isElite = isElitePlan(client?.subscriptions?.[0]?.plan?.name || '');
+
+    const fetchNextNumber = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        if (isElite && client?.subscriptions?.[0]?.id) {
+          // For Elite clients: next session = completed sessions + 1
+          const res = await fetch(`/api/sessions?subscriptionId=${client.subscriptions[0].id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const completedCount = (data.sessions || []).length;
+            setWeekNumber((completedCount + 1).toString());
+            return;
+          }
+        }
+
+        // For regular clients: next week = max week + 1
+        const res = await fetch('/api/workouts', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const clientWorkouts = (data.workouts || []).filter((w: any) => w.clientId === parseInt(clientId));
+          if (clientWorkouts.length > 0) {
+            const maxWeek = Math.max(...clientWorkouts.map((w: any) => w.weekNumber || 0));
+            setWeekNumber((maxWeek + 1).toString());
+          } else {
+            setWeekNumber('1');
+          }
+        }
+      } catch {
+        // silent - keep default
+      }
+    };
+    fetchNextNumber();
+  }, [clientId, workout, clients]);
+
   useEffect(() => {
     if (isOpen) {
       fetchClients();

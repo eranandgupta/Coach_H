@@ -157,6 +157,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
   const [selectedSubCategory, setSelectedSubCategory] = useState<VideoCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingVideos, setIsLoadingVideos] = useState(false);
+  const [isIframeLoading, setIsIframeLoading] = useState(false);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -166,10 +167,12 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch categories on mount
+  // Fetch categories on mount (skip if already loaded)
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && categories.length === 0) {
       fetchCategories();
+    } else if (isOpen) {
+      setIsLoading(false);
     }
   }, [isOpen]);
 
@@ -297,16 +300,19 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
     setRecentSearches(newRecent);
     localStorage.setItem('videoLibraryRecentSearches', JSON.stringify(newRecent));
 
-    // Set category and video
-    const category = categories.find(c => c.id === video.categoryId);
-    if (category) {
-      setSelectedCategory(category);
-      await fetchVideos(video.categoryId);
-    }
+    // Set video immediately to show player without loading state
     setSelectedVideo(video);
+    setIsIframeLoading(true);
     setSearchQuery('');
     setSearchResults([]);
     setIsSearchFocused(false);
+
+    // Set category and fetch videos in background (for playlist sidebar)
+    const category = categories.find(c => c.id === video.categoryId);
+    if (category) {
+      setSelectedCategory(category);
+      fetchVideos(video.categoryId);
+    }
   };
 
   // Handle recent search click
@@ -370,6 +376,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
 
   const handleVideoClick = (video: Video) => {
     setSelectedVideo(video);
+    setIsIframeLoading(true);
   };
 
   return (
@@ -609,6 +616,11 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                           className="relative bg-black rounded-lg lg:rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10"
                           onContextMenu={(e) => e.preventDefault()}
                         >
+                          {isIframeLoading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                              <Loader2 className="w-10 h-10 text-brand-blue animate-spin" />
+                            </div>
+                          )}
                           <div className="aspect-video w-full">
                             <iframe
                               key={selectedVideo.id}
@@ -618,6 +630,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               allow="autoplay; fullscreen"
                               allowFullScreen
                               title={selectedVideo.title}
+                              onLoad={() => setIsIframeLoading(false)}
                             />
                           </div>
                         </div>

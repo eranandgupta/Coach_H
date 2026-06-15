@@ -49,6 +49,50 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   const selectedClient = clients.find(c => c.id.toString() === clientId);
   const selectedClientIsElite = isElitePlan(selectedClient?.subscriptions?.[0]?.plan?.name || '');
 
+  // Auto-increment week/session number when client is selected (only for new diets)
+  useEffect(() => {
+    if (!clientId || diet) return;
+    const client = clients.find(c => c.id.toString() === clientId);
+    const isElite = isElitePlan(client?.subscriptions?.[0]?.plan?.name || '');
+
+    const fetchNextNumber = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        if (isElite && client?.subscriptions?.[0]?.id) {
+          // For Elite clients: next session = completed sessions + 1
+          const res = await fetch(`/api/sessions?subscriptionId=${client.subscriptions[0].id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const completedCount = (data.sessions || []).length;
+            setWeekNumber((completedCount + 1).toString());
+            return;
+          }
+        }
+
+        // For regular clients: next week = max week + 1
+        const res = await fetch('/api/diets', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const clientDiets = (data.diets || []).filter((d: any) => d.clientId === parseInt(clientId));
+          if (clientDiets.length > 0) {
+            const maxWeek = Math.max(...clientDiets.map((d: any) => d.weekNumber || 0));
+            setWeekNumber((maxWeek + 1).toString());
+          } else {
+            setWeekNumber('1');
+          }
+        }
+      } catch {
+        // silent - keep default
+      }
+    };
+    fetchNextNumber();
+  }, [clientId, diet, clients]);
+
   useEffect(() => {
     if (isOpen) {
       fetchClients();

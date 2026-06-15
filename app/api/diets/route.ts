@@ -30,6 +30,12 @@ async function getHandler(request: NextRequest, context: any) {
             email: user.role !== 'trainer',
           },
         },
+        coach: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         meals: {
           orderBy: { order: 'asc' },
         },
@@ -39,7 +45,39 @@ async function getHandler(request: NextRequest, context: any) {
       },
     });
 
-    return NextResponse.json({ diets }, { status: 200 });
+    // For coach: also fetch diets created by trainers for assigned clients
+    let trainerDiets: typeof diets = [];
+    if (user.role === 'coach' || user.role === 'admin') {
+      const trainerAssignments = await prisma.trainerClient.findMany({
+        where: { assignedBy: user.userId },
+        select: { clientId: true },
+      });
+      if (trainerAssignments.length > 0) {
+        const trainerClientIds = trainerAssignments.map((a) => a.clientId);
+        trainerDiets = await prisma.dietPlan.findMany({
+          where: {
+            clientId: { in: trainerClientIds },
+            coachId: { not: user.userId },
+          },
+          include: {
+            client: {
+              select: { id: true, name: true, email: true },
+            },
+            coach: {
+              select: { id: true, name: true },
+            },
+            meals: {
+              orderBy: { order: 'asc' },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+      }
+    }
+
+    const allDiets = [...diets, ...trainerDiets];
+
+    return NextResponse.json({ diets: allDiets }, { status: 200 });
   } catch (error) {
     console.error('Get diets error:', error);
     return NextResponse.json(

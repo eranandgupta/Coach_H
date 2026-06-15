@@ -9,6 +9,8 @@ interface ConversationItem {
   lastMessage: { content: string; createdAt: string; senderId: number; isRead: boolean } | null;
   unreadCount: number;
   updatedAt: string;
+  isTrainerConversation?: boolean;
+  trainer?: { id: number; name: string | null; image: string | null };
 }
 
 interface AvailableClient {
@@ -143,9 +145,16 @@ export default function ConversationList({
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <p className={`text-sm truncate ${hasUnread ? 'text-white font-semibold' : 'text-white/80 font-medium'}`}>
-                      {conv.participant.name || 'Unknown'}
-                    </p>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <p className={`text-sm truncate ${hasUnread ? 'text-white font-semibold' : 'text-white/80 font-medium'}`}>
+                        {conv.participant.name || 'Unknown'}
+                      </p>
+                      {conv.isTrainerConversation && conv.trainer && (
+                        <span className="flex-shrink-0 px-1.5 py-0.5 text-[9px] font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full">
+                          via {conv.trainer.name?.split(' ')[0] || 'Trainer'}
+                        </span>
+                      )}
+                    </div>
                     {conv.lastMessage && (
                       <span className="text-[10px] text-white/30 flex-shrink-0 ml-2">
                         {timeAgo(conv.lastMessage.createdAt)}

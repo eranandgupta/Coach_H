@@ -60,6 +60,12 @@ export default function MessageBubble({
   return (
     <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-1`}>
       <div className={`max-w-[75%] ${isSender ? 'items-end' : 'items-start'}`}>
+        {/* Sender name label (for read-only view) */}
+        {senderName && (
+          <p className={`text-[10px] font-semibold mb-0.5 px-1 ${isSender ? 'text-brand-blue/70 text-right' : 'text-amber-400/70 text-left'}`}>
+            {senderName}
+          </p>
+        )}
         {/* Bubble */}
         <div
           className={`px-4 py-2.5 text-sm leading-relaxed break-words ${

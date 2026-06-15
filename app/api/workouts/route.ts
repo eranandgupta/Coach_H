@@ -9,7 +9,7 @@ async function getHandler(request: NextRequest, context: any) {
   try {
     const { user } = context;
 
-    // Trainers see only assigned clients' workouts; coaches see their own
+    // Trainers see only assigned clients' workouts; coaches see all (own + trainer-created)
     let whereClause: any = { coachId: user.userId };
     if (user.role === 'trainer') {
       const assignments = await prisma.trainerClient.findMany({
@@ -30,6 +30,12 @@ async function getHandler(request: NextRequest, context: any) {
             email: user.role !== 'trainer',
           },
         },
+        coach: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         exercises: {
           orderBy: { order: 'asc' },
         },
@@ -39,7 +45,40 @@ async function getHandler(request: NextRequest, context: any) {
       },
     });
 
-    return NextResponse.json({ workouts }, { status: 200 });
+    // For coach: also fetch workouts created by trainers for assigned clients
+    let trainerWorkouts: typeof workouts = [];
+    if (user.role === 'coach' || user.role === 'admin') {
+      const trainerAssignments = await prisma.trainerClient.findMany({
+        where: { assignedBy: user.userId },
+        select: { clientId: true, trainerId: true },
+      });
+      if (trainerAssignments.length > 0) {
+        const trainerClientIds = trainerAssignments.map((a) => a.clientId);
+        trainerWorkouts = await prisma.workoutPlan.findMany({
+          where: {
+            clientId: { in: trainerClientIds },
+            coachId: { not: user.userId },
+          },
+          include: {
+            client: {
+              select: { id: true, name: true, email: true },
+            },
+            coach: {
+              select: { id: true, name: true },
+            },
+            exercises: {
+              orderBy: { order: 'asc' },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+      }
+    }
+
+    // Merge and deduplicate
+    const allWorkouts = [...workouts, ...trainerWorkouts];
+
+    return NextResponse.json({ workouts: allWorkouts }, { status: 200 });
   } catch (error) {
     console.error('Get workouts error:', error);
     return NextResponse.json(

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, Calendar, Play } from 'lucide-react';
+import { X, Dumbbell, Calendar, Play, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ProtectedContent from '@/components/ProtectedContent';
 
@@ -15,6 +15,7 @@ interface ViewWorkoutModalProps {
 
 export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, isElitePlan = false }: ViewWorkoutModalProps) {
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const [loadingIframeId, setLoadingIframeId] = useState<string | null>(null);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -192,9 +193,11 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, 
                                       )}
                                       {exercise.videoUrl && (
                                         <button
-                                          onClick={() => setPlayingVideoId(
-                                            playingVideoId === exercise.id ? null : exercise.id
-                                          )}
+                                          onClick={() => {
+                                            const newId = playingVideoId === exercise.id ? null : exercise.id;
+                                            setPlayingVideoId(newId);
+                                            if (newId) setLoadingIframeId(newId);
+                                          }}
                                           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all font-medium ${
                                             playingVideoId === exercise.id
                                               ? 'bg-red-500/20 text-red-400 border border-red-500/30'
@@ -218,7 +221,12 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, 
 
                                     {/* Inline Video Player */}
                                     {exercise.videoUrl && playingVideoId === exercise.id && (
-                                      <div className="mt-3 rounded-lg overflow-hidden border border-white/10 bg-black">
+                                      <div className="mt-3 rounded-lg overflow-hidden border border-white/10 bg-black relative">
+                                        {loadingIframeId === exercise.id && (
+                                          <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                                            <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
+                                          </div>
+                                        )}
                                         <div className="aspect-video w-full">
                                           <iframe
                                             src={`${exercise.videoUrl}?autoplay=1`}
@@ -227,6 +235,7 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, 
                                             allow="autoplay; fullscreen"
                                             allowFullScreen
                                             title={exercise.name}
+                                            onLoad={() => setLoadingIframeId(null)}
                                           />
                                         </div>
                                       </div>

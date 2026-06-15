@@ -26,9 +26,12 @@ interface ChatViewProps {
   userId: number;
   onBack?: () => void;
   showWhatsApp?: boolean;
+  readOnly?: boolean;
+  trainerName?: string;
+  trainerUserId?: number;
 }
 
-export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp }: ChatViewProps) {
+export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId }: ChatViewProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -198,7 +201,11 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
         </div>
         <div className="flex-1">
           <p className="text-white font-semibold text-sm">{participant.name || 'Unknown'}</p>
-          <p className="text-emerald-400/70 text-[10px] font-medium">Online</p>
+          {readOnly && trainerName ? (
+            <p className="text-amber-400/70 text-[10px] font-medium">Trainer: {trainerName} (View Only)</p>
+          ) : (
+            <p className="text-emerald-400/70 text-[10px] font-medium">Online</p>
+          )}
         </div>
         {showWhatsApp && (
           <a
@@ -243,8 +250,9 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
                   key={msg.id}
                   content={msg.content}
                   createdAt={msg.createdAt}
-                  isSender={msg.senderId === userId}
+                  isSender={readOnly && trainerUserId ? msg.senderId === trainerUserId : msg.senderId === userId}
                   isRead={msg.isRead}
+                  senderName={readOnly && trainerUserId ? (msg.senderId === trainerUserId ? trainerName : participant.name || 'Client') : undefined}
                 />
               ))}
             </div>
@@ -255,7 +263,15 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
 
       {/* Input */}
       <div className="pb-16 lg:pb-0">
-        <MessageInput onSend={handleSend} disabled={sending} />
+        {readOnly ? (
+          <div className="px-4 py-3 border-t border-white/[0.06] bg-amber-500/5">
+            <p className="text-amber-400/60 text-xs text-center font-medium">
+              View only — This is a conversation between {trainerName || 'Trainer'} and {participant.name || 'Client'}
+            </p>
+          </div>
+        ) : (
+          <MessageInput onSend={handleSend} disabled={sending} />
+        )}
       </div>
     </motion.div>
   );
