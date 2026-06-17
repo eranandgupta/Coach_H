@@ -53,13 +53,69 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function BlogPostLayout({
+export default async function BlogPostLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
   params: { slug: string };
 }) {
+  let blogPostSchema = null;
+  try {
+    const post = await prisma.blogPost.findUnique({
+      where: { slug: params.slug, published: true },
+      select: {
+        title: true,
+        excerpt: true,
+        coverImage: true,
+        publishedAt: true,
+        updatedAt: true,
+        content: true,
+        author: { select: { name: true } },
+      },
+    });
+
+    if (post) {
+      const wordCount = post.content ? post.content.split(/\s+/).length : 0;
+      blogPostSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt || post.title,
+        image: post.coverImage || 'https://coachhimanshu.com/opengraph-image',
+        datePublished: post.publishedAt?.toISOString(),
+        dateModified: post.updatedAt?.toISOString(),
+        wordCount,
+        author: {
+          '@type': 'Person',
+          name: post.author?.name || 'Coach Himanshu',
+          url: 'https://coachhimanshu.com/about',
+          jobTitle: 'NASM Certified Fitness Coach',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Coach Himanshu',
+          url: 'https://coachhimanshu.com',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://coachhimanshu.com/favicon.png',
+          },
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `https://coachhimanshu.com/blog/${params.slug}`,
+        },
+        isPartOf: {
+          '@type': 'Blog',
+          name: 'Coach Himanshu Fitness Blog',
+          url: 'https://coachhimanshu.com/blog',
+        },
+      };
+    }
+  } catch {
+    // If DB unavailable, skip schema
+  }
+
   return (
     <>
       <script
@@ -76,6 +132,12 @@ export default function BlogPostLayout({
           }),
         }}
       />
+      {blogPostSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostSchema) }}
+        />
+      )}
       {children}
     </>
   );

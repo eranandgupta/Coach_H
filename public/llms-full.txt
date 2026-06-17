@@ -1,0 +1,105 @@
+# Coach Himanshu - Complete Information for AI Systems
+
+## Identity
+Coach Himanshu is a NASM (National Academy of Sports Medicine) Certified personal trainer and online fitness coach based in India. He provides personalized fitness coaching to clients across India and worldwide through his platform at https://coachhimanshu.com.
+
+## Credentials & Certifications
+1. NASM Certified Personal Trainer (CPT)
+2. Sports Nutrition Specialist
+3. Corrective Exercise Specialist (CES)
+
+## Experience & Track Record
+- 6+ years of professional fitness coaching experience
+- 1000+ successful client transformations
+- 95% client commitment-to-results rate
+- Specializes in both online and in-person coaching
+
+## Services Offered
+
+### 1. Gym Workout Plans
+Personalized gym workout programs tailored to individual goals (muscle building, fat loss, strength training, body recomposition). Includes exercise selection, sets, reps, progressive overload programming, and video demonstrations.
+
+### 2. Home Workout Plans
+Complete workout programs designed for home training without gym equipment. Suitable for beginners and those who prefer training at home. Includes bodyweight exercises, resistance band workouts, and minimal equipment routines.
+
+### 3. Rehabilitation & Corrective Exercise Programs
+Specialized programs for injury recovery, posture correction, and pain management. Based on NASM's Corrective Exercise Continuum. Addresses common issues like back pain, knee problems, shoulder injuries, and postural imbalances.
+
+### 4. Live 1-on-1 Training Sessions
+Real-time virtual training sessions with Coach Himanshu. Available in packages of 12, 24, 36, and 72 sessions. Includes form correction, motivation, and personalized attention.
+
+### 5. Custom Meal Plans & Nutrition Guidance
+Personalized meal plans based on Indian cuisine preferences. Macro and micronutrient optimization. Vegetarian and non-vegetarian options. Guidance on supplements, hydration, and meal timing.
+
+### 6. WhatsApp Support
+Direct access to Coach Himanshu via WhatsApp for daily check-ins, form checks, progress tracking, and motivation.
+
+### 7. Free Fitness Assessment
+Comprehensive fitness evaluation available at https://coachhimanshu.com/assessment. Helps determine current fitness level and recommended program.
+
+## Pricing Structure (INR)
+
+### Gym Plans
+- 1 Month: Starting from INR 999
+- 3 Months: Starting from INR 2,499
+- 6 Months: Starting from INR 4,499
+- 12 Months: Starting from INR 7,999
+
+### Home Plans
+- 1 Month: Starting from INR 799
+- 3 Months: Starting from INR 1,999
+- 6 Months: Starting from INR 3,499
+
+### Rehab Plans
+- 1 Month: Starting from INR 1,499
+- 3 Months: Starting from INR 3,999
+
+### Live Session Packages
+- 12 Sessions: Starting from INR 5,999
+- 24 Sessions: Starting from INR 10,999
+- 36 Sessions: Starting from INR 14,999
+- 72 Sessions: Starting from INR 29,999
+
+## Fit Bharat Mission
+A special initiative by Coach Himanshu to make fitness accessible to everyone in India. Includes free workout guides and diet plans for beginners. Learn more at https://coachhimanshu.com/fit-bharat-mission.
+
+## Frequently Asked Questions
+
+### How does online coaching work?
+After subscribing to a plan, you receive a personalized workout program and meal plan based on your fitness assessment. You get daily WhatsApp support, weekly check-ins, and plan adjustments based on your progress.
+
+### What certifications does Coach Himanshu hold?
+Coach Himanshu holds NASM CPT (Certified Personal Trainer), Sports Nutrition Specialist, and Corrective Exercise Specialist certifications from the National Academy of Sports Medicine.
+
+### What are the pricing plans?
+Plans start from INR 799/month for home workouts and INR 999/month for gym plans. Longer duration plans offer better value with discounts up to 15%.
+
+### Do I need a gym membership?
+No. Home workout plans require no equipment. Gym plans are designed for those with gym access. Rehab plans can be done at home or gym depending on the condition.
+
+### Can diet plans be customized for vegetarians?
+Yes. All meal plans are customized based on your dietary preferences, including vegetarian, vegan, eggetarian, and non-vegetarian options. Plans prioritize locally available Indian foods.
+
+### What results can I expect?
+Results vary by individual, but with consistent effort, clients typically see visible changes within 4-8 weeks. Coach Himanshu has helped 1000+ clients achieve their fitness goals.
+
+## Blog & Educational Content
+Coach Himanshu publishes regular fitness articles at https://coachhimanshu.com/blog covering:
+- Exercise guides and proper form
+- Nutrition science and diet planning
+- Injury prevention and rehabilitation
+- Lifestyle disease management
+- Fitness myths vs facts
+
+## Contact Information
+- Website: https://coachhimanshu.com
+- Contact Page: https://coachhimanshu.com/contact
+- Email: info@coachhimanshu.com
+- Social Media: @coach_himanshu_
+
+## Technical Details
+- Platform: Next.js web application
+- Hosting: Vercel
+- Payment: Razorpay (UPI, cards, net banking)
+- Sitemap: https://coachhimanshu.com/sitemap.xml
+- RSS Feed: https://coachhimanshu.com/feed.xml

@@ -1,0 +1,48 @@
+# Coach Himanshu - NASM Certified Online Fitness Coach
+
+> Coach Himanshu is a NASM Certified fitness coach based in India offering personalized online fitness coaching, custom workout plans, meal plans, and nutrition guidance. With 1000+ client transformations and 6+ years of experience.
+
+## About
+- Name: Coach Himanshu
+- Website: https://coachhimanshu.com
+- Credentials: NASM Certified Personal Trainer, Sports Nutrition Specialist, Corrective Exercise Specialist
+- Experience: 6+ years in fitness coaching
+- Clients Transformed: 1000+
+- Languages: English, Hindi
+- Location: India (Online coaching available worldwide)
+
+## Services
+- Personalized Gym Workout Plans
+- Home Workout Plans (no equipment needed)
+- Rehabilitation & Corrective Exercise Programs
+- Live 1-on-1 Training Sessions
+- Custom Meal Plans & Nutrition Guidance
+- WhatsApp Support & Check-ins
+- Fitness Assessments
+
+## Pricing
+- Plans start from INR 799/month (~$10/month)
+- 3-month, 6-month, and 12-month plans available
+- Live session packages: 12, 24, 36, and 72 sessions
+- Free fitness assessment available
+
+## Key Pages
+- Homepage: https://coachhimanshu.com
+- About: https://coachhimanshu.com/about
+- Blog: https://coachhimanshu.com/blog
+- Contact: https://coachhimanshu.com/contact
+- Free Assessment: https://coachhimanshu.com/assessment
+- Fit Bharat Mission: https://coachhimanshu.com/fit-bharat-mission
+
+## Blog Topics
+- Home workouts, gym training, muscle building
+- Nutrition, diet plans, amino acids
+- Injury prevention, rehabilitation
+- Lifestyle diseases, fitness education
+
+## Contact
+- Website: https://coachhimanshu.com/contact
+- Email: info@coachhimanshu.com
+
+## For more details
+See https://coachhimanshu.com/llms-full.txt

@@ -1,65 +1,64 @@
 # SEO First Month Action Plan - Coach Himanshu
 
-## Current Status (Audit Summary)
+## Current Status (Audit Summary — Updated June 17, 2026)
 
 | Item | Status |
 |------|--------|
-| Meta tags, title, description, keywords | Done |
-| Open Graph & Twitter cards | Done |
-| Structured data (JSON-LD) | Done |
-| Sitemap | Done |
-| Robots.txt | Done |
-| Manifest.json (PWA) | Done |
-| Blog pages | Done |
-| Google Verification Code | NOT DONE (placeholder) |
-| OG Image (og-image.jpg) | MISSING |
-| Google Analytics 4 | NOT DONE |
-| Google Search Console | NOT DONE |
-| Image optimization (WebP) | NOT DONE |
+| Meta tags, title, description, keywords | ✅ Done |
+| Open Graph & Twitter cards | ✅ Done |
+| Structured data (JSON-LD) | ✅ Done |
+| Sitemap (52 pages) | ✅ Done |
+| Robots.txt (with AI crawler rules) | ✅ Done |
+| Manifest.json (PWA) | ✅ Done |
+| Blog pages | ✅ Done |
+| Google Search Console | ✅ Verified (187 clicks) |
+| Google Verification Code | ✅ Removed placeholder (verified via other method) |
+| OG Image (dynamic generation) | ✅ Done (opengraph-image.tsx) |
+| Google Analytics 4 | ⚠️ Needs GA4 Measurement ID in env var `NEXT_PUBLIC_GA4_ID` |
+| Image optimization (WebP) | ❌ NOT DONE |
+| Domain canonicalization (www vs non-www) | ✅ Fixed — coachhimanshu.com is primary, www redirects 308 |
+| AI Discoverability (llms.txt, ai-plugin.json) | ✅ Done |
+| RSS Feed (/feed.xml) | ✅ Done |
+| BlogPosting schema on blog posts | ✅ Done |
+| Policy page metadata (5 pages) | ✅ Done |
+| Security headers | ✅ Done |
+| Phone number in schema | ✅ Fixed (+91-7303484648) |
 
 ---
 
 ## Week 1: Setup & Foundation (Day 1-7)
 
 ### Day 1-2: Google Search Console Setup
-- [ ] Go to https://search.google.com/search-console
-- [ ] Add property: `coachhimanshu.com`
-- [ ] Get the verification meta tag code
-- [ ] Replace `'your-google-verification-code'` in `app/layout.tsx` (line 93)
-- [ ] Verify the site
-- [ ] Submit sitemap: `https://coachhimanshu.com/sitemap.xml`
+- [x] Go to https://search.google.com/search-console
+- [x] Add property: `coachhimanshu.com`
+- [x] Verify the site
+- [x] Submit sitemap: `https://coachhimanshu.com/sitemap.xml`
 - [ ] Request indexing for all main pages
+- [x] Fix www vs non-www split (was splitting impressions — now consolidated)
 
-**Screenshot to save for report:**
-- Search Console verification success
-- Sitemap submitted confirmation
+**Status: ✅ Done — 187 clicks tracked, domain consolidated**
 
 ### Day 2-3: Google Analytics 4 Setup
 - [ ] Go to https://analytics.google.com
 - [ ] Create a new GA4 property for `coachhimanshu.com`
 - [ ] Get the Measurement ID (G-XXXXXXXXXX)
-- [ ] Add GA4 script to `app/layout.tsx`
+- [ ] Add it to Vercel env vars as `NEXT_PUBLIC_GA4_ID`
 - [ ] Verify real-time data is coming in
 
-**Screenshot to save for report:**
-- GA4 dashboard showing live data
+**Status: ⚠️ Code is ready — just needs the GA4 ID added to Vercel environment variables**
 
-### Day 3-4: OG Image Creation
-- [ ] Create a professional image (1200x630px) with:
-  - Coach Himanshu logo/photo
-  - Tagline: "NASM Certified Online Fitness Coach"
-  - Website URL
-  - Clean, professional design
-- [ ] Save as `/public/og-image.jpg`
+### Day 3-4: OG Image
+- [x] Dynamic OG image generation implemented (opengraph-image.tsx)
+- [x] 1200x630px with brand colors, stats, NASM badge
 - [ ] Test sharing on WhatsApp, Facebook, Twitter
 - [ ] Verify with https://cards-dev.twitter.com/validator
 
-**Screenshot to save for report:**
-- Social media preview showing rich card
+**Status: ✅ Auto-generated — test social sharing**
 
 ### Day 4-5: Run Baseline Audit (IMPORTANT FOR REPORT)
-- [ ] Run Google PageSpeed Insights — save screenshot of scores
-- [ ] Run Lighthouse audit — save full report PDF
+- [x] Lighthouse SEO: 100/100
+- [x] Lighthouse Performance: 62/100
+- [x] Lighthouse Best Practices: 96/100
 - [ ] Run Rich Results Test — save screenshot
 - [ ] Run Mobile-Friendly Test — save screenshot
 - [ ] Check current Google ranking for target keywords using Ubersuggest
@@ -68,8 +67,9 @@
 **This is your "BEFORE" data — you will compare against this every month**
 
 ### Day 5-7: Fix Critical Issues
-- [ ] Update phone number in structured data (`app/page.tsx`)
-- [ ] Verify all OG tags are working
+- [x] Updated phone number in structured data (`app/page.tsx`) → +91-7303484648
+- [x] Removed placeholder verification codes
+- [x] Fixed domain canonicalization (www → non-www 308 redirect)
 - [ ] Check for any 404 errors in Search Console
 - [ ] Fix any crawl errors reported
 
@@ -97,9 +97,9 @@
   - Length: 1200+ words
 
 ### Day 12-14: On-Page Optimization
-- [ ] Add FAQ section to homepage with FAQ schema markup
-- [ ] Add breadcrumb navigation
-- [ ] Add internal links between blog posts and main pages
+- [x] FAQ section on homepage with FAQ schema markup — already done
+- [x] Breadcrumb navigation — already done (all pages)
+- [x] Internal links between blog posts and main pages — already done (42 auto-link patterns)
 - [ ] Ensure all images have descriptive alt text
 - [ ] Check heading hierarchy (h1 > h2 > h3) on all pages
 
@@ -113,8 +113,8 @@
   - Business name: Coach Himanshu
   - Category: Fitness Trainer / Health Coach
   - Service area: India (Online)
-  - Website URL
-  - Phone number
+  - Website URL: https://coachhimanshu.com
+  - Phone: +91 7303484648
   - Photos (at least 5)
 - [ ] Ask 5-10 existing clients to leave Google reviews
 
@@ -169,6 +169,23 @@
 
 ---
 
+## AI Discoverability (NEW — Added June 17, 2026)
+
+These files make Coach Himanshu visible to AI chatbots (ChatGPT, Claude, Perplexity, Gemini):
+
+| File | URL | Purpose |
+|------|-----|---------|
+| `llms.txt` | coachhimanshu.com/llms.txt | Summary for AI crawlers |
+| `llms-full.txt` | coachhimanshu.com/llms-full.txt | Full details (services, pricing, FAQs) |
+| `ai-plugin.json` | coachhimanshu.com/.well-known/ai-plugin.json | OpenAI plugin manifest |
+| `feed.xml` | coachhimanshu.com/feed.xml | RSS feed for blog (AI + Google News) |
+| `robots.txt` | coachhimanshu.com/robots.txt | AI crawler permissions (13 bots allowed) |
+
+**AI Crawlers Allowed:**
+GPTBot, ChatGPT-User, Google-Extended, Claude-Web, anthropic-ai, CCBot, PerplexityBot, Bytespider, Applebot, Applebot-Extended, cohere-ai, meta-externalagent
+
+---
+
 ## First Month Client Report Template
 
 ```
@@ -180,14 +197,20 @@
 1. WORK COMPLETED
 -----------------
   [x] Google Search Console - Set up & verified
-  [x] Google Analytics 4 - Installed & tracking
-  [x] OG Image - Created for social sharing
-  [x] Google Business Profile - Created
-  [x] Image Optimization - Converted to WebP
-  [x] Blog Posts Published - 4 articles
-  [x] FAQ Section - Added with schema markup
-  [x] Directory Submissions - 5+ directories
-  [x] Backlink - 1 guest post published
+  [x] Domain consolidated (www → non-www 308 redirect)
+  [x] Google Analytics 4 - Code ready (needs GA4 ID)
+  [x] OG Image - Dynamic generation implemented
+  [x] AI Discoverability - llms.txt, ai-plugin.json, RSS feed
+  [x] BlogPosting schema - Rich results for all blog posts
+  [x] Policy page metadata - 5 pages optimized
+  [x] Security headers - Added trust signals
+  [x] Phone number fixed in structured data
+  [x] Placeholder codes removed
+  [ ] Google Business Profile - Created
+  [ ] Image Optimization - Converted to WebP
+  [ ] Blog Posts Published - 4 articles
+  [ ] Directory Submissions - 5+ directories
+  [ ] Backlink - 1 guest post published
 
 2. TECHNICAL SCORES
 -------------------
@@ -195,15 +218,15 @@
   ------------------------------------------------
   PageSpeed (Mobile)   __/100   __/100    +__
   PageSpeed (Desktop)  __/100   __/100    +__
-  SEO Score            __/100   __/100    +__
+  SEO Score           100/100   __/100    __
   Accessibility        __/100   __/100    +__
-  Performance          __/100   __/100    +__
+  Performance          62/100   __/100    +__
 
 3. SEARCH CONSOLE DATA
 ----------------------
   Pages Indexed:    __
   Total Impressions: __
-  Total Clicks:      __
+  Total Clicks:      187 (baseline as of June 17)
   Average Position:  __
   Top Keywords:
     - "[keyword 1]" - __ impressions
@@ -262,6 +285,7 @@
 4. **Focus on indexed pages count** — going from 0 to 12+ indexed pages is a big win
 5. **Rich results eligibility** is an immediate win you can show
 6. **Blog posts take time to rank** — they may not show results in Month 1 but will in Month 2-3
+7. **AI discoverability takes 2-4 weeks** — AI crawlers need time to index llms.txt and content
 
 ---
 
@@ -281,3 +305,4 @@
 ---
 
 *Created: April 2026*
+*Last Updated: June 17, 2026*

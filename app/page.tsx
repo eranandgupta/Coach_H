@@ -184,7 +184,7 @@ export default function Home() {
         name: 'Coach Himanshu Fitness Coaching',
         image: 'https://coachhimanshu.com/logo.png',
         url: 'https://coachhimanshu.com',
-        telephone: '+91-XXXXXXXXXX',
+        telephone: '+91-7303484648',
         priceRange: '₹999-₹29999',
         address: {
           '@type': 'PostalAddress',

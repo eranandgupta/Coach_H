@@ -92,12 +92,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://coachhimanshu.com',
   },
-  verification: {
-    google: 'YOUR_GOOGLE_VERIFICATION_CODE', // Replace with code from Google Search Console
-    other: {
-      'msvalidate.01': 'YOUR_BING_VERIFICATION_CODE', // Replace with code from Bing Webmaster Tools
-    },
-  },
 };
 
 export default function RootLayout({
@@ -119,6 +113,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
+        <link rel="alternate" type="application/rss+xml" title="Coach Himanshu Blog" href="/feed.xml" />
       </head>
       <body className={inter.className}>
         <CartProvider>
@@ -127,19 +122,23 @@ export default function RootLayout({
           <WhatsAppButton />
         </CartProvider>
 
-        {/* Google Analytics 4 */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX');
-          `}
-        </Script>
+        {/* Google Analytics 4 — Replace G-XXXXXXXXXX with your actual GA4 Measurement ID */}
+        {process.env.NEXT_PUBLIC_GA4_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA4_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA4_ID}');
+              `}
+            </Script>
+          </>
+        )}
 
         {/* Service Worker Registration with Auto-Update */}
         <Script id="register-sw" strategy="afterInteractive">

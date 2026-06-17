@@ -25,6 +25,7 @@ import {
   Play,
   CalendarCog,
   Lightbulb,
+  Settings,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import FunFactModal from '@/components/FunFactModal';
@@ -46,6 +47,7 @@ import { isElitePlan } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
 import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
+import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -80,6 +82,7 @@ export default function CoachDashboard() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isTrainerAssignmentOpen, setIsTrainerAssignmentOpen] = useState(false);
+  const [isTrainerManagementOpen, setIsTrainerManagementOpen] = useState(false);
 
   const fetchEnrollments = async () => {
     try {
@@ -584,6 +587,16 @@ export default function CoachDashboard() {
               >
                 <Users className="w-5 h-5" />
                 <span className="text-sm">Assign Trainer</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsTrainerManagementOpen(true)}
+                className="relative bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Settings className="w-5 h-5" />
+                <span className="text-sm">Manage Trainer</span>
               </motion.button>
             </div>
           </motion.div>
@@ -1212,6 +1225,11 @@ export default function CoachDashboard() {
       <TrainerAssignmentModal
         isOpen={isTrainerAssignmentOpen}
         onClose={() => setIsTrainerAssignmentOpen(false)}
+      />
+
+      <TrainerManagementModal
+        isOpen={isTrainerManagementOpen}
+        onClose={() => setIsTrainerManagementOpen(false)}
       />
 
       {/* Chat Panel – Premium Right-Side Slide */}
