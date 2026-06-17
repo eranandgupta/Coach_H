@@ -25,14 +25,16 @@ import {
   Clock,
   Leaf,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Button from '@/components/Button';
 import PlanCard from '@/components/PlanCard';
-import CheckoutDrawer from '@/components/CheckoutDrawer';
-import LoginModal from '@/components/LoginModal';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import { useCart } from '@/contexts/CartContext';
+
+const CheckoutDrawer = dynamic(() => import('@/components/CheckoutDrawer'), { ssr: false });
+const LoginModal = dynamic(() => import('@/components/LoginModal'), { ssr: false });
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -1059,10 +1061,9 @@ export default function Home() {
           <div className="absolute inset-0 lg:hidden overflow-hidden">
             <video
               className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-              autoPlay loop muted playsInline preload="metadata"
+              autoPlay loop muted playsInline preload="none"
               disablePictureInPicture disableRemotePlayback
               style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
-              onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
             >
               <source src="/intro2.mp4" type="video/mp4" />
             </video>
@@ -1280,10 +1281,9 @@ export default function Home() {
                       <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
                         <video
                           className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-                          autoPlay loop muted playsInline preload="metadata"
+                          autoPlay loop muted playsInline preload="none"
                           disablePictureInPicture disableRemotePlayback
                           style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
-                          onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}
                         >
                           <source src="/intro2.mp4" type="video/mp4" />
                         </video>
@@ -1895,15 +1895,7 @@ export default function Home() {
                   disableRemotePlayback
                   aria-label="Rhynogrip Premium Gym Gear Products Showcase"
                   title="Professional Fitness Equipment by Rhynogrip - 10% OFF with Code COACHHIMANSHU"
-                  style={{
-                    pointerEvents: 'none',
-                  }}
-                  onLoadedMetadata={(e) => {
-                    const video = e.currentTarget;
-                    video.play().catch(() => {
-                      // Silently handle autoplay failures
-                    });
-                  }}
+                  style={{ pointerEvents: 'none' }}
                 >
                   <source src="/RHYNOGRIP_VIDEO.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
@@ -2185,15 +2177,7 @@ export default function Home() {
                   disableRemotePlayback
                   aria-label="Train Today - Fitness Motivation Video by Coach Himanshu"
                   title="Start Your Fitness Journey Today with Coach Himanshu"
-                  style={{
-                    pointerEvents: 'none',
-                  }}
-                  onLoadedMetadata={(e) => {
-                    const video = e.currentTarget;
-                    video.play().catch(() => {
-                      // Silently handle autoplay failures
-                    });
-                  }}
+                  style={{ pointerEvents: 'none' }}
                 >
                   <source src="/train_today.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
