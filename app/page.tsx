@@ -732,21 +732,21 @@ export default function Home() {
       icon: Award,
       title: 'Certified Expertise',
       description: 'NASM Certified with 6+ professional diplomas in fitness science, nutrition, and specialized training',
-      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH11.jpeg',
+      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH11.jpeg?tr=w-600,h-400,q-80,f-auto',
       imagePosition: 'object-top',
     },
     {
       icon: Target,
       title: 'Science-Backed Approach',
       description: 'Evidence-based training methods focused on sustainable results, not shortcuts',
-      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH2.jpeg',
+      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH2.jpeg?tr=w-600,h-400,q-80,f-auto',
       imagePosition: 'object-[center_20%]',
     },
     {
       icon: Users,
       title: 'Proven Track Record',
       description: 'Former fitness educator and lecturer with hundreds of successful client transformations',
-      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH4.jpeg',
+      image: 'https://ik.imagekit.io/oeagl0l4x/public/CH4.jpeg?tr=w-600,h-400,q-80,f-auto',
       imagePosition: 'object-top',
     },
   ];
@@ -1859,7 +1859,7 @@ export default function Home() {
 
             <div className="flex items-center justify-center gap-3 mb-3">
               <img
-                src="https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png"
+                src="https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png?tr=w-400,q-80,f-auto"
                 alt="Rhynogrip Premium Gym Gear Logo - Professional Fitness Equipment Partner"
                 className="h-10 md:h-12 object-contain"
                 loading="lazy"
