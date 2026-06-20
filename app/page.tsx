@@ -77,8 +77,8 @@ export default function Home() {
       { label: '6M Gym Plan', off: '12% OFF' },
       { label: '12M Gym Plan', off: '15% OFF' },
       { label: '12 Sessions', off: '10% OFF' },
-      { label: '36 Sessions', off: '10% OFF' },
-      { label: '24 Sessions', off: '20% OFF' },
+      { label: '24 Sessions', off: '10% OFF' },
+      { label: '36 Sessions', off: '20% OFF' },
       { label: '72 Sessions', off: '20% OFF' },
     ];
 
@@ -92,12 +92,12 @@ export default function Home() {
         specials: null,
       };
     }
-    if (day >= 20 && day <= 30) {
+    if (day >= 21 && day <= 30) {
       const isJune21 = day === 21;
       return {
         theme: 'yoga' as const,
-        title: 'WORLD YOGA DAY SALE 🧘',
-        subtitle: 'Valid June 20 - 30 Only',
+        title: 'WORLD YOGA DAY & FATHER\'S DAY SALE 🧘',
+        subtitle: 'Valid June 21 - 30 Only',
         endDate: 'June 30, 2026',
         offers: commonOffers,
         specials: isJune21
@@ -111,6 +111,28 @@ export default function Home() {
     }
     return null;
   }, []);
+
+  // Returns the sale discount percentage for a plan, or 0 if no sale applies
+  const getSalePercent = (plan: { duration: string; dbName: string; homeWorkout?: boolean; rehabilitation?: boolean; liveOneOnOne?: boolean }) => {
+    if (!activeSale) return 0;
+    const d = plan.duration.toLowerCase();
+    const name = plan.dbName.toLowerCase();
+    // Elite 1:1 sessions
+    if (plan.liveOneOnOne || name.includes('elite')) {
+      if (name.includes('12 sessions')) return 10;
+      if (name.includes('24 sessions')) return 10;
+      if (name.includes('36 sessions')) return 20;
+      if (name.includes('72 sessions')) return 20;
+      return 0;
+    }
+    // 3-month gym, home & rehab plans (including couple variants)
+    if (d === '3 months' && !name.includes('elite')) return 10;
+    // 6-month gym plans (including couple)
+    if (d === '6 months') return 12;
+    // 12-month gym plans (including couple)
+    if (d === '12 months') return 15;
+    return 0;
+  };
 
   const totalSaleSlides = activeSale?.specials ? 3 : activeSale ? 2 : 0;
 
@@ -1661,7 +1683,7 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
                 {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation && !p.liveGroup).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                   </motion.div>
                 ))}
               </div>
@@ -1676,7 +1698,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-2xl mx-auto">
                   {plans.filter(p => p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
                     <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                     </motion.div>
                   ))}
                 </div>
@@ -1714,12 +1736,12 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.homeWorkout && !p.couple).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                   </motion.div>
                 ))}
                 {plans.filter(p => p.homeWorkout && p.couple).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} homeWorkout={false} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} homeWorkout={false} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                   </motion.div>
                 ))}
               </div>
@@ -1756,12 +1778,12 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.rehabilitation && !p.couple).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                   </motion.div>
                 ))}
                 {plans.filter(p => p.rehabilitation && p.couple).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} rehabilitation={false} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} rehabilitation={false} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                   </motion.div>
                 ))}
               </div>
@@ -1789,7 +1811,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
                   {plans.filter(p => p.liveOneOnOne).map((plan) => (
                     <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                     </motion.div>
                   ))}
                 </div>
@@ -1822,7 +1844,7 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.liveGroup && !p.liveOneOnOne).map((plan) => (
                   <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
                   </motion.div>
                 ))}
               </div>

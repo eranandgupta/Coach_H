@@ -20,6 +20,7 @@ interface PlanCardProps {
   liveGroup?: boolean;
   liveOneOnOne?: boolean;
   whatsappOnly?: boolean;
+  salePercent?: number;
   onAddToCart?: (plan: {
     id: number;
     name: string;
@@ -46,15 +47,19 @@ export default function PlanCard({
   liveGroup = false,
   liveOneOnOne = false,
   whatsappOnly = false,
+  salePercent,
   onAddToCart,
 }: PlanCardProps) {
+  const salePrice = salePercent ? Math.round(priceValue * (1 - salePercent / 100)) : null;
+  const salePriceFormatted = salePrice ? `₹${salePrice.toLocaleString('en-IN')}` : null;
+
   const handleAddToCart = () => {
     if (onAddToCart) {
       onAddToCart({
         id,
         name: title,
         dbName,
-        price: priceValue,
+        price: salePrice ?? priceValue,
         duration,
         features,
       });
@@ -261,23 +266,51 @@ export default function PlanCard({
 
             {/* Price */}
             <div className="mb-3">
-              <div className="flex items-baseline gap-1.5 mb-1">
-                <span className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${
-                  popular
-                    ? 'from-brand-gold via-yellow-300 to-brand-gold'
-                    : couple
-                    ? 'from-pink-400 via-rose-300 to-pink-400'
-                    : homeWorkout
-                    ? 'from-emerald-400 via-green-300 to-emerald-400'
-                    : rehabilitation
-                    ? 'from-cyan-400 via-blue-300 to-cyan-400'
-                    : liveGroup
-                    ? 'from-violet-400 via-purple-300 to-violet-400'
-                    : 'from-gray-200 to-gray-400'
-                } bg-clip-text text-transparent`}>
-                  {price}
-                </span>
-              </div>
+              {salePercent && salePriceFormatted ? (
+                <>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-gray-500 text-base line-through">{price}</span>
+                    <span className="px-1.5 py-0.5 bg-green-500/15 text-green-400 text-[10px] font-bold rounded-full border border-green-500/25 animate-pulse">
+                      {salePercent}% OFF
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1.5 mb-1">
+                    <span className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${
+                      popular
+                        ? 'from-brand-gold via-yellow-300 to-brand-gold'
+                        : couple
+                        ? 'from-pink-400 via-rose-300 to-pink-400'
+                        : homeWorkout
+                        ? 'from-emerald-400 via-green-300 to-emerald-400'
+                        : rehabilitation
+                        ? 'from-cyan-400 via-blue-300 to-cyan-400'
+                        : liveGroup
+                        ? 'from-violet-400 via-purple-300 to-violet-400'
+                        : 'from-gray-200 to-gray-400'
+                    } bg-clip-text text-transparent`}>
+                      {salePriceFormatted}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-baseline gap-1.5 mb-1">
+                  <span className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${
+                    popular
+                      ? 'from-brand-gold via-yellow-300 to-brand-gold'
+                      : couple
+                      ? 'from-pink-400 via-rose-300 to-pink-400'
+                      : homeWorkout
+                      ? 'from-emerald-400 via-green-300 to-emerald-400'
+                      : rehabilitation
+                      ? 'from-cyan-400 via-blue-300 to-cyan-400'
+                      : liveGroup
+                      ? 'from-violet-400 via-purple-300 to-violet-400'
+                      : 'from-gray-200 to-gray-400'
+                  } bg-clip-text text-transparent`}>
+                    {price}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <span className="text-gray-400 text-xs">
                   / {duration.toLowerCase()}
