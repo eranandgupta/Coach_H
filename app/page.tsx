@@ -100,13 +100,7 @@ export default function Home() {
         subtitle: 'Valid June 21 - 30 Only',
         endDate: 'June 30, 2026',
         offers: commonOffers,
-        specials: isJune21
-          ? [
-              '🧘 Free 1 hour yoga class for everyone',
-              '👨 Free counselling sessions for all fathers — Father\'s Day Special',
-              '🔥 50% OFF 1 month gym & home workout for all fathers (today only!)',
-            ]
-          : null,
+        specials: null,
       };
     }
     return null;
