@@ -14,7 +14,7 @@
 | Google Search Console | ✅ Verified (187 clicks) |
 | Google Verification Code | ✅ Removed placeholder (verified via other method) |
 | OG Image (dynamic generation) | ✅ Done (opengraph-image.tsx) |
-| Google Analytics 4 | ⚠️ Needs GA4 Measurement ID in env var `NEXT_PUBLIC_GA4_ID` |
+| Google Analytics 4 | ✅ Done (GA4 ID added to Vercel) |
 | Image optimization (WebP/auto-format) | ✅ Done (ImageKit f-auto on all images) |
 | Domain canonicalization (www vs non-www) | ✅ Fixed — coachhimanshu.com is primary, www redirects 308 |
 | AI Discoverability (llms.txt, ai-plugin.json) | ✅ Enhanced (June 26) |
@@ -34,6 +34,10 @@
 | GEO: Enhanced ai-plugin.json | ✅ Done (June 26) |
 | Google Business Profile | ✅ Done |
 | Directory submissions | ✅ Done |
+| Blog posts 5-12 seeded | ✅ Done (June 26) |
+| Bing Webmaster Tools | ✅ Done (June 26) |
+| Guest posting started | ✅ Done (June 26) |
+| Google Reviews collection | ✅ Done (June 26) |
 
 ---
 
