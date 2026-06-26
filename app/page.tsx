@@ -178,11 +178,24 @@ export default function Home() {
           'Sports Nutrition',
           'TRX Training',
         ],
+        sameAs: [
+          'https://www.instagram.com/coach_himanshu_',
+          'https://www.youtube.com/@coachhimanshu',
+        ],
+        alumniOf: {
+          '@type': 'Organization',
+          name: 'National Academy of Sports Medicine (NASM)',
+          url: 'https://www.nasm.org',
+        },
         hasCredential: [
           {
             '@type': 'EducationalOccupationalCredential',
             credentialCategory: 'Certification',
             name: 'NASM Certified Bodybuilding Coach',
+            recognizedBy: {
+              '@type': 'Organization',
+              name: 'National Academy of Sports Medicine',
+            },
           },
           {
             '@type': 'EducationalOccupationalCredential',
@@ -193,6 +206,21 @@ export default function Home() {
             '@type': 'EducationalOccupationalCredential',
             credentialCategory: 'Diploma',
             name: 'Diploma in Sports Nutrition',
+          },
+          {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'Certification',
+            name: 'Corrective Exercise Specialist (CES)',
+          },
+          {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'Certification',
+            name: 'Sports Nutrition Specialist',
+          },
+          {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'Certification',
+            name: 'TRX Suspension Training Certified',
           },
         ],
       },
@@ -381,7 +409,210 @@ export default function Home() {
           text: 'Coach Himanshu has successfully helped 1000+ clients achieve their fitness transformations. From fat loss and muscle building to rehabilitation and sports performance, clients across India have benefited from his personalised coaching approach.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'Who is the best online fitness coach in India?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Coach Himanshu is one of India\'s top-rated online fitness coaches with NASM certification, 6+ professional diplomas, and 1000+ successful client transformations. He offers personalised workout and nutrition plans starting at just ₹799/month with dedicated WhatsApp support.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How much does online personal training cost in India?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Online personal training in India typically ranges from ₹2,000 to ₹30,000 per month. Coach Himanshu offers affordable plans starting at ₹799/month for home workouts and ₹1,099/month for gym plans, making professional coaching accessible to everyone.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I build muscle at home without gym equipment?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, you can build muscle at home without gym equipment. Coach Himanshu\'s Home Workout Plans use bodyweight exercises, resistance band routines, and progressive overload techniques to help you gain strength and muscle from home. Many clients have achieved significant transformations with home-only training.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is online coaching effective compared to a gym trainer?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Online coaching can be more effective than a traditional gym trainer because you get a fully personalised plan, daily support via WhatsApp, weekly consultations, and expert nutrition guidance — all at a fraction of the cost. Coach Himanshu\'s 1000+ transformations prove that online coaching delivers real, measurable results.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What results can I expect in 3 months of online coaching?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'With consistent effort and Coach Himanshu\'s guidance, clients typically lose 8-15 kg of fat or gain 3-5 kg of lean muscle in 3 months. Results vary based on your starting point, consistency, and adherence to the workout and nutrition plan. Weekly check-ins ensure your plan is adjusted for continuous progress.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Does Coach Himanshu provide vegetarian meal plans?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, Coach Himanshu creates fully customised vegetarian, vegan, and eggetarian meal plans using Indian foods. Plans are designed around locally available ingredients you enjoy eating, ensuring high protein intake and proper nutrition without compromising on taste or cultural preferences.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What happens after I subscribe to a plan?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'After subscribing, you receive a detailed fitness assessment form. Based on your goals, body type, and preferences, Coach Himanshu creates your personalised workout plan and meal plan within 24 hours. You get added to WhatsApp for daily support, receive video tutorials for all exercises, and have weekly one-on-one consultations.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Does Coach Himanshu offer a refund policy?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, Coach Himanshu offers a transparent refund policy. If you are unsatisfied with the coaching within the initial period, you can request a refund. Full details are available on the refund policy page at coachhimanshu.com/refund-policy.',
+        },
+      },
     ],
+  };
+
+  // Review Schema for testimonials (AEO - rich review snippets)
+  const reviewSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: 'Coach Himanshu Fitness Coaching',
+    url: 'https://coachhimanshu.com',
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      reviewCount: '1000',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    review: [
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Priya Sharma' },
+        datePublished: '2025-01-15',
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'Lost 22kg in 6 months with Coach Himanshu\'s personalised plan! The WhatsApp support and weekly consultations kept me motivated throughout. Best investment in my health ever!',
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Amit Kumar' },
+        datePublished: '2025-02-20',
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'As a software engineer with a sedentary lifestyle, Coach Himanshu designed a perfect plan that fits my schedule. Gained 8kg lean muscle in 4 months. Highly recommend!',
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Kavita Patel' },
+        datePublished: '2025-03-10',
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'Being a Gujarati foodie, I thought I could never lose weight. Coach Himanshu incorporated my favorite foods into the plan. Lost 14kg without feeling deprived. Amazing!',
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Rohan Deshmukh' },
+        datePublished: '2025-04-05',
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'Online coaching done right! Despite being in different cities, Coach Himanshu\'s guidance felt personal. Video calls and constant support made all the difference. Lost 16kg in 5 months!',
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Divya Sharma' },
+        datePublished: '2025-05-12',
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'Lost 15kg and my PCOS symptoms improved significantly. The weekly consultations are so valuable! He adjusts my plan based on progress. Thank you Coach for changing my life!',
+      },
+    ],
+  };
+
+  // HowTo Schema - How online coaching works (AEO - step-by-step rich snippets)
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'How to Start Online Fitness Coaching with Coach Himanshu',
+    description: 'A step-by-step guide to starting your fitness transformation with Coach Himanshu\'s personalised online coaching program.',
+    totalTime: 'P1D',
+    estimatedCost: {
+      '@type': 'MonetaryAmount',
+      currency: 'INR',
+      value: '1099',
+    },
+    step: [
+      {
+        '@type': 'HowToStep',
+        position: 1,
+        name: 'Take the Free Fitness Assessment',
+        text: 'Fill out the free fitness assessment form at coachhimanshu.com/assessment. Share your current fitness level, goals, medical history, dietary preferences, and available equipment.',
+        url: 'https://coachhimanshu.com/assessment',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 2,
+        name: 'Choose Your Plan',
+        text: 'Select a coaching plan that fits your goals and budget — Gym Plans (₹1,099-₹8,999), Home Workout Plans (₹799-₹3,499), Rehabilitation Plans, or Live 1-on-1 Session packages.',
+        url: 'https://coachhimanshu.com/#plans',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 3,
+        name: 'Receive Your Personalised Plan',
+        text: 'Within 24 hours of subscribing, receive your fully customised workout plan and meal plan on WhatsApp. Includes exercise video tutorials, macro calculations, and meal timing guidance.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 4,
+        name: 'Start Training with Daily Support',
+        text: 'Begin your training with 24/7 WhatsApp support from Coach Himanshu. Get form checks via video, ask questions anytime, and receive weekly one-on-one consultations to track progress.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 5,
+        name: 'Track Progress and Adjust',
+        text: 'Your plan is adjusted weekly based on your progress, feedback, and results. Coach Himanshu monitors your transformation and modifies workouts and nutrition to ensure continuous improvement.',
+      },
+    ],
+  };
+
+  // VideoObject Schema (AEO - video rich results)
+  const videoSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'Coach Himanshu - Online Fitness Coaching Introduction',
+    description: 'Meet Coach Himanshu — NASM Certified fitness coach offering personalised online workout plans, custom meal plans, and dedicated support for your fitness transformation.',
+    thumbnailUrl: 'https://coachhimanshu.com/opengraph-image',
+    uploadDate: '2024-01-01',
+    contentUrl: 'https://coachhimanshu.com/intro2.mp4',
+    embedUrl: 'https://coachhimanshu.com',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Coach Himanshu',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://coachhimanshu.com/favicon.png',
+      },
+    },
+  };
+
+  // Speakable Schema (AEO - voice assistant optimization)
+  const speakableSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Coach Himanshu - Online Fitness Coach India',
+    url: 'https://coachhimanshu.com',
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: [
+        'h1',
+        '[aria-label="Hero section"] p',
+        '[aria-label="Frequently asked questions"] summary',
+      ],
+    },
+    mainEntity: {
+      '@id': 'https://coachhimanshu.com/#coach',
+    },
   };
 
   // Breadcrumb Schema
@@ -1064,6 +1295,22 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }}
       />
 
       <div className="min-h-screen bg-brand-navy">

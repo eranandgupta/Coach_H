@@ -186,7 +186,7 @@ export default function FunFactWidget() {
       await new Promise<void>((resolve, reject) => {
         logo.onload = () => resolve();
         logo.onerror = () => reject();
-        logo.src = 'https://ik.imagekit.io/oeagl0l4x/public/logo.png';
+        logo.src = 'https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto';
       });
       const logoH = 60;
       const logoW = (logo.width / logo.height) * logoH;

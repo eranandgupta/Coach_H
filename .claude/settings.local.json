@@ -92,7 +92,8 @@
       "mcp__chrome-devtools__list_console_messages",
       "Bash(npx --yes lighthouse --version)",
       "Bash(npx lighthouse:*)",
-      "Bash(python3 -c ':*)"
+      "Bash(python3 -c ':*)",
+      "Bash(brew list:*)"
     ],
     "deny": [],
     "ask": []

@@ -45,7 +45,7 @@ export default function Navbar() {
             className="flex items-center hover:opacity-80 transition-opacity"
           >
             <Image
-              src="https://ik.imagekit.io/oeagl0l4x/public/logo.png"
+              src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto"
               alt="Coach Himanshu"
               width={100}
               height={100}

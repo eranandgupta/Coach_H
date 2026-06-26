@@ -421,7 +421,7 @@ export default function CoachDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image
-              src="https://ik.imagekit.io/oeagl0l4x/public/logo.png"
+              src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto"
               alt="Coach Himanshu"
               width={90}
               height={90}

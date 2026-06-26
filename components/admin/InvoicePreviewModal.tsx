@@ -122,7 +122,7 @@ export default function InvoicePreviewModal({
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://ik.imagekit.io/oeagl0l4x/public/logo.png"
+                src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto"
                 alt="Coach Himanshu"
                 style={{ width: '50px', height: '50px', objectFit: 'contain' }}
               />

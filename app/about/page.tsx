@@ -84,7 +84,7 @@ const teamMembers = [
     icon: Crown,
     gradient: 'from-brand-gold to-yellow-600',
     shadow: 'shadow-brand-gold/40',
-    image: 'https://ik.imagekit.io/oeagl0l4x/team/himanshu-kataria.png',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/himanshu-kataria.png?tr=w-300,q-80,f-auto',
   },
   {
     name: 'Mahima Yadav',
@@ -93,7 +93,7 @@ const teamMembers = [
     icon: Headphones,
     gradient: 'from-pink-500 to-rose-600',
     shadow: 'shadow-pink-500/40',
-    image: 'https://ik.imagekit.io/oeagl0l4x/team/mahima.png',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/mahima.png?tr=w-300,q-80,f-auto',
   },
   {
     name: 'Vijay Arora',
@@ -102,7 +102,7 @@ const teamMembers = [
     icon: Scale,
     gradient: 'from-slate-400 to-slate-600',
     shadow: 'shadow-slate-400/40',
-    image: 'https://ik.imagekit.io/oeagl0l4x/team/vijay-arora.png',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/vijay-arora.png?tr=w-300,q-80,f-auto',
   },
   {
     name: 'Mansi Tewatia',
@@ -111,7 +111,7 @@ const teamMembers = [
     icon: DollarSign,
     gradient: 'from-emerald-500 to-green-600',
     shadow: 'shadow-emerald-500/40',
-    image: 'https://ik.imagekit.io/oeagl0l4x/team/mansi.png',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/mansi.png?tr=w-300,q-80,f-auto',
   },
   {
     name: 'Himanshu Singh',
@@ -120,7 +120,7 @@ const teamMembers = [
     icon: Megaphone,
     gradient: 'from-orange-500 to-amber-600',
     shadow: 'shadow-orange-500/40',
-    image: 'https://ik.imagekit.io/oeagl0l4x/team/himanshu-singh.png',
+    image: 'https://ik.imagekit.io/oeagl0l4x/team/himanshu-singh.png?tr=w-300,q-80,f-auto',
   },
   {
     name: 'Komal Gupta',
@@ -137,7 +137,7 @@ const teamMembers = [
     icon: Gem,
     gradient: 'from-violet-500 to-purple-600',
     shadow: 'shadow-violet-500/40',
-    image: 'https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png',
+    image: 'https://ik.imagekit.io/oeagl0l4x/public/Rhynogrip.png?tr=w-600,q-80,f-auto',
     isLogo: true,
   },
 ];
@@ -251,7 +251,7 @@ export default function AboutPage() {
             >
               <div className="relative h-[400px] lg:h-[600px]">
                 <img
-                  src="https://ik.imagekit.io/oeagl0l4x/public/CH3.jpeg"
+                  src="https://ik.imagekit.io/oeagl0l4x/public/CH3.jpeg?tr=w-600,q-80,f-auto"
                   alt="Coach Himanshu - Fitness Journey"
                   className="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-700"
                 />
@@ -416,7 +416,7 @@ export default function AboutPage() {
             >
               <div className="absolute inset-0">
                 <img
-                  src="https://ik.imagekit.io/oeagl0l4x/public/CH7.jpeg"
+                  src="https://ik.imagekit.io/oeagl0l4x/public/CH7.jpeg?tr=w-600,q-80,f-auto"
                   alt="Coach Himanshu - Professional Qualifications"
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />

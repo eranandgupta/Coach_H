@@ -1,6 +1,6 @@
 # SEO First Month Action Plan - Coach Himanshu
 
-## Current Status (Audit Summary — Updated June 17, 2026)
+## Current Status (Audit Summary — Updated June 26, 2026)
 
 | Item | Status |
 |------|--------|
@@ -10,19 +10,30 @@
 | Sitemap (52 pages) | ✅ Done |
 | Robots.txt (with AI crawler rules) | ✅ Done |
 | Manifest.json (PWA) | ✅ Done |
-| Blog pages | ✅ Done |
+| Blog pages (12 posts) | ✅ Done |
 | Google Search Console | ✅ Verified (187 clicks) |
 | Google Verification Code | ✅ Removed placeholder (verified via other method) |
 | OG Image (dynamic generation) | ✅ Done (opengraph-image.tsx) |
 | Google Analytics 4 | ⚠️ Needs GA4 Measurement ID in env var `NEXT_PUBLIC_GA4_ID` |
-| Image optimization (WebP) | ❌ NOT DONE |
+| Image optimization (WebP/auto-format) | ✅ Done (ImageKit f-auto on all images) |
 | Domain canonicalization (www vs non-www) | ✅ Fixed — coachhimanshu.com is primary, www redirects 308 |
-| AI Discoverability (llms.txt, ai-plugin.json) | ✅ Done |
+| AI Discoverability (llms.txt, ai-plugin.json) | ✅ Enhanced (June 26) |
 | RSS Feed (/feed.xml) | ✅ Done |
 | BlogPosting schema on blog posts | ✅ Done |
 | Policy page metadata (5 pages) | ✅ Done |
 | Security headers | ✅ Done |
 | Phone number in schema | ✅ Fixed (+91-7303484648) |
+| AEO: FAQ schema (15 questions) | ✅ Done (June 26) |
+| AEO: Review schema (testimonials) | ✅ Done (June 26) |
+| AEO: HowTo schema (coaching process) | ✅ Done (June 26) |
+| AEO: VideoObject schema (hero video) | ✅ Done (June 26) |
+| AEO: Speakable schema (voice assistants) | ✅ Done (June 26) |
+| AEO: Enhanced Person schema (sameAs, alumniOf) | ✅ Done (June 26) |
+| AEO: About page ProfilePage schema | ✅ Done (June 26) |
+| GEO: Enhanced llms.txt & llms-full.txt | ✅ Done (June 26) |
+| GEO: Enhanced ai-plugin.json | ✅ Done (June 26) |
+| Google Business Profile | ✅ Done |
+| Directory submissions | ✅ Done |
 
 ---
 
@@ -78,26 +89,21 @@
 ## Week 2: Content & Optimization (Day 8-14)
 
 ### Day 8-9: Image Optimization
-- [ ] Convert all PNG/JPEG images in `/public/` to WebP format
-- [ ] Use tool: https://squoosh.app (free)
-- [ ] Keep originals as fallback
-- [ ] Update image references in code
-- [ ] Target: reduce total image size by 40-60%
+- [x] All content images served via ImageKit CDN with `?tr=f-auto` (auto WebP/AVIF)
+- [x] Added `?tr=w-200,q-80,f-auto` to all logo URLs across components
+- [x] Added `?tr=w-300,q-80,f-auto` to team images on about page
+- [x] Added `?tr=w-600,q-80,f-auto` to about page content images
+- [x] Favicon and PWA icons remain PNG (required by spec)
 
 **Screenshot to save for report:**
 - Before/after file sizes comparison
 
 ### Day 10-11: Blog Content (Post 1 & 2)
-- [ ] Write Blog Post 1: "Top 10 Home Workout Exercises for Beginners in India"
-  - Target keyword: "home workout India"
-  - Length: 1500+ words
-  - Include images with alt text
-- [ ] Write Blog Post 2: "Why You Need a NASM Certified Fitness Coach"
-  - Target keyword: "NASM certified coach India"
-  - Length: 1200+ words
+- [x] Blog Post 1: "Top 10 Home Workout Exercises for Beginners in India" (seeded)
+- [x] Blog Post 2: "Why You Need a NASM Certified Fitness Coach" (seeded)
 
 ### Day 12-14: On-Page Optimization
-- [x] FAQ section on homepage with FAQ schema markup — already done
+- [x] FAQ section on homepage with FAQ schema markup — done (expanded to 15 questions June 26)
 - [x] Breadcrumb navigation — already done (all pages)
 - [x] Internal links between blog posts and main pages — already done (42 auto-link patterns)
 - [ ] Ensure all images have descriptive alt text
@@ -305,4 +311,4 @@ GPTBot, ChatGPT-User, Google-Extended, Claude-Web, anthropic-ai, CCBot, Perplexi
 ---
 
 *Created: April 2026*
-*Last Updated: June 17, 2026*
+*Last Updated: June 26, 2026*
