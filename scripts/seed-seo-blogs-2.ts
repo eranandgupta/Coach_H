@@ -11,43 +11,70 @@ const posts = [
     readTime: 9,
     content: `<p>Walk into any supplement store in India and you will be overwhelmed -- rows of protein powders with flashy labels, wildly different prices, and confusing claims. The protein supplement market in India has exploded, but so has misinformation. This guide cuts through the noise with science-backed facts so you can make smart decisions about <strong>protein supplements</strong>.</p>
 
+<div class="stat-grid">
+<div class="stat-card"><strong>40-60g</strong>Avg. Indian Vegetarian Daily Protein</div>
+<div class="stat-card"><strong>100-150g</strong>What Active Adults Actually Need</div>
+<div class="stat-card"><strong>1.6-2.2g/kg</strong>Recommended for Active Individuals</div>
+<div class="stat-card"><strong>70-90%</strong>Protein Content in Quality Whey</div>
+</div>
+
+<hr>
+
 <h2>Do You Actually Need a Protein Supplement?</h2>
 
 <p>First, let us be clear: <strong>protein powder is a supplement, not a requirement</strong>. It is meant to fill gaps in your diet when whole food alone does not meet your protein needs. If you can hit your daily protein target (1.6-2.2g per kg body weight for active individuals) through dal, paneer, eggs, chicken, and curd -- you do not need a supplement.</p>
 
-<p>However, most Indians struggle to hit adequate protein numbers. A typical Indian vegetarian diet delivers only 40-60g of protein per day, well below the 100-150g most active adults need. This is where a quality protein supplement becomes genuinely useful.</p>
+<div class="callout">
+<strong>The Protein Gap:</strong> Most Indians struggle to hit adequate protein numbers. A typical Indian vegetarian diet delivers only 40-60g of protein per day, well below the 100-150g most active adults need. This is where a quality protein supplement becomes genuinely useful.
+</div>
+
+<hr>
 
 <h2>Types of Protein Supplements Available in India</h2>
 
 <h3>1. Whey Protein Concentrate (WPC)</h3>
+<div class="highlight-box">
 <p><strong>Protein content:</strong> 70-80% by weight</p>
 <p><strong>Best for:</strong> Most people. It is affordable, effective, and tastes good.</p>
 <p><strong>Price range:</strong> Rs 1,500-2,500 per kg</p>
 <p>Whey concentrate is the most popular form in India. It contains some lactose and fat alongside the protein, which is perfectly fine for most people. This is what Coach Himanshu recommends for the majority of his clients.</p>
+</div>
 
 <h3>2. Whey Protein Isolate (WPI)</h3>
+<div class="highlight-box">
 <p><strong>Protein content:</strong> 90%+ by weight</p>
 <p><strong>Best for:</strong> Lactose-intolerant individuals or those on strict calorie cuts</p>
 <p><strong>Price range:</strong> Rs 2,500-4,000 per kg</p>
 <p>Isolate goes through additional filtration to remove most of the lactose and fat. If concentrate gives you bloating or digestive discomfort, isolate is the better choice.</p>
+</div>
 
 <h3>3. Casein Protein</h3>
+<div class="highlight-box">
 <p><strong>Protein content:</strong> 80-85% by weight</p>
 <p><strong>Best for:</strong> A slow-digesting option, ideal before bed</p>
 <p><strong>Price range:</strong> Rs 2,000-3,500 per kg</p>
 <p>Casein forms a gel in your stomach and releases amino acids slowly over 6-8 hours. Some athletes take it before sleep to support overnight muscle recovery.</p>
+</div>
 
 <h3>4. Plant-Based Protein</h3>
+<div class="highlight-box">
 <p><strong>Protein content:</strong> 70-80% by weight</p>
 <p><strong>Best for:</strong> Vegans, lactose-intolerant, or those who prefer plant sources</p>
 <p><strong>Price range:</strong> Rs 1,800-3,000 per kg</p>
 <p>Typically made from pea, rice, soy, or blends. Look for blends that combine pea and rice protein for a complete amino acid profile.</p>
+</div>
+
+<hr>
 
 <h2>How Much Protein Powder Should You Take?</h2>
 
 <p>Most people need just <strong>1-2 scoops (25-50g protein) per day</strong>. Calculate your total daily protein need first, subtract what you get from food, and supplement only the remaining gap.</p>
 
-<p><strong>Example:</strong> A 75 kg man aiming for 2g/kg needs 150g protein daily. If his meals provide 100g, he needs one 25-30g scoop to bridge the gap.</p>
+<div class="callout-tip">
+<strong>Example Calculation:</strong> A 75 kg man aiming for 2g/kg needs 150g protein daily. If his meals provide 100g, he needs one 25-30g scoop to bridge the gap. Simple math, big results.
+</div>
+
+<hr>
 
 <h2>When to Take Protein Powder</h2>
 
@@ -57,22 +84,31 @@ const posts = [
 <li><strong>Between meals:</strong> As a snack to maintain steady amino acid levels throughout the day.</li>
 </ul>
 
-<p><strong>Important:</strong> Total daily protein intake matters far more than timing. Do not stress about the "anabolic window" -- just hit your daily target consistently.</p>
+<div class="callout">
+<strong>Important:</strong> Total daily protein intake matters far more than timing. Do not stress about the "anabolic window" -- just hit your daily target consistently.
+</div>
+
+<hr>
 
 <h2>How to Spot Fake Protein Supplements in India</h2>
 
-<p>The Indian supplement market is plagued with counterfeit products. Here is how to protect yourself:</p>
+<div class="callout-warning">
+<strong>Warning:</strong> The Indian supplement market is plagued with counterfeit products. Fake protein powders may contain fillers, harmful chemicals, or far less protein than advertised. Always verify before you buy.
+</div>
 
-<ul>
+<ol>
 <li><strong>Buy from authorized sellers:</strong> Brand websites, Amazon (official brand stores), or verified retailers</li>
 <li><strong>Check the hologram and seal:</strong> Most reputable brands have tamper-proof seals and verification codes</li>
 <li><strong>Verify on the brand website:</strong> Enter the batch number or scan the QR code</li>
 <li><strong>Be wary of extreme discounts:</strong> If a Rs 3,000 product is selling for Rs 1,000, it is almost certainly fake</li>
 <li><strong>Check texture and taste:</strong> Fake protein often has a chalky, gritty texture and an off taste</li>
-</ul>
+</ol>
+
+<hr>
 
 <h2>Trusted Protein Brands Available in India</h2>
 
+<div class="highlight-box">
 <ul>
 <li><strong>Optimum Nutrition (ON):</strong> Gold standard, widely available, reliable quality</li>
 <li><strong>MuscleBlaze:</strong> Indian brand, good value for money, multiple variants</li>
@@ -80,29 +116,49 @@ const posts = [
 <li><strong>Dymatize:</strong> High-quality isolate options</li>
 <li><strong>AS-IT-IS Nutrition:</strong> Budget-friendly, unflavoured options</li>
 </ul>
+</div>
+
+<hr>
 
 <h2>Budget-Friendly Protein Tips for Indian Athletes</h2>
 
+<div class="callout-tip">
+<strong>Save Money Without Sacrificing Quality:</strong>
 <ul>
 <li><strong>Unflavoured whey is cheaper:</strong> Add it to smoothies with banana and cocoa powder for flavour</li>
 <li><strong>Buy during sales:</strong> Amazon Great Indian Sale, Flipkart Big Billion Days, and brand-specific sales offer 20-40% discounts</li>
 <li><strong>Prioritize food first:</strong> 500g paneer (Rs 200) gives 90g protein. 6 eggs (Rs 45) give 39g protein. Supplements should fill gaps, not replace meals</li>
 <li><strong>Consider soya chunks:</strong> Rs 100 per kg with 52g protein per 100g -- the cheapest protein source in India</li>
 </ul>
+</div>
+
+<hr>
 
 <h2>Common Myths About Protein Supplements</h2>
 
-<p><strong>"Protein powder causes kidney damage":</strong> No scientific evidence supports this in healthy individuals. If you have pre-existing kidney conditions, consult your doctor.</p>
+<div class="callout-warning">
+<strong>"Protein powder causes kidney damage":</strong> No scientific evidence supports this in healthy individuals. If you have pre-existing kidney conditions, consult your doctor.
+</div>
 
-<p><strong>"Women should avoid protein powder":</strong> Completely false. Women need protein just as much as men for muscle maintenance, bone health, and metabolism.</p>
+<div class="callout-warning">
+<strong>"Women should avoid protein powder":</strong> Completely false. Women need protein just as much as men for muscle maintenance, bone health, and metabolism.
+</div>
 
-<p><strong>"You must take protein immediately after a workout":</strong> The post-workout window is hours wide, not minutes. Total daily intake matters more than exact timing.</p>
+<div class="callout">
+<strong>"You must take protein immediately after a workout":</strong> The post-workout window is hours wide, not minutes. Total daily intake matters more than exact timing.
+</div>
 
-<p><strong>"Natural protein is always better":</strong> Whey protein is derived from milk -- it is as natural as curd or paneer. The processing simply concentrates the protein content.</p>
+<div class="callout">
+<strong>"Natural protein is always better":</strong> Whey protein is derived from milk -- it is as natural as curd or paneer. The processing simply concentrates the protein content.
+</div>
+
+<hr>
 
 <h2>Getting Expert Guidance on Supplements</h2>
 
 <p>Supplements work best when paired with a structured training and nutrition plan. Coach Himanshu provides personalised supplement guidance as part of all coaching plans -- helping you choose the right products, dosages, and timing based on your specific goals.</p>
+
+<blockquote>Ready to stop guessing and start progressing? Get expert guidance on supplements, nutrition, and training -- all in one plan.</blockquote>
 
 <p><a href="/assessment">Take the free fitness assessment</a> to get started with a plan that includes complete nutrition and supplement guidance.</p>`,
   },
@@ -115,16 +171,24 @@ const posts = [
 
 <p>Millions of people across India have transformed their bodies without ever stepping foot in a gym. Here is exactly how to do it -- backed by science and practical for Indian lifestyles.</p>
 
+<hr>
+
 <h2>Understanding Weight Loss: The Calorie Equation</h2>
 
 <p>Your body burns calories through three main mechanisms:</p>
-<ul>
-<li><strong>BMR (Basal Metabolic Rate):</strong> Calories burned at rest -- this accounts for 60-70% of your daily burn</li>
-<li><strong>NEAT (Non-Exercise Activity Thermogenesis):</strong> Calories from daily activities like walking, cleaning, cooking -- accounts for 15-30%</li>
-<li><strong>Exercise:</strong> Only accounts for 5-10% of your daily calorie burn</li>
-</ul>
 
-<p>This means that what you eat and how active you are throughout the day matters far more than whether you have a gym membership. Let us break down the strategy.</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>60-70%</strong>BMR (Calories Burned at Rest)</div>
+<div class="stat-card"><strong>15-30%</strong>NEAT (Daily Activities)</div>
+<div class="stat-card"><strong>5-10%</strong>Exercise (Gym/Workouts)</div>
+<div class="stat-card"><strong>80%</strong>Diet's Role in Weight Loss</div>
+</div>
+
+<div class="callout">
+<strong>Key Insight:</strong> What you eat and how active you are throughout the day matters far more than whether you have a gym membership. Exercise accounts for only 5-10% of your daily calorie burn.
+</div>
+
+<hr>
 
 <h2>Step 1: Fix Your Diet (80% of the Battle)</h2>
 
@@ -132,6 +196,8 @@ const posts = [
 <p>A safe, sustainable deficit is 400-500 calories below your maintenance level. For most Indian adults, this means eating around 1,400-1,800 calories per day depending on your size and activity level.</p>
 
 <h3>Indian Diet Modifications That Work</h3>
+<div class="callout-tip">
+<strong>Simple Changes, Big Results:</strong>
 <ul>
 <li><strong>Reduce oil in cooking:</strong> Use 1 teaspoon per dish instead of pouring freely. This single change can save 200-400 calories per day</li>
 <li><strong>Control rice and roti portions:</strong> Reduce from 3-4 rotis to 2, or from a full plate of rice to half. Do not eliminate carbs -- just right-size them</li>
@@ -139,8 +205,10 @@ const posts = [
 <li><strong>Replace fried snacks:</strong> Swap samosas and pakoras with roasted makhana, sprouts chaat, or fruit</li>
 <li><strong>Cut liquid calories:</strong> Chai with sugar (3-4 cups daily) can add 200+ calories. Use less sugar or switch to green tea</li>
 </ul>
+</div>
 
 <h3>Sample 1,500-Calorie Indian Meal Plan</h3>
+<div class="highlight-box">
 <ul>
 <li><strong>Breakfast (350 cal):</strong> 2 boiled eggs + 1 toast + green tea</li>
 <li><strong>Mid-morning (100 cal):</strong> 1 apple or a small bowl of curd</li>
@@ -149,10 +217,15 @@ const posts = [
 <li><strong>Dinner (400 cal):</strong> Grilled paneer/chicken + 1 roti + soup or salad</li>
 <li><strong>Post-dinner (50 cal):</strong> Warm turmeric milk (haldi doodh)</li>
 </ul>
+</div>
+
+<hr>
 
 <h2>Step 2: Increase Daily Movement (NEAT)</h2>
 
-<p>Increasing your non-exercise activity is the most underrated weight loss strategy:</p>
+<div class="callout">
+<strong>The Most Underrated Weight Loss Strategy:</strong> Increasing your non-exercise activity can burn 300-500 extra calories per day -- more than most gym sessions.
+</div>
 
 <ul>
 <li><strong>Walk 8,000-10,000 steps daily:</strong> This alone can burn 300-500 extra calories. Walk after meals, take stairs, walk while on phone calls</li>
@@ -161,11 +234,15 @@ const posts = [
 <li><strong>Take walking meetings:</strong> In the IT and corporate sector, walking meetings are gaining popularity</li>
 </ul>
 
+<hr>
+
 <h2>Step 3: Home Workouts (No Equipment Needed)</h2>
 
 <h3>Beginner Home Workout for Fat Loss</h3>
 <p>Do this circuit 3-4 times per week:</p>
-<ul>
+
+<div class="highlight-box">
+<ol>
 <li>Jumping Jacks -- 30 seconds</li>
 <li>Bodyweight Squats -- 15 reps</li>
 <li>Push-Ups (knee push-ups if needed) -- 10 reps</li>
@@ -174,11 +251,16 @@ const posts = [
 <li>Plank Hold -- 20-30 seconds</li>
 <li>Burpees -- 5-8 reps</li>
 <li>High Knees -- 30 seconds</li>
-</ul>
-<p>Rest 60 seconds between rounds. Complete 3-4 rounds. Total time: 20-25 minutes.</p>
+</ol>
+<p><strong>Rest 60 seconds between rounds. Complete 3-4 rounds. Total time: 20-25 minutes.</strong></p>
+</div>
 
 <h3>Yoga for Weight Loss</h3>
-<p>Yoga is a practical option for many Indians. Surya Namaskar (Sun Salutation) is particularly effective -- doing 12 rounds burns approximately 150-200 calories and improves flexibility, strength, and metabolism.</p>
+<div class="callout-tip">
+<strong>Try Surya Namaskar:</strong> Doing 12 rounds of Sun Salutation burns approximately 150-200 calories and improves flexibility, strength, and metabolism. It is a practical and effective option for many Indians.
+</div>
+
+<hr>
 
 <h2>Step 4: Lifestyle Changes That Accelerate Results</h2>
 
@@ -189,20 +271,28 @@ const posts = [
 <li><strong>Eat mindfully:</strong> Avoid eating in front of screens. Sit at the dining table, eat slowly, and stop when 80% full</li>
 </ul>
 
+<hr>
+
 <h2>Realistic Weight Loss Timeline</h2>
 
-<p>With consistent effort:</p>
-<ul>
-<li><strong>Week 1-2:</strong> 1-3 kg loss (mostly water weight)</li>
-<li><strong>Week 3-8:</strong> 0.5-1 kg per week (fat loss begins)</li>
-<li><strong>Month 3-6:</strong> Steady 2-4 kg per month if consistent</li>
-</ul>
+<div class="stat-grid">
+<div class="stat-card"><strong>1-3 kg</strong>Week 1-2 (Water Weight)</div>
+<div class="stat-card"><strong>0.5-1 kg/week</strong>Week 3-8 (Fat Loss Begins)</div>
+<div class="stat-card"><strong>2-4 kg/month</strong>Month 3-6 (Steady Progress)</div>
+<div class="stat-card"><strong>8-15 kg</strong>Achievable in 3 Months</div>
+</div>
 
-<p><strong>A healthy target is 8-15 kg in 3 months</strong> with proper nutrition and regular home workouts. Crash diets may show faster initial results but are unsustainable and often lead to muscle loss and metabolic damage.</p>
+<div class="callout-warning">
+<strong>Avoid Crash Diets:</strong> They may show faster initial results but are unsustainable and often lead to muscle loss and metabolic damage. A healthy target is 8-15 kg in 3 months with proper nutrition and regular home workouts.
+</div>
+
+<hr>
 
 <h2>When to Get Professional Help</h2>
 
 <p>If you have been trying to lose weight on your own for months without results, a personalised approach can make all the difference. Coach Himanshu specialises in <a href="/#plans">home workout plans</a> starting at just Rs 799/month -- designed specifically for people who do not have gym access.</p>
+
+<blockquote>You do not need a gym membership to transform your body. You need a plan that fits your life.</blockquote>
 
 <p><a href="/assessment">Take the free fitness assessment</a> to get a customised plan that fits your lifestyle, food preferences, and weight loss goals.</p>`,
   },
@@ -215,25 +305,29 @@ const posts = [
 
 <p>This is not a magic pill or a crash program. This is a structured, science-backed guide to achieving a genuine <strong>body transformation in 90 days</strong>, designed specifically for Indian lifestyles and food habits.</p>
 
+<hr>
+
 <h2>What Is Realistically Achievable in 90 Days?</h2>
 
-<p>Let us set honest expectations based on what Coach Himanshu has seen with 1000+ client transformations:</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>8-15 kg</strong>Fat Loss Possible</div>
+<div class="stat-card"><strong>2-4 kg</strong>Lean Muscle Gain</div>
+<div class="stat-card"><strong>5-10%</strong>Body Fat Reduction</div>
+<div class="stat-card"><strong>30-50%</strong>Strength Gains</div>
+</div>
 
-<ul>
-<li><strong>Fat loss:</strong> 8-15 kg of fat (depending on starting point and consistency)</li>
-<li><strong>Muscle gain:</strong> 2-4 kg of lean muscle (beginners can gain more due to "newbie gains")</li>
-<li><strong>Body fat reduction:</strong> 5-10% decrease in body fat percentage</li>
-<li><strong>Strength gains:</strong> 30-50% increase in major lifts</li>
-<li><strong>Visual difference:</strong> Clearly noticeable change in photos and how clothes fit</li>
-</ul>
+<div class="callout">
+<strong>Real Numbers, Real Clients:</strong> These are based on what Coach Himanshu has seen with 1000+ client transformations -- not Instagram-edited before and afters. Your results will depend on your starting point and consistency.
+</div>
 
-<p>These are real numbers from real clients -- not Instagram-edited before and afters.</p>
+<hr>
 
 <h2>Phase 1: Foundation (Weeks 1-4)</h2>
 
 <h3>Training Focus: Build the Habit</h3>
 <p>The first month is about establishing consistency, learning proper form, and preparing your body for higher intensity work.</p>
 
+<div class="highlight-box">
 <p><strong>Workout Structure:</strong></p>
 <ul>
 <li>4 training days per week (Mon, Tue, Thu, Fri)</li>
@@ -242,6 +336,7 @@ const posts = [
 <li>3 sets of 12-15 reps per exercise</li>
 <li>Add 20-30 minutes of walking on rest days</li>
 </ul>
+</div>
 
 <h3>Nutrition Focus: Clean Up Your Diet</h3>
 <ul>
@@ -252,14 +347,18 @@ const posts = [
 <li>Drink 3+ litres of water daily</li>
 </ul>
 
-<h3>Expected Results by Week 4</h3>
-<p>2-4 kg weight change, improved energy levels, better sleep quality, exercises starting to feel easier.</p>
+<div class="callout-tip">
+<strong>Expected Results by Week 4:</strong> 2-4 kg weight change, improved energy levels, better sleep quality, exercises starting to feel easier.
+</div>
+
+<hr>
 
 <h2>Phase 2: Acceleration (Weeks 5-8)</h2>
 
 <h3>Training Focus: Increase Intensity</h3>
 <p>Your body has adapted to the basics. Time to push harder.</p>
 
+<div class="highlight-box">
 <p><strong>Workout Structure:</strong></p>
 <ul>
 <li>5 training days per week</li>
@@ -268,6 +367,7 @@ const posts = [
 <li>Add HIIT sessions (2 per week, 15-20 minutes)</li>
 <li>Reduce rest periods from 90 seconds to 60 seconds</li>
 </ul>
+</div>
 
 <h3>Nutrition Focus: Dial In the Details</h3>
 <ul>
@@ -278,14 +378,18 @@ const posts = [
 <li>Plan meals for the week every Sunday</li>
 </ul>
 
-<h3>Expected Results by Week 8</h3>
-<p>5-10 kg total weight change, visible muscle definition starting to appear, clothes fitting noticeably differently, strength up 20-30% from baseline.</p>
+<div class="callout-tip">
+<strong>Expected Results by Week 8:</strong> 5-10 kg total weight change, visible muscle definition starting to appear, clothes fitting noticeably differently, strength up 20-30% from baseline.
+</div>
+
+<hr>
 
 <h2>Phase 3: Peak Performance (Weeks 9-12)</h2>
 
 <h3>Training Focus: Maximum Effort</h3>
 <p>The final push. Your fitness base is now strong enough to handle high-intensity training.</p>
 
+<div class="highlight-box">
 <p><strong>Workout Structure:</strong></p>
 <ul>
 <li>5-6 training days per week</li>
@@ -294,6 +398,7 @@ const posts = [
 <li>Continue HIIT 2-3 times per week</li>
 <li>Add posing practice if competing or taking transformation photos</li>
 </ul>
+</div>
 
 <h3>Nutrition Focus: Final Adjustments</h3>
 <ul>
@@ -303,8 +408,11 @@ const posts = [
 <li>Consider carb cycling: higher carbs on training days, lower on rest days</li>
 </ul>
 
-<h3>Expected Results by Week 12</h3>
-<p>8-15 kg total weight change, significant visual transformation, strength up 30-50%, improved cardiovascular fitness, better mental clarity and confidence.</p>
+<div class="callout-tip">
+<strong>Expected Results by Week 12:</strong> 8-15 kg total weight change, significant visual transformation, strength up 30-50%, improved cardiovascular fitness, better mental clarity and confidence.
+</div>
+
+<hr>
 
 <h2>The Non-Negotiables for 90-Day Success</h2>
 
@@ -317,16 +425,33 @@ const posts = [
 <li><strong>Patience in weeks 2-4:</strong> This is when most people quit. Initial motivation fades and results are not yet visible. Push through this period</li>
 </ol>
 
+<hr>
+
 <h2>Common Mistakes That Derail 90-Day Transformations</h2>
 
-<p><strong>Extreme calorie restriction:</strong> Eating below 1,200 calories crashes your metabolism and causes muscle loss. Slow and steady wins.</p>
-<p><strong>Ignoring strength training:</strong> Cardio alone will make you smaller but not leaner. Resistance training shapes your body and boosts metabolism.</p>
-<p><strong>Weekend binge eating:</strong> Five disciplined days followed by two days of unchecked eating can erase your entire weekly deficit.</p>
-<p><strong>Changing programs too often:</strong> Stick with one structured program for the full 90 days. Program hopping prevents adaptation.</p>
+<div class="callout-warning">
+<strong>Extreme calorie restriction:</strong> Eating below 1,200 calories crashes your metabolism and causes muscle loss. Slow and steady wins.
+</div>
+
+<div class="callout-warning">
+<strong>Ignoring strength training:</strong> Cardio alone will make you smaller but not leaner. Resistance training shapes your body and boosts metabolism.
+</div>
+
+<div class="callout-warning">
+<strong>Weekend binge eating:</strong> Five disciplined days followed by two days of unchecked eating can erase your entire weekly deficit.
+</div>
+
+<div class="callout-warning">
+<strong>Changing programs too often:</strong> Stick with one structured program for the full 90 days. Program hopping prevents adaptation.
+</div>
+
+<hr>
 
 <h2>Why Working With a Coach Multiplies Results</h2>
 
 <p>A 90-day transformation is ambitious but absolutely achievable. Having a certified coach dramatically increases your success rate by providing personalised programming, nutrition guidance, weekly accountability, and expert adjustments when progress stalls.</p>
+
+<blockquote>A 90-day transformation is not about doing everything perfectly. It is about doing the right things consistently for long enough to see results.</blockquote>
 
 <p>Coach Himanshu has guided 1000+ clients through exactly this type of transformation. His 3-month <a href="/#plans">Consistency Plan</a> is specifically designed for a structured 90-day journey.</p>
 
@@ -338,6 +463,8 @@ const posts = [
     excerpt: 'Honest comparison between online personal trainers and gym trainers in India. Cost, results, convenience, and quality compared to help you choose.',
     readTime: 8,
     content: `<p>This is one of the most common questions people ask when starting their fitness journey in India: should I hire an <strong>online personal trainer</strong> or work with a <strong>gym trainer</strong>? Both options have legitimate strengths and weaknesses. This article gives you an honest, data-driven comparison so you can make the right choice for your situation.</p>
+
+<hr>
 
 <h2>The Quick Comparison</h2>
 
@@ -357,13 +484,24 @@ const posts = [
 </tbody>
 </table>
 
+<hr>
+
 <h2>Where Online Trainers Win</h2>
 
 <h3>1. Significantly More Affordable</h3>
-<p>In Indian metros, a decent gym trainer charges Rs 5,000-15,000 per month for 12-20 sessions. An online coaching plan typically costs Rs 800-3,000 per month and includes daily support, nutrition guidance, and weekly consultations. Over 12 months, the savings can be Rs 50,000-100,000.</p>
+<p>In Indian metros, a decent gym trainer charges Rs 5,000-15,000 per month for 12-20 sessions. An online coaching plan typically costs Rs 800-3,000 per month and includes daily support, nutrition guidance, and weekly consultations.</p>
+
+<div class="stat-grid">
+<div class="stat-card"><strong>Rs 50,000-1,00,000</strong>Annual Savings With Online Coaching</div>
+<div class="stat-card"><strong>24/7</strong>Coach Availability via WhatsApp</div>
+<div class="stat-card"><strong>70-80%</strong>Of Results Come From Nutrition</div>
+<div class="stat-card"><strong>100%</strong>Flexibility in Training Location</div>
+</div>
 
 <h3>2. Comprehensive Nutrition Guidance</h3>
-<p>This is the biggest gap. Most gym trainers in India focus exclusively on workouts and have little to no formal nutrition education. Online coaches typically provide detailed meal plans, macro calculations, and ongoing dietary adjustments -- nutrition is arguably 70-80% of the results equation.</p>
+<div class="callout">
+<strong>The Biggest Gap:</strong> Most gym trainers in India focus exclusively on workouts and have little to no formal nutrition education. Online coaches typically provide detailed meal plans, macro calculations, and ongoing dietary adjustments -- nutrition is arguably 70-80% of the results equation.
+</div>
 
 <h3>3. Accountability Beyond the Gym</h3>
 <p>A gym trainer sees you for 45-60 minutes per session. An online coach is available throughout the day via WhatsApp or messaging. When you are at a restaurant choosing between butter chicken and grilled chicken, you can ask your online coach in real time. When you skip a workout, your coach follows up.</p>
@@ -372,7 +510,11 @@ const posts = [
 <p>Travelling for work? Visiting family in another city? Your online program follows you everywhere. You are not dependent on a specific gym or trainer's schedule. For Indian professionals who travel frequently or have unpredictable work hours, this flexibility is invaluable.</p>
 
 <h3>5. Access to Better-Qualified Coaches</h3>
-<p>If you live in a tier-2 or tier-3 city, finding a NASM or ACE certified trainer locally can be difficult. Online coaching removes the geography barrier -- you can work with the best coaches regardless of where you live.</p>
+<div class="callout-tip">
+<strong>Geography No Longer Matters:</strong> If you live in a tier-2 or tier-3 city, finding a NASM or ACE certified trainer locally can be difficult. Online coaching removes the geography barrier -- you can work with the best coaches regardless of where you live.
+</div>
+
+<hr>
 
 <h2>Where Gym Trainers Win</h2>
 
@@ -388,14 +530,19 @@ const posts = [
 <h3>4. Immediate Problem-Solving</h3>
 <p>If an exercise hurts or does not feel right, a gym trainer can immediately assess and modify it. With an online coach, there is a slight communication delay.</p>
 
+<hr>
+
 <h2>The Certification Reality in India</h2>
 
-<p>One of the biggest concerns with gym trainers in India is the lack of standardised certification requirements. Many gym trainers in India learned through personal experience or informal apprenticeships rather than formal education in exercise science.</p>
+<div class="callout-warning">
+<strong>Buyer Beware:</strong> One of the biggest concerns with gym trainers in India is the lack of standardised certification requirements. Many gym trainers learned through personal experience or informal apprenticeships rather than formal education in exercise science. Online coaches, especially those charging professional rates, are more likely to hold recognised certifications (NASM, ACE, ISSA, NSCA).
+</div>
 
-<p>Online coaches, especially those charging professional rates, are more likely to hold recognised certifications (NASM, ACE, ISSA, NSCA). This does not mean all online coaches are qualified -- but the market dynamics tend to push certified coaches toward the online model where they can reach more clients.</p>
+<hr>
 
 <h2>Who Should Choose Online Coaching?</h2>
 
+<div class="highlight-box">
 <ul>
 <li>You have a busy or unpredictable schedule</li>
 <li>You need nutrition guidance (not just workouts)</li>
@@ -405,9 +552,11 @@ const posts = [
 <li>You want to train at home or have equipment at home</li>
 <li>You are self-motivated and disciplined</li>
 </ul>
+</div>
 
 <h2>Who Should Choose a Gym Trainer?</h2>
 
+<div class="highlight-box">
 <ul>
 <li>You are a complete beginner who has never touched a weight</li>
 <li>You need motivation through physical presence</li>
@@ -415,16 +564,25 @@ const posts = [
 <li>You have a generous budget and prefer in-person interaction</li>
 <li>You want to learn specific skills like Olympic lifting</li>
 </ul>
+</div>
+
+<hr>
 
 <h2>The Hybrid Approach</h2>
 
-<p>Many people are discovering that the best approach combines both: use an online coach for programming, nutrition, and daily accountability, while occasionally working with a gym trainer for form checks on complex exercises. This gives you the best of both worlds at a reasonable cost.</p>
+<div class="callout-tip">
+<strong>Best of Both Worlds:</strong> Many people are discovering that the best approach combines both: use an online coach for programming, nutrition, and daily accountability, while occasionally working with a gym trainer for form checks on complex exercises. This gives you the best of both worlds at a reasonable cost.
+</div>
+
+<hr>
 
 <h2>How Coach Himanshu's Online Coaching Compares</h2>
 
 <p>Coach Himanshu offers NASM-certified online coaching with fully personalised workout plans, Indian-food-focused meal plans, 24/7 WhatsApp support, and weekly one-on-one consultations -- starting at just Rs 799/month for home plans and Rs 1,099/month for gym plans.</p>
 
-<p>With 1000+ client transformations across India and internationally, the results speak for themselves. <a href="/assessment">Take the free fitness assessment</a> to see how online coaching can work for you, or <a href="/#plans">explore the plans</a> to get started.</p>`,
+<blockquote>With 1000+ client transformations across India and internationally, the results speak for themselves.</blockquote>
+
+<p><a href="/assessment">Take the free fitness assessment</a> to see how online coaching can work for you, or <a href="/#plans">explore the plans</a> to get started.</p>`,
   },
   {
     title: 'Best Pre and Post Workout Meals for Indian Diet',
@@ -435,16 +593,21 @@ const posts = [
 
 <p>This guide gives you science-backed <strong>pre and post workout meal</strong> options using everyday Indian foods that you actually enjoy eating.</p>
 
+<hr>
+
 <h2>The Science: Why Workout Nutrition Matters</h2>
 
 <h3>Pre-Workout Nutrition</h3>
 <p>Your pre-workout meal serves two purposes: <strong>provide energy</strong> for your training session and <strong>prevent muscle breakdown</strong> during exercise.</p>
-<p>The ideal pre-workout meal should contain:</p>
+
+<div class="callout">
+<strong>The Ideal Pre-Workout Meal Should Contain:</strong>
 <ul>
 <li><strong>Moderate carbohydrates:</strong> Your muscles' primary fuel source during resistance training</li>
 <li><strong>Moderate protein:</strong> Provides amino acids to reduce muscle breakdown</li>
 <li><strong>Low fat and low fibre:</strong> These slow digestion and can cause discomfort during exercise</li>
 </ul>
+</div>
 
 <h3>Post-Workout Nutrition</h3>
 <p>After training, your body needs to:</p>
@@ -454,46 +617,61 @@ const posts = [
 <li><strong>Rehydrate:</strong> Replace fluids and electrolytes lost through sweat</li>
 </ul>
 
+<hr>
+
 <h2>Pre-Workout Meal Timing</h2>
 
-<p>Timing depends on meal size:</p>
-<ul>
-<li><strong>Large meal:</strong> 2-3 hours before training</li>
-<li><strong>Moderate snack:</strong> 1-1.5 hours before training</li>
-<li><strong>Small snack:</strong> 30-45 minutes before training</li>
-</ul>
+<div class="stat-grid">
+<div class="stat-card"><strong>2-3 hrs</strong>Before (Large Meal)</div>
+<div class="stat-card"><strong>1-1.5 hrs</strong>Before (Moderate Snack)</div>
+<div class="stat-card"><strong>30-45 min</strong>Before (Small Snack)</div>
+<div class="stat-card"><strong>20-30 min</strong>Before (Morning Training)</div>
+</div>
 
-<p><strong>Important:</strong> If you train first thing in the morning, a small snack 20-30 minutes before is sufficient. Training completely fasted is fine for some people but can reduce performance for high-intensity sessions.</p>
+<div class="callout-tip">
+<strong>Morning Training Tip:</strong> If you train first thing in the morning, a small snack 20-30 minutes before is sufficient. Training completely fasted is fine for some people but can reduce performance for high-intensity sessions.
+</div>
+
+<hr>
 
 <h2>Best Indian Pre-Workout Meals</h2>
 
 <h3>2-3 Hours Before (Full Meal)</h3>
+<div class="highlight-box">
 <ul>
 <li><strong>2 rotis + dal + sabzi:</strong> ~450 cal, 18g protein, 60g carbs. A classic Indian meal that provides sustained energy</li>
 <li><strong>Poha with peanuts + curd:</strong> ~350 cal, 12g protein, 50g carbs. Light, easy to digest, and rich in iron</li>
 <li><strong>Rice + rajma + raita:</strong> ~500 cal, 20g protein, 70g carbs. Excellent carb-protein combination</li>
 <li><strong>2 eggs + 2 toast + banana:</strong> ~400 cal, 18g protein, 55g carbs. Quick to prepare, easy to digest</li>
 </ul>
+</div>
 
 <h3>1-1.5 Hours Before (Moderate Snack)</h3>
+<div class="highlight-box">
 <ul>
 <li><strong>Banana + handful of peanuts:</strong> ~250 cal, 8g protein, 35g carbs. The simplest effective pre-workout snack</li>
 <li><strong>Paneer paratha (1 small):</strong> ~300 cal, 12g protein, 30g carbs. Tasty and provides sustained energy</li>
 <li><strong>Upma with vegetables:</strong> ~280 cal, 8g protein, 45g carbs. South Indian favourite, great energy source</li>
 <li><strong>Oats with milk + honey:</strong> ~300 cal, 12g protein, 45g carbs. Fast to prepare, well-tolerated</li>
 </ul>
+</div>
 
 <h3>30-45 Minutes Before (Quick Snack)</h3>
+<div class="highlight-box">
 <ul>
 <li><strong>1 banana:</strong> ~100 cal. Fast-digesting carbs for immediate energy</li>
 <li><strong>2-3 dates + few almonds:</strong> ~150 cal. Natural sugars plus healthy fats</li>
 <li><strong>Mango shake (small):</strong> ~180 cal. Seasonal option during Indian summers</li>
 <li><strong>1 rusk/toast with honey:</strong> ~120 cal. Minimal fibre, quick energy</li>
 </ul>
+</div>
+
+<hr>
 
 <h2>Best Indian Post-Workout Meals</h2>
 
 <h3>Within 30-60 Minutes (Recovery Snack)</h3>
+<div class="highlight-box">
 <ul>
 <li><strong>Protein shake + banana:</strong> ~280 cal, 30g protein. Fastest option for protein delivery</li>
 <li><strong>Paneer bhurji + 1 roti:</strong> ~350 cal, 25g protein. Excellent for vegetarians</li>
@@ -501,8 +679,10 @@ const posts = [
 <li><strong>Curd with roasted chana:</strong> ~200 cal, 15g protein. Light, refreshing, and protein-rich</li>
 <li><strong>Sprouts chaat:</strong> ~180 cal, 12g protein. High in protein and micronutrients</li>
 </ul>
+</div>
 
 <h3>Within 1-2 Hours (Full Post-Workout Meal)</h3>
+<div class="highlight-box">
 <ul>
 <li><strong>Chicken curry + rice + dal:</strong> ~650 cal, 45g protein. Complete recovery meal with all macronutrients</li>
 <li><strong>Chole + 2 rotis + raita:</strong> ~550 cal, 25g protein. Excellent vegetarian option</li>
@@ -510,30 +690,53 @@ const posts = [
 <li><strong>Rajma chawal + paneer tikka:</strong> ~600 cal, 30g protein. High-protein vegetarian meal</li>
 <li><strong>Egg curry + 2 rotis + salad:</strong> ~500 cal, 28g protein. Affordable and balanced</li>
 </ul>
+</div>
+
+<hr>
 
 <h2>Pre-Workout Nutrition for Different Goals</h2>
 
-<h3>For Fat Loss</h3>
-<p>Keep pre-workout meals smaller (200-300 calories) and protein-focused. Example: 2 boiled eggs or a small protein shake. You want enough energy to train hard without consuming excess calories.</p>
+<div class="callout-tip">
+<strong>For Fat Loss:</strong> Keep pre-workout meals smaller (200-300 calories) and protein-focused. Example: 2 boiled eggs or a small protein shake. You want enough energy to train hard without consuming excess calories.
+</div>
 
-<h3>For Muscle Building</h3>
-<p>Larger pre-workout meals (400-500 calories) with emphasis on carbohydrates for energy. Example: banana + oats with milk + peanut butter. Carbs fuel the intense training needed for muscle growth.</p>
+<div class="callout-tip">
+<strong>For Muscle Building:</strong> Larger pre-workout meals (400-500 calories) with emphasis on carbohydrates for energy. Example: banana + oats with milk + peanut butter. Carbs fuel the intense training needed for muscle growth.
+</div>
 
-<h3>For Endurance/Cardio</h3>
-<p>Carbohydrate-heavy, low-fat snacks 45-60 minutes before. Example: 2 bananas or a bowl of poha. Carbs are the primary fuel for sustained cardiovascular exercise.</p>
+<div class="callout-tip">
+<strong>For Endurance/Cardio:</strong> Carbohydrate-heavy, low-fat snacks 45-60 minutes before. Example: 2 bananas or a bowl of poha. Carbs are the primary fuel for sustained cardiovascular exercise.
+</div>
+
+<hr>
 
 <h2>Common Mistakes to Avoid</h2>
 
-<p><strong>Eating a heavy meal right before training:</strong> Your body diverts blood to digestion instead of your muscles. Allow at least 1.5-2 hours after a full meal.</p>
-<p><strong>Skipping post-workout nutrition:</strong> The 2-hour window after training is when your muscles are most receptive to nutrients. Do not waste it.</p>
-<p><strong>Drinking too much water during exercise:</strong> Sip water throughout your workout rather than gulping large amounts, which can cause stomach discomfort.</p>
-<p><strong>Relying only on supplements:</strong> Real food should always be the foundation. Supplements fill gaps, they do not replace meals.</p>
+<div class="callout-warning">
+<strong>Eating a heavy meal right before training:</strong> Your body diverts blood to digestion instead of your muscles. Allow at least 1.5-2 hours after a full meal.
+</div>
+
+<div class="callout-warning">
+<strong>Skipping post-workout nutrition:</strong> The 2-hour window after training is when your muscles are most receptive to nutrients. Do not waste it.
+</div>
+
+<div class="callout-warning">
+<strong>Drinking too much water during exercise:</strong> Sip water throughout your workout rather than gulping large amounts, which can cause stomach discomfort.
+</div>
+
+<div class="callout">
+<strong>Remember:</strong> Real food should always be the foundation. Supplements fill gaps, they do not replace meals.
+</div>
+
+<hr>
 
 <h2>Get a Personalised Nutrition Plan</h2>
 
 <p>Every person's nutritional needs are different based on body weight, training intensity, goals, and food preferences. Coach Himanshu creates fully customised meal plans -- including workout nutrition timing -- as part of every <a href="/#plans">coaching plan</a>.</p>
 
-<p>All meal plans are built around Indian foods you actually enjoy. <a href="/assessment">Take the free fitness assessment</a> to get started with a plan tailored to your specific needs.</p>`,
+<blockquote>All meal plans are built around Indian foods you actually enjoy -- because the best diet is one you can stick to.</blockquote>
+
+<p><a href="/assessment">Take the free fitness assessment</a> to get started with a plan tailored to your specific needs.</p>`,
   },
   {
     title: 'How Much Does an Online Fitness Coach Cost in India?',
@@ -544,9 +747,12 @@ const posts = [
 
 <p>This article breaks down exactly what you should expect to pay, what you should get for your money, and how to evaluate whether a coach is worth the investment.</p>
 
+<hr>
+
 <h2>Online Fitness Coaching Price Ranges in India (2025-2026)</h2>
 
 <h3>Budget Tier: Rs 500-1,500/month</h3>
+<div class="highlight-box">
 <p><strong>What you typically get:</strong></p>
 <ul>
 <li>Template-based workout plans (same plan given to multiple clients)</li>
@@ -555,8 +761,10 @@ const posts = [
 <li>No certifications in most cases</li>
 </ul>
 <p><strong>Best for:</strong> People who just need basic structure and are self-motivated. Be cautious -- many coaches at this price point lack formal education.</p>
+</div>
 
 <h3>Mid-Range: Rs 1,500-5,000/month</h3>
+<div class="highlight-box">
 <p><strong>What you typically get:</strong></p>
 <ul>
 <li>Personalised workout plans tailored to your goals</li>
@@ -566,8 +774,10 @@ const posts = [
 <li>Often certified coaches (NASM, ACE, ISSA)</li>
 </ul>
 <p><strong>Best for:</strong> Most people. This range offers the best balance of quality, personalisation, and affordability. Coach Himanshu's plans fall in this range (Rs 799-3,000/month).</p>
+</div>
 
 <h3>Premium Tier: Rs 5,000-15,000/month</h3>
+<div class="highlight-box">
 <p><strong>What you typically get:</strong></p>
 <ul>
 <li>Highly personalised programming with frequent adjustments</li>
@@ -577,8 +787,10 @@ const posts = [
 <li>Priority response times</li>
 </ul>
 <p><strong>Best for:</strong> Competitive athletes, physique competitors, or executives who want premium, hands-on coaching.</p>
+</div>
 
 <h3>Celebrity/Elite Tier: Rs 15,000-50,000+/month</h3>
+<div class="highlight-box">
 <p><strong>What you typically get:</strong></p>
 <ul>
 <li>Daily personal attention from a high-profile coach</li>
@@ -587,10 +799,16 @@ const posts = [
 <li>Integration with other health professionals</li>
 </ul>
 <p><strong>Best for:</strong> Celebrities, professional athletes, and high-net-worth individuals who want the ultimate in personalised attention.</p>
+</div>
+
+<hr>
 
 <h2>What Should Be Included in Any Coaching Plan?</h2>
 
-<p>Regardless of price point, a legitimate online coaching plan should include:</p>
+<div class="callout">
+<strong>Regardless of price point, a legitimate online coaching plan should include:</strong>
+</div>
+
 <ol>
 <li><strong>Initial assessment:</strong> A thorough evaluation of your current fitness, goals, and limitations</li>
 <li><strong>Personalised workout plan:</strong> Not a generic template, but a program designed for your specific situation</li>
@@ -600,7 +818,11 @@ const posts = [
 <li><strong>Exercise demonstrations:</strong> Video guidance for proper form</li>
 </ol>
 
-<p><strong>Red flag:</strong> If a coach charges Rs 3,000+ but does not provide nutrition guidance or personalised programming, you are likely overpaying.</p>
+<div class="callout-warning">
+<strong>Red Flag:</strong> If a coach charges Rs 3,000+ but does not provide nutrition guidance or personalised programming, you are likely overpaying.
+</div>
+
+<hr>
 
 <h2>Online Coaching vs Other Fitness Costs in India</h2>
 
@@ -617,30 +839,41 @@ const posts = [
 </tbody>
 </table>
 
-<p>When you compare what online coaching includes (workouts + nutrition + daily support) against hiring a gym trainer and nutritionist separately, online coaching is significantly more cost-effective.</p>
+<div class="callout-tip">
+<strong>Best Value:</strong> When you compare what online coaching includes (workouts + nutrition + daily support) against hiring a gym trainer and nutritionist separately, online coaching is significantly more cost-effective.
+</div>
+
+<hr>
 
 <h2>How to Evaluate if a Coach Is Worth the Price</h2>
 
-<ul>
+<ol>
 <li><strong>Check certifications:</strong> NASM, ACE, ISSA, or NSCA are globally recognised. Ask for proof</li>
 <li><strong>Look for real client results:</strong> Verified testimonials, before/after photos with client permission, and specific transformation stories</li>
 <li><strong>Ask about the process:</strong> A good coach will explain their methodology, not just promise results</li>
 <li><strong>Test communication:</strong> Message the coach before signing up. Response time and quality of answers tell you a lot</li>
 <li><strong>Understand what is included:</strong> Get a clear list of deliverables before paying</li>
 <li><strong>Check refund policy:</strong> Legitimate coaches have transparent refund policies</li>
-</ul>
+</ol>
+
+<hr>
 
 <h2>Coach Himanshu's Pricing: Best Value in Indian Online Coaching</h2>
 
 <p>Coach Himanshu offers NASM-certified online coaching with the following plans:</p>
-<ul>
-<li><strong>Home Workout Plans:</strong> From Rs 799/month -- perfect for training without gym equipment</li>
-<li><strong>Gym Plans:</strong> From Rs 1,099/month (Kickstart) to Rs 8,999 for 12 months (Mastery)</li>
-<li><strong>Rehabilitation Plans:</strong> From Rs 1,499/month for injury recovery and corrective exercise</li>
-<li><strong>Live 1-on-1 Sessions:</strong> Rs 5,999 (12 sessions) to Rs 29,999 (72 sessions)</li>
-</ul>
 
-<p>Every plan includes: personalised workout plan, custom meal plan, exercise video tutorials, supplement guidance, 24/7 WhatsApp support, and weekly consultations.</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>Rs 799/mo</strong>Home Workout Plans</div>
+<div class="stat-card"><strong>Rs 1,099/mo</strong>Gym Plans (Kickstart)</div>
+<div class="stat-card"><strong>Rs 1,499/mo</strong>Rehabilitation Plans</div>
+<div class="stat-card"><strong>Rs 5,999</strong>Live 1-on-1 (12 Sessions)</div>
+</div>
+
+<div class="callout">
+<strong>Every plan includes:</strong> personalised workout plan, custom meal plan, exercise video tutorials, supplement guidance, 24/7 WhatsApp support, and weekly consultations.
+</div>
+
+<blockquote>The best investment you can make is in your health. And it does not have to break the bank.</blockquote>
 
 <p><a href="/assessment">Start with a free fitness assessment</a> to find the right plan for your goals and budget, or <a href="/#plans">view all plans</a> with current pricing.</p>`,
   },
@@ -653,11 +886,22 @@ const posts = [
 
 <p>This article explains everything about the National Academy of Sports Medicine certification -- what it covers, why it is considered the gold standard, and how NASM-trained coaches approach your fitness differently.</p>
 
+<hr>
+
 <h2>What Is NASM?</h2>
 
-<p>The <strong>National Academy of Sports Medicine (NASM)</strong> is a globally recognised fitness education organisation founded in 1987 in the United States. It is accredited by the National Commission for Certifying Agencies (NCCA), which is the gold standard for professional certification accreditation.</p>
+<div class="callout">
+<strong>The Gold Standard:</strong> The <strong>National Academy of Sports Medicine (NASM)</strong> is a globally recognised fitness education organisation founded in 1987 in the United States. It is accredited by the National Commission for Certifying Agencies (NCCA), which is the gold standard for professional certification accreditation.
+</div>
 
-<p>NASM certifications are recognised in over 80 countries. In India, NASM certification has become increasingly important as clients become more educated about what separates qualified coaches from self-taught trainers.</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>1987</strong>Year Founded</div>
+<div class="stat-card"><strong>80+</strong>Countries Recognise NASM</div>
+<div class="stat-card"><strong>NCCA</strong>Accredited Certification</div>
+<div class="stat-card"><strong>5 Phases</strong>OPT Training Model</div>
+</div>
+
+<hr>
 
 <h2>What Does NASM Certification Cover?</h2>
 
@@ -671,6 +915,8 @@ const posts = [
 
 <h3>3. The OPT Model (Optimum Performance Training)</h3>
 <p>NASM's signature training system. It is a progressive, periodised framework with five phases:</p>
+
+<div class="highlight-box">
 <ol>
 <li><strong>Stabilization Endurance:</strong> Building foundation, correcting imbalances</li>
 <li><strong>Strength Endurance:</strong> Increasing muscular endurance and stability</li>
@@ -678,7 +924,11 @@ const posts = [
 <li><strong>Maximal Strength:</strong> Heavy lifting for maximum force production</li>
 <li><strong>Power:</strong> Explosive movements for athletic performance</li>
 </ol>
-<p>Compare this to the typical Indian gym experience where every client gets the same chest-biceps Monday, back-triceps Tuesday split regardless of their fitness level, goals, or movement limitations.</p>
+</div>
+
+<div class="callout-warning">
+<strong>Compare this to the typical Indian gym experience:</strong> Every client gets the same chest-biceps Monday, back-triceps Tuesday split regardless of their fitness level, goals, or movement limitations. The OPT model ensures you progress through the right phases for your body.
+</div>
 
 <h3>4. Assessment and Corrective Exercise</h3>
 <p>NASM coaches learn to perform overhead squat assessments, pushing and pulling assessments, and single-leg balance tests to identify muscle imbalances and movement compensations before designing a program. This is critical for injury prevention, especially for clients with desk jobs or existing pain.</p>
@@ -690,7 +940,11 @@ const posts = [
 <p>How to structure workouts with proper exercise selection, sets, reps, tempo, rest periods, and progression. A NASM-designed program considers acute variables like time under tension, training volume, and intensity percentage -- not just "do 3 sets of 10."</p>
 
 <h3>7. Special Populations</h3>
-<p>Training modifications for clients with diabetes, hypertension, arthritis, PCOS, thyroid conditions, pregnancy, and senior fitness. In India, where lifestyle diseases are prevalent, this knowledge is invaluable.</p>
+<div class="callout-tip">
+<strong>Especially Relevant in India:</strong> Training modifications for clients with diabetes, hypertension, arthritis, PCOS, thyroid conditions, pregnancy, and senior fitness. Where lifestyle diseases are prevalent, this knowledge is invaluable.
+</div>
+
+<hr>
 
 <h2>How NASM Training Differs From Uncertified Coaching</h2>
 
@@ -708,34 +962,46 @@ const posts = [
 </tbody>
 </table>
 
+<hr>
+
 <h2>NASM Specializations Beyond CPT</h2>
 
 <p>Beyond the base CPT certification, NASM offers advanced specializations that coaches can pursue:</p>
+
+<div class="highlight-box">
 <ul>
 <li><strong>Corrective Exercise Specialist (CES):</strong> Advanced assessment and corrective strategies for pain and dysfunction</li>
 <li><strong>Performance Enhancement Specialist (PES):</strong> Training for athletic performance and sports-specific conditioning</li>
 <li><strong>Sports Nutrition Specialist:</strong> Advanced nutrition coaching for performance and body composition</li>
 <li><strong>Behaviour Change Specialist:</strong> Psychology of habit formation and client motivation</li>
 </ul>
+</div>
 
-<p>Coach Himanshu holds multiple NASM certifications including the CPT, Bodybuilding Coach, Sports Nutrition Specialist, and Corrective Exercise Specialist -- a level of qualification that is rare among fitness coaches in India.</p>
+<div class="callout">
+<strong>Coach Himanshu's Credentials:</strong> Coach Himanshu holds multiple NASM certifications including the CPT, Bodybuilding Coach, Sports Nutrition Specialist, and Corrective Exercise Specialist -- a level of qualification that is rare among fitness coaches in India.
+</div>
+
+<hr>
 
 <h2>How to Verify NASM Certification</h2>
 
-<p>Any legitimate NASM-certified coach should be able to:</p>
+<div class="callout-warning">
+<strong>Always Verify:</strong> Any legitimate NASM-certified coach should be able to:
 <ul>
 <li>Show their certification certificate or digital badge</li>
 <li>Provide their NASM ID number</li>
 <li>Be verified through NASM's official website</li>
 </ul>
+If a coach claims NASM certification but cannot provide proof, that is a significant red flag.
+</div>
 
-<p>If a coach claims NASM certification but cannot provide proof, that is a significant red flag.</p>
+<hr>
 
 <h2>Why This Matters for Your Fitness Journey</h2>
 
 <p>Your body is not a machine that responds to random inputs. It is a complex system that requires informed, progressive, and personalised training to produce optimal results safely. A NASM-certified coach understands this system at a level that self-taught trainers simply cannot match.</p>
 
-<p>Whether you are dealing with a stubborn weight loss plateau, recovering from an injury, managing a medical condition, or training for peak performance -- the quality of your coach's education directly impacts your outcomes.</p>
+<blockquote>Whether you are dealing with a stubborn weight loss plateau, recovering from an injury, managing a medical condition, or training for peak performance -- the quality of your coach's education directly impacts your outcomes.</blockquote>
 
 <p><a href="/assessment">Take the free fitness assessment</a> to experience what NASM-certified coaching looks like in practice, or <a href="/about">learn more about Coach Himanshu's credentials</a>.</p>`,
   },
@@ -746,71 +1012,126 @@ const posts = [
     readTime: 8,
     content: `<p>Transformation photos are everywhere on social media. But behind every genuine transformation is a story of struggle, consistency, and structured support. This article shares <strong>real client transformation stories</strong> from Coach Himanshu's coaching practice -- not just the physical changes, but the challenges, turning points, and lessons that made the results possible.</p>
 
+<hr>
+
 <h2>What Makes a Real Transformation?</h2>
 
-<p>A real transformation is not about a 30-day crash diet or extreme measures that cannot be sustained. It is about building habits, changing your relationship with food and exercise, and creating a lifestyle that supports long-term health. Every story below represents months of consistent effort guided by personalised coaching.</p>
+<div class="callout">
+<strong>Beyond the Before and After:</strong> A real transformation is not about a 30-day crash diet or extreme measures that cannot be sustained. It is about building habits, changing your relationship with food and exercise, and creating a lifestyle that supports long-term health. Every story below represents months of consistent effort guided by personalised coaching.
+</div>
+
+<div class="stat-grid">
+<div class="stat-card"><strong>1000+</strong>Client Transformations</div>
+<div class="stat-card"><strong>4-8 months</strong>Average Journey Duration</div>
+<div class="stat-card"><strong>8-22 kg</strong>Range of Fat Loss</div>
+<div class="stat-card"><strong>100%</strong>Personalised Plans</div>
+</div>
+
+<hr>
 
 <h2>Transformation 1: The IT Professional Who Lost 22 kg</h2>
 
-<p><strong>Starting point:</strong> 98 kg, sedentary desk job, irregular eating habits, pre-diabetic</p>
-<p><strong>Duration:</strong> 6 months</p>
-<p><strong>Result:</strong> 76 kg, reversed pre-diabetic markers, now exercises 5 days a week</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>98 kg</strong>Starting Weight</div>
+<div class="stat-card"><strong>76 kg</strong>Final Weight</div>
+<div class="stat-card"><strong>6 months</strong>Duration</div>
+<div class="stat-card"><strong>Pre-Diabetic</strong>Markers Reversed</div>
+</div>
 
 <p>Working 10-12 hours daily in the IT sector with back-to-back meetings, finding time for fitness seemed impossible. The biggest challenge was not the workout -- it was the diet. Late-night snacking, ordering food online, and stress eating were deeply ingrained habits.</p>
 
-<p><strong>What worked:</strong> Coach Himanshu designed a home workout plan that required just 30-40 minutes, 4 days a week. The meal plan was built around foods that could be prepped on Sunday evenings. The WhatsApp check-ins created accountability that made skipping workouts uncomfortable.</p>
+<div class="callout-tip">
+<strong>What Worked:</strong> Coach Himanshu designed a home workout plan that required just 30-40 minutes, 4 days a week. The meal plan was built around foods that could be prepped on Sunday evenings. The WhatsApp check-ins created accountability that made skipping workouts uncomfortable.
+</div>
 
-<p><strong>Key insight:</strong> "I did not need more willpower. I needed a system that fit my life."</p>
+<blockquote>"I did not need more willpower. I needed a system that fit my life."</blockquote>
+
+<hr>
 
 <h2>Transformation 2: PCOS Weight Loss Journey -- 15 kg in 5 Months</h2>
 
-<p><strong>Starting point:</strong> 78 kg, diagnosed PCOS, hormonal imbalances, fatigue, irregular periods</p>
-<p><strong>Duration:</strong> 5 months</p>
-<p><strong>Result:</strong> 63 kg, regular menstrual cycle restored, improved energy, better skin</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>78 kg</strong>Starting Weight</div>
+<div class="stat-card"><strong>63 kg</strong>Final Weight</div>
+<div class="stat-card"><strong>5 months</strong>Duration</div>
+<div class="stat-card"><strong>Regular Cycles</strong>Restored</div>
+</div>
 
 <p>PCOS makes weight loss significantly harder due to insulin resistance and hormonal imbalances. Generic diet advice ("just eat less") does not work for PCOS clients. The approach needed to be specific: anti-inflammatory foods, blood sugar-stabilising meal timing, and a training program that balanced intense workouts with adequate recovery.</p>
 
-<p><strong>What worked:</strong> A customised nutrition plan focusing on low-glycemic Indian foods, strength training 4 days per week (not excessive cardio, which can worsen hormonal imbalances), and stress management through better sleep habits. Coach Himanshu's experience with NASM's Corrective Exercise Specialist training was particularly valuable for designing a safe, effective program.</p>
+<div class="callout-tip">
+<strong>What Worked:</strong> A customised nutrition plan focusing on low-glycemic Indian foods, strength training 4 days per week (not excessive cardio, which can worsen hormonal imbalances), and stress management through better sleep habits. Coach Himanshu's experience with NASM's Corrective Exercise Specialist training was particularly valuable for designing a safe, effective program.
+</div>
 
-<p><strong>Key insight:</strong> "My doctor noticed the improvement before I did. My blood work changed before my body shape did."</p>
+<blockquote>"My doctor noticed the improvement before I did. My blood work changed before my body shape did."</blockquote>
+
+<hr>
 
 <h2>Transformation 3: Vegetarian Muscle Building -- 9 kg Lean Gain</h2>
 
-<p><strong>Starting point:</strong> 58 kg, skinny, vegetarian, no gym experience</p>
-<p><strong>Duration:</strong> 8 months</p>
-<p><strong>Result:</strong> 67 kg lean muscle, visible definition, confident in the gym</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>58 kg</strong>Starting Weight</div>
+<div class="stat-card"><strong>67 kg</strong>Final Weight (Lean)</div>
+<div class="stat-card"><strong>8 months</strong>Duration</div>
+<div class="stat-card"><strong>130g+</strong>Daily Protein (Veg)</div>
+</div>
 
-<p>The biggest myth in Indian fitness is that vegetarians cannot build muscle. This client proved that wrong. The challenge was hitting 130g+ protein daily without chicken, fish, or eggs. The solution was a carefully designed meal plan combining paneer, soya chunks, dal, curd, whey protein, and legumes.</p>
+<div class="callout-warning">
+<strong>Myth Busted:</strong> The biggest myth in Indian fitness is that vegetarians cannot build muscle. This client proved that wrong.
+</div>
 
-<p><strong>What worked:</strong> Progressive overload training with a push/pull/legs split, high-protein vegetarian meal plan with 6 meals per day, and creatine supplementation. Weekly form check videos ensured safe technique progression on compound lifts.</p>
+<p>The challenge was hitting 130g+ protein daily without chicken, fish, or eggs. The solution was a carefully designed meal plan combining paneer, soya chunks, dal, curd, whey protein, and legumes.</p>
 
-<p><strong>Key insight:</strong> "I used to think I was genetically skinny. Turns out I was just under-eating and under-training."</p>
+<div class="callout-tip">
+<strong>What Worked:</strong> Progressive overload training with a push/pull/legs split, high-protein vegetarian meal plan with 6 meals per day, and creatine supplementation. Weekly form check videos ensured safe technique progression on compound lifts.
+</div>
+
+<blockquote>"I used to think I was genetically skinny. Turns out I was just under-eating and under-training."</blockquote>
+
+<hr>
 
 <h2>Transformation 4: Dad Bod to Fit Dad at 42</h2>
 
-<p><strong>Starting point:</strong> 92 kg, high cholesterol, poor stamina, could not play with kids without getting winded</p>
-<p><strong>Duration:</strong> 7 months</p>
-<p><strong>Result:</strong> 74 kg, cholesterol normalised, runs 5 km, plays cricket with his children every weekend</p>
+<div class="stat-grid">
+<div class="stat-card"><strong>92 kg</strong>Starting Weight</div>
+<div class="stat-card"><strong>74 kg</strong>Final Weight</div>
+<div class="stat-card"><strong>7 months</strong>Duration</div>
+<div class="stat-card"><strong>Cholesterol</strong>Normalised</div>
+</div>
 
 <p>At 42, the motivation was not six-pack abs -- it was being healthy enough to be present for his family. Years of business dinners, social drinking, and zero exercise had taken their toll. The doctor's warning about cholesterol medication was the wake-up call.</p>
 
-<p><strong>What worked:</strong> A gradual approach. Month 1 focused solely on walking 8,000 steps daily and cleaning up breakfast and dinner. Month 2 introduced home workouts 3 days a week. By month 3, gym training began. The meal plan worked around the family's eating habits -- no separate "diet food" needed.</p>
+<div class="callout-tip">
+<strong>What Worked:</strong> A gradual approach. Month 1 focused solely on walking 8,000 steps daily and cleaning up breakfast and dinner. Month 2 introduced home workouts 3 days a week. By month 3, gym training began. The meal plan worked around the family's eating habits -- no separate "diet food" needed.
+</div>
 
-<p><strong>Key insight:</strong> "I did not transform overnight. I just did slightly better each week for 7 months."</p>
+<blockquote>"I did not transform overnight. I just did slightly better each week for 7 months."</blockquote>
+
+<hr>
 
 <h2>Transformation 5: Post-Injury Comeback</h2>
 
+<div class="highlight-box">
 <p><strong>Starting point:</strong> Severe lower back pain, unable to sit for more than 30 minutes, depressed and inactive for 6 months post-injury</p>
 <p><strong>Duration:</strong> 4 months</p>
 <p><strong>Result:</strong> Pain-free, back to full training, stronger than before the injury</p>
+</div>
 
 <p>After a herniated disc, the client was told by multiple people to "just rest" and "avoid the gym forever." The corrective exercise approach was different: identify the root cause (weak core and tight hip flexors from prolonged sitting), address it systematically, and gradually rebuild strength.</p>
 
-<p><strong>What worked:</strong> Coach Himanshu's NASM Corrective Exercise Specialist training was critical. The program started with gentle mobility work and core activation exercises, progressed to basic movement patterns, and eventually returned to full strength training. No exercise caused pain -- every movement was screened and modified as needed.</p>
+<div class="callout-tip">
+<strong>What Worked:</strong> Coach Himanshu's NASM Corrective Exercise Specialist training was critical. The program started with gentle mobility work and core activation exercises, progressed to basic movement patterns, and eventually returned to full strength training. No exercise caused pain -- every movement was screened and modified as needed.
+</div>
 
-<p><strong>Key insight:</strong> "The injury was not the end of my fitness journey. It was the beginning of training properly."</p>
+<blockquote>"The injury was not the end of my fitness journey. It was the beginning of training properly."</blockquote>
+
+<hr>
 
 <h2>Common Patterns Across All Transformations</h2>
+
+<div class="callout">
+<strong>5 Lessons From 1000+ Transformations:</strong>
+</div>
 
 <ol>
 <li><strong>Personalisation was non-negotiable:</strong> No two clients had the same plan. Programs were designed around individual goals, limitations, preferences, and lifestyles.</li>
@@ -820,13 +1141,15 @@ const posts = [
 <li><strong>Results were not linear:</strong> Every client hit plateaus. Having a coach to adjust the plan during these periods made the difference between quitting and breaking through.</li>
 </ol>
 
+<hr>
+
 <h2>Start Your Own Transformation</h2>
 
 <p>Every transformation story on this page started with a single step: deciding to get professional help. Coach Himanshu has guided 1000+ clients through transformations like these -- across different ages, body types, medical conditions, and fitness levels.</p>
 
-<p>Your story could be next. <a href="/assessment">Take the free fitness assessment</a> to begin, or <a href="/#plans">explore the coaching plans</a> to find the right fit for your goals.</p>
+<blockquote>You do not need to be fit to start. You need to start to get fit.</blockquote>
 
-<p>Remember: you do not need to be fit to start. You need to start to get fit.</p>`,
+<p>Your story could be next. <a href="/assessment">Take the free fitness assessment</a> to begin, or <a href="/#plans">explore the coaching plans</a> to find the right fit for your goals.</p>`,
   },
 ];
 

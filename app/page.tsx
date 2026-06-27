@@ -615,6 +615,136 @@ export default function Home() {
     },
   };
 
+  // Course Schema (AEO - coaching plans as educational programs)
+  const courseSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Coach Himanshu Fitness Programs',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        item: {
+          '@type': 'Course',
+          name: 'Kickstart Fitness Program',
+          description: '1-month personalised gym workout plan with custom meal plan, exercise video tutorials, and 24/7 WhatsApp support from a NASM Certified Coach.',
+          provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
+          offers: { '@type': 'Offer', price: '1099', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P1M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          educationalLevel: 'Beginner',
+          inLanguage: ['en', 'hi'],
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        item: {
+          '@type': 'Course',
+          name: 'Consistency Fitness Program',
+          description: '3-month comprehensive fitness coaching program with personalised workouts, nutrition planning, weekly consultations, and dedicated WhatsApp support.',
+          provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
+          offers: { '@type': 'Offer', price: '2499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P3M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          educationalLevel: 'Beginner',
+          inLanguage: ['en', 'hi'],
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        item: {
+          '@type': 'Course',
+          name: 'Mastery Fitness Program',
+          description: '12-month comprehensive fitness mastery program with periodised training, advanced nutrition, supplement guidance, and FREE RhynoGrip fitness gear.',
+          provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
+          offers: { '@type': 'Offer', price: '8999', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P12M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          educationalLevel: 'Intermediate',
+          inLanguage: ['en', 'hi'],
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        item: {
+          '@type': 'Course',
+          name: 'Home Workout Program',
+          description: 'Complete home workout program requiring no gym or equipment. Bodyweight exercises, resistance band routines, and progressive overload training with personalised nutrition.',
+          provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
+          offers: { '@type': 'Offer', price: '799', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P1M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          educationalLevel: 'Beginner',
+          inLanguage: ['en', 'hi'],
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 5,
+        item: {
+          '@type': 'Course',
+          name: 'Rehabilitation & Corrective Exercise Program',
+          description: 'Specialised rehabilitation program based on NASM Corrective Exercise Continuum for injury recovery, posture correction, and pain management.',
+          provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
+          offers: { '@type': 'Offer', price: '1499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P1M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          educationalLevel: 'Beginner',
+          inLanguage: ['en', 'hi'],
+        },
+      },
+    ],
+  };
+
+  // DefinedTermSet Schema (GEO - fitness glossary for AI knowledge)
+  const glossarySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    name: 'Fitness Coaching Terminology',
+    description: 'Key fitness and coaching terms explained by NASM Certified Coach Himanshu',
+    url: 'https://coachhimanshu.com',
+    hasDefinedTerm: [
+      {
+        '@type': 'DefinedTerm',
+        name: 'Progressive Overload',
+        description: 'The gradual increase of stress placed on the body during exercise training. This is achieved by increasing weight, reps, sets, or decreasing rest periods over time to continually challenge muscles and drive adaptation.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'NASM OPT Model',
+        description: 'The Optimum Performance Training model developed by NASM. A systematic, progressive training program consisting of 5 phases: Stabilization Endurance, Strength Endurance, Muscular Development, Maximal Strength, and Power.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Macronutrients',
+        description: 'The three main nutrients the body needs in large quantities: protein (for muscle repair), carbohydrates (for energy), and fats (for hormones and cell function). A balanced macro split is essential for fitness goals.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Body Recomposition',
+        description: 'The process of simultaneously losing fat and gaining muscle. Achieved through a combination of resistance training, adequate protein intake, and a slight caloric deficit or maintenance calories.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Corrective Exercise',
+        description: 'A systematic process of identifying and addressing muscle imbalances, postural deviations, and movement compensations through specific exercises. Based on NASM\'s Corrective Exercise Continuum: Inhibit, Lengthen, Activate, Integrate.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'NEAT',
+        description: 'Non-Exercise Activity Thermogenesis. Calories burned through daily activities that are not structured exercise — walking, cleaning, cooking, fidgeting. NEAT accounts for 15-30% of daily calorie burn and is a powerful weight management tool.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Caloric Deficit',
+        description: 'Consuming fewer calories than your body burns, causing it to use stored fat for energy. A safe deficit of 400-500 calories per day leads to sustainable fat loss of 0.5-1 kg per week without muscle loss.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Periodisation',
+        description: 'The systematic planning of training into phases to optimize performance and prevent overtraining. Includes macrocycles (yearly), mesocycles (monthly), and microcycles (weekly) with varying intensity and volume.',
+      },
+    ],
+  };
+
   // Breadcrumb Schema
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -1311,6 +1441,14 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(glossarySchema) }}
       />
 
       <div className="min-h-screen bg-brand-navy">

@@ -315,13 +315,27 @@ export default function BlogPostPage() {
             <div
               className="prose prose-invert prose-base md:prose-lg max-w-none break-words
                 prose-headings:text-white prose-headings:font-bold
-                prose-h2:text-xl prose-h2:md:text-2xl prose-h2:lg:text-3xl prose-h2:mt-8 prose-h2:md:mt-12 prose-h2:mb-4 prose-h2:md:mb-6
+                prose-h2:text-xl prose-h2:md:text-2xl prose-h2:lg:text-3xl prose-h2:mt-8 prose-h2:md:mt-12 prose-h2:mb-4 prose-h2:md:mb-6 prose-h2:border-b prose-h2:border-white/10 prose-h2:pb-3
                 prose-h3:text-lg prose-h3:md:text-xl prose-h3:lg:text-2xl prose-h3:mt-6 prose-h3:md:mt-8 prose-h3:mb-3 prose-h3:md:mb-4
                 prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4 prose-p:md:mb-6 prose-p:text-sm prose-p:md:text-base
                 prose-strong:text-white prose-strong:font-semibold
                 prose-ul:text-gray-300 prose-ul:my-4 prose-ul:md:my-6 prose-ul:text-sm prose-ul:md:text-base
+                prose-ol:text-gray-300 prose-ol:my-4 prose-ol:md:my-6 prose-ol:text-sm prose-ol:md:text-base
                 prose-li:my-1 prose-li:md:my-2
                 prose-a:text-brand-blue prose-a:no-underline hover:prose-a:text-brand-gold
+                prose-blockquote:border-brand-blue prose-blockquote:bg-brand-blue/5 prose-blockquote:rounded-r-lg prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-blockquote:text-gray-200
+                prose-table:text-sm prose-table:md:text-base
+                prose-thead:border-brand-blue/30
+                prose-th:text-white prose-th:font-semibold prose-th:px-3 prose-th:py-2 prose-th:md:px-4 prose-th:md:py-3 prose-th:bg-brand-blue/10
+                prose-td:text-gray-300 prose-td:px-3 prose-td:py-2 prose-td:md:px-4 prose-td:md:py-3 prose-td:border-white/5
+                prose-hr:border-white/10 prose-hr:my-8
+                [&_.callout]:bg-gradient-to-r [&_.callout]:from-brand-blue/10 [&_.callout]:to-transparent [&_.callout]:border-l-4 [&_.callout]:border-brand-blue [&_.callout]:rounded-r-lg [&_.callout]:p-4 [&_.callout]:md:p-5 [&_.callout]:my-6 [&_.callout]:text-gray-200
+                [&_.callout-tip]:bg-gradient-to-r [&_.callout-tip]:from-green-500/10 [&_.callout-tip]:to-transparent [&_.callout-tip]:border-l-4 [&_.callout-tip]:border-green-500 [&_.callout-tip]:rounded-r-lg [&_.callout-tip]:p-4 [&_.callout-tip]:md:p-5 [&_.callout-tip]:my-6 [&_.callout-tip]:text-gray-200
+                [&_.callout-warning]:bg-gradient-to-r [&_.callout-warning]:from-amber-500/10 [&_.callout-warning]:to-transparent [&_.callout-warning]:border-l-4 [&_.callout-warning]:border-amber-500 [&_.callout-warning]:rounded-r-lg [&_.callout-warning]:p-4 [&_.callout-warning]:md:p-5 [&_.callout-warning]:my-6 [&_.callout-warning]:text-gray-200
+                [&_.highlight-box]:bg-white/5 [&_.highlight-box]:border [&_.highlight-box]:border-white/10 [&_.highlight-box]:rounded-xl [&_.highlight-box]:p-4 [&_.highlight-box]:md:p-6 [&_.highlight-box]:my-6
+                [&_.stat-grid]:grid [&_.stat-grid]:grid-cols-2 [&_.stat-grid]:md:grid-cols-4 [&_.stat-grid]:gap-3 [&_.stat-grid]:md:gap-4 [&_.stat-grid]:my-6
+                [&_.stat-card]:bg-white/5 [&_.stat-card]:border [&_.stat-card]:border-white/10 [&_.stat-card]:rounded-lg [&_.stat-card]:p-3 [&_.stat-card]:md:p-4 [&_.stat-card]:text-center
+                [&_.stat-card_strong]:text-brand-blue [&_.stat-card_strong]:text-xl [&_.stat-card_strong]:md:text-2xl [&_.stat-card_strong]:block [&_.stat-card_strong]:mb-1
                 [&>*]:break-words [&>*]:overflow-hidden
               "
               dangerouslySetInnerHTML={{ __html: addSeoLinks(formatContent(post.content)) }}

@@ -69,6 +69,8 @@ Sitemap: https://coachhimanshu.com/sitemap.xml
 # LLM info: https://coachhimanshu.com/llms.txt
 # LLM full: https://coachhimanshu.com/llms-full.txt
 # RSS feed: https://coachhimanshu.com/feed.xml
+# Knowledge base: https://coachhimanshu.com/knowledge
+# FAQ: https://coachhimanshu.com/faq
 
 # Crawl-delay
 Crawl-delay: 1

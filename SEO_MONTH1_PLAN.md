@@ -38,6 +38,15 @@
 | Bing Webmaster Tools | ✅ Done (June 26) |
 | Guest posting started | ✅ Done (June 26) |
 | Google Reviews collection | ✅ Done (June 26) |
+| AEO: Dedicated /faq page (23+ Q&As) | ✅ Done (June 27) |
+| AEO: Course schema for coaching plans | ✅ Done (June 27) |
+| AEO: Blog Speakable schema | ✅ Done (June 27) |
+| GEO: /knowledge page (AI citation authority) | ✅ Done (June 27) |
+| GEO: Blog collection schema | ✅ Done (June 27) |
+| GEO: DefinedTerm fitness glossary schema | ✅ Done (June 27) |
+| GEO: Updated llms.txt with new pages | ✅ Done (June 27) |
+| Perf: DNS prefetch & preconnect for CDN | ✅ Done (June 27) |
+| Perf: hreflang tags (en-IN) | ✅ Done (June 27) |
 
 ---
 

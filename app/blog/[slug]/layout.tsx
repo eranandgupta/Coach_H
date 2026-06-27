@@ -110,6 +110,17 @@ export default async function BlogPostLayout({
           name: 'Coach Himanshu Fitness Blog',
           url: 'https://coachhimanshu.com/blog',
         },
+        inLanguage: 'en',
+        isAccessibleForFree: true,
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['h1', 'h2', '.prose p:first-of-type'],
+        },
+        about: {
+          '@type': 'Thing',
+          name: 'Fitness Coaching',
+          url: 'https://coachhimanshu.com',
+        },
       };
     }
   } catch {

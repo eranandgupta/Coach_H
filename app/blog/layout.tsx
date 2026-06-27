@@ -31,6 +31,41 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Blog',
+            name: 'Coach Himanshu Fitness Blog',
+            description: 'Expert fitness articles covering workouts, nutrition, diet plans, injury prevention, and transformation stories by NASM Certified Coach Himanshu.',
+            url: 'https://coachhimanshu.com/blog',
+            publisher: {
+              '@type': 'Organization',
+              name: 'Coach Himanshu',
+              url: 'https://coachhimanshu.com',
+              logo: { '@type': 'ImageObject', url: 'https://coachhimanshu.com/favicon.png' },
+            },
+            author: {
+              '@type': 'Person',
+              name: 'Coach Himanshu',
+              url: 'https://coachhimanshu.com/about',
+              jobTitle: 'NASM Certified Fitness Coach',
+            },
+            about: [
+              { '@type': 'Thing', name: 'Fitness Training' },
+              { '@type': 'Thing', name: 'Nutrition' },
+              { '@type': 'Thing', name: 'Weight Loss' },
+              { '@type': 'Thing', name: 'Muscle Building' },
+              { '@type': 'Thing', name: 'Home Workouts' },
+              { '@type': 'Thing', name: 'Indian Diet Plans' },
+              { '@type': 'Thing', name: 'Rehabilitation' },
+            ],
+            inLanguage: 'en',
+            isAccessibleForFree: true,
+          }),
+        }}
+      />
       {children}
     </>
   );
