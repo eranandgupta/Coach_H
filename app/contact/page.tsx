@@ -46,6 +46,14 @@ export default function Contact() {
         throw new Error(data.error || 'Failed to submit form');
       }
 
+      // GA4 conversion tracking
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'contact_form_submit', {
+          event_category: 'conversion',
+          event_label: 'Contact Form Submitted',
+          value: 1,
+        });
+      }
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
 

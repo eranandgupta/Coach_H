@@ -14,6 +14,15 @@ export default function WhatsAppButton() {
       rel="noopener noreferrer"
       className="fixed bottom-20 right-4 lg:bottom-8 md:right-6 z-40 group"
       aria-label="Chat on WhatsApp"
+      onClick={() => {
+        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'whatsapp_click', {
+            event_category: 'engagement',
+            event_label: 'WhatsApp Chat Button',
+            value: 1,
+          });
+        }
+      }}
     >
       <div className="relative">
         {/* Pulse animation */}

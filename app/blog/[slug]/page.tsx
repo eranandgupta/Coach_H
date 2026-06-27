@@ -458,6 +458,29 @@ export default function BlogPostPage() {
       </article>
 
       <Footer />
+
+      {/* Sticky CTA Banner */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-navy border-t border-brand-blue/20 backdrop-blur-lg px-3 py-2.5 md:py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="hidden sm:flex h-8 w-8 rounded-full bg-brand-blue/20 items-center justify-center flex-shrink-0">
+              <ArrowRight className="w-4 h-4 text-brand-blue" />
+            </div>
+            <p className="text-white text-xs md:text-sm font-medium truncate">
+              Get your <span className="text-brand-gold">free fitness assessment</span> today
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button
+              variant="primary"
+              onClick={() => router.push('/assessment')}
+              className="!py-1.5 !px-3 md:!py-2 md:!px-5 !text-xs md:!text-sm whitespace-nowrap"
+            >
+              Free Assessment
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

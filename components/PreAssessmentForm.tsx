@@ -221,6 +221,14 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
       });
 
       if (response.ok) {
+        // GA4 conversion tracking
+        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'assessment_submit', {
+            event_category: 'conversion',
+            event_label: 'Fitness Assessment Completed',
+            value: 1,
+          });
+        }
         if (isEditMode && onSuccess) {
           onSuccess();
         } else {

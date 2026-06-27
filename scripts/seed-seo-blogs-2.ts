@@ -1166,17 +1166,15 @@ async function main() {
   console.log(`Using coach: ${coach.name || coach.email} (ID: ${coach.id})`);
 
   for (const post of posts) {
-    const existing = await prisma.blogPost.findUnique({
+    const result = await prisma.blogPost.upsert({
       where: { slug: post.slug },
-    });
-
-    if (existing) {
-      console.log(`Skipping "${post.title}" -- already exists`);
-      continue;
-    }
-
-    const created = await prisma.blogPost.create({
-      data: {
+      update: {
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        readTime: post.readTime,
+      },
+      create: {
         title: post.title,
         slug: post.slug,
         excerpt: post.excerpt,
@@ -1188,10 +1186,10 @@ async function main() {
       },
     });
 
-    console.log(`Created: "${created.title}" (ID: ${created.id})`);
+    console.log(`Upserted: "${result.title}" (ID: ${result.id})`);
   }
 
-  console.log('\nDone! All SEO blog posts (batch 2) have been seeded.');
+  console.log('\nDone! All SEO blog posts (batch 2) have been seeded/updated.');
 }
 
 main()
