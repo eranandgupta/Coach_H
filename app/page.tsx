@@ -89,7 +89,7 @@ export default function Home() {
         subtitle: 'Valid June 1 - 7 Only',
         endDate: 'June 7, 2026',
         offers: commonOffers,
-        specials: null,
+        specials: null as string[] | null,
       };
     }
     if (day >= 21 && day <= 30) {
@@ -100,7 +100,7 @@ export default function Home() {
         subtitle: 'Valid June 21 - 30 Only',
         endDate: 'June 30, 2026',
         offers: commonOffers,
-        specials: null,
+        specials: null as string[] | null,
       };
     }
     return null;
@@ -1837,7 +1837,7 @@ export default function Home() {
                         <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-2">🎉 JUNE 21 SPECIALS</h3>
                         <p className="text-purple-400 font-bold text-base mb-6">World Yoga Day + Father&apos;s Day</p>
                         <div className="space-y-3 max-w-lg mx-auto mb-6">
-                          {activeSale.specials.map((special, i) => (
+                          {activeSale.specials?.map((special: string, i: number) => (
                             <div key={i} className="rounded-xl border border-white/[0.08] p-4 text-left" style={{ background: 'rgba(26,37,64,0.4)' }}>
                               <p className="text-white font-medium text-sm md:text-base">{special}</p>
                             </div>
