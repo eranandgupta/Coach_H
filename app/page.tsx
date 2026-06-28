@@ -56,6 +56,25 @@ const itemVariants = {
   },
 };
 
+function ReviewText({ review }: { review: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const truncated = review.slice(0, 180).trimEnd();
+
+  return (
+    <div className="text-sm md:text-base text-gray-300 leading-relaxed mb-4 relative z-10 flex-grow">
+      <p>
+        &ldquo;{expanded ? review : `${truncated}...`}&rdquo;
+      </p>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-brand-blue hover:text-brand-gold text-xs md:text-sm font-medium mt-1 transition-colors"
+      >
+        {expanded ? 'Show less' : 'Read more'}
+      </button>
+    </div>
+  );
+}
+
 export default function Home() {
   const { addToCart } = useCart();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -2429,9 +2448,13 @@ export default function Home() {
                   </div>
 
                   {/* Review Text */}
-                  <p className="text-sm md:text-base text-gray-300 leading-relaxed mb-4 relative z-10 flex-grow">
-                    "{testimonial.review}"
-                  </p>
+                  {testimonial.review.length > 200 ? (
+                    <ReviewText review={testimonial.review} />
+                  ) : (
+                    <p className="text-sm md:text-base text-gray-300 leading-relaxed mb-4 relative z-10 flex-grow">
+                      &ldquo;{testimonial.review}&rdquo;
+                    </p>
+                  )}
 
                   {/* Transformation Badge */}
                   {testimonial.transformation && (
