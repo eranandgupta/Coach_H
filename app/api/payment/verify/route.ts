@@ -147,9 +147,9 @@ export async function POST(request: NextRequest) {
         isNewUser = true;
       }
 
-      // Cancel existing active/paused/future subscriptions
+      // Cancel existing active/paused subscriptions
       await tx.userSubscription.updateMany({
-        where: { userId: user.id, status: { in: ['active', 'paused'] }, endDate: { gte: new Date() } },
+        where: { userId: user.id, status: { in: ['active', 'paused'] } },
         data: { status: 'cancelled', pausedAt: null },
       });
 

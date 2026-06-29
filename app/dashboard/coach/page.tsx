@@ -392,9 +392,13 @@ export default function CoachDashboard() {
   );
 
   const now = new Date();
-  const activeClientsCount = clients.filter(
-    (c) => c.subscriptions?.[0] && new Date(c.subscriptions[0].endDate) >= now
-  ).length;
+  const activeClientsCount = clients.filter((c) => {
+    const sub = c.subscriptions?.[0];
+    if (!sub) return false;
+    if (new Date(sub.endDate) >= now) return true;
+    if (isElitePlan(sub.plan?.name || '') && sub.status === 'active') return true;
+    return false;
+  }).length;
   const inactiveClientsCount = clients.length - activeClientsCount;
 
   const getClientWorkouts = (clientId: number) => {
@@ -761,7 +765,7 @@ export default function CoachDashboard() {
                     {/* Subscription Info */}
                     {client.subscriptions && client.subscriptions.length > 0 && (() => {
                       const sub = client.subscriptions[0];
-                      const isActive = new Date(sub.endDate) >= now;
+                      const isActive = new Date(sub.endDate) >= now || (isElitePlan(sub.plan?.name || '') && sub.status === 'active');
                       return (
                       <div className={`mb-3 p-2 rounded border ${isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
                         <div className="flex items-center justify-between">
@@ -1022,7 +1026,7 @@ export default function CoachDashboard() {
           ) : (
             <div className="space-y-3">
               {enrollments.map((enr, idx) => {
-                const isActive = (enr.status === 'active' || enr.status === 'paused') && new Date(enr.endDate) >= now;
+                const isActive = (enr.status === 'active' || enr.status === 'paused') && (new Date(enr.endDate) >= now || isElitePlan(enr.plan?.name || ''));
                 return (
                   <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
                     className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">

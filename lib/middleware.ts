@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { verifyToken } from './auth';
 import { prisma } from './prisma';
-import { getMaxPauseDays } from './planUtils';
+import { getMaxPauseDays, isElitePlan, getTotalSessions } from './planUtils';
 
 export interface AuthUser {
   userId: number;
@@ -41,19 +41,81 @@ export async function checkSubscription(userId: number): Promise<{
   try {
     const now = new Date();
 
-    // Auto-expire any subscriptions that are past their end date but still marked active or paused
-    await prisma.userSubscription.updateMany({
+    // First, check for session-based (Elite 1:1) plans that may have expired by date
+    // but still have sessions remaining — these should stay active
+    const expiredSessionPlan = await prisma.userSubscription.findFirst({
+      where: {
+        userId: userId,
+        status: { in: ['active', 'paused', 'expired'] },
+        endDate: { lt: now },
+      },
+      include: {
+        plan: true,
+        sessionTrackings: true,
+      },
+      orderBy: {
+        endDate: 'desc',
+      },
+    });
+
+    if (expiredSessionPlan && isElitePlan(expiredSessionPlan.plan.name)) {
+      const totalSessions = getTotalSessions(expiredSessionPlan.plan.name);
+      const completedSessions = expiredSessionPlan.sessionTrackings.length;
+
+      if (totalSessions && completedSessions < totalSessions) {
+        // Sessions remain — keep subscription active regardless of endDate
+        if (expiredSessionPlan.status !== 'active') {
+          await prisma.userSubscription.update({
+            where: { id: expiredSessionPlan.id },
+            data: { status: 'active', pausedAt: null },
+          });
+          expiredSessionPlan.status = 'active';
+        }
+        return {
+          isActive: true,
+          subscription: expiredSessionPlan,
+        };
+      }
+    }
+
+    // Auto-expire non-session-based subscriptions that are past their end date
+    // For session-based plans, only expire if all sessions are completed
+    const expiredSubs = await prisma.userSubscription.findMany({
       where: {
         userId: userId,
         status: { in: ['active', 'paused'] },
         endDate: { lt: now },
       },
-      data: { status: 'expired', pausedAt: null },
+      include: {
+        plan: true,
+        sessionTrackings: true,
+      },
     });
+
+    for (const sub of expiredSubs) {
+      if (isElitePlan(sub.plan.name)) {
+        const total = getTotalSessions(sub.plan.name);
+        const completed = sub.sessionTrackings.length;
+        // Only expire session-based plans if all sessions are used
+        if (total && completed >= total) {
+          await prisma.userSubscription.update({
+            where: { id: sub.id },
+            data: { status: 'expired', pausedAt: null },
+          });
+        }
+        // Otherwise leave it active — sessions remain
+      } else {
+        // Time-based plan — expire normally
+        await prisma.userSubscription.update({
+          where: { id: sub.id },
+          data: { status: 'expired', pausedAt: null },
+        });
+      }
+    }
 
     // Find any subscription with endDate in the future (source of truth is the date, not status field)
     // Also include paused subscriptions (they have endDate in future)
-    const subscription = await prisma.userSubscription.findFirst({
+    let subscription = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
         endDate: { gte: now },
@@ -65,6 +127,22 @@ export async function checkSubscription(userId: number): Promise<{
         endDate: 'desc',
       },
     });
+
+    // If no future-dated subscription, check for active session-based plans (sessions remaining)
+    if (!subscription) {
+      subscription = await prisma.userSubscription.findFirst({
+        where: {
+          userId: userId,
+          status: 'active',
+        },
+        include: {
+          plan: true,
+        },
+        orderBy: {
+          endDate: 'desc',
+        },
+      });
+    }
 
     if (!subscription) {
       return {

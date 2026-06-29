@@ -147,9 +147,13 @@ export default function TrainerDashboard() {
   );
 
   const now = new Date();
-  const activeClientsCount = clients.filter(
-    (c) => c.subscriptions?.[0] && new Date(c.subscriptions[0].endDate) >= now
-  ).length;
+  const activeClientsCount = clients.filter((c) => {
+    const sub = c.subscriptions?.[0];
+    if (!sub) return false;
+    if (new Date(sub.endDate) >= now) return true;
+    if (isElitePlan(sub.plan?.name || '') && sub.status === 'active') return true;
+    return false;
+  }).length;
 
   const getClientWorkouts = (clientId: number) => {
     return workouts.filter((w) => w.clientId === clientId);
@@ -405,7 +409,7 @@ export default function TrainerDashboard() {
                       {/* Subscription Info */}
                       {client.subscriptions && client.subscriptions.length > 0 && (() => {
                         const sub = client.subscriptions[0];
-                        const isActive = new Date(sub.endDate) >= now;
+                        const isActive = new Date(sub.endDate) >= now || (isElitePlan(sub.plan?.name || '') && sub.status === 'active');
                         const isPaused = sub.status === 'paused';
                         return (
                         <div className={`mb-3 p-2 rounded border ${isPaused ? 'bg-yellow-500/10 border-yellow-500/30' : isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>

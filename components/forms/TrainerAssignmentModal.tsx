@@ -68,7 +68,7 @@ export default function TrainerAssignmentModal({ isOpen, onClose, onSuccess }: T
         const eliteClients = (data.clients || []).filter((c: any) => {
           const sub = c.subscriptions?.[0];
           if (!sub) return false;
-          return sub.plan.name.startsWith('Elite 1:1') && new Date(sub.endDate) >= new Date();
+          return sub.plan.name.startsWith('Elite 1:1') && (new Date(sub.endDate) >= new Date() || sub.status === 'active');
         });
         setClients(eliteClients);
       }

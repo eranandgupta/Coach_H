@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireCoach } from '@/lib/middleware';
+import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,13 +51,27 @@ async function putHandler(request: NextRequest, context: any) {
       );
     }
 
+    // Determine if we should mark as expired when newEndDate is in the past
+    let shouldExpire = newEndDate < new Date();
+    if (shouldExpire && isElitePlan(subscription.plan.name)) {
+      const totalSessions = getTotalSessions(subscription.plan.name);
+      if (totalSessions) {
+        const usedSessions = await prisma.sessionTracking.count({
+          where: { subscriptionId: parseInt(subscriptionId) },
+        });
+        if (usedSessions < totalSessions) {
+          shouldExpire = false; // Elite plan with remaining sessions stays active
+        }
+      }
+    }
+
     // Update the subscription end date
     const updatedSubscription = await prisma.userSubscription.update({
       where: { id: parseInt(subscriptionId) },
       data: {
         endDate: newEndDate,
         // If removing days pushed it into the past, mark as expired; otherwise preserve current status (active/paused)
-        ...(newEndDate < new Date() ? { status: 'expired' } : {}),
+        ...(shouldExpire ? { status: 'expired' } : {}),
       },
       include: {
         plan: true,
