@@ -676,7 +676,7 @@ export default function AboutPage() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
                   <div className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden flex-shrink-0 ring-2 ring-brand-gold/30 group-hover:ring-brand-gold/60 group-hover:shadow-lg ${teamMembers[0].shadow} transition-all duration-300`}>
-                    <img src={teamMembers[0].image} alt={teamMembers[0].name} className="w-full h-full object-cover object-top" loading="lazy" />
+                    <img src={teamMembers[0].image} alt={`${teamMembers[0].name}, ${teamMembers[0].role} at Coach Himanshu`} className="w-full h-full object-cover object-top" loading="lazy" />
                   </div>
                   <div className="text-center md:text-left">
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">{teamMembers[0].name}</h3>
@@ -701,7 +701,7 @@ export default function AboutPage() {
                     <div className="relative z-10">
                       {member.image ? (
                         <div className={`w-14 h-14 rounded-xl mb-4 overflow-hidden ring-2 ring-white/10 group-hover:ring-white/20 group-hover:shadow-lg ${member.shadow} transition-all duration-300 ${member.isLogo ? 'bg-brand-navy p-1.5' : ''}`}>
-                          <img src={member.image} alt={member.name} className={`w-full h-full ${member.isLogo ? 'object-contain' : 'object-cover object-top'}`} loading="lazy" />
+                          <img src={member.image} alt={member.isLogo ? `${member.name} logo` : `${member.name}, ${member.role} at Coach Himanshu`} className={`w-full h-full ${member.isLogo ? 'object-contain' : 'object-cover object-top'}`} loading="lazy" />
                         </div>
                       ) : (
                         <div className={`w-14 h-14 bg-gradient-to-br ${member.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:shadow-lg ${member.shadow} transition-all duration-300`}>

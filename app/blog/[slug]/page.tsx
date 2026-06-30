@@ -1,41 +1,21 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { prisma } from '@/lib/prisma';
+import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import YouTubeEmbed from '@/components/YouTubeEmbed';
 import Link from 'next/link';
-import { Calendar, Clock, User, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
-import Button from '@/components/Button';
+import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
+import { BackToBlogButton, ExplorePlansButton, StickyCtaBanner } from '@/components/BlogPostCTA';
 
-interface BlogPost {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string | null;
-  coverImage: string | null;
-  videoUrl: string | null;
-  readTime: number | null;
-  publishedAt: string | null;
-  views: number;
-  author: {
-    name: string | null;
-    image: string | null;
-  };
-}
+export const revalidate = 3600;
 
-interface RelatedPost {
-  id: number;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  coverImage: string | null;
-  readTime: number | null;
-  publishedAt: string | null;
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    where: { published: true },
+    select: { slug: true },
+  });
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 // SEO internal link mappings - keywords to internal pages
@@ -59,169 +39,163 @@ const SEO_LINK_MAP: { keyword: RegExp; href: string; title: string }[] = [
   { keyword: /\bfat loss\b/i, href: '/#plans', title: 'Explore Fat Loss Plans' },
   { keyword: /\bmuscle gain\b/i, href: '/#plans', title: 'Explore Muscle Gain Plans' },
   { keyword: /\btransformation\b/i, href: '/about', title: 'See Transformations' },
+  // Expanded SEO links
+  { keyword: /\bprotein supplement\b/i, href: '/blog/beginners-guide-to-protein-supplements-in-india', title: 'Protein Supplements Guide' },
+  { keyword: /\bweight loss\b/i, href: '/blog/how-to-lose-weight-without-going-to-gym', title: 'Weight Loss Guide' },
+  { keyword: /\bbody transformation\b/i, href: '/blog/complete-guide-to-body-transformation-in-90-days', title: 'Body Transformation Guide' },
+  { keyword: /\b90 day\b/i, href: '/blog/complete-guide-to-body-transformation-in-90-days', title: '90-Day Transformation Guide' },
+  { keyword: /\bonline trainer\b/i, href: '/blog/online-personal-trainer-vs-gym-trainer-which-is-better', title: 'Online vs Gym Trainer' },
+  { keyword: /\bgym trainer\b/i, href: '/blog/online-personal-trainer-vs-gym-trainer-which-is-better', title: 'Online vs Gym Trainer' },
+  { keyword: /\bpre workout meal\b/i, href: '/blog/best-pre-and-post-workout-meals-for-indian-diet', title: 'Best Pre-Workout Meals' },
+  { keyword: /\bpost workout meal\b/i, href: '/blog/best-pre-and-post-workout-meals-for-indian-diet', title: 'Best Post-Workout Meals' },
+  { keyword: /\bcoaching cost\b/i, href: '/blog/how-much-does-online-fitness-coach-cost-in-india', title: 'Online Coaching Cost Guide' },
+  { keyword: /\bNASM certification\b/i, href: '/blog/what-nasm-certification-means-for-your-fitness-coach', title: 'NASM Certification Guide' },
+  { keyword: /\bNASM certified\b/i, href: '/blog/what-nasm-certification-means-for-your-fitness-coach', title: 'NASM Certification Guide' },
+  { keyword: /\bclient results\b/i, href: '/blog/real-client-transformation-how-consistent-coaching-changes-lives', title: 'Client Transformation Results' },
+  { keyword: /\bsuccess stories\b/i, href: '/blog/real-client-transformation-how-consistent-coaching-changes-lives', title: 'Client Success Stories' },
+  { keyword: /\bknowledge base\b/i, href: '/knowledge', title: 'Fitness Knowledge Base' },
+  { keyword: /\bFAQ\b/, href: '/faq', title: 'Frequently Asked Questions' },
+  { keyword: /\bmeal plan\b/i, href: '/#plans', title: 'Explore Meal Plans' },
+  { keyword: /\bcalorie\b/i, href: '/blog/calories-counting-beyond-the-numbers', title: 'Calorie Counting Guide' },
+  { keyword: /\bsleep\b/i, href: '/blog/sleep-the-most-powerful-natural-fat-burner-most-people-ignore', title: 'Sleep and Fat Loss Guide' },
+  { keyword: /\bvitamin d\b/i, href: '/blog/vitamin-d-benefits-deficiency-complete-guide-coach-himanshu', title: 'Vitamin D Complete Guide' },
+  { keyword: /\bmeditation\b/i, href: '/blog/meditation-brain-science-how-it-improves-overall-health', title: 'Meditation and Brain Science' },
 ];
 
-export default function BlogPostPage() {
-  const params = useParams();
-  const router = useRouter();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
-  const [loading, setLoading] = useState(true);
+const formatDate = (date: Date | null) => {
+  if (!date) return '';
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
 
-  useEffect(() => {
-    if (params.slug) {
-      fetchPost(params.slug as string);
-      fetchRelatedPosts(params.slug as string);
-    }
-  }, [params.slug]);
+// Convert plain text to HTML if needed
+const formatContent = (content: string) => {
+  // Check if content already contains HTML tags
+  const hasHtmlTags = /<[a-z][\s\S]*>/i.test(content);
 
-  const fetchPost = async (slug: string) => {
-    try {
-      const response = await fetch(`/api/blog/${slug}`);
-      if (response.ok) {
-        const data = await response.json();
-        setPost(data);
-      } else {
-        router.push('/blog');
-      }
-    } catch (error) {
-      console.error('Error fetching post:', error);
-      router.push('/blog');
-    } finally {
-      setLoading(false);
+  if (hasHtmlTags) {
+    // Content is already HTML, return as is
+    return content;
+  }
+
+  // Content is plain text - convert to HTML with proper formatting
+  // Split by lines and process each line
+  const lines = content.split('\n');
+  const result: string[] = [];
+  let currentListItems: string[] = [];
+  let inList = false;
+
+  const flushList = () => {
+    if (currentListItems.length > 0) {
+      result.push('<ul>' + currentListItems.map(item => '<li>' + item + '</li>').join('') + '</ul>');
+      currentListItems = [];
     }
+    inList = false;
   };
 
-  const fetchRelatedPosts = async (currentSlug: string) => {
-    try {
-      const response = await fetch('/api/blog');
-      if (response.ok) {
-        const allPosts: RelatedPost[] = await response.json();
-        const filtered = allPosts
-          .filter((p) => p.slug !== currentSlug)
-          .slice(0, 3);
-        setRelatedPosts(filtered);
-      }
-    } catch (error) {
-      console.error('Error fetching related posts:', error);
-    }
-  };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  // Convert plain text to HTML if needed
-  const formatContent = (content: string) => {
-    // Check if content already contains HTML tags
-    const hasHtmlTags = /<[a-z][\s\S]*>/i.test(content);
-
-    if (hasHtmlTags) {
-      // Content is already HTML, return as is
-      return content;
-    }
-
-    // Content is plain text - convert to HTML with proper formatting
-    // Split by lines and process each line
-    const lines = content.split('\n');
-    const result: string[] = [];
-    let currentListItems: string[] = [];
-    let inList = false;
-
-    const flushList = () => {
-      if (currentListItems.length > 0) {
-        result.push('<ul>' + currentListItems.map(item => '<li>' + item + '</li>').join('') + '</ul>');
-        currentListItems = [];
-      }
-      inList = false;
-    };
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const trimmed = line.trim();
-
-      // Empty line - creates paragraph break
-      if (!trimmed) {
-        flushList();
-        continue;
-      }
-
-      // Check if it's a list item (starts with -, *, •, or number followed by . or ))
-      const listMatch = trimmed.match(/^([-*•]|\d+[.)]) /);
-      if (listMatch) {
-        if (!inList) {
-          inList = true;
-        }
-        currentListItems.push(trimmed.replace(/^([-*•]|\d+[.)]) /, ''));
-        continue;
-      }
-
-      // Not a list item - flush any pending list
+    // Empty line - creates paragraph break
+    if (!trimmed) {
       flushList();
-
-      // Regular text line - wrap in paragraph
-      result.push('<p>' + trimmed + '</p>');
+      continue;
     }
 
-    // Flush any remaining list items
+    // Check if it's a list item (starts with -, *, or number followed by . or ))
+    const listMatch = trimmed.match(/^([-*\u2022]|\d+[.)]) /);
+    if (listMatch) {
+      if (!inList) {
+        inList = true;
+      }
+      currentListItems.push(trimmed.replace(/^([-*\u2022]|\d+[.)]) /, ''));
+      continue;
+    }
+
+    // Not a list item - flush any pending list
     flushList();
 
-    return result.join('\n');
-  };
+    // Regular text line - wrap in paragraph
+    result.push('<p>' + trimmed + '</p>');
+  }
 
-  // Add SEO internal hyperlinks to blog content
-  const addSeoLinks = (html: string): string => {
-    const linkedHrefs = new Set<string>();
+  // Flush any remaining list items
+  flushList();
 
-    // Process text content only (not inside HTML tags or existing links)
-    let result = html;
-    for (const { keyword, href, title } of SEO_LINK_MAP) {
-      // Skip if we already linked to this destination
-      if (linkedHrefs.has(href)) continue;
+  return result.join('\n');
+};
 
-      // Only replace first occurrence, and only if not already inside an <a> tag
-      const parts = result.split(/(<a\b[^>]*>.*?<\/a>|<[^>]+>)/gi);
-      let replaced = false;
+// Add SEO internal hyperlinks to blog content
+const addSeoLinks = (html: string): string => {
+  const linkedHrefs = new Set<string>();
 
-      for (let i = 0; i < parts.length; i++) {
-        // Skip HTML tags and existing links
-        if (parts[i].startsWith('<')) continue;
-        if (replaced) break;
+  // Process text content only (not inside HTML tags or existing links)
+  let result = html;
+  for (const { keyword, href, title } of SEO_LINK_MAP) {
+    // Skip if we already linked to this destination
+    if (linkedHrefs.has(href)) continue;
 
-        const match = parts[i].match(keyword);
-        if (match) {
-          parts[i] = parts[i].replace(
-            keyword,
-            `<a href="${href}" title="${title}" class="text-brand-blue hover:text-brand-gold transition-colors">${match[0]}</a>`
-          );
-          linkedHrefs.add(href);
-          replaced = true;
-        }
+    // Only replace first occurrence, and only if not already inside an <a> tag
+    const parts = result.split(/(<a\b[^>]*>.*?<\/a>|<[^>]+>)/gi);
+    let replaced = false;
+
+    for (let i = 0; i < parts.length; i++) {
+      // Skip HTML tags and existing links
+      if (parts[i].startsWith('<')) continue;
+      if (replaced) break;
+
+      const match = parts[i].match(keyword);
+      if (match) {
+        parts[i] = parts[i].replace(
+          keyword,
+          `<a href="${href}" title="${title}" class="text-brand-blue hover:text-brand-gold transition-colors">${match[0]}</a>`
+        );
+        linkedHrefs.add(href);
+        replaced = true;
       }
-
-      result = parts.join('');
     }
 
-    return result;
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-brand-navy flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
-      </div>
-    );
+    result = parts.join('');
   }
+
+  return result;
+};
+
+interface Props {
+  params: { slug: string };
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const post = await prisma.blogPost.findUnique({
+    where: { slug: params.slug, published: true },
+    include: { author: { select: { name: true, image: true } } },
+  });
 
   if (!post) {
-    return null;
+    notFound();
   }
+
+  const relatedPosts = await prisma.blogPost.findMany({
+    where: {
+      published: true,
+      slug: { not: params.slug },
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      coverImage: true,
+      readTime: true,
+      publishedAt: true,
+    },
+    take: 3,
+    orderBy: { publishedAt: 'desc' },
+  });
 
   return (
     <div className="min-h-screen bg-brand-navy">
@@ -231,21 +205,11 @@ export default function BlogPostPage() {
       <article className="pt-32 pb-12">
         {/* Back Button */}
         <div className="max-w-4xl mx-auto px-3 md:px-6 mb-6 md:mb-8">
-          <Button
-            variant="outline"
-            onClick={() => router.push('/blog')}
-            className="gap-2"
-          >
-            <ArrowLeft size={18} />
-            <span>Back to Blog</span>
-          </Button>
+          <BackToBlogButton />
         </div>
 
         {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        <div
           className="max-w-4xl mx-auto px-3 md:px-6 mb-6 md:mb-12"
         >
           {/* Meta Info */}
@@ -302,13 +266,10 @@ export default function BlogPostPage() {
               <YouTubeEmbed url={post.videoUrl} title={post.title} />
             </div>
           )}
-        </motion.div>
+        </div>
 
         {/* Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+        <div
           className="max-w-4xl mx-auto px-3 md:px-6"
         >
           <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-lg md:rounded-2xl p-3 md:p-8 lg:p-12">
@@ -341,13 +302,10 @@ export default function BlogPostPage() {
               dangerouslySetInnerHTML={{ __html: addSeoLinks(formatContent(post.content)) }}
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* SEO Internal Links Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+        <div
           className="max-w-4xl mx-auto px-3 md:px-6 mt-6 md:mt-12"
         >
           <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-lg md:rounded-2xl p-4 md:p-8">
@@ -381,14 +339,11 @@ export default function BlogPostPage() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Related Posts Section */}
         {relatedPosts.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+          <div
             className="max-w-4xl mx-auto px-3 md:px-6 mt-6 md:mt-12"
           >
             <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">
@@ -429,14 +384,11 @@ export default function BlogPostPage() {
                 </Link>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+        <div
           className="max-w-4xl mx-auto px-3 md:px-6 mt-6 md:mt-12"
         >
           <div className="bg-gradient-to-r from-brand-blue/10 to-brand-gold/10 border border-brand-blue/30 rounded-xl md:rounded-2xl p-5 md:p-8 text-center">
@@ -446,41 +398,15 @@ export default function BlogPostPage() {
             <p className="text-gray-300 text-sm md:text-base mb-4 md:mb-6">
               Get personalized training and nutrition guidance from Coach Himanshu
             </p>
-            <Button
-              variant="primary"
-              onClick={() => router.push('/#plans')}
-              className="gap-2"
-            >
-              <span>Explore Plans</span>
-            </Button>
+            <ExplorePlansButton />
           </div>
-        </motion.div>
+        </div>
       </article>
 
       <Footer />
 
       {/* Sticky CTA Banner */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-navy border-t border-brand-blue/20 backdrop-blur-lg px-3 py-2.5 md:py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
-        <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="hidden sm:flex h-8 w-8 rounded-full bg-brand-blue/20 items-center justify-center flex-shrink-0">
-              <ArrowRight className="w-4 h-4 text-brand-blue" />
-            </div>
-            <p className="text-white text-xs md:text-sm font-medium truncate">
-              Get your <span className="text-brand-gold">free fitness assessment</span> today
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Button
-              variant="primary"
-              onClick={() => router.push('/assessment')}
-              className="!py-1.5 !px-3 md:!py-2 md:!px-5 !text-xs md:!text-sm whitespace-nowrap"
-            >
-              Free Assessment
-            </Button>
-          </div>
-        </div>
-      </div>
+      <StickyCtaBanner />
     </div>
   );
 }

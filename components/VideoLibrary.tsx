@@ -530,7 +530,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                                     <p className="text-gray-500 text-xs flex items-center gap-1.5">
                                       <img
                                         src={categoryIcons[video.categoryId]}
-                                        alt=""
+                                        alt={`${video.categoryName} category icon`}
                                         className="w-3 h-3 object-contain invert opacity-50"
                                       />
                                       {video.categoryName}
@@ -645,7 +645,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-brand-blue/10 rounded-full border border-brand-blue/20">
                               <img
                                 src={categoryIcons[(selectedSubCategory || selectedCategory)?.id || '']}
-                                alt=""
+                                alt={`${(selectedSubCategory || selectedCategory)?.name} category icon`}
                                 className="w-3.5 h-3.5 object-contain invert"
                               />
                               <span className="text-brand-blue text-xs font-medium">{(selectedSubCategory || selectedCategory)?.name}</span>
@@ -729,7 +729,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-blue/20 to-blue-600/20 flex items-center justify-center">
                                 <img
                                   src={categoryIcons[(selectedSubCategory || selectedCategory)?.id || '']}
-                                  alt=""
+                                  alt={`${(selectedSubCategory || selectedCategory)?.name} category icon`}
                                   className="w-4 h-4 object-contain invert"
                                 />
                               </div>

@@ -191,7 +191,7 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
         )}
         <div className="relative">
           {participant.image ? (
-            <img src={participant.image} alt={participant.name || ''} className="w-9 h-9 rounded-full object-cover ring-1 ring-white/[0.1]" />
+            <img src={participant.image} alt={participant.name ? `${participant.name} profile photo` : 'Client profile photo'} className="w-9 h-9 rounded-full object-cover ring-1 ring-white/[0.1]" />
           ) : (
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-blue to-purple-500 flex items-center justify-center text-white font-bold text-sm ring-1 ring-white/[0.1]">
               {initials}

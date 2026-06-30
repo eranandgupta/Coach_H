@@ -66,6 +66,39 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: 'Fitness Blog - Expert Tips, Workouts & Nutrition Advice',
+            description:
+              'Read expert fitness articles by Coach Himanshu. Science-backed workout tips, nutrition advice, diet plans, and inspiring transformation stories.',
+            url: 'https://coachhimanshu.com/blog',
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'Coach Himanshu',
+              url: 'https://coachhimanshu.com',
+            },
+            about: {
+              '@type': 'Thing',
+              name: 'Fitness & Health Education',
+            },
+            audience: {
+              '@type': 'Audience',
+              audienceType: 'Fitness enthusiasts, beginners, athletes, health-conscious individuals',
+            },
+            creator: {
+              '@type': 'Person',
+              name: 'Coach Himanshu',
+              url: 'https://coachhimanshu.com/about',
+            },
+            inLanguage: 'en',
+            numberOfItems: 54,
+          }),
+        }}
+      />
       {children}
     </>
   );

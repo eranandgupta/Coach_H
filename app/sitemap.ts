@@ -1,107 +1,188 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
+import { getAllCitySlugs } from '@/lib/cities';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://coachhimanshu.com';
+const baseUrl = 'https://coachhimanshu.com';
 
-  // Fetch all published blog posts for dynamic sitemap entries
-  let blogPosts: { slug: string; updatedAt: Date }[] = [];
-  try {
-    blogPosts = await prisma.blogPost.findMany({
-      where: { published: true },
-      select: { slug: true, updatedAt: true },
-      orderBy: { publishedAt: 'desc' },
-    });
-  } catch {
-    // If DB is unavailable, continue with static pages only
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap Index Architecture (like Apple, Google, Amazon)
+//
+// Generates a sitemap index with multiple sub-sitemaps organized by content:
+//   /sitemap/0.xml  → Core pages (home, about, assessment, etc.)
+//   /sitemap/1.xml  → Blog content (listing + all 64+ articles)
+//   /sitemap/2.xml  → Location pages (15 city-specific SEO pages)
+//   /sitemap/3.xml  → Legal & policy pages
+//   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS, llms.txt)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function generateSitemaps() {
+  return [
+    { id: 0 }, // Core pages
+    { id: 1 }, // Blog content
+    { id: 2 }, // Location/city pages
+    { id: 3 }, // Legal & policy pages
+    { id: 4 }, // Resources, feeds & discovery
+  ];
+}
+
+export default async function sitemap({
+  id,
+}: {
+  id: number;
+}): Promise<MetadataRoute.Sitemap> {
+  switch (id) {
+    case 0:
+      return getCorePages();
+    case 1:
+      return await getBlogPages();
+    case 2:
+      return getLocationPages();
+    case 3:
+      return getLegalPages();
+    case 4:
+      return getResourcePages();
+    default:
+      return [];
   }
+}
 
-  const blogEntries: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.updatedAt,
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  }));
-
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 0: Core Pages — highest priority, the main conversion funnel
+// ─────────────────────────────────────────────────────────────────────────────
+function getCorePages(): MetadataRoute.Sitemap {
+  const now = new Date();
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
       priority: 0.9,
-    },
-    ...blogEntries,
-    {
-      url: `${baseUrl}/fit-bharat-mission`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/knowledge`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
     },
     {
       url: `${baseUrl}/assessment`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.7,
+      priority: 0.9,
     },
     {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
+      url: `${baseUrl}/fit-bharat-mission`,
+      lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.7,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.6,
+      priority: 0.7,
+    },
+  ];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 1: Blog Content — dynamic, fetched from database
+// Includes the blog listing page + all individual blog posts
+// ─────────────────────────────────────────────────────────────────────────────
+async function getBlogPages(): Promise<MetadataRoute.Sitemap> {
+  const now = new Date();
+
+  let blogPosts: { slug: string; updatedAt: Date; publishedAt: Date | null }[] = [];
+  try {
+    blogPosts = await prisma.blogPost.findMany({
+      where: { published: true },
+      select: { slug: true, updatedAt: true, publishedAt: true },
+      orderBy: { publishedAt: 'desc' },
+    });
+  } catch {
+    // If DB is unavailable, return just the listing page
+  }
+
+  const blogListingPage: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+  ];
+
+  const blogPostPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.updatedAt,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...blogListingPage, ...blogPostPages];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 2: Location Pages — programmatic city-specific SEO pages
+// Targets "fitness coach in {city}" queries across India
+// ─────────────────────────────────────────────────────────────────────────────
+function getLocationPages(): MetadataRoute.Sitemap {
+  const now = new Date();
+  const citySlugs = getAllCitySlugs();
+
+  return citySlugs.map((slug) => ({
+    url: `${baseUrl}/fitness-coach/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 3: Legal & Policy Pages — low priority, rarely change
+// ─────────────────────────────────────────────────────────────────────────────
+function getLegalPages(): MetadataRoute.Sitemap {
+  const now = new Date();
+  const legalPages = [
+    'privacy-policy',
+    'terms-of-service',
+    'refund-policy',
+    'cancellation-policy',
+    'disclaimer',
+  ];
+
+  return legalPages.map((page) => ({
+    url: `${baseUrl}/${page}`,
+    lastModified: now,
+    changeFrequency: 'yearly' as const,
+    priority: 0.3,
+  }));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 4: Resources, Feeds & Discovery — knowledge hub, FAQ, feeds
+// Includes machine-readable discovery files for AI crawlers
+// ─────────────────────────────────────────────────────────────────────────────
+function getResourcePages(): MetadataRoute.Sitemap {
+  const now = new Date();
+  return [
+    {
+      url: `${baseUrl}/knowledge`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
-      url: `${baseUrl}/privacy-policy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      url: `${baseUrl}/faq`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/terms-of-service`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/refund-policy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/cancellation-policy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/disclaimer`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      url: `${baseUrl}/feed.xml`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.5,
     },
   ];
 }

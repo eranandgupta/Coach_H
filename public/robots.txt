@@ -1,28 +1,87 @@
+# ─────────────────────────────────────────────────────────────────────────────
 # robots.txt for Coach Himanshu
 # https://coachhimanshu.com
+# Last updated: 2026-06-30
+# ─────────────────────────────────────────────────────────────────────────────
 
+# Default rules — allow everything public
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /dashboard/
-Disallow: /_next/
 Disallow: /admin/
+Disallow: /_next/
+Disallow: /feedback
 
-# Googlebot
+# ─────────────────────────────────────────────────────────────────────────────
+# Search Engine Crawlers
+# ─────────────────────────────────────────────────────────────────────────────
+
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
 Disallow: /dashboard/
 Disallow: /admin/
 
-# Bingbot
+User-agent: Googlebot-Image
+Allow: /
+
 User-agent: Bingbot
 Allow: /
 Disallow: /api/
 Disallow: /dashboard/
 Disallow: /admin/
 
-# AI Crawlers - Allow all public content
+User-agent: Slurp
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+User-agent: YandexBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Social Media Crawlers
+# ─────────────────────────────────────────────────────────────────────────────
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AI & LLM Crawlers — Allow all public content for AEO
+# ─────────────────────────────────────────────────────────────────────────────
+
 User-agent: GPTBot
 Allow: /
 Disallow: /api/
@@ -50,27 +109,48 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-User-agent: Applebot
-Allow: /
-
-User-agent: Applebot-Extended
-Allow: /
-
 User-agent: cohere-ai
 Allow: /
 
 User-agent: meta-externalagent
 Allow: /
 
-# Sitemap & feeds
+User-agent: Amazonbot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Apple Crawlers
+# ─────────────────────────────────────────────────────────────────────────────
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Sitemap Index — organized by content type (Apple-style architecture)
+#
+#   /sitemap/0.xml  → Core pages (home, about, assessment, contact)
+#   /sitemap/1.xml  → Blog content (64+ articles)
+#   /sitemap/2.xml  → Location pages (15 Indian cities)
+#   /sitemap/3.xml  → Legal & policy pages
+#   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS)
+# ─────────────────────────────────────────────────────────────────────────────
+
 Sitemap: https://coachhimanshu.com/sitemap.xml
 
-# AI content files
-# LLM info: https://coachhimanshu.com/llms.txt
-# LLM full: https://coachhimanshu.com/llms-full.txt
-# RSS feed: https://coachhimanshu.com/feed.xml
-# Knowledge base: https://coachhimanshu.com/knowledge
-# FAQ: https://coachhimanshu.com/faq
+# ─────────────────────────────────────────────────────────────────────────────
+# AI Discovery Files
+# ─────────────────────────────────────────────────────────────────────────────
+# LLM summary:     https://coachhimanshu.com/llms.txt
+# LLM full detail: https://coachhimanshu.com/llms-full.txt
+# RSS feed:        https://coachhimanshu.com/feed.xml
+# Knowledge base:  https://coachhimanshu.com/knowledge
+# FAQ:             https://coachhimanshu.com/faq
 
-# Crawl-delay
+# Crawl-delay (polite crawling)
 Crawl-delay: 1

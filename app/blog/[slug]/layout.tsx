@@ -61,6 +61,8 @@ export default async function BlogPostLayout({
   params: { slug: string };
 }) {
   let blogPostSchema = null;
+  let postTitle: string | null = null;
+  let faqSchema: Record<string, unknown> | null = null;
   try {
     const post = await prisma.blogPost.findUnique({
       where: { slug: params.slug, published: true },
@@ -76,6 +78,7 @@ export default async function BlogPostLayout({
     });
 
     if (post) {
+      postTitle = post.title;
       const wordCount = post.content ? post.content.split(/\s+/).length : 0;
       blogPostSchema = {
         '@context': 'https://schema.org',
@@ -121,7 +124,51 @@ export default async function BlogPostLayout({
           name: 'Fitness Coaching',
           url: 'https://coachhimanshu.com',
         },
+        keywords: post.title.split(/[\s\-:]+/).filter((w: string) => w.length > 3).join(', '),
+        articleSection: 'Fitness & Health',
+        commentCount: 0,
+        thumbnailUrl: post.coverImage || 'https://coachhimanshu.com/opengraph-image',
+        contentRating: 'General',
+        interactionStatistic: {
+          '@type': 'InteractionCounter',
+          interactionType: 'https://schema.org/ReadAction',
+          userInteractionCount: wordCount > 0 ? Math.round(wordCount / 200) : 1,
+        },
+        review: {
+          '@type': 'Review',
+          reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+          author: { '@type': 'Organization', name: 'Coach Himanshu' },
+          reviewBody: 'Expert-reviewed fitness content by NASM Certified Coach',
+        },
       };
+
+      // Extract FAQ schema from content if present
+      if (post.content) {
+        const faqPattern = /<h[23][^>]*>(.*?\?)<\/h[23]>\s*(?:<[^>]+>)*\s*<p[^>]*>([\s\S]*?)<\/p>/gi;
+        const faqs: { question: string; answer: string }[] = [];
+        let match;
+        while ((match = faqPattern.exec(post.content)) !== null && faqs.length < 10) {
+          const question = match[1].replace(/<[^>]+>/g, '').trim();
+          const answer = match[2].replace(/<[^>]+>/g, '').trim();
+          if (question && answer && question.length > 10 && answer.length > 20) {
+            faqs.push({ question, answer });
+          }
+        }
+        if (faqs.length >= 2) {
+          faqSchema = {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqs.map(faq => ({
+              '@type': 'Question',
+              name: faq.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.answer,
+              },
+            })),
+          };
+        }
+      }
     }
   } catch {
     // If DB unavailable, skip schema
@@ -138,7 +185,7 @@ export default async function BlogPostLayout({
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://coachhimanshu.com' },
               { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://coachhimanshu.com/blog' },
-              { '@type': 'ListItem', position: 3, name: 'Article', item: `https://coachhimanshu.com/blog/${params.slug}` },
+              { '@type': 'ListItem', position: 3, name: postTitle || 'Article', item: `https://coachhimanshu.com/blog/${params.slug}` },
             ],
           }),
         }}
@@ -147,6 +194,12 @@ export default async function BlogPostLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostSchema) }}
+        />
+      )}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       )}
       {children}

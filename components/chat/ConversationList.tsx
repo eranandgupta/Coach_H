@@ -185,7 +185,7 @@ export default function ConversationList({
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.04] transition-colors text-left border-b border-white/[0.04]"
                 >
                   {client.image ? (
-                    <img src={client.image} alt={client.name || ''} className="w-12 h-12 rounded-full object-cover" />
+                    <img src={client.image} alt={client.name ? `${client.name} profile photo` : 'Client profile photo'} className="w-12 h-12 rounded-full object-cover" />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/50 to-cyan-500/50 flex items-center justify-center text-white font-bold text-lg">
                       {initials}

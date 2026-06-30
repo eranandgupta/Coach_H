@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
-import { Calendar, Clock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Calendar, Clock, User, ArrowRight, Loader2, Search } from 'lucide-react';
 
 interface BlogPost {
   id: number;
@@ -40,13 +41,35 @@ const itemVariants = {
   },
 };
 
-export default function BlogPage() {
+function BlogPageContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const initialQuery = searchParams.get('q') || '';
+
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState(initialQuery);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  // Debounce: update searchQuery and URL 300ms after user stops typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput);
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchInput) {
+        params.set('q', searchInput);
+      } else {
+        params.delete('q');
+      }
+      const qs = params.toString();
+      router.replace(qs ? `/blog?${qs}` : '/blog', { scroll: false });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput, router, searchParams]);
 
   const fetchPosts = async () => {
     try {
@@ -72,6 +95,16 @@ export default function BlogPage() {
     });
   };
 
+  const filteredPosts = searchQuery
+    ? posts.filter((post) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          post.title.toLowerCase().includes(q) ||
+          (post.excerpt && post.excerpt.toLowerCase().includes(q))
+        );
+      })
+    : posts;
+
   return (
     <div className="min-h-screen bg-brand-navy">
       <AnnouncementBar />
@@ -95,6 +128,18 @@ export default function BlogPage() {
           <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto px-2">
             Expert advice, science-backed tips, and inspiring stories to fuel your fitness journey
           </p>
+
+          {/* Search Bar */}
+          <div className="relative max-w-xl mx-auto mt-8">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search articles..."
+              className="w-full bg-brand-navy-light border border-white/10 text-white placeholder-gray-500 rounded-xl px-4 py-3 pl-12 focus:outline-none focus:border-brand-blue/50 transition-colors"
+            />
+          </div>
         </motion.div>
       </section>
 
@@ -112,6 +157,16 @@ export default function BlogPage() {
           >
             <p className="text-gray-400 text-lg">No blog posts yet. Check back soon!</p>
           </motion.div>
+        ) : filteredPosts.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <p className="text-gray-400 text-lg">
+              No results found for &ldquo;{searchQuery}&rdquo;
+            </p>
+          </motion.div>
         ) : (
           <motion.div
             variants={containerVariants}
@@ -119,7 +174,7 @@ export default function BlogPage() {
             animate="visible"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
           >
-            {posts.map((post) => (
+            {filteredPosts.map((post) => (
               <motion.article
                 key={post.id}
                 variants={itemVariants}
@@ -188,5 +243,19 @@ export default function BlogPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-brand-navy flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
+        </div>
+      }
+    >
+      <BlogPageContent />
+    </Suspense>
   );
 }

@@ -133,6 +133,37 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: 'Coach Himanshu - Fitness Journey & Coaching Philosophy',
+            description:
+              'Watch Coach Himanshu share his fitness coaching philosophy, NASM certification journey, and how online fitness coaching transforms lives across India.',
+            thumbnailUrl: 'https://img.youtube.com/vi/MWhlDIAtQMc/maxresdefault.jpg',
+            uploadDate: '2024-01-01',
+            contentUrl: 'https://www.youtube.com/watch?v=MWhlDIAtQMc',
+            embedUrl: 'https://www.youtube.com/embed/MWhlDIAtQMc',
+            publisher: {
+              '@type': 'Organization',
+              name: 'Coach Himanshu',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://coachhimanshu.com/favicon.png',
+              },
+            },
+            author: {
+              '@type': 'Person',
+              name: 'Coach Himanshu',
+              url: 'https://coachhimanshu.com/about',
+            },
+            inLanguage: 'en',
+            isFamilyFriendly: true,
+          }),
+        }}
+      />
       {children}
     </>
   );
