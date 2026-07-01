@@ -20,7 +20,7 @@ async function handlePause(request: NextRequest, context: any) {
         ],
       },
       include: { plan: true },
-      orderBy: { endDate: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     if (!subscription) {
@@ -90,7 +90,7 @@ async function handleResume(request: NextRequest, context: any) {
         pausedAt: { not: null },
       },
       include: { plan: true },
-      orderBy: { endDate: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     if (!subscription || !subscription.pausedAt) {

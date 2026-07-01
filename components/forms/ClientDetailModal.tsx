@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target } from 'lucide-react';
+import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
@@ -19,6 +19,7 @@ interface ClientDetailModalProps {
   onEditClient: (client: any) => void;
   onDeleteClient: (clientId: number) => void;
   onAddSubscription: (client: any) => void;
+  onRefreshClients?: () => void;
   isTrainer?: boolean;
 }
 
@@ -35,6 +36,7 @@ export default function ClientDetailModal({
   onEditClient,
   onDeleteClient,
   onAddSubscription,
+  onRefreshClients,
   isTrainer = false,
 }: ClientDetailModalProps) {
   const [assessment, setAssessment] = useState<any>(null);
@@ -44,6 +46,8 @@ export default function ClientDetailModal({
   const [credentialsSent, setCredentialsSent] = useState(false);
   const [completedSessions, setCompletedSessions] = useState<any[]>([]);
   const [sessionLoading, setSessionLoading] = useState(false);
+  const [expiringSubId, setExpiringSubId] = useState<number | null>(null);
+  const [showPreviousSubs, setShowPreviousSubs] = useState(false);
 
   const clientPlanName = client?.subscriptions?.[0]?.plan?.name || '';
   const clientIsElite = isElitePlan(clientPlanName);
@@ -136,6 +140,36 @@ export default function ClientDetailModal({
     }
   };
 
+  const handleMarkExpired = async (subId: number) => {
+    if (!confirm('Mark this subscription as expired? The client will no longer have access to this plan.')) return;
+
+    setExpiringSubId(subId);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/admin/subscriptions', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: subId, status: 'expired' }),
+      });
+
+      if (res.ok) {
+        alert('Subscription marked as expired');
+        onRefreshClients?.();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to update subscription');
+      }
+    } catch (error) {
+      console.error('Error marking subscription expired:', error);
+      alert('Error updating subscription');
+    } finally {
+      setExpiringSubId(null);
+    }
+  };
+
   const handleSendCredentials = async () => {
     if (!confirm(`Send new login credentials to ${client.email}?\n\nThis will reset their password and email them new credentials.`)) {
       return;
@@ -222,20 +256,90 @@ export default function ClientDetailModal({
             <div className="flex-1 overflow-y-auto p-6">
               {/* Subscription Info */}
               {client.subscriptions && client.subscriptions.length > 0 && (() => {
-                const sub = client.subscriptions[0];
-                const isPaused = sub.status === 'paused';
-                const statusColor = isPaused ? 'yellow' : sub.status === 'active' ? 'green' : 'red';
-                const statusLabel = isPaused ? 'Paused' : sub.status === 'active' ? 'Active' : 'Expired';
+                const currentSub = client.subscriptions[0];
+                const previousSubs = client.subscriptions.slice(1);
+                const getStatusColor = (status: string) => status === 'paused' ? 'yellow' : status === 'active' ? 'green' : 'red';
+                const getStatusLabel = (status: string) => status === 'paused' ? 'Paused' : status === 'active' ? 'Active' : status === 'cancelled' ? 'Cancelled' : 'Expired';
+
                 return (
-                  <div className={`mb-6 p-4 bg-${statusColor}-500/10 border border-${statusColor}-500/30 rounded-xl`}>
-                    <h3 className={`text-${statusColor}-400 font-semibold mb-2`}>{isPaused ? 'Paused Subscription' : sub.status === 'active' ? 'Active Subscription' : 'Expired Subscription'}</h3>
-                    <p className="text-white font-medium">{sub.plan.name}</p>
-                    <p className="text-gray-400 text-sm">
-                      Status: <span className={`text-${statusColor}-400`}>{statusLabel}</span>
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      Expires: {new Date(sub.endDate).toLocaleDateString()}
-                    </p>
+                  <div className="mb-6 space-y-3">
+                    {/* Current Subscription */}
+                    <div className={`p-4 bg-${getStatusColor(currentSub.status)}-500/10 border border-${getStatusColor(currentSub.status)}-500/30 rounded-xl`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className={`text-${getStatusColor(currentSub.status)}-400 font-semibold`}>
+                          {currentSub.status === 'paused' ? 'Paused' : currentSub.status === 'active' ? 'Active' : 'Expired'} Subscription
+                        </h3>
+                        {!isTrainer && (currentSub.status === 'active' || currentSub.status === 'paused') && (
+                          <button
+                            onClick={() => handleMarkExpired(currentSub.id)}
+                            disabled={expiringSubId === currentSub.id}
+                            className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all text-xs font-medium disabled:opacity-50"
+                          >
+                            {expiringSubId === currentSub.id ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <XCircle className="w-3 h-3" />
+                            )}
+                            Mark Expired
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-white font-medium">{currentSub.plan.name}</p>
+                      <p className="text-gray-400 text-sm">
+                        Status: <span className={`text-${getStatusColor(currentSub.status)}-400`}>{getStatusLabel(currentSub.status)}</span>
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        {new Date(currentSub.startDate).toLocaleDateString()} → {new Date(currentSub.endDate).toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    {/* Previous Subscriptions Toggle */}
+                    {previousSubs.length > 0 && (
+                      <>
+                        <button
+                          onClick={() => setShowPreviousSubs(!showPreviousSubs)}
+                          className="flex items-center gap-2 text-gray-400 hover:text-white text-sm font-medium transition-colors w-full"
+                        >
+                          {showPreviousSubs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          Previous Subscriptions ({previousSubs.length})
+                        </button>
+
+                        {showPreviousSubs && (
+                          <div className="space-y-2 pl-2 border-l-2 border-white/10">
+                            {previousSubs.map((sub: any) => (
+                              <div
+                                key={sub.id}
+                                className={`p-3 bg-${getStatusColor(sub.status)}-500/5 border border-${getStatusColor(sub.status)}-500/20 rounded-lg`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="text-white text-sm font-medium">{sub.plan.name}</p>
+                                    <p className="text-gray-500 text-xs">
+                                      <span className={`text-${getStatusColor(sub.status)}-400`}>{getStatusLabel(sub.status)}</span>
+                                      {' · '}{new Date(sub.startDate).toLocaleDateString()} → {new Date(sub.endDate).toLocaleDateString()}
+                                    </p>
+                                  </div>
+                                  {!isTrainer && (sub.status === 'active' || sub.status === 'paused') && (
+                                    <button
+                                      onClick={() => handleMarkExpired(sub.id)}
+                                      disabled={expiringSubId === sub.id}
+                                      className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all text-xs font-medium disabled:opacity-50"
+                                    >
+                                      {expiringSubId === sub.id ? (
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                      ) : (
+                                        <XCircle className="w-3 h-3" />
+                                      )}
+                                      Expire
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 );
               })()}

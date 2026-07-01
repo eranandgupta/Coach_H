@@ -54,7 +54,7 @@ export async function checkSubscription(userId: number): Promise<{
         sessionTrackings: true,
       },
       orderBy: {
-        endDate: 'desc',
+        createdAt: 'desc',
       },
     });
 
@@ -113,7 +113,7 @@ export async function checkSubscription(userId: number): Promise<{
       }
     }
 
-    // Find any subscription with endDate in the future (source of truth is the date, not status field)
+    // Find the most recently created subscription with endDate in the future
     // Also include paused subscriptions (they have endDate in future)
     let subscription = await prisma.userSubscription.findFirst({
       where: {
@@ -124,7 +124,7 @@ export async function checkSubscription(userId: number): Promise<{
         plan: true,
       },
       orderBy: {
-        endDate: 'desc',
+        createdAt: 'desc',
       },
     });
 
@@ -139,7 +139,7 @@ export async function checkSubscription(userId: number): Promise<{
           plan: true,
         },
         orderBy: {
-          endDate: 'desc',
+          createdAt: 'desc',
         },
       });
     }

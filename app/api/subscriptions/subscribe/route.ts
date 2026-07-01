@@ -34,6 +34,16 @@ async function handler(request: NextRequest, context: any) {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + plan.duration);
 
+    // Find current subscription to transfer sessions
+    const previousSub = await prisma.userSubscription.findFirst({
+      where: {
+        userId: user.userId,
+        status: { in: ['active', 'paused'] },
+      },
+      include: { sessionTrackings: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
     // Cancel any existing active/paused subscriptions
     await prisma.userSubscription.updateMany({
       where: {
@@ -58,6 +68,26 @@ async function handler(request: NextRequest, context: any) {
         plan: true,
       },
     });
+
+    // Transfer completed sessions from previous subscription
+    if (previousSub && previousSub.sessionTrackings.length > 0) {
+      const { getTotalSessions } = await import('@/lib/planUtils');
+      const newTotalSessions = getTotalSessions(plan.name) || 0;
+      const sessionsToTransfer = previousSub.sessionTrackings.filter(
+        (s) => s.sessionNumber <= newTotalSessions
+      );
+      if (sessionsToTransfer.length > 0) {
+        await prisma.sessionTracking.createMany({
+          data: sessionsToTransfer.map((s) => ({
+            subscriptionId: subscription.id,
+            sessionNumber: s.sessionNumber,
+            confirmedByCoachId: s.confirmedByCoachId,
+            notes: s.notes,
+            completedAt: s.completedAt,
+          })),
+        });
+      }
+    }
 
     return NextResponse.json(
       {

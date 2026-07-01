@@ -147,6 +147,13 @@ export async function POST(request: NextRequest) {
         isNewUser = true;
       }
 
+      // Find previous subscription to transfer sessions
+      const previousSub = await tx.userSubscription.findFirst({
+        where: { userId: user.id, status: { in: ['active', 'paused'] } },
+        include: { sessionTrackings: true },
+        orderBy: { createdAt: 'desc' },
+      });
+
       // Cancel existing active/paused subscriptions
       await tx.userSubscription.updateMany({
         where: { userId: user.id, status: { in: ['active', 'paused'] } },
@@ -171,6 +178,26 @@ export async function POST(request: NextRequest) {
           customerNotes: notes || null,
         },
       });
+
+      // Transfer completed sessions from previous subscription
+      if (previousSub && previousSub.sessionTrackings.length > 0) {
+        const { getTotalSessions } = await import('@/lib/planUtils');
+        const newTotalSessions = getTotalSessions(plan.name) || 0;
+        const sessionsToTransfer = previousSub.sessionTrackings.filter(
+          (s: any) => s.sessionNumber <= newTotalSessions
+        );
+        if (sessionsToTransfer.length > 0) {
+          await tx.sessionTracking.createMany({
+            data: sessionsToTransfer.map((s: any) => ({
+              subscriptionId: subscription.id,
+              sessionNumber: s.sessionNumber,
+              confirmedByCoachId: s.confirmedByCoachId,
+              notes: s.notes,
+              completedAt: s.completedAt,
+            })),
+          });
+        }
+      }
 
       return { user, subscription };
     });

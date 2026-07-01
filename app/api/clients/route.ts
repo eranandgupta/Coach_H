@@ -43,7 +43,6 @@ async function getHandler(request: NextRequest, context: any) {
           orderBy: {
             createdAt: 'desc',
           },
-          take: 1,
         },
       },
       orderBy: {

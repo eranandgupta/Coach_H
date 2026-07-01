@@ -1196,6 +1196,7 @@ export default function CoachDashboard() {
         onEditClient={handleEditClient}
         onDeleteClient={handleDeleteClient}
         onAddSubscription={handleAddSubscription}
+        onRefreshClients={fetchDashboardData}
       />
       <CreateBlogModal
         isOpen={isBlogModalOpen}

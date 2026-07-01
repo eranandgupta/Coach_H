@@ -145,12 +145,19 @@ export async function POST(request: NextRequest) {
           isNewUser = true;
         }
 
+        // Find previous subscription to transfer sessions
+        const previousSub = await tx.userSubscription.findFirst({
+          where: { userId: user.id, status: { in: ['active', 'paused'] } },
+          include: { sessionTrackings: true },
+          orderBy: { createdAt: 'desc' },
+        });
+
         await tx.userSubscription.updateMany({
           where: { userId: user.id, status: { in: ['active', 'paused'] } },
           data: { status: 'cancelled' },
         });
 
-        await tx.userSubscription.create({
+        const newSub = await tx.userSubscription.create({
           data: {
             userId: user.id,
             planId: plan.id,
@@ -164,6 +171,26 @@ export async function POST(request: NextRequest) {
             paidAmount,
           },
         });
+
+        // Transfer completed sessions from previous subscription
+        if (previousSub && previousSub.sessionTrackings.length > 0) {
+          const { getTotalSessions } = await import('@/lib/planUtils');
+          const newTotalSessions = getTotalSessions(plan.name) || 0;
+          const sessionsToTransfer = previousSub.sessionTrackings.filter(
+            (s: any) => s.sessionNumber <= newTotalSessions
+          );
+          if (sessionsToTransfer.length > 0) {
+            await tx.sessionTracking.createMany({
+              data: sessionsToTransfer.map((s: any) => ({
+                subscriptionId: newSub.id,
+                sessionNumber: s.sessionNumber,
+                confirmedByCoachId: s.confirmedByCoachId,
+                notes: s.notes,
+                completedAt: s.completedAt,
+              })),
+            });
+          }
+        }
       });
 
       console.log(`Webhook: subscription created for payment ${paymentId}, user ${emailToUse}`);

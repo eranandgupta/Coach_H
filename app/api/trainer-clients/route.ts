@@ -78,7 +78,7 @@ async function postHandler(request: NextRequest, context: any) {
         ],
       },
       include: { plan: true },
-      orderBy: { endDate: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     if (!subscription || !subscription.plan.name.startsWith('Elite 1:1')) {

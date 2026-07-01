@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             plan: true,
           },
           orderBy: {
-            endDate: 'desc',
+            createdAt: 'desc',
           },
           take: 1,
         },

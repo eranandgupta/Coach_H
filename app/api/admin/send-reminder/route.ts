@@ -37,7 +37,7 @@ async function postHandler(request: NextRequest, context: any) {
           },
         },
         orderBy: {
-          endDate: 'desc',
+          createdAt: 'desc',
         },
       });
 

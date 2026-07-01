@@ -90,7 +90,7 @@ async function postHandler(request: NextRequest, context: any) {
             { status: 'active' },
           ],
         },
-        orderBy: { endDate: 'desc' },
+        orderBy: { createdAt: 'desc' },
       });
 
       if (!activeSub) {
@@ -109,6 +109,25 @@ async function postHandler(request: NextRequest, context: any) {
       endDate = new Date();
       endDate.setDate(endDate.getDate() + plan.duration);
     }
+
+    // Find the current active subscription before marking as expired (to transfer sessions)
+    const previousSub = await prisma.userSubscription.findFirst({
+      where: {
+        userId: parseInt(clientId),
+        status: { in: ['active', 'paused'] },
+      },
+      include: { sessionTrackings: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Mark any existing active/future subscriptions as replaced
+    await prisma.userSubscription.updateMany({
+      where: {
+        userId: parseInt(clientId),
+        status: { in: ['active', 'paused'] },
+      },
+      data: { status: 'expired' },
+    });
 
     // Create new subscription record
     const subscription = await prisma.userSubscription.create({
@@ -133,6 +152,27 @@ async function postHandler(request: NextRequest, context: any) {
         },
       },
     });
+
+    // Transfer completed sessions from previous subscription to new one
+    if (previousSub && previousSub.sessionTrackings.length > 0) {
+      const { getTotalSessions } = await import('@/lib/planUtils');
+      const newTotalSessions = getTotalSessions(plan.name) || 0;
+      // Only transfer sessions that fit within the new plan's total
+      const sessionsToTransfer = previousSub.sessionTrackings.filter(
+        (s) => s.sessionNumber <= newTotalSessions
+      );
+      if (sessionsToTransfer.length > 0) {
+        await prisma.sessionTracking.createMany({
+          data: sessionsToTransfer.map((s) => ({
+            subscriptionId: subscription.id,
+            sessionNumber: s.sessionNumber,
+            confirmedByCoachId: s.confirmedByCoachId,
+            notes: s.notes,
+            completedAt: s.completedAt,
+          })),
+        });
+      }
+    }
 
     return NextResponse.json({ subscription }, { status: 201 });
   } catch (error) {

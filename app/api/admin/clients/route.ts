@@ -32,8 +32,9 @@ async function getHandler(request: NextRequest, context: any) {
             plan: true,
           },
           orderBy: {
-            startDate: 'desc',
+            createdAt: 'desc',
           },
+          take: 1,
         },
       },
       orderBy: {
