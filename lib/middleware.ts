@@ -41,11 +41,12 @@ export async function checkSubscription(userId: number): Promise<{
   try {
     const now = new Date();
 
-    // First, check if there's a newer subscription (renewal/replacement) with future endDate
+    // First, check if there's a newer active subscription (renewal/replacement) with future endDate
     // If yes, skip the expired session plan logic — the user has moved to a new plan
     const newerActiveSub = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
+        status: { in: ['active', 'paused'] },
         endDate: { gte: now },
       },
       orderBy: { createdAt: 'desc' },
@@ -124,11 +125,12 @@ export async function checkSubscription(userId: number): Promise<{
       }
     }
 
-    // Find the most recently created subscription with endDate in the future
-    // Also include paused subscriptions (they have endDate in future)
+    // Find the most recently created ACTIVE/PAUSED subscription with endDate in the future
+    // Explicitly exclude expired/cancelled to prevent re-activation of manually expired subs
     let subscription = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
+        status: { in: ['active', 'paused'] },
         endDate: { gte: now },
       },
       include: {
