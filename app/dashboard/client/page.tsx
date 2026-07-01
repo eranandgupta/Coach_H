@@ -679,52 +679,61 @@ export default function ClientDashboard() {
                 </div>
               </div>
 
-              {/* Week Milestones - Responsive */}
+              {/* Week/Session Milestones - Responsive Grid */}
               <div className="relative">
-                <div className="grid gap-1.5 md:gap-2 px-0 md:px-1 pb-2 pt-1" style={{ gridTemplateColumns: `repeat(${getWeekMilestones().length}, 1fr)` }}>
-                  {getWeekMilestones().map((milestone, index) => (
-                    <motion.div
-                      key={milestone.id}
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 260,
-                        damping: 20,
-                        delay: 0.4 + index * 0.03
-                      }}
+                {(() => {
+                  const milestones = getWeekMilestones();
+                  const cols = milestones.length <= 12 ? milestones.length : 12;
+                  return (
+                    <div
+                      className="grid gap-1.5 md:gap-2 px-0 md:px-1 pb-2 pt-1 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
+                      style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
                     >
-                      <div
-                        className={`relative flex flex-col items-center justify-center w-full h-10 md:h-11 rounded-xl transition-all duration-300 ${
-                          milestone.isCurrent
-                            ? 'bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-lg shadow-brand-blue/40 ring-2 ring-brand-blue/30 scale-105'
-                            : milestone.isPassed
-                            ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30'
-                            : 'bg-white/5 text-gray-500 border border-white/10'
-                        }`}
-                      >
-                        <span className={`text-[11px] font-bold ${milestone.isCurrent ? 'text-white' : ''}`}>
-                          {milestone.label}
-                        </span>
-                        {milestone.isCurrent && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 0.8, type: 'spring' }}
-                            className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0f1628] shadow-lg"
-                          />
-                        )}
-                        {milestone.isPassed && !milestone.isCurrent && (
-                          <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full flex items-center justify-center">
-                            <svg className="w-1.5 h-1.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
+                      {milestones.map((milestone, index) => (
+                        <motion.div
+                          key={milestone.id}
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 260,
+                            damping: 20,
+                            delay: Math.min(0.4 + index * 0.01, 1)
+                          }}
+                        >
+                          <div
+                            className={`relative flex flex-col items-center justify-center w-full h-10 md:h-11 rounded-xl transition-all duration-300 ${
+                              milestone.isCurrent
+                                ? 'bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-lg shadow-brand-blue/40 ring-2 ring-brand-blue/30 scale-105'
+                                : milestone.isPassed
+                                ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30'
+                                : 'bg-white/5 text-gray-500 border border-white/10'
+                            }`}
+                          >
+                            <span className={`text-[11px] font-bold ${milestone.isCurrent ? 'text-white' : ''}`}>
+                              {milestone.label}
+                            </span>
+                            {milestone.isCurrent && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.8, type: 'spring' }}
+                                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0f1628] shadow-lg"
+                              />
+                            )}
+                            {milestone.isPassed && !milestone.isCurrent && (
+                              <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full flex items-center justify-center">
+                                <svg className="w-1.5 h-1.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}
