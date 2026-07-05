@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 
 interface CreateDietModalProps {
@@ -185,6 +185,14 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
 
   const removeMeal = (index: number) => {
     setMeals(meals.filter((_, i) => i !== index));
+  };
+
+  const moveMeal = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= meals.length) return;
+    const updated = [...meals];
+    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    setMeals(updated);
   };
 
   const updateMeal = (index: number, field: keyof Meal, value: string) => {
@@ -436,15 +444,37 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                       >
                         <div className="flex items-start justify-between mb-3">
                           <span className="text-green-400 font-semibold">Meal {index + 1}</span>
-                          {meals.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeMeal(index)}
-                              className="text-red-400 hover:text-red-300 transition-colors"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          )}
+                          <div className="flex items-center gap-1">
+                            {meals.length > 1 && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => moveMeal(index, 'up')}
+                                  disabled={index === 0}
+                                  className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
+                                  title="Move up"
+                                >
+                                  <ChevronUp size={18} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => moveMeal(index, 'down')}
+                                  disabled={index === meals.length - 1}
+                                  className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
+                                  title="Move down"
+                                >
+                                  <ChevronDown size={18} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => removeMeal(index)}
+                                  className="text-red-400 hover:text-red-300 transition-colors p-1"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check } from 'lucide-react';
+import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 import VideoPickerModal from '@/components/modals/VideoPickerModal';
 import { VIDEO_CATEGORIES, ScreenPalVideo } from '@/lib/screenpal';
@@ -217,6 +217,14 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
 
   const removeExercise = (index: number) => {
     setExercises(exercises.filter((_, i) => i !== index));
+  };
+
+  const moveExercise = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= exercises.length) return;
+    const updated = [...exercises];
+    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    setExercises(updated);
   };
 
   const updateExercise = (index: number, field: keyof Exercise, value: string) => {
@@ -454,15 +462,37 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                               <span className="px-2 py-0.5 bg-red-500/20 text-red-300 rounded text-xs font-medium">Drop Set</span>
                             )}
                           </div>
-                          {exercises.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeExercise(index)}
-                              className="text-red-400 hover:text-red-300 transition-colors"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          )}
+                          <div className="flex items-center gap-1">
+                            {exercises.length > 1 && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => moveExercise(index, 'up')}
+                                  disabled={index === 0}
+                                  className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
+                                  title="Move up"
+                                >
+                                  <ChevronUp size={18} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => moveExercise(index, 'down')}
+                                  disabled={index === exercises.length - 1}
+                                  className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
+                                  title="Move down"
+                                >
+                                  <ChevronDown size={18} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => removeExercise(index)}
+                                  className="text-red-400 hover:text-red-300 transition-colors p-1"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
 
                         {/* Exercise Type */}

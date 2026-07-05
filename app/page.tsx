@@ -86,9 +86,8 @@ export default function Home() {
   // Determine which sale is active based on current date
   const activeSale = useMemo(() => {
     const now = new Date();
-    const month = now.getMonth(); // 0-indexed, June = 5
+    const month = now.getMonth(); // 0-indexed, June = 5, July = 6
     const day = now.getDate();
-    if (month !== 5) return null; // Only June
 
     const commonOffers = [
       { label: '3M Gym Plan', off: '10% OFF' },
@@ -102,27 +101,69 @@ export default function Home() {
       { label: '72 Sessions', off: '20% OFF' },
     ];
 
-    if (day >= 1 && day <= 7) {
+    // ── JUNE SALES ──
+    if (month === 5) {
+      if (day >= 1 && day <= 7) {
+        return {
+          theme: 'environment' as const,
+          title: 'WORLD ENVIRONMENT DAY SALE 🌿',
+          subtitle: 'Valid June 1 - 7 Only',
+          endDate: 'June 7, 2026',
+          offers: commonOffers,
+          specials: null as string[] | null,
+          description: 'Start your fitness journey this June with exclusive discounts on all plans. Transform yourself physically and mentally — the best time to begin is now.',
+        };
+      }
+      if (day >= 21 && day <= 30) {
+        return {
+          theme: 'yoga' as const,
+          title: 'WORLD YOGA DAY & FATHER\'S DAY SALE 🧘',
+          subtitle: 'Valid June 21 - 30 Only',
+          endDate: 'June 30, 2026',
+          offers: commonOffers,
+          specials: null as string[] | null,
+          description: 'Start your fitness journey this June with exclusive discounts on all plans. Transform yourself physically and mentally — the best time to begin is now.',
+        };
+      }
+    }
+
+    // ── JULY SALE — Health Revolution (10-31 July) ──
+    if (month === 6 && day >= 10 && day <= 31) {
+      // Health awareness days that fall within the sale window
+      const healthDays: { date: number; name: string; emoji: string }[] = [
+        { date: 11, name: 'World Population Day', emoji: '🌍' },
+        { date: 21, name: 'National Junk Food Day', emoji: '🍔' },
+        { date: 22, name: 'World Brain Day', emoji: '🧠' },
+        { date: 24, name: 'International Self-Care Day', emoji: '🧘' },
+        { date: 28, name: 'World Hepatitis Day', emoji: '💛' },
+      ];
+
+      // Build specials for today if it's a health awareness day
+      const todayEvent = healthDays.find(h => h.date === day);
+      const specials: string[] | null = todayEvent
+        ? [
+            `${todayEvent.emoji} Today is ${todayEvent.name}!`,
+            'Extra motivation to prioritize your health — invest in yourself today.',
+            'All plans include personalized diet + workout + WhatsApp support.',
+          ]
+        : null;
+
+      // Highlight the awareness day calendar in subtitle
+      const nextEvent = healthDays.find(h => h.date >= day);
+
       return {
-        theme: 'environment' as const,
-        title: 'WORLD ENVIRONMENT DAY SALE 🌿',
-        subtitle: 'Valid June 1 - 7 Only',
-        endDate: 'June 7, 2026',
+        theme: 'health' as const,
+        title: 'HEALTH REVOLUTION SALE 💪',
+        subtitle: 'Valid July 10 - 31 Only',
+        endDate: 'July 31, 2026',
         offers: commonOffers,
-        specials: null as string[] | null,
+        specials,
+        description: '22 Days. 5 Global Health Awareness Days. One Mission: Help more people become healthier. Transform your body and mind with exclusive discounts on every plan.',
+        healthDays,
+        nextEvent: nextEvent || null,
       };
     }
-    if (day >= 21 && day <= 30) {
-      const isJune21 = day === 21;
-      return {
-        theme: 'yoga' as const,
-        title: 'WORLD YOGA DAY & FATHER\'S DAY SALE 🧘',
-        subtitle: 'Valid June 21 - 30 Only',
-        endDate: 'June 30, 2026',
-        offers: commonOffers,
-        specials: null as string[] | null,
-      };
-    }
+
     return null;
   }, []);
 
@@ -1766,32 +1807,34 @@ export default function Home() {
 
 
       {/* ========= DATE-AWARE SALE BANNER ========= */}
-      {activeSale && (
+      {activeSale && (() => {
+        // Theme color mapping
+        const themeColors = {
+          environment: { bg: 'bg-green-500', bgLight: 'bg-emerald-500', border: 'border-green-500/20', text: 'text-green-300', textAccent: 'text-green-400', gradientBg: 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(16,185,129,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #10b981, #059669)', tagBg: 'rgba(34,197,94,0.08)', tagText: 'text-green-300', tagBorder: 'border-green-500/20', dotActive: 'bg-gradient-to-r from-green-500 to-emerald-400', timerBg: 'rgba(34,197,94,0.08)', ctaBg: 'linear-gradient(135deg, #10b981, #059669)', ctaShadow: 'hover:shadow-green-500/20' },
+          health: { bg: 'bg-rose-500', bgLight: 'bg-red-500', border: 'border-rose-500/20', text: 'text-rose-300', textAccent: 'text-rose-400', gradientBg: 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, rgba(225,29,72,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #f43f5e, #e11d48)', tagBg: 'rgba(244,63,94,0.08)', tagText: 'text-rose-300', tagBorder: 'border-rose-500/20', dotActive: 'bg-gradient-to-r from-rose-500 to-red-400', timerBg: 'rgba(244,63,94,0.08)', ctaBg: 'linear-gradient(135deg, #f43f5e, #e11d48)', ctaShadow: 'hover:shadow-rose-500/20' },
+          yoga: { bg: 'bg-purple-500', bgLight: 'bg-violet-500', border: 'border-purple-500/20', text: 'text-purple-300', textAccent: 'text-purple-400', gradientBg: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', tagBg: 'rgba(139,92,246,0.08)', tagText: 'text-purple-300', tagBorder: 'border-purple-500/20', dotActive: 'bg-gradient-to-r from-purple-500 to-violet-400', timerBg: 'rgba(139,92,246,0.08)', ctaBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', ctaShadow: 'hover:shadow-purple-500/20' },
+        };
+        const tc = themeColors[activeSale.theme] || themeColors.yoga;
+        const themeIcon = activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
+
+        return (
         <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
           {/* Animated background effects */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] ${activeSale.theme === 'environment' ? 'bg-green-500/[0.04]' : 'bg-purple-500/[0.04]'} rounded-full blur-[150px] animate-glow-pulse`} />
-            <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] ${activeSale.theme === 'environment' ? 'bg-emerald-500/[0.05]' : 'bg-violet-500/[0.05]'} rounded-full blur-[130px] animate-glow-pulse`} style={{ animationDelay: '2s' }} />
+            <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] ${tc.bg}/[0.04] rounded-full blur-[150px] animate-glow-pulse`} />
+            <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] ${tc.bgLight}/[0.05] rounded-full blur-[130px] animate-glow-pulse`} style={{ animationDelay: '2s' }} />
           </div>
 
           <div className="max-w-5xl mx-auto relative z-10">
             {/* Sale Header */}
             <div className="text-center mb-6 md:mb-8">
               <div
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${activeSale.theme === 'environment' ? 'border-green-500/20' : 'border-purple-500/20'} backdrop-blur-md mb-4`}
-                style={{ background: activeSale.theme === 'environment' ? 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(16,185,129,0.08) 100%)' : 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.08) 100%)' }}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${tc.border} backdrop-blur-md mb-4`}
+                style={{ background: tc.gradientBg }}
               >
-                {activeSale.theme === 'environment' ? (
-                  <Leaf size={14} className="text-green-400 animate-pulse" />
-                ) : (
-                  <Flame size={14} className="text-purple-400 animate-pulse" />
-                )}
-                <span className={`${activeSale.theme === 'environment' ? 'text-green-300' : 'text-purple-300'} text-xs font-bold tracking-wider uppercase`}>Limited Time Offer</span>
-                {activeSale.theme === 'environment' ? (
-                  <Leaf size={14} className="text-green-400 animate-pulse" />
-                ) : (
-                  <Flame size={14} className="text-purple-400 animate-pulse" />
-                )}
+                {themeIcon}
+                <span className={`${tc.text} text-xs font-bold tracking-wider uppercase`}>Limited Time Offer</span>
+                {themeIcon}
               </div>
             </div>
 
@@ -1808,17 +1851,34 @@ export default function Home() {
                   >
                     <div className="text-center h-full flex flex-col justify-center">
                       <h3 className="text-2xl md:text-4xl font-extrabold text-white mb-2">{activeSale.title}</h3>
-                      <p className={`${activeSale.theme === 'environment' ? 'text-green-400' : 'text-purple-400'} font-bold text-base md:text-lg mb-3`}>⏳ {activeSale.subtitle}</p>
+                      <p className={`${tc.textAccent} font-bold text-base md:text-lg mb-3`}>⏳ {activeSale.subtitle}</p>
                       <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto mb-5 leading-relaxed">
-                        Start your fitness journey this June with exclusive discounts on all plans. Transform yourself physically and mentally — the best time to begin is now.
+                        {activeSale.description}
                       </p>
-                      <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-                        {['Gym Workout Plans', 'Home Workout Plans', 'Rehabilitation Programs', '1:1 Elite Training', 'Diet & Nutrition', 'Beginner Friendly'].map((h, i) => (
-                          <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-green-300 border border-green-500/20" style={{ background: 'rgba(34,197,94,0.08)' }}>
-                            ✅ {h}
-                          </span>
-                        ))}
-                      </div>
+                      {/* Health awareness days calendar (July only) */}
+                      {'healthDays' in activeSale && activeSale.healthDays && (
+                        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-5">
+                          {(activeSale.healthDays as { date: number; name: string; emoji: string }[]).map((hd, i) => {
+                            const now = new Date();
+                            const isPast = now.getDate() > hd.date;
+                            const isToday = now.getDate() === hd.date;
+                            return (
+                              <span key={i} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium border ${isToday ? `${tc.tagText} ${tc.tagBorder} ring-1 ring-rose-400/30` : isPast ? 'text-gray-500 border-white/5' : `${tc.tagText} ${tc.tagBorder}`}`} style={{ background: isToday ? tc.tagBg : isPast ? 'rgba(255,255,255,0.02)' : tc.tagBg }}>
+                                {hd.emoji} Jul {hd.date} — {hd.name}{isToday ? ' (TODAY!)' : ''}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
+                      {!('healthDays' in activeSale) && (
+                        <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+                          {['Gym Workout Plans', 'Home Workout Plans', 'Rehabilitation Programs', '1:1 Elite Training', 'Diet & Nutrition', 'Beginner Friendly'].map((h, i) => (
+                            <span key={i} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium ${tc.tagText} border ${tc.tagBorder}`} style={{ background: tc.tagBg }}>
+                              ✅ {h}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
 
@@ -1834,7 +1894,7 @@ export default function Home() {
                       <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
                         {activeSale.offers.map((offer, i) => (
                           <div key={i} className="relative rounded-2xl border border-white/[0.08] p-3 md:p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
-                            <span className={`absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white`} style={{ background: activeSale.theme === 'environment' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>{offer.off}</span>
+                            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: tc.badgeBg }}>{offer.off}</span>
                             <p className="text-gray-400 text-xs font-medium mt-2">{offer.label}</p>
                           </div>
                         ))}
@@ -1842,7 +1902,7 @@ export default function Home() {
                     </div>
                   </motion.div>
 
-                  {/* Slide 2: June 21 Specials (only shown on June 21) */}
+                  {/* Slide 2: Specials (health awareness day / June 21 etc.) */}
                   {activeSale.specials && (
                     <motion.div
                       initial={false}
@@ -1851,8 +1911,12 @@ export default function Home() {
                       className={`absolute inset-0 p-6 md:p-10 ${saleSlide === 2 ? 'pointer-events-auto' : 'pointer-events-none'}`}
                     >
                       <div className="text-center h-full flex flex-col justify-center">
-                        <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-2">🎉 JUNE 21 SPECIALS</h3>
-                        <p className="text-purple-400 font-bold text-base mb-6">World Yoga Day + Father&apos;s Day</p>
+                        <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-2">
+                          {activeSale.theme === 'health' ? '🏥 TODAY\'S HEALTH AWARENESS' : '🎉 JUNE 21 SPECIALS'}
+                        </h3>
+                        <p className={`${tc.textAccent} font-bold text-base mb-6`}>
+                          {activeSale.theme === 'health' ? 'Your health is your greatest wealth' : 'World Yoga Day + Father\u0027s Day'}
+                        </p>
                         <div className="space-y-3 max-w-lg mx-auto mb-6">
                           {activeSale.specials?.map((special: string, i: number) => (
                             <div key={i} className="rounded-xl border border-white/[0.08] p-4 text-left" style={{ background: 'rgba(26,37,64,0.4)' }}>
@@ -1860,7 +1924,7 @@ export default function Home() {
                             </div>
                           ))}
                         </div>
-                        <a href="#plans" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-500/20" style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}>
+                        <a href="#plans" className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${tc.ctaShadow}`} style={{ background: tc.ctaBg }}>
                           Grab The Offer Now
                           <ArrowRight size={16} />
                         </a>
@@ -1876,22 +1940,23 @@ export default function Home() {
                   <button
                     key={index}
                     onClick={() => setSaleSlide(index)}
-                    className={`transition-all duration-300 rounded-full ${saleSlide === index ? `w-8 h-2.5 ${activeSale.theme === 'environment' ? 'bg-gradient-to-r from-green-500 to-emerald-400' : 'bg-gradient-to-r from-purple-500 to-violet-400'}` : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'}`}
+                    className={`transition-all duration-300 rounded-full ${saleSlide === index ? `w-8 h-2.5 ${tc.dotActive}` : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'}`}
                   />
                 ))}
               </div>
 
               {/* Timer badge */}
               <div className="flex justify-center mt-4">
-                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${activeSale.theme === 'environment' ? 'border-green-500/20' : 'border-purple-500/20'} backdrop-blur-md`} style={{ background: activeSale.theme === 'environment' ? 'rgba(34,197,94,0.08)' : 'rgba(139,92,246,0.08)' }}>
-                  <Clock size={14} className={activeSale.theme === 'environment' ? 'text-green-400' : 'text-purple-400'} />
-                  <span className={`${activeSale.theme === 'environment' ? 'text-green-300' : 'text-purple-300'} text-xs font-medium`}>Sale ends {activeSale.endDate}</span>
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${tc.border} backdrop-blur-md`} style={{ background: tc.timerBg }}>
+                  <Clock size={14} className={tc.textAccent} />
+                  <span className={`${tc.text} text-xs font-medium`}>Sale ends {activeSale.endDate}</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
-      )}
+        );
+      })()}
 
       <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
         {/* Background ambient glow */}
