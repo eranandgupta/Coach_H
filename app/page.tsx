@@ -41,20 +41,21 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.06,
+      delayChildren: 0.1,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8 },
+    transition: { duration: 0.5 },
   },
 };
+
 
 function ReviewText({ review }: { review: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -1776,10 +1777,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto relative z-10">
             {/* Sale Header */}
             <div className="text-center mb-6 md:mb-8">
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              <div
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${activeSale.theme === 'environment' ? 'border-green-500/20' : 'border-purple-500/20'} backdrop-blur-md mb-4`}
                 style={{ background: activeSale.theme === 'environment' ? 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(16,185,129,0.08) 100%)' : 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.08) 100%)' }}
               >
@@ -1794,7 +1792,7 @@ export default function Home() {
                 ) : (
                   <Flame size={14} className="text-purple-400 animate-pulse" />
                 )}
-              </motion.div>
+              </div>
             </div>
 
             {/* Carousel Container */}
@@ -1900,14 +1898,10 @@ export default function Home() {
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] pointer-events-none" />
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+        <div
           className="max-w-6xl mx-auto relative z-10"
         >
-          <motion.div variants={itemVariants} className="text-center mb-8 md:mb-16">
+          <div className="text-center mb-8 md:mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-4 md:mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               <Award size={14} className="text-brand-blue" />
               <span className="text-blue-300/80 text-xs font-medium tracking-wider uppercase">Why Choose Us</span>
@@ -1918,15 +1912,13 @@ export default function Home() {
             <p className="text-sm md:text-lg text-gray-400/80 max-w-3xl mx-auto leading-relaxed px-2">
               NASM Certified Bodybuilding Coach with <span className="text-white font-medium">6+ professional diplomas</span>. Experience science-backed training that's <span className="text-white font-medium">affordable</span>, <span className="text-white font-medium">accessible</span>, and designed for real transformation.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {features.map((feature, index) => (
-              <motion.div
+              <div
                 key={index}
-                variants={itemVariants}
-                whileHover={{ y: -6 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all duration-500 cursor-pointer"
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all duration-500 cursor-pointer hover:-translate-y-1.5"
                 style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.4) 0%, rgba(10,15,31,0.8) 100%)' }}
               >
                 {/* Premium Image Background */}
@@ -1959,10 +1951,10 @@ export default function Home() {
                   {/* Decorative bottom line */}
                   <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-brand-blue/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Qualifications Marquee */}
@@ -2016,14 +2008,10 @@ export default function Home() {
       </section>
 
       <section id="plans" className="py-16 md:py-20 px-4 md:px-6 relative overflow-hidden" aria-label="Fitness coaching plans">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+        <div
           className="max-w-7xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-8 md:mb-10 px-4">
+          <div className="text-center mb-8 md:mb-10 px-4">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 md:mb-3 text-white">
               Choose Your Plan
             </h2>
@@ -2031,10 +2019,10 @@ export default function Home() {
               Select the perfect package for your fitness goals. All plans
               include personalized guidance and dedicated support.
             </p>
-          </motion.div>
+          </div>
 
           {/* Category Tabs */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-8 md:mb-10 px-4">
+          <div className="flex justify-center mb-8 md:mb-10 px-4">
             <div className="grid grid-cols-4 gap-1.5 sm:inline-flex sm:gap-2 w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl border border-white/[0.06] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               {[
                 { key: 'gym' as const, label: 'Gym', labelFull: 'Gym Workout', icon: Dumbbell },
@@ -2062,142 +2050,120 @@ export default function Home() {
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Gym Workout Plans */}
           {activePlanTab === 'gym' && (
-            <motion.div
+            <div
               key="gym"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
             >
               {/* Individual Plans */}
-              <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+              <p className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
                 <span className="text-brand-gold font-semibold uppercase tracking-wider text-xs">Individual Plans</span>
                 <span className="flex-1 h-px bg-brand-gold/20 max-w-[80px]"></span>
-              </motion.p>
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
                 {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation && !p.liveGroup).map((plan) => (
-                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                  <div key={plan.id} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
               {/* Couple Plans */}
               <div className="mt-6 md:mt-8">
-                <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+                <p className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
                   <span className="flex-1 h-px bg-pink-500/20 max-w-[80px]"></span>
                   <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs">Couple Plans</span>
                   <span className="flex-1 h-px bg-pink-500/20 max-w-[80px]"></span>
-                </motion.p>
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-2xl mx-auto">
                   {plans.filter(p => p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
-                    <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <div key={plan.id} className="h-full">
                       <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Home Workout Plans */}
           {activePlanTab === 'home' && (
-            <motion.div
-              key="home"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {/* Desktop: side-by-side labels */}
+            <div key="home">
               <div className="hidden sm:grid sm:grid-cols-2 gap-4 mb-4 max-w-3xl mx-auto">
-                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <span className="flex-1 h-px bg-emerald-500/20"></span>
                   <span className="text-emerald-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Individual Plan</span>
                   <span className="flex-1 h-px bg-emerald-500/20"></span>
-                </motion.div>
-                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                </div>
+                <div className="flex items-center justify-center gap-2">
                   <span className="flex-1 h-px bg-pink-500/20"></span>
                   <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plan</span>
                   <span className="flex-1 h-px bg-pink-500/20"></span>
-                </motion.div>
+                </div>
               </div>
-              {/* Mobile: stacked label */}
-              <motion.p variants={itemVariants} className="sm:hidden text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+              <p className="sm:hidden text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-emerald-500/20 max-w-[60px]"></span>
                 <span className="text-emerald-400 font-semibold uppercase tracking-wider text-xs">Individual & Couple</span>
                 <span className="flex-1 h-px bg-emerald-500/20 max-w-[60px]"></span>
-              </motion.p>
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.homeWorkout && !p.couple).map((plan) => (
-                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                  <div key={plan.id} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                  </motion.div>
+                  </div>
                 ))}
                 {plans.filter(p => p.homeWorkout && p.couple).map((plan) => (
-                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                  <div key={plan.id} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} homeWorkout={false} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Rehabilitation Plans */}
           {activePlanTab === 'rehab' && (
-            <motion.div
-              key="rehab"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {/* Desktop: side-by-side labels */}
+            <div key="rehab">
               <div className="hidden sm:grid sm:grid-cols-2 gap-4 mb-4 max-w-3xl mx-auto">
-                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <span className="flex-1 h-px bg-cyan-500/20"></span>
                   <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Individual Plan</span>
                   <span className="flex-1 h-px bg-cyan-500/20"></span>
-                </motion.div>
-                <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+                </div>
+                <div className="flex items-center justify-center gap-2">
                   <span className="flex-1 h-px bg-pink-500/20"></span>
                   <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs whitespace-nowrap">Couple Plan</span>
                   <span className="flex-1 h-px bg-pink-500/20"></span>
-                </motion.div>
+                </div>
               </div>
-              {/* Mobile: stacked label */}
-              <motion.p variants={itemVariants} className="sm:hidden text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+              <p className="sm:hidden text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-cyan-500/20 max-w-[60px]"></span>
                 <span className="text-cyan-400 font-semibold uppercase tracking-wider text-xs">Individual & Couple</span>
                 <span className="flex-1 h-px bg-cyan-500/20 max-w-[60px]"></span>
-              </motion.p>
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.rehabilitation && !p.couple).map((plan) => (
-                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                  <div key={plan.id} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                  </motion.div>
+                  </div>
                 ))}
                 {plans.filter(p => p.rehabilitation && p.couple).map((plan) => (
-                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                  <div key={plan.id} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} rehabilitation={false} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Live Plans */}
           {activePlanTab === 'live' && (
-            <motion.div
-              key="live"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            <div key="live">
               {/* One-on-One Elite Coaching Section */}
-              <motion.div variants={itemVariants} className="mb-6 md:mb-8">
+              <div className="mb-6 md:mb-8">
                 <div className="text-center mb-4 px-4">
                   <p className="flex items-center justify-center gap-2 mb-2">
                     <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
@@ -2208,13 +2174,13 @@ export default function Home() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
                   {plans.filter(p => p.liveOneOnOne).map((plan) => (
-                    <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                    <div key={plan.id} className="h-full">
                       <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
                 {/* Terms & Conditions */}
-                <motion.div variants={itemVariants} className="mt-4 max-w-3xl mx-auto">
+                <div className="mt-4 max-w-3xl mx-auto">
                   <details className="group">
                     <summary className="flex items-center justify-center gap-2 cursor-pointer text-gray-500 hover:text-gray-300 transition-colors text-xs">
                       <span className="font-medium">Terms & Conditions</span>
@@ -2230,25 +2196,25 @@ export default function Home() {
                       <p>• Once purchased, the 1:1 training plan is completely non-refundable under any circumstance — no exceptions.</p>
                     </div>
                   </details>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
 
               {/* Live Group Sessions Section */}
-              <motion.p variants={itemVariants} className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
+              <p className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
                 <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
                 <span className="text-violet-400 font-semibold uppercase tracking-wider text-xs">Live Group Sessions</span>
                 <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
-              </motion.p>
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.liveGroup && !p.liveOneOnOne).map((plan) => (
-                  <motion.div key={plan.id} variants={itemVariants} viewport={{ once: true }} className="h-full">
+                  <div key={plan.id} className="h-full">
                     <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
       </section>
 
       {/* Rhynogrip Fitness Gear Partner Section */}
@@ -2259,15 +2225,11 @@ export default function Home() {
           <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] animate-glow-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+        <div
           className="max-w-7xl mx-auto relative z-10"
         >
           {/* Header Section */}
-          <motion.div variants={itemVariants} className="text-center mb-8">
+          <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-4" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
               <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
               <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Premium Partner</span>
@@ -2292,15 +2254,13 @@ export default function Home() {
             <p className="text-base md:text-lg bg-gradient-to-r from-brand-gold to-yellow-400 bg-clip-text text-transparent font-semibold">
               Built for strength. Engineered For Performance.
             </p>
-          </motion.div>
+          </div>
 
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* Product Video */}
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              className="relative group"
+            <div
+              className="relative group hover:scale-[1.02] transition-transform duration-300"
             >
               <div className="absolute inset-0 bg-brand-blue/[0.06] rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
               <div className="relative p-5 rounded-2xl border border-white/[0.08] backdrop-blur-xl overflow-hidden h-full flex items-center" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
@@ -2321,10 +2281,10 @@ export default function Home() {
                   Your browser does not support the video tag.
                 </video>
               </div>
-            </motion.div>
+            </div>
 
             {/* Offer Details */}
-            <motion.div variants={itemVariants} className="flex">
+            <div className="flex">
               <div className="glass-card-strong p-6 flex flex-col justify-between w-full">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
@@ -2392,21 +2352,17 @@ export default function Home() {
                   </Button>
                 </a>
               </div>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Client Testimonials Section */}
       <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Client testimonials">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+        <div
           className="max-w-7xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-8 md:mb-16">
+          <div className="text-center mb-8 md:mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-6" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.06) 0%, rgba(201,166,70,0.02) 100%)' }}>
               <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
               <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Client Success Stories</span>
@@ -2417,18 +2373,14 @@ export default function Home() {
             <p className="text-sm md:text-lg text-gray-400/80 max-w-3xl mx-auto leading-relaxed px-2">
               Real transformations, real results. Join <span className="text-white font-medium">1000+ satisfied clients</span> who achieved their fitness goals with Coach Himanshu.
             </p>
-          </motion.div>
+          </div>
 
           {/* Testimonials Carousel */}
           <div className="relative">
             {/* Grid of 3 Testimonial Cards */}
-            <motion.div
+            <div
               key={currentPage}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in"
             >
               {getCurrentPageTestimonials().map((testimonial, index) => (
                 <div
@@ -2517,7 +2469,7 @@ export default function Home() {
                   </div>
                 </div>
               ))}
-            </motion.div>
+            </div>
 
             {/* Navigation Buttons - hidden on mobile */}
             <div className="hidden md:flex justify-center gap-4 mt-8">
@@ -2557,7 +2509,7 @@ export default function Home() {
           </div>
 
           {/* Call to Action - Share Your Story */}
-          <motion.div variants={itemVariants} className="text-center mt-10 md:mt-16">
+          <div className="text-center mt-10 md:mt-16">
             <p className="text-gray-400 mb-4 md:mb-6 text-sm md:text-lg">
               Want to share your transformation story?
             </p>
@@ -2567,28 +2519,23 @@ export default function Home() {
                 <span>Share Your Feedback</span>
               </Button>
             </a>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden border-t border-white/[0.04]" aria-label="Get started with transformation">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+        <div
           className="max-w-7xl mx-auto"
         >
-          <motion.h2
-            variants={itemVariants}
+          <h2
             className="text-2xl sm:text-3xl md:text-5xl font-bold mb-8 md:mb-12 text-white text-center"
           >
             Ready to Start Your Transformation?
-          </motion.h2>
+          </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Section - Video */}
-            <motion.div variants={itemVariants} className="relative">
+            <div className="relative">
               <div className="relative rounded-2xl overflow-hidden glass-card-strong p-1">
                 <video
                   className="w-full h-auto [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
@@ -2607,10 +2554,10 @@ export default function Home() {
                   Your browser does not support the video tag.
                 </video>
               </div>
-            </motion.div>
+            </div>
 
             {/* Right Section - Get Started Today */}
-            <motion.div variants={itemVariants} className="text-center lg:text-left">
+            <div className="text-center lg:text-left">
               <h3 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-white">
                 Get Started Today
               </h3>
@@ -2626,31 +2573,24 @@ export default function Home() {
                   </Button>
                 </a>
               </div>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* FAQ Section */}
       <section className="py-16 px-4 bg-brand-navy" aria-label="Frequently asked questions">
         <div className="max-w-4xl mx-auto">
-          <motion.h2
+          <h2
             className="text-2xl md:text-4xl font-bold text-white text-center mb-8 md:mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
           >
             Frequently Asked Questions
-          </motion.h2>
+          </h2>
           <div className="space-y-4">
             {faqSchema.mainEntity.map((faq, index) => (
-              <motion.details
+              <details
                 key={index}
                 className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
               >
                 <summary className="flex items-center justify-between cursor-pointer px-4 md:px-6 py-4 text-white font-medium text-sm md:text-lg hover:bg-white/5 transition-colors">
                   <span className="pr-2">{faq.name}</span>
@@ -2659,7 +2599,7 @@ export default function Home() {
                 <div className="px-4 md:px-6 pb-4 text-gray-300 text-sm md:text-base leading-relaxed">
                   {faq.acceptedAnswer.text}
                 </div>
-              </motion.details>
+              </details>
             ))}
           </div>
         </div>

@@ -367,14 +367,14 @@ export default function RootLayout({
           <WhatsAppButton />
         </CartProvider>
 
-        {/* Google Analytics 4 — Replace G-XXXXXXXXXX with your actual GA4 Measurement ID */}
+        {/* Google Analytics 4 — loaded after page is fully interactive */}
         {process.env.NEXT_PUBLIC_GA4_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA4_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="google-analytics" strategy="afterInteractive">
+            <Script id="google-analytics" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -396,7 +396,7 @@ export default function RootLayout({
 
                     // Check for updates immediately and every 5 minutes (not 60s to save resources)
                     registration.update();
-                    var swInterval = setInterval(function() { registration.update(); }, 5 * 60 * 1000);
+                    var swInterval = setInterval(function() { registration.update(); }, 15 * 60 * 1000);
 
                     // Clean up interval when page is hidden/unloaded to prevent memory leak
                     document.addEventListener('visibilitychange', function() {
@@ -404,7 +404,7 @@ export default function RootLayout({
                         clearInterval(swInterval);
                       } else {
                         registration.update();
-                        swInterval = setInterval(function() { registration.update(); }, 5 * 60 * 1000);
+                        swInterval = setInterval(function() { registration.update(); }, 15 * 60 * 1000);
                       }
                     });
 

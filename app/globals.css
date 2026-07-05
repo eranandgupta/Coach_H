@@ -259,6 +259,27 @@
     }
   }
 
+  /* CSS-based fade-in animation (replaces heavy framer-motion whileInView) */
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+
+  /* GPU-accelerated animations — use transform/opacity only */
+  .animate-glow-pulse,
+  .animate-drift,
+  .animate-float,
+  .animate-shimmer,
+  .animate-marquee,
+  .animate-marquee-slow {
+    will-change: transform, opacity;
+    contain: layout style paint;
+  }
+
   /* Safe area support for notched phones */
   .safe-top {
     padding-top: env(safe-area-inset-top, 0);

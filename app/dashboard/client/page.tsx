@@ -690,16 +690,8 @@ export default function ClientDashboard() {
                       style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
                     >
                       {milestones.map((milestone, index) => (
-                        <motion.div
+                        <div
                           key={milestone.id}
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{
-                            type: 'spring',
-                            stiffness: 260,
-                            damping: 20,
-                            delay: Math.min(0.4 + index * 0.01, 1)
-                          }}
                         >
                           <div
                             className={`relative flex flex-col items-center justify-center w-full h-10 md:h-11 rounded-xl transition-all duration-300 ${
@@ -714,10 +706,7 @@ export default function ClientDashboard() {
                               {milestone.label}
                             </span>
                             {milestone.isCurrent && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: 0.8, type: 'spring' }}
+                              <div
                                 className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0f1628] shadow-lg"
                               />
                             )}
@@ -729,7 +718,7 @@ export default function ClientDashboard() {
                               </div>
                             )}
                           </div>
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
                   );

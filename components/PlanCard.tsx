@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Button from './Button';
 import { Check, Crown, Sparkles, Heart, Home, MessageCircle, Activity, Users } from 'lucide-react';
 
@@ -66,10 +65,8 @@ export default function PlanCard({
     }
   };
   return (
-    <motion.div
-      whileHover={{ scale: 1.02, y: -6 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={`relative rounded-2xl overflow-hidden group h-full ${
+    <div
+      className={`relative rounded-2xl overflow-hidden group h-full transition-transform duration-300 hover:scale-[1.02] hover:-translate-y-1.5 ${
         popular ? 'shadow-2xl shadow-brand-gold/20' : couple ? 'shadow-2xl shadow-pink-500/20' : homeWorkout ? 'shadow-2xl shadow-emerald-500/20' : rehabilitation ? 'shadow-2xl shadow-cyan-500/20' : liveGroup ? 'shadow-2xl shadow-violet-500/20' : 'shadow-xl shadow-black/30'
       }`}
     >
@@ -115,12 +112,7 @@ export default function PlanCard({
 
       {/* Popular badge */}
       {popular && (
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
-        >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
           <div className="bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold px-4 py-1 rounded-b-lg shadow-lg">
             <div className="flex items-center gap-1.5">
               <Sparkles size={12} className="text-brand-navy" />
@@ -130,17 +122,12 @@ export default function PlanCard({
               <Sparkles size={12} className="text-brand-navy" />
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Couple badge */}
       {couple && (
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
-        >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
           <div className="bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 px-4 py-1 rounded-b-lg shadow-lg">
             <div className="flex items-center gap-1.5">
               <Heart size={12} className="text-white fill-white" />
@@ -150,18 +137,12 @@ export default function PlanCard({
               <Heart size={12} className="text-white fill-white" />
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-
 
       {/* Rehabilitation badge */}
       {rehabilitation && (
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
-        >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
           <div className="bg-gradient-to-r from-cyan-500 via-blue-400 to-cyan-500 px-4 py-1 rounded-b-lg shadow-lg">
             <div className="flex items-center gap-1.5">
               <Activity size={12} className="text-white" />
@@ -171,17 +152,12 @@ export default function PlanCard({
               <Activity size={12} className="text-white" />
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Live badge */}
       {liveGroup && (
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
-        >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
           <div className="bg-gradient-to-r from-violet-500 via-purple-400 to-violet-500 px-4 py-1 rounded-b-lg shadow-lg">
             <div className="flex items-center gap-1.5">
               {liveOneOnOne ? <Crown size={12} className="text-white" /> : <Users size={12} className="text-white" />}
@@ -191,7 +167,7 @@ export default function PlanCard({
               {liveOneOnOne ? <Crown size={12} className="text-white" /> : <Users size={12} className="text-white" />}
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       <div
@@ -333,11 +309,8 @@ export default function PlanCard({
           <div className="flex-1 mb-4">
             <ul className="space-y-2">
               {features.map((feature, index) => (
-                <motion.li
+                <li
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
                   className="flex items-start gap-2 group/item"
                 >
                   <div className={`flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center mt-0.5 ${
@@ -358,7 +331,7 @@ export default function PlanCard({
                   <span className="text-gray-300 text-xs leading-snug group-hover/item:text-white transition-colors">
                     {feature}
                   </span>
-                </motion.li>
+                </li>
               ))}
             </ul>
           </div>
@@ -366,22 +339,17 @@ export default function PlanCard({
           {/* CTA Button */}
           <div className="space-y-2">
             {whatsappOnly ? (
-              <motion.a
+              <a
                 href={`https://wa.me/917303484648?text=${encodeURIComponent(`Hi, I want to know more about the ${title}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-lg bg-gradient-to-r from-violet-500 via-purple-400 to-violet-500 hover:shadow-lg hover:shadow-violet-500/30 text-white transition-all duration-300 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-lg bg-gradient-to-r from-violet-500 via-purple-400 to-violet-500 hover:shadow-lg hover:shadow-violet-500/30 text-white transition-all duration-300 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
               >
                 <MessageCircle size={16} />
                 Connect on WhatsApp
-              </motion.a>
+              </a>
             ) : (
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
+              <div className="hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200">
                 <Button
                   variant={popular || couple || homeWorkout || rehabilitation ? 'primary' : 'secondary'}
                   className={`w-full justify-center text-sm font-semibold py-2.5 rounded-lg transition-all duration-300 ${
@@ -399,12 +367,12 @@ export default function PlanCard({
                 >
                   {couple ? 'Get Started Together' : 'Get Started'}
                 </Button>
-              </motion.div>
+              </div>
             )}
 
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
