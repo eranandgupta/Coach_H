@@ -455,12 +455,13 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                       <Reorder.Item
                         key={exercise._id}
                         value={exercise}
-                        className="bg-white/5 border border-white/10 rounded-lg p-4 cursor-default"
-                        whileDrag={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', zIndex: 50 }}
+                        className="bg-white/5 border border-white/10 rounded-lg p-4 select-none"
+                        style={{ WebkitUserSelect: 'none' }}
+                        whileDrag={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', zIndex: 50, cursor: 'grabbing' }}
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-300 transition-colors touch-none" title="Drag to reorder">
+                          <div className="flex items-center gap-2 cursor-grab active:cursor-grabbing">
+                            <div className="text-gray-500 hover:text-gray-300 transition-colors touch-none p-1 -m-1" title="Drag to reorder">
                               <GripVertical size={18} />
                             </div>
                             <span className="text-purple-400 font-semibold">Exercise {index + 1}</span>

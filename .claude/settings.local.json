@@ -94,7 +94,8 @@
       "Bash(npx lighthouse:*)",
       "Bash(python3 -c ':*)",
       "Bash(brew list:*)",
-      "mcp__chrome-devtools__lighthouse_audit"
+      "mcp__chrome-devtools__lighthouse_audit",
+      "Read(//Users/agupta2/.claude/projects/**)"
     ],
     "deny": [],
     "ask": []
