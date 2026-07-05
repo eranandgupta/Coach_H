@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 import VideoPickerModal from '@/components/modals/VideoPickerModal';
 import { VIDEO_CATEGORIES, ScreenPalVideo } from '@/lib/screenpal';
@@ -15,6 +15,7 @@ interface CreateWorkoutModalProps {
 }
 
 interface Exercise {
+  _id: number;
   name: string;
   description: string;
   sets: string;
@@ -35,8 +36,9 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [notes, setNotes] = useState('');
+  const exerciseIdCounter = useRef(1);
   const [exercises, setExercises] = useState<Exercise[]>([
-    { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
+    { _id: 0, name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
   ]);
   const [clients, setClients] = useState<any[]>([]);
   const [clientsLoading, setClientsLoading] = useState(false);
@@ -152,6 +154,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
             return dayDiff !== 0 ? dayDiff : (a.order || 0) - (b.order || 0);
           });
           setExercises(sorted.map((ex: any) => ({
+            _id: exerciseIdCounter.current++,
             name: ex.name || '',
             description: ex.description || '',
             sets: ex.sets?.toString() || '',
@@ -171,7 +174,8 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         setClientId('');
         setWeekNumber('1');
         setNotes('');
-        setExercises([{ name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }]);
+        exerciseIdCounter.current = 1;
+        setExercises([{ _id: 0, name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }]);
 
         const today = new Date();
         const weekStart = new Date(today);
@@ -211,7 +215,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const addExercise = () => {
     setExercises([
       ...exercises,
-      { name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
+      { _id: exerciseIdCounter.current++, name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
     ]);
   };
 
@@ -227,7 +231,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
     setExercises(updated);
   };
 
-  const updateExercise = (index: number, field: keyof Exercise, value: string) => {
+  const updateExercise = (index: number, field: Exclude<keyof Exercise, '_id'>, value: string) => {
     const updated = [...exercises];
     updated[index][field] = value;
     setExercises(updated);
@@ -248,7 +252,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         startDate,
         endDate,
         notes,
-        exercises: exercises.filter(ex => ex.name.trim() !== ''),
+        exercises: exercises.filter(ex => ex.name.trim() !== '').map(({ _id, ...rest }) => rest),
       };
 
       if (workout) {
@@ -446,14 +450,19 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                     </button>
                   </div>
 
-                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                  <Reorder.Group axis="y" values={exercises} onReorder={setExercises} className="space-y-4 max-h-96 overflow-y-auto pr-2">
                     {exercises.map((exercise, index) => (
-                      <div
-                        key={index}
-                        className="bg-white/5 border border-white/10 rounded-lg p-4"
+                      <Reorder.Item
+                        key={exercise._id}
+                        value={exercise}
+                        className="bg-white/5 border border-white/10 rounded-lg p-4 cursor-default"
+                        whileDrag={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', zIndex: 50 }}
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-2">
+                            <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-300 transition-colors touch-none" title="Drag to reorder">
+                              <GripVertical size={18} />
+                            </div>
                             <span className="text-purple-400 font-semibold">Exercise {index + 1}</span>
                             {exercise.exerciseType === 'superset' && (
                               <span className="px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded text-xs font-medium">Superset</span>
@@ -647,9 +656,9 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                             placeholder="Exercise description/instructions"
                           />
                         </div>
-                      </div>
+                      </Reorder.Item>
                     ))}
-                  </div>
+                  </Reorder.Group>
                 </div>
 
                 <div>

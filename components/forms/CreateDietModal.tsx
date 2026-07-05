@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 
 interface CreateDietModalProps {
@@ -13,6 +13,7 @@ interface CreateDietModalProps {
 }
 
 interface Meal {
+  _id: number;
   name: string;
   description: string;
   mealType: string;
@@ -36,8 +37,9 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   const [endDate, setEndDate] = useState('');
   const [targetCalories, setTargetCalories] = useState('');
   const [notes, setNotes] = useState('');
+  const mealIdCounter = useRef(1);
   const [meals, setMeals] = useState<Meal[]>([
-    { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
+    { _id: 0, name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
   ]);
   const [clients, setClients] = useState<any[]>([]);
   const [clientsLoading, setClientsLoading] = useState(false);
@@ -117,6 +119,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
             return mealTypeOrder.indexOf(a.mealType || 'Breakfast') - mealTypeOrder.indexOf(b.mealType || 'Breakfast');
           });
           setMeals(sorted.map((meal: any) => ({
+            _id: mealIdCounter.current++,
             name: meal.name || '',
             description: meal.description || '',
             mealType: meal.mealType || 'Breakfast',
@@ -139,7 +142,8 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         setWeekNumber('1');
         setTargetCalories('');
         setNotes('');
-        setMeals([{ name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }]);
+        mealIdCounter.current = 1;
+        setMeals([{ _id: 0, name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }]);
 
         const today = new Date();
         const weekStart = new Date(today);
@@ -179,7 +183,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   const addMeal = () => {
     setMeals([
       ...meals,
-      { name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
+      { _id: mealIdCounter.current++, name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
     ]);
   };
 
@@ -195,7 +199,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
     setMeals(updated);
   };
 
-  const updateMeal = (index: number, field: keyof Meal, value: string) => {
+  const updateMeal = (index: number, field: Exclude<keyof Meal, '_id'>, value: string) => {
     const updated = [...meals];
     updated[index][field] = value;
     setMeals(updated);
@@ -217,7 +221,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         endDate,
         targetCalories: targetCalories ? parseInt(targetCalories) : null,
         notes,
-        meals: meals.filter(meal => meal.name.trim() !== ''),
+        meals: meals.filter(meal => meal.name.trim() !== '').map(({ _id, ...rest }) => rest),
       };
 
       if (diet) {
@@ -250,7 +254,8 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
       setWeekNumber('1');
       setTargetCalories('');
       setNotes('');
-      setMeals([{ name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }]);
+      mealIdCounter.current = 1;
+      setMeals([{ _id: 0, name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }]);
 
       onSuccess();
       onClose();
@@ -436,14 +441,21 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                     </button>
                   </div>
 
-                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                  <Reorder.Group axis="y" values={meals} onReorder={setMeals} className="space-y-4 max-h-96 overflow-y-auto pr-2">
                     {meals.map((meal, index) => (
-                      <div
-                        key={index}
-                        className="bg-white/5 border border-white/10 rounded-lg p-4"
+                      <Reorder.Item
+                        key={meal._id}
+                        value={meal}
+                        className="bg-white/5 border border-white/10 rounded-lg p-4 cursor-default"
+                        whileDrag={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', zIndex: 50 }}
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <span className="text-green-400 font-semibold">Meal {index + 1}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-300 transition-colors touch-none" title="Drag to reorder">
+                              <GripVertical size={18} />
+                            </div>
+                            <span className="text-green-400 font-semibold">Meal {index + 1}</span>
+                          </div>
                           <div className="flex items-center gap-1">
                             {meals.length > 1 && (
                               <>
@@ -581,9 +593,9 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                             placeholder="Additional notes..."
                           />
                         </div>
-                      </div>
+                      </Reorder.Item>
                     ))}
-                  </div>
+                  </Reorder.Group>
                 </div>
 
                 <div>
