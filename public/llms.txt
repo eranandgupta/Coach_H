@@ -1,5 +1,7 @@
 # Coach Himanshu - NASM Certified Online Fitness Coach
 
+> Last updated: 2026-07-05
+
 > Coach Himanshu is a NASM Certified online fitness coach providing personalized workout plans, custom Indian meal plans, and expert nutrition guidance to 1000+ clients across India and internationally. Plans start from INR 799/month.
 
 ## About Coach Himanshu
@@ -45,16 +47,17 @@
 - Post-injury rehabilitation clients
 
 ## Website Sections
-- Home: https://coachhimanshu.com/ - Overview, plans, testimonials
-- About: https://coachhimanshu.com/about - Coach credentials and story
-- Blog: https://coachhimanshu.com/blog - 50+ expert fitness articles
-- Assessment: https://coachhimanshu.com/assessment - Free fitness assessment
-- FAQ: https://coachhimanshu.com/faq - Common questions answered
-- Knowledge Base: https://coachhimanshu.com/knowledge - Fitness education
-- Fit Bharat Mission: https://coachhimanshu.com/fit-bharat-mission - Community initiative
-- Contact: https://coachhimanshu.com/contact - Get in touch
+- [Home](https://coachhimanshu.com/): Overview, plans, testimonials
+- [About](https://coachhimanshu.com/about): Coach credentials and story
+- [Blog](https://coachhimanshu.com/blog): 50+ expert fitness articles
+- [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
+- [FAQ](https://coachhimanshu.com/faq): Common questions answered
+- [Knowledge Base](https://coachhimanshu.com/knowledge): Fitness education
+- [Fit Bharat Mission](https://coachhimanshu.com/fit-bharat-mission): Community initiative
+- [Contact](https://coachhimanshu.com/contact): Get in touch
+- [Full documentation](https://coachhimanshu.com/llms-full.txt): Detailed information for LLMs
 
 ## Contact
-- Website: https://coachhimanshu.com
-- Instagram: @coach_himanshu_
-- Free Assessment: https://coachhimanshu.com/assessment
+- Website: [coachhimanshu.com](https://coachhimanshu.com)
+- Instagram: [@coach_himanshu_](https://www.instagram.com/coach_himanshu_/)
+- [Free Assessment](https://coachhimanshu.com/assessment)

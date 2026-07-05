@@ -93,7 +93,8 @@
       "Bash(npx --yes lighthouse --version)",
       "Bash(npx lighthouse:*)",
       "Bash(python3 -c ':*)",
-      "Bash(brew list:*)"
+      "Bash(brew list:*)",
+      "mcp__chrome-devtools__lighthouse_audit"
     ],
     "deny": [],
     "ask": []

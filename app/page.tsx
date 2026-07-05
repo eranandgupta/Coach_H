@@ -1512,7 +1512,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(glossarySchema) }}
       />
 
-      <div className="min-h-screen bg-brand-navy">
+      <main className="min-h-screen bg-brand-navy">
         <AnnouncementBar />
         <Navbar />
 
@@ -2524,9 +2524,9 @@ export default function Home() {
                       </div>
                     )}
                     <div>
-                      <h4 className="text-white font-bold text-sm">
+                      <p className="text-white font-bold text-sm">
                         {testimonial.name}
-                      </h4>
+                      </p>
                       <p className="text-gray-400 text-xs">
                         {testimonial.location}
                       </p>
@@ -2557,15 +2557,15 @@ export default function Home() {
             </div>
 
             {/* Indicator Dots */}
-            <div className="flex justify-center gap-2 mt-6 md:mt-4">
+            <div className="flex justify-center gap-3 mt-6 md:mt-4">
               {Array.from({ length: totalPages }).map((_, pageIndex) => (
                 <button
                   key={pageIndex}
                   onClick={() => setCurrentTestimonial(pageIndex * TESTIMONIALS_PER_PAGE)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                  className={`h-3 rounded-full transition-all duration-300 ${
                     pageIndex === currentPage
-                      ? 'w-6 bg-brand-blue'
-                      : 'w-1.5 bg-white/15 hover:bg-white/30'
+                      ? 'w-8 bg-brand-blue'
+                      : 'w-3 bg-white/15 hover:bg-white/30'
                   }`}
                   aria-label={`Go to page ${pageIndex + 1}`}
                 />
@@ -2677,7 +2677,7 @@ export default function Home() {
 
       {/* Login Modal */}
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-      </div>
+      </main>
     </>
   );
 }
