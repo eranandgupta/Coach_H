@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
@@ -230,6 +230,30 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
     [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
     setExercises(updated);
   };
+
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const holdIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stopHoldMove = useCallback(() => {
+    if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
+    if (holdIntervalRef.current) { clearInterval(holdIntervalRef.current); holdIntervalRef.current = null; }
+  }, []);
+  const startHoldMove = useCallback((index: number, direction: 'up' | 'down') => {
+    stopHoldMove();
+    let currentIndex = index;
+    holdTimerRef.current = setTimeout(() => {
+      holdIntervalRef.current = setInterval(() => {
+        setExercises(prev => {
+          const newIdx = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+          if (newIdx < 0 || newIdx >= prev.length) { stopHoldMove(); return prev; }
+          const updated = [...prev];
+          [updated[currentIndex], updated[newIdx]] = [updated[newIdx], updated[currentIndex]];
+          currentIndex = newIdx;
+          return updated;
+        });
+      }, 150);
+    }, 300);
+  }, [stopHoldMove]);
+  useEffect(() => () => stopHoldMove(), [stopHoldMove]);
 
   const updateExercise = (index: number, field: Exclude<keyof Exercise, '_id'>, value: string) => {
     const updated = [...exercises];
@@ -478,18 +502,28 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                                 <button
                                   type="button"
                                   onClick={() => moveExercise(index, 'up')}
+                                  onMouseDown={() => startHoldMove(index, 'up')}
+                                  onMouseUp={stopHoldMove}
+                                  onMouseLeave={stopHoldMove}
+                                  onTouchStart={() => startHoldMove(index, 'up')}
+                                  onTouchEnd={stopHoldMove}
                                   disabled={index === 0}
                                   className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
-                                  title="Move up"
+                                  title="Hold to move up"
                                 >
                                   <ChevronUp size={18} />
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => moveExercise(index, 'down')}
+                                  onMouseDown={() => startHoldMove(index, 'down')}
+                                  onMouseUp={stopHoldMove}
+                                  onMouseLeave={stopHoldMove}
+                                  onTouchStart={() => startHoldMove(index, 'down')}
+                                  onTouchEnd={stopHoldMove}
                                   disabled={index === exercises.length - 1}
                                   className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
-                                  title="Move down"
+                                  title="Hold to move down"
                                 >
                                   <ChevronDown size={18} />
                                 </button>
