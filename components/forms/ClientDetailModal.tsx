@@ -217,7 +217,7 @@ export default function ClientDetailModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 z-50 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
           onClick={onClose}
         >
           {/* Modal */}
@@ -229,7 +229,7 @@ export default function ClientDetailModal({
             className="w-full max-w-4xl bg-gradient-to-br from-brand-navy-light to-black border border-white/10 rounded-2xl shadow-2xl max-h-[85vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex-shrink-0 bg-brand-navy/90 backdrop-blur-md border-b border-white/10 p-6">
+            <div className="flex-shrink-0 bg-brand-navy/90 border-b border-white/10 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-brand-blue to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
@@ -585,7 +585,7 @@ export default function ClientDetailModal({
 
             {/* Footer Actions */}
             {!isTrainer && (
-            <div className="flex-shrink-0 bg-brand-navy/90 backdrop-blur-md border-t border-white/10 p-4">
+            <div className="flex-shrink-0 bg-brand-navy/90 border-t border-white/10 p-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <button
                   onClick={() => onAddSubscription(client)}

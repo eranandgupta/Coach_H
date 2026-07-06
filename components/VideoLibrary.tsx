@@ -388,7 +388,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 z-50 backdrop-blur-md"
+            className="fixed inset-0 bg-black/90 z-50"
             onClick={handleClose}
           />
 
@@ -406,7 +406,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/5 px-4 py-3 md:px-6 md:py-4 relative z-20">
+            <div className="bg-[#0a0a0f]/95 border-b border-white/5 px-4 py-3 md:px-6 md:py-4 relative z-20">
               <div className="flex items-center justify-between gap-3">
                 {/* Left - Back & Title */}
                 <div className="flex items-center gap-3 flex-shrink-0">
@@ -837,7 +837,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                         </div>
 
                         {/* Hover Arrow */}
-                        <div className="absolute bottom-5 right-5 w-9 h-9 bg-white/20 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                        <div className="absolute bottom-5 right-5 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
                           <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
                         </div>
                       </motion.button>
@@ -880,7 +880,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                             {subCat.videoCount} exercise{subCat.videoCount !== 1 ? 's' : ''}
                           </p>
                         </div>
-                        <div className="absolute bottom-5 right-5 w-9 h-9 bg-white/20 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                        <div className="absolute bottom-5 right-5 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
                           <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
                         </div>
                       </motion.button>
@@ -938,7 +938,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               </div>
 
                               {/* Duration badge */}
-                              <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/70 backdrop-blur-sm rounded-md flex items-center gap-1">
+                              <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/70 rounded-md flex items-center gap-1">
                                 <Clock className="w-3 h-3 text-gray-300" />
                                 <span className="text-xs text-gray-300 font-medium">Demo</span>
                               </div>

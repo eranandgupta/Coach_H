@@ -51,7 +51,7 @@ export default function AssessmentResultsModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 z-[60] backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center p-4"
           onClick={onClose}
         >
           <motion.div
@@ -62,7 +62,7 @@ export default function AssessmentResultsModal({
             className="w-full max-w-5xl bg-gradient-to-br from-brand-navy-light to-black border border-white/10 rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex-shrink-0 bg-brand-navy/90 backdrop-blur-md border-b border-white/10 p-6">
+            <div className="flex-shrink-0 bg-brand-navy/90 border-b border-white/10 p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-1">Pre-Assessment Results</h2>
@@ -365,7 +365,7 @@ export default function AssessmentResultsModal({
             </div>
 
             {/* Footer */}
-            <div className="flex-shrink-0 bg-brand-navy/90 backdrop-blur-md border-t border-white/10 p-4">
+            <div className="flex-shrink-0 bg-brand-navy/90 border-t border-white/10 p-4">
               <button
                 onClick={onClose}
                 className="w-full bg-brand-blue text-white font-medium py-3 rounded-lg hover:bg-brand-blue-dark transition-all"

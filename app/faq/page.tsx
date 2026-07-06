@@ -147,8 +147,8 @@ export default function FAQPage() {
         {/* Hero Section */}
         <section className="relative pt-28 md:pt-36 pb-12 md:pb-16 overflow-hidden">
           <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-[400px] h-[400px] bg-brand-blue/[0.05] rounded-full blur-[150px] animate-glow-pulse"></div>
-            <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[180px] animate-glow-pulse" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.05) 0%, transparent 70%)' }}></div>
+            <div className="absolute bottom-10 right-10 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }}></div>
           </div>
 
           <div className="max-w-4xl mx-auto px-4 md:px-6 relative z-10 text-center">
@@ -158,7 +158,7 @@ export default function FAQPage() {
               transition={{ duration: 0.6 }}
               className="inline-block mb-6"
             >
-              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-md text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
+              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
                 GOT QUESTIONS? WE HAVE ANSWERS
               </span>
             </motion.div>

@@ -95,7 +95,9 @@
       "Bash(python3 -c ':*)",
       "Bash(brew list:*)",
       "mcp__chrome-devtools__lighthouse_audit",
-      "Read(//Users/agupta2/.claude/projects/**)"
+      "Read(//Users/agupta2/.claude/projects/**)",
+      "Bash(wc -l \"/Users/agupta2/bin/untitled folder/Coach_H/components\"/*.tsx)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []

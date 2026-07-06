@@ -135,7 +135,7 @@ export default function CreateBlogModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/80 z-50"
           />
 
           {/* Modal */}

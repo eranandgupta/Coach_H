@@ -424,7 +424,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 z-50"
             onClick={handleClose}
           />
 
@@ -438,7 +438,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-brand-navy/90 backdrop-blur-md border-b border-white/10 p-6">
+            <div className="bg-brand-navy/90 border-b border-white/10 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {currentStep !== 'cart' && currentStep !== 'success' && (
@@ -1018,7 +1018,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
             {/* Footer Buttons */}
             {currentStep !== 'success' && (
-              <div className="bg-brand-navy/90 backdrop-blur-md border-t border-white/10 p-6">
+              <div className="bg-brand-navy/90 border-t border-white/10 p-6">
                 {currentStep === 'cart' && cartItems.length > 0 && (
                   <div className="space-y-4">
                     <div className="space-y-2">

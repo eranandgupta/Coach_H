@@ -394,7 +394,7 @@ export default function FitBharatMissionPage() {
               <div className="w-20 h-1 bg-gradient-to-r from-orange-500 via-white to-green-500 mx-auto"></div>
             </motion.div>
 
-            <motion.div {...fadeInUp} className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12">
+            <motion.div {...fadeInUp} className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-3xl p-8 md:p-12">
               <div className="max-w-4xl mx-auto">
                 <p className="text-xl md:text-2xl text-white font-medium text-center mb-8 leading-relaxed">
                   A <span className="text-brand-gold">free public health initiative</span> by Coach Himanshu, created with one simple goal:
@@ -494,7 +494,7 @@ export default function FitBharatMissionPage() {
                   key={plan.id}
                   {...fadeInUp}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300 group"
+                  className="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300 group"
                 >
                   {/* Plan Header */}
                   <div className="p-6 md:p-8 border-b border-white/10">
@@ -564,7 +564,7 @@ export default function FitBharatMissionPage() {
                   key={plan.id}
                   {...fadeInUp}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300 group"
+                  className="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden hover:border-brand-gold/30 transition-all duration-300 group"
                 >
                   {/* Plan Header */}
                   <div className="p-6 border-b border-white/10">
@@ -692,7 +692,7 @@ export default function FitBharatMissionPage() {
                   {platformFeatures.map((feature, index) => (
                     <div
                       key={index}
-                      className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-center"
+                      className="bg-white/10 border border-white/20 rounded-xl p-4 text-center"
                     >
                       <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-2" />
                       <p className="text-white text-sm font-medium">{feature}</p>

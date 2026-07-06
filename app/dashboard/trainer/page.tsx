@@ -175,7 +175,7 @@ export default function TrainerDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy">
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 backdrop-blur-md border-b border-white/10">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image
@@ -293,7 +293,7 @@ export default function TrainerDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md border border-blue-500/30 rounded-2xl p-5"
+              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-2xl p-5"
             >
               <div className="p-2.5 bg-blue-500/30 rounded-xl w-fit mb-3">
                 <Users className="w-5 h-5 text-blue-300" />
@@ -306,7 +306,7 @@ export default function TrainerDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl p-5"
+              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl p-5"
             >
               <div className="p-2.5 bg-green-500/30 rounded-xl w-fit mb-3">
                 <Award className="w-5 h-5 text-green-300" />
@@ -319,7 +319,7 @@ export default function TrainerDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border border-purple-500/30 rounded-2xl p-5"
+              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-2xl p-5"
             >
               <div className="p-2.5 bg-purple-500/30 rounded-xl w-fit mb-3">
                 <Dumbbell className="w-5 h-5 text-purple-300" />
@@ -332,7 +332,7 @@ export default function TrainerDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5"
+              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-5"
             >
               <div className="p-2.5 bg-emerald-500/30 rounded-xl w-fit mb-3">
                 <UtensilsCrossed className="w-5 h-5 text-emerald-300" />
@@ -348,7 +348,7 @@ export default function TrainerDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-8"
+            className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <h2 className="text-2xl font-bold text-white">My Assigned Clients</h2>
@@ -477,7 +477,7 @@ export default function TrainerDashboard() {
             className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
             {/* Recent Workouts */}
-            <div id="section-workouts" className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+            <div id="section-workouts" className="bg-white/5 border border-white/10 rounded-2xl p-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <Dumbbell className="w-6 h-6 text-purple-400" />
                 Recent Workouts
@@ -519,7 +519,7 @@ export default function TrainerDashboard() {
             </div>
 
             {/* Recent Diets */}
-            <div id="section-diets" className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+            <div id="section-diets" className="bg-white/5 border border-white/10 rounded-2xl p-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <UtensilsCrossed className="w-6 h-6 text-green-400" />
                 Recent Diets
@@ -618,7 +618,7 @@ export default function TrainerDashboard() {
       {/* Chat Panel – Right-Side Slide */}
       {isChatOpen && (
         <div
-          className="fixed inset-0 z-[54] bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-[54] bg-black/50 lg:hidden"
           onClick={() => { setIsChatOpen(false); fetchUnreadChat(); }}
         />
       )}

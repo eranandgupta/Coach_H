@@ -56,7 +56,7 @@ export default function ViewDietModal({ isOpen, onClose, diet, userEmail, isElit
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/80 z-50"
             onClick={onClose}
           />
           <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">

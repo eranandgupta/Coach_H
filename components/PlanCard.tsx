@@ -171,7 +171,7 @@ export default function PlanCard({
       )}
 
       <div
-        className={`relative p-5 md:p-6 h-full flex flex-col backdrop-blur-xl ${
+        className={`relative p-5 md:p-6 h-full flex flex-col ${
           popular
             ? 'bg-gradient-to-br from-[#1a2332]/90 via-brand-navy/80 to-[#0f1419]/90'
             : couple

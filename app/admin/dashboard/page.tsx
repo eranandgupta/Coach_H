@@ -467,7 +467,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy">
       {/* Fixed Header - matches coach dashboard */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 backdrop-blur-md border-b border-white/10">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto" alt="Coach Himanshu logo" width={90} height={90} className="object-contain" />
@@ -498,7 +498,7 @@ export default function AdminDashboard() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md border border-blue-500/30 rounded-2xl p-5">
+              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-2xl p-5">
               <div className="p-2.5 bg-blue-500/30 rounded-xl w-fit mb-3">
                 <Users className="w-5 h-5 text-blue-300" />
               </div>
@@ -506,7 +506,7 @@ export default function AdminDashboard() {
               <p className="text-gray-300 text-sm">Total Clients</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl p-5">
+              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl p-5">
               <div className="p-2.5 bg-green-500/30 rounded-xl w-fit mb-3">
                 <CheckCircle className="w-5 h-5 text-green-300" />
               </div>
@@ -514,7 +514,7 @@ export default function AdminDashboard() {
               <p className="text-gray-300 text-sm">Active Clients</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-red-500/20 to-rose-500/20 backdrop-blur-md border border-red-500/30 rounded-2xl p-5">
+              className="bg-gradient-to-br from-red-500/20 to-rose-500/20 border border-red-500/30 rounded-2xl p-5">
               <div className="p-2.5 bg-red-500/30 rounded-xl w-fit mb-3">
                 <Users className="w-5 h-5 text-red-300" />
               </div>
@@ -522,7 +522,7 @@ export default function AdminDashboard() {
               <p className="text-gray-300 text-sm">Inactive Clients</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5">
+              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-5">
               <div className="p-2.5 bg-emerald-500/30 rounded-xl w-fit mb-3">
                 <CheckCircle className="w-5 h-5 text-emerald-300" />
               </div>
@@ -530,7 +530,7 @@ export default function AdminDashboard() {
               <p className="text-gray-300 text-sm">Active Subs</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-md border border-orange-500/30 rounded-2xl p-5">
+              className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-5">
               <div className="p-2.5 bg-orange-500/30 rounded-xl w-fit mb-3">
                 <Clock className="w-5 h-5 text-orange-300" />
               </div>
@@ -538,7 +538,7 @@ export default function AdminDashboard() {
               <p className="text-gray-300 text-sm">Expiring (7d)</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border border-purple-500/30 rounded-2xl p-5">
+              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-2xl p-5">
               <div className="p-2.5 bg-purple-500/30 rounded-xl w-fit mb-3">
                 <Tag className="w-5 h-5 text-purple-300" />
               </div>
@@ -563,7 +563,7 @@ export default function AdminDashboard() {
           {/* Tabs */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full flex bg-white/5 backdrop-blur-md border border-white/10 rounded-xl mb-6 p-1 h-auto">
+              <TabsList className="w-full flex bg-white/5 border border-white/10 rounded-xl mb-6 p-1 h-auto">
                 <TabsTrigger value="enrollments" className="flex-1 gap-1.5 text-xs sm:text-sm text-gray-400 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-2.5">
                   <UserPlus className="h-4 w-4" /> <span className="hidden sm:inline">New Enrollments</span>
                 </TabsTrigger>
@@ -589,7 +589,7 @@ export default function AdminDashboard() {
 
               {/* ===== Tab: New Enrollments ===== */}
               <TabsContent value="enrollments">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -649,7 +649,7 @@ export default function AdminDashboard() {
 
               {/* ===== Tab 1: Clients ===== */}
               <TabsContent value="clients">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <div className="flex flex-col sm:flex-row gap-3 mb-6 items-start sm:items-center justify-between">
                     <div className="relative flex-1 w-full sm:max-w-sm">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -771,7 +771,7 @@ export default function AdminDashboard() {
 
               {/* ===== Tab 2: Subscriptions ===== */}
               <TabsContent value="subscriptions">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-white">All Subscriptions</h2>
                     <button onClick={fetchSubscriptions} className="p-2 bg-white/10 border border-white/20 rounded-lg text-gray-300 hover:bg-white/20 transition-all">
@@ -857,7 +857,7 @@ export default function AdminDashboard() {
 
               {/* ===== Tab 3: Promo Codes ===== */}
               <TabsContent value="promos">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-white">Promo Codes</h2>
                     <div className="flex gap-2">
@@ -923,7 +923,7 @@ export default function AdminDashboard() {
 
               {/* ===== Tab 4: Reminders ===== */}
               <TabsContent value="reminders">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
                     <div>
                       <h2 className="text-xl font-bold text-white">Renewal Reminders</h2>
@@ -981,7 +981,7 @@ export default function AdminDashboard() {
               <TabsContent value="announcements">
                 <div className="space-y-6">
                   {/* Marquee Speed Control */}
-                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                     <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                       <Gauge className="h-5 w-5 text-orange-400" /> Marquee Speed
                     </h2>
@@ -1016,7 +1016,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Add New Announcement */}
-                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                     <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                       <Plus className="h-5 w-5 text-green-400" /> Add Announcement
                     </h2>
@@ -1062,7 +1062,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Announcement Messages List */}
-                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-xl font-bold text-white flex items-center gap-2">
                         <Megaphone className="h-5 w-5 text-orange-400" /> Messages ({announcements.length})
@@ -1174,7 +1174,7 @@ export default function AdminDashboard() {
               </TabsContent>
 
               <TabsContent value="settings">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 max-w-md">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 max-w-md">
                   <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                     <Lock className="h-5 w-5 text-brand-blue" /> Change Password
                   </h2>

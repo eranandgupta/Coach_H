@@ -152,8 +152,8 @@ export default function AboutPage() {
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Ambient Background */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-[400px] h-[400px] bg-brand-blue/[0.05] rounded-full blur-[150px] animate-glow-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[180px] animate-glow-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.05) 0%, transparent 70%)' }}></div>
+          <div className="absolute bottom-20 right-10 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }}></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 md:px-6 pt-24 md:pt-32 pb-16 relative z-10">
@@ -169,7 +169,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="inline-block mb-6"
             >
-              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-md text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
+              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
                 THE JOURNEY BEHIND THE VISION
               </span>
             </motion.div>
@@ -260,7 +260,7 @@ export default function AboutPage() {
 
                 {/* Decorative Elements */}
                 <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4">
+                  <div className="bg-white/10 border border-white/20 rounded-2xl p-4">
                     <p className="text-white font-bold text-lg mb-1">From Karate Champion</p>
                     <p className="text-gray-300 text-sm">To Certified Fitness Expert</p>
                   </div>
@@ -334,7 +334,7 @@ export default function AboutPage() {
                         whileHover={{ scale: 1.02 }}
                         className="inline-block"
                       >
-                        <div className={`bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 ${isEven ? 'ml-auto' : 'mr-auto'}`}>
+                        <div className={`bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-6 ${isEven ? 'ml-auto' : 'mr-auto'}`}>
                           <div className="flex items-center gap-3 mb-3">
                             {isEven && (
                               <>
@@ -375,7 +375,7 @@ export default function AboutPage() {
                     <div className="md:hidden ml-20 w-full pr-4">
                       <motion.div
                         whileHover={{ scale: 1.02 }}
-                        className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4"
+                        className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-4"
                       >
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-gold rounded-full flex items-center justify-center flex-shrink-0">
@@ -496,7 +496,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.6 }}
                 className="inline-block mb-6"
               >
-                <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto border border-white/20">
+                <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto border border-white/20">
                   <Target className="w-10 h-10 text-white" />
                 </div>
               </motion.div>
@@ -516,7 +516,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
-                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 max-w-3xl mx-auto"
+                className="bg-white/10 border border-white/20 rounded-2xl p-8 max-w-3xl mx-auto"
               >
                 <p className="text-2xl md:text-3xl font-bold text-white leading-relaxed">
                   To make fitness guidance <span className="text-brand-gold">affordable</span>, <span className="text-brand-gold">accessible</span>, and <span className="text-brand-gold">science-backed</span> so that money is never an excuse for anyone to stay unfit.
@@ -646,7 +646,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
               className="inline-block mb-6"
             >
-              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-md text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
+              <span className="px-6 py-2.5 rounded-full border border-white/[0.08] text-blue-300/80 font-medium text-xs tracking-wider uppercase" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.08) 0%, rgba(23,95,255,0.02) 100%)' }}>
                 OUR TEAM
               </span>
             </motion.div>
@@ -672,7 +672,7 @@ export default function AboutPage() {
               whileHover={{ scale: 1.03, y: -8 }}
               className="md:col-span-2 lg:col-span-3"
             >
-              <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-brand-gold/30 rounded-3xl p-8 md:p-10 group hover:border-brand-gold/50 transition-all duration-300">
+              <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 border border-brand-gold/30 rounded-3xl p-8 md:p-10 group hover:border-brand-gold/50 transition-all duration-300">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
                   <div className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden flex-shrink-0 ring-2 ring-brand-gold/30 group-hover:ring-brand-gold/60 group-hover:shadow-lg ${teamMembers[0].shadow} transition-all duration-300`}>
@@ -696,7 +696,7 @@ export default function AboutPage() {
                   variants={fadeInUp}
                   whileHover={{ scale: 1.03, y: -8 }}
                 >
-                  <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-full group hover:border-white/20 transition-all duration-300">
+                  <div className="relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-6 h-full group hover:border-white/20 transition-all duration-300">
                     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${member.gradient} rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
                     <div className="relative z-10">
                       {member.image ? (

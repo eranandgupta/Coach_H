@@ -61,7 +61,7 @@ export default function EditAssessmentModal({ isOpen, onClose, userId, planName 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 overflow-y-auto"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
@@ -71,7 +71,7 @@ export default function EditAssessmentModal({ isOpen, onClose, userId, planName 
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="sticky top-0 z-10 bg-brand-navy/95 backdrop-blur-sm border-b border-white/10 px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 z-10 bg-brand-navy/95 border-b border-white/10 px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-brand-blue/20 rounded-lg">
                   <FileText className="w-5 h-5 text-brand-blue" />

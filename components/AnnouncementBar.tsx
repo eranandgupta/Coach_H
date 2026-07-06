@@ -122,7 +122,7 @@ export default function AnnouncementBar() {
   if (messages.length === 0) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] text-white py-1.5 px-3 overflow-hidden border-b border-white/[0.04] backdrop-blur-2xl" style={{ background: 'linear-gradient(90deg, rgba(7,10,21,0.95) 0%, rgba(10,15,31,0.9) 50%, rgba(7,10,21,0.95) 100%)' }}>
+    <div className="fixed top-0 left-0 right-0 z-[60] text-white py-1.5 px-3 overflow-hidden border-b border-white/[0.04]" style={{ background: 'linear-gradient(90deg, rgba(7,10,21,0.95) 0%, rgba(10,15,31,0.9) 50%, rgba(7,10,21,0.95) 100%)' }}>
       {/* Subtle animated background effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-blue/[0.04] to-transparent animate-shimmer"></div>
 

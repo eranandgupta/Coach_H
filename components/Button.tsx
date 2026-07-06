@@ -29,7 +29,7 @@ export default function Button({
     secondary:
       'btn-glass text-white hover:-translate-y-0.5',
     outline:
-      'bg-transparent text-brand-blue border border-brand-blue/40 hover:bg-brand-blue/10 hover:border-brand-blue/60 hover:shadow-[0_8px_30px_rgba(23,95,255,0.2)] hover:-translate-y-0.5 backdrop-blur-sm',
+      'bg-transparent text-brand-blue border border-brand-blue/40 hover:bg-brand-blue/10 hover:border-brand-blue/60 hover:shadow-[0_8px_30px_rgba(23,95,255,0.2)] hover:-translate-y-0.5',
   };
 
   return (

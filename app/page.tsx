@@ -31,6 +31,7 @@ import Footer from '@/components/Footer';
 import Button from '@/components/Button';
 import PlanCard from '@/components/PlanCard';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import LazyVideo from '@/components/LazyVideo';
 import { useCart } from '@/contexts/CartContext';
 
 const CheckoutDrawer = dynamic(() => import('@/components/CheckoutDrawer'), { ssr: false });
@@ -1521,14 +1522,11 @@ export default function Home() {
         <div className="absolute inset-0 z-0 bg-brand-navy">
           {/* Mobile: video background with strong overlay to let text breathe */}
           <div className="absolute inset-0 lg:hidden overflow-hidden">
-            <video
+            <LazyVideo
+              src="/intro2.mp4"
               className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-              autoPlay loop muted playsInline preload="none"
-              disablePictureInPicture disableRemotePlayback
               style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
-            >
-              <source src="/intro2.mp4" type="video/mp4" />
-            </video>
+            />
             <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
             <div className="absolute inset-0 bg-brand-navy/30" />
           </div>
@@ -1538,13 +1536,13 @@ export default function Home() {
           <div className="absolute inset-0 hidden lg:block" style={{ background: 'radial-gradient(ellipse at 80% 80%, rgba(23,95,255,0.04) 0%, transparent 50%)' }} />
         </div>
 
-        {/* Atmospheric glow orbs */}
-        <div className="absolute top-[15%] left-[5%] w-[250px] lg:w-[400px] h-[250px] lg:h-[400px] rounded-full blur-[120px] lg:blur-[160px] pointer-events-none animate-glow-pulse" style={{ background: 'rgba(23,95,255,0.06)' }} />
-        <div className="absolute bottom-[20%] right-[10%] w-[200px] lg:w-[350px] h-[200px] lg:h-[350px] rounded-full blur-[100px] lg:blur-[140px] pointer-events-none animate-glow-pulse" style={{ background: 'rgba(23,95,255,0.04)', animationDelay: '2s' }} />
+        {/* Atmospheric glow — static radial gradients instead of blur for Safari perf */}
+        <div className="absolute top-[15%] left-[5%] w-[250px] lg:w-[400px] h-[250px] lg:h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.06) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-[20%] right-[10%] w-[200px] lg:w-[350px] h-[200px] lg:h-[350px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }} />
 
-        {/* Desktop fitness background elements */}
+        {/* Desktop fitness background elements — static, no animation for Safari perf */}
         <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.03] hidden lg:block">
-          <svg className="absolute -top-20 -right-20 w-[600px] h-[600px] text-brand-blue animate-drift" viewBox="0 0 400 400" fill="none">
+          <svg className="absolute -top-20 -right-20 w-[600px] h-[600px] text-brand-blue" viewBox="0 0 400 400" fill="none">
             {[...Array(5)].map((_, row) =>
               [...Array(4)].map((_, col) => (
                 <polygon key={`${row}-${col}`} points="30,0 60,17 60,52 30,69 0,52 0,17" transform={`translate(${col * 70 + (row % 2) * 35}, ${row * 62})`} stroke="currentColor" strokeWidth="1" fill="none" />
@@ -1572,7 +1570,7 @@ export default function Home() {
           >
             {/* Badge */}
             <motion.div variants={itemVariants} className="mb-5">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.1] backdrop-blur-xl shadow-lg" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.12) 0%, rgba(23,95,255,0.04) 100%)' }}>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.1] shadow-lg" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.12) 0%, rgba(23,95,255,0.04) 100%)' }}>
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-60"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
@@ -1632,7 +1630,7 @@ export default function Home() {
               </a>
               <button
                 onClick={() => setIsLoginOpen(true)}
-                className="w-full inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-white/90 text-base border border-white/[0.12] backdrop-blur-xl transition-all duration-300"
+                className="w-full inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-white/90 text-base border border-white/[0.12] transition-all duration-300"
                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)' }}
               >
                 View Dashboard
@@ -1647,7 +1645,7 @@ export default function Home() {
             transition={{ delay: 0.5 }}
             className="mt-auto"
           >
-            <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.5) 0%, rgba(10,15,31,0.85) 100%)' }}>
+            <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.5) 0%, rgba(10,15,31,0.85) 100%)' }}>
               {stats.map((stat, index) => (
                 <div key={index} className="flex flex-col items-center justify-center py-4 px-2">
                   <stat.icon size={16} className="text-brand-blue/70 mb-1.5" />
@@ -1671,7 +1669,7 @@ export default function Home() {
               {/* LEFT — Text */}
               <div className="flex-1 min-w-0">
                 <motion.div variants={itemVariants} className="mb-5">
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}>
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-60"></span>
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-brand-blue"></span>
@@ -1703,7 +1701,7 @@ export default function Home() {
                   </a>
                   <button
                     onClick={() => setIsLoginOpen(true)}
-                    className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-medium text-white/80 text-base border border-white/[0.1] backdrop-blur-xl transition-all duration-300 hover:border-white/[0.2] hover:text-white"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-medium text-white/80 text-base border border-white/[0.1] transition-all duration-300 hover:border-white/[0.2] hover:text-white"
                     style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}
                   >
                     View Dashboard
@@ -1712,7 +1710,7 @@ export default function Home() {
 
                 <motion.div
                   variants={itemVariants}
-                  className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-white/[0.06] backdrop-blur-xl"
+                  className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-white/[0.06]"
                   style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
                 >
                   <div className="flex -space-x-2">
@@ -1741,17 +1739,14 @@ export default function Home() {
                   <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
                     <div className="p-1.5">
                       <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
-                        <video
+                        <LazyVideo
+                          src="/intro2.mp4"
                           className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-                          autoPlay loop muted playsInline preload="none"
-                          disablePictureInPicture disableRemotePlayback
                           style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
-                        >
-                          <source src="/intro2.mp4" type="video/mp4" />
-                        </video>
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent" />
                         <div className="absolute bottom-4 left-4 right-4">
-                          <div className="backdrop-blur-xl rounded-2xl border border-white/[0.1] px-5 py-4" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.7) 0%, rgba(10,15,31,0.5) 100%)' }}>
+                          <div className="rounded-2xl border border-white/[0.1] px-5 py-4" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.7) 0%, rgba(10,15,31,0.5) 100%)' }}>
                             <div className="flex items-center justify-between">
                               <div>
                                 <p className="text-white/50 text-[10px] font-medium tracking-wider uppercase mb-1">Certified Coach</p>
@@ -1765,7 +1760,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="absolute top-4 right-4">
-                          <div className="backdrop-blur-xl rounded-xl border border-white/[0.1] px-3 py-2" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
+                          <div className="rounded-xl border border-white/[0.1] px-3 py-2" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
                             <div className="flex items-center gap-1.5">
                               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                               <span className="text-white/80 text-[10px] font-semibold tracking-wide uppercase">Live</span>
@@ -1784,7 +1779,7 @@ export default function Home() {
         {/* Desktop stats bar */}
         <div className="relative z-10 w-full hidden lg:block">
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
-            <div className="grid grid-cols-3 border-t border-white/[0.06] backdrop-blur-2xl" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+            <div className="grid grid-cols-3 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
               {stats.map((stat, index) => (
                 <motion.div
                   key={index}
@@ -1821,15 +1816,15 @@ export default function Home() {
         <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
           {/* Animated background effects */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] ${tc.bg}/[0.04] rounded-full blur-[150px] animate-glow-pulse`} />
-            <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] ${tc.bgLight}/[0.05] rounded-full blur-[130px] animate-glow-pulse`} style={{ animationDelay: '2s' }} />
+            <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full`} style={{ background: `radial-gradient(circle, var(--tw-gradient-from, rgba(23,95,255,0.04)) 0%, transparent 70%)` }} />
+            <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full`} style={{ background: `radial-gradient(circle, var(--tw-gradient-from, rgba(23,95,255,0.05)) 0%, transparent 70%)` }} />
           </div>
 
           <div className="max-w-5xl mx-auto relative z-10">
             {/* Sale Header */}
             <div className="text-center mb-6 md:mb-8">
               <div
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${tc.border} backdrop-blur-md mb-4`}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${tc.border} mb-4`}
                 style={{ background: tc.gradientBg }}
               >
                 {themeIcon}
@@ -1947,7 +1942,7 @@ export default function Home() {
 
               {/* Timer badge */}
               <div className="flex justify-center mt-4">
-                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${tc.border} backdrop-blur-md`} style={{ background: tc.timerBg }}>
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${tc.border}`} style={{ background: tc.timerBg }}>
                   <Clock size={14} className={tc.textAccent} />
                   <span className={`${tc.text} text-xs font-medium`}>Sale ends {activeSale.endDate}</span>
                 </div>
@@ -1960,14 +1955,14 @@ export default function Home() {
 
       <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
         {/* Background ambient glow */}
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.03) 0%, transparent 70%)' }} />
 
         <div
           className="max-w-6xl mx-auto relative z-10"
         >
           <div className="text-center mb-8 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-4 md:mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] mb-4 md:mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               <Award size={14} className="text-brand-blue" />
               <span className="text-blue-300/80 text-xs font-medium tracking-wider uppercase">Why Choose Us</span>
             </div>
@@ -2041,7 +2036,7 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
               >
                 <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
@@ -2060,7 +2055,7 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={`dup-${index}`}
-                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl backdrop-blur-md flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
               >
                 <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
@@ -2088,7 +2083,7 @@ export default function Home() {
 
           {/* Category Tabs */}
           <div className="flex justify-center mb-8 md:mb-10 px-4">
-            <div className="grid grid-cols-4 gap-1.5 sm:inline-flex sm:gap-2 w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl border border-white/[0.06] backdrop-blur-xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+            <div className="grid grid-cols-4 gap-1.5 sm:inline-flex sm:gap-2 w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
               {[
                 { key: 'gym' as const, label: 'Gym', labelFull: 'Gym Workout', icon: Dumbbell },
                 { key: 'home' as const, label: 'Home', labelFull: 'Home Workout', icon: HomeIcon },
@@ -2286,8 +2281,8 @@ export default function Home() {
       <section className="py-12 md:py-16 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Fitness gear partner Rhynogrip">
         {/* Ambient glow effects */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-blue/[0.04] rounded-full blur-[150px] animate-glow-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-brand-blue/[0.03] rounded-full blur-[130px] animate-glow-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }}></div>
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.03) 0%, transparent 70%)' }}></div>
         </div>
 
         <div
@@ -2295,7 +2290,7 @@ export default function Home() {
         >
           {/* Header Section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-4" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] mb-4" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
               <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
               <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Premium Partner</span>
             </div>
@@ -2327,24 +2322,15 @@ export default function Home() {
             <div
               className="relative group hover:scale-[1.02] transition-transform duration-300"
             >
-              <div className="absolute inset-0 bg-brand-blue/[0.06] rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
-              <div className="relative p-5 rounded-2xl border border-white/[0.08] backdrop-blur-xl overflow-hidden h-full flex items-center" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
-                <video
+              <div className="absolute inset-0 rounded-3xl" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.06) 0%, transparent 70%)' }}></div>
+              <div className="relative p-5 rounded-2xl border border-white/[0.08] overflow-hidden h-full flex items-center" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
+                <LazyVideo
+                  src="/RHYNOGRIP_VIDEO.mp4"
                   className="w-full h-auto rounded-2xl [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="none"
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  aria-label="Rhynogrip Premium Gym Gear Products Showcase"
+                  ariaLabel="Rhynogrip Premium Gym Gear Products Showcase"
                   title="Professional Fitness Equipment by Rhynogrip - 10% OFF with Code COACHHIMANSHU"
                   style={{ pointerEvents: 'none' }}
-                >
-                  <source src="/RHYNOGRIP_VIDEO.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                />
               </div>
             </div>
 
@@ -2366,7 +2352,7 @@ export default function Home() {
                   </p>
 
                   {/* Coupon Code Box */}
-                  <div className="rounded-xl p-4 mb-3 border border-brand-gold/20 backdrop-blur-md" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
+                  <div className="rounded-xl p-4 mb-3 border border-brand-gold/20" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
                     <p className="text-xs text-gray-400 mb-2 font-medium tracking-wide uppercase">Use Coupon Code</p>
                     <div className="flex items-center justify-between rounded-lg p-3 border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
                       <code className="text-lg font-bold text-brand-gold tracking-wider">
@@ -2428,7 +2414,7 @@ export default function Home() {
           className="max-w-7xl mx-auto"
         >
           <div className="text-center mb-8 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] backdrop-blur-md mb-6" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.06) 0%, rgba(201,166,70,0.02) 100%)' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] mb-6" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.06) 0%, rgba(201,166,70,0.02) 100%)' }}>
               <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
               <span className="text-brand-gold/80 text-xs font-medium tracking-wider uppercase">Client Success Stories</span>
             </div>
@@ -2540,7 +2526,7 @@ export default function Home() {
             <div className="hidden md:flex justify-center gap-4 mt-8">
               <button
                 onClick={prevTestimonial}
-                className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group backdrop-blur-md"
+                className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group"
                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
                 aria-label="Previous testimonial"
               >
@@ -2548,7 +2534,7 @@ export default function Home() {
               </button>
               <button
                 onClick={nextTestimonial}
-                className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group backdrop-blur-md"
+                className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group"
                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
                 aria-label="Next testimonial"
               >
@@ -2602,22 +2588,13 @@ export default function Home() {
             {/* Left Section - Video */}
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden glass-card-strong p-1">
-                <video
+                <LazyVideo
+                  src="/train_today.mp4"
                   className="w-full h-auto [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="none"
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  aria-label="Train Today - Fitness Motivation Video by Coach Himanshu"
+                  ariaLabel="Train Today - Fitness Motivation Video by Coach Himanshu"
                   title="Start Your Fitness Journey Today with Coach Himanshu"
                   style={{ pointerEvents: 'none' }}
-                >
-                  <source src="/train_today.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                />
               </div>
             </div>
 

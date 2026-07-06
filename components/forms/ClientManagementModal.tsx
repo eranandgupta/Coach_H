@@ -176,7 +176,7 @@ export default function ClientManagementModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 z-50 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
           onClick={onClose}
         >
           {/* Modal */}
@@ -188,7 +188,7 @@ export default function ClientManagementModal({
             className="w-full max-w-md bg-gradient-to-br from-brand-navy-light to-black border border-white/10 rounded-2xl shadow-2xl max-h-[85vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex-shrink-0 bg-brand-navy/90 backdrop-blur-md border-b border-white/10 p-6 flex items-center justify-between">
+            <div className="flex-shrink-0 bg-brand-navy/90 border-b border-white/10 p-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                 <User className="w-6 h-6 text-brand-blue" />
                 {client ? 'Edit Client' : 'Create New Client'}

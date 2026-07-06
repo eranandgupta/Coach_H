@@ -296,7 +296,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/80 z-50"
             onClick={onClose}
           />
           <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">
@@ -556,7 +556,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                               const matches = findMatchingVideos(exercise.name);
                               if (matches.length === 0) return null;
                               return (
-                                <div className="mt-1.5 border border-green-500/30 rounded-lg overflow-hidden bg-brand-navy/80 backdrop-blur-sm">
+                                <div className="mt-1.5 border border-green-500/30 rounded-lg overflow-hidden bg-brand-navy/80">
                                   <div className="px-2.5 py-1.5 bg-green-500/10 border-b border-green-500/20">
                                     <span className="text-green-300 text-xs font-medium">{matches.length} video{matches.length > 1 ? 's' : ''} found</span>
                                   </div>

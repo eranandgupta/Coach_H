@@ -7,7 +7,7 @@ export function BackToBlogButton() {
   return (
     <Link
       href="/blog"
-      className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden inline-flex items-center justify-center bg-transparent text-brand-blue border border-brand-blue/40 hover:bg-brand-blue/10 hover:border-brand-blue/60 hover:shadow-[0_8px_30px_rgba(23,95,255,0.2)] hover:-translate-y-0.5 backdrop-blur-sm gap-2"
+      className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden inline-flex items-center justify-center bg-transparent text-brand-blue border border-brand-blue/40 hover:bg-brand-blue/10 hover:border-brand-blue/60 hover:shadow-[0_8px_30px_rgba(23,95,255,0.2)] hover:-translate-y-0.5 gap-2"
     >
       <ArrowLeft size={18} />
       <span>Back to Blog</span>
@@ -28,7 +28,7 @@ export function ExplorePlansButton() {
 
 export function StickyCtaBanner() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-navy border-t border-brand-blue/20 backdrop-blur-lg px-3 py-2.5 md:py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-navy border-t border-brand-blue/20 px-3 py-2.5 md:py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <div className="hidden sm:flex h-8 w-8 rounded-full bg-brand-blue/20 items-center justify-center flex-shrink-0">

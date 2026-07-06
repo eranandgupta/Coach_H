@@ -486,7 +486,7 @@ export default function ClientDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className={`mb-6 md:mb-8 p-4 md:p-5 rounded-2xl backdrop-blur-xl border overflow-hidden glass-card ${
+          className={`mb-6 md:mb-8 p-4 md:p-5 rounded-2xl border overflow-hidden glass-card ${
             isPaused
               ? 'border-yellow-500/15'
               : isSubscriptionActive
@@ -516,7 +516,7 @@ export default function ClientDashboard() {
                 {/* Info Row - Days Left & Progress */}
                 {isSubscriptionActive && subscription?.subscription && (
                   <div className="flex flex-wrap items-center gap-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg backdrop-blur-sm">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg">
                       <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
                       <span className="text-xs text-gray-300 font-medium">
                         {isEliteOneOnOnePlan
@@ -524,7 +524,7 @@ export default function ClientDashboard() {
                           : `${getDaysRemaining(subscription.subscription.endDate)} days left`}
                       </span>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 border border-green-500/20 rounded-lg backdrop-blur-sm">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 border border-green-500/20 rounded-lg">
                       <div className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-sm shadow-green-400/50"></div>
                       <span className="text-xs font-medium text-green-400">
                         {Math.round(getSubscriptionProgress())}% Complete
@@ -540,7 +540,7 @@ export default function ClientDashboard() {
               {user?.assessmentCompleted && (
                 <button
                   onClick={() => setIsEditAssessmentOpen(true)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg backdrop-blur-sm hover:bg-brand-blue/30 transition-all group"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all group"
                   title="Click to edit your assessment"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5 text-white flex-shrink-0" />
@@ -802,7 +802,7 @@ export default function ClientDashboard() {
 
                           {/* Read time badge */}
                           {post.readTime && (
-                            <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                            <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 rounded-full">
                               <Clock className="w-3 h-3 text-gray-300" />
                               <span className="text-[10px] text-gray-300 font-medium">{post.readTime} min</span>
                             </div>
@@ -972,7 +972,7 @@ export default function ClientDashboard() {
 
                         {/* Read time badge */}
                         {post.readTime && (
-                          <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                          <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 rounded-full">
                             <Clock className="w-3 h-3 text-gray-300" />
                             <span className="text-[10px] text-gray-300 font-medium">{post.readTime} min</span>
                           </div>

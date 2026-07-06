@@ -343,7 +343,7 @@ export default function FunFactWidget() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-50 backdrop-blur-xl flex items-end sm:items-center justify-center p-0 sm:p-4"
+            className="fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
             onClick={() => setShowSharePanel(false)}
           >
             <motion.div

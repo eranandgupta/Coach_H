@@ -177,7 +177,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-brand-navy/90 backdrop-blur-2xl border-t border-white/[0.06]"
+            className="md:hidden bg-brand-navy/90 border-t border-white/[0.06]"
           >
             <div className="px-5 py-4 space-y-1">
               {navLinks.map((link) => (
