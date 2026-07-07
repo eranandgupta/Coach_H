@@ -294,25 +294,28 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
   }, [allVideos]);
 
   // Handle search result click
-  const handleSearchResultClick = async (video: AllVideo) => {
+  const handleSearchResultClick = (video: AllVideo) => {
     // Save to recent searches
     const newRecent = [video.title, ...recentSearches.filter(s => s !== video.title)].slice(0, 5);
     setRecentSearches(newRecent);
     localStorage.setItem('videoLibraryRecentSearches', JSON.stringify(newRecent));
 
-    // Set video immediately to show player without loading state
-    setSelectedVideo(video);
-    setIsIframeLoading(true);
+    // Close search first, then set video after a tick to avoid Safari re-render race
     setSearchQuery('');
     setSearchResults([]);
     setIsSearchFocused(false);
 
-    // Set category and fetch videos in background (for playlist sidebar)
-    const category = categories.find(c => c.id === video.categoryId);
-    if (category) {
-      setSelectedCategory(category);
-      fetchVideos(video.categoryId);
-    }
+    requestAnimationFrame(() => {
+      setSelectedVideo(video);
+      setIsIframeLoading(true);
+
+      // Set category and fetch videos in background (for playlist sidebar)
+      const category = categories.find(c => c.id === video.categoryId);
+      if (category) {
+        setSelectedCategory(category);
+        fetchVideos(video.categoryId);
+      }
+    });
   };
 
   // Handle recent search click
@@ -583,7 +586,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
               className="flex-1 overflow-y-auto p-4 md:p-8 h-[calc(100%-80px)] select-none bg-gradient-to-b from-[#0a0a0f] to-[#0d0d14] relative z-10"
               onContextMenu={(e) => e.preventDefault()}
             >
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="popLayout">
                 {/* Loading State */}
                 {isLoading ? (
                   <motion.div
@@ -602,9 +605,10 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                   /* Video Player View - YouTube-like Layout */
                   <motion.div
                     key="video-player"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
                     className="h-full overflow-y-auto"
                   >
                     <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-full">
@@ -627,8 +631,9 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               src={`${selectedVideo.url}?autoplay=1`}
                               className="w-full h-full"
                               frameBorder="0"
-                              allow="autoplay; fullscreen"
+                              allow="autoplay; fullscreen; encrypted-media"
                               allowFullScreen
+                              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
                               title={selectedVideo.title}
                               onLoad={() => setIsIframeLoading(false)}
                             />
@@ -966,8 +971,9 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               className="w-full h-full"
                               style={{ minHeight: '60vh' }}
                               frameBorder="0"
-                              allow="autoplay; fullscreen"
+                              allow="autoplay; fullscreen; encrypted-media"
                               allowFullScreen
+                              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
                               title={`${selectedCategory.name} Channel`}
                             />
                           </div>
