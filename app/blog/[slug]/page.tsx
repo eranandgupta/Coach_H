@@ -8,15 +8,11 @@ import Link from 'next/link';
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
 import { BackToBlogButton, ExplorePlansButton, StickyCtaBanner } from '@/components/BlogPostCTA';
 
+// On-demand ISR: don't enumerate slugs at build time (that queried the DB during
+// the build and made deploys fail when the DB was unreachable / over its connection
+// cap). Pages are rendered on first request and cached for `revalidate` seconds.
 export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const posts = await prisma.blogPost.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
-  return posts.map((post) => ({ slug: post.slug }));
-}
+export const dynamicParams = true;
 
 // SEO internal link mappings - keywords to internal pages
 const SEO_LINK_MAP: { keyword: RegExp; href: string; title: string }[] = [
