@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireCoach } from '@/lib/middleware';
-import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
+import { requireCoachOrAdmin } from '@/lib/middleware';
+import { isElitePlan, getEffectiveTotalSessions } from '@/lib/planUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +54,10 @@ async function putHandler(request: NextRequest, context: any) {
     // Determine if we should mark as expired when newEndDate is in the past
     let shouldExpire = newEndDate < new Date();
     if (shouldExpire && isElitePlan(subscription.plan.name)) {
-      const totalSessions = getTotalSessions(subscription.plan.name);
+      const totalSessions = getEffectiveTotalSessions(
+        subscription.plan.name,
+        subscription.bonusSessions
+      );
       if (totalSessions) {
         const usedSessions = await prisma.sessionTracking.count({
           where: { subscriptionId: parseInt(subscriptionId) },
@@ -97,4 +100,4 @@ async function putHandler(request: NextRequest, context: any) {
   }
 }
 
-export const PUT = requireCoach(putHandler);
+export const PUT = requireCoachOrAdmin(putHandler);

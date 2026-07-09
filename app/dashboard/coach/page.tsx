@@ -23,6 +23,7 @@ import {
   Mail,
   RefreshCw,
   Play,
+  Power,
   CalendarCog,
   Lightbulb,
   Settings,
@@ -36,6 +37,7 @@ import ClientManagementModal from '@/components/forms/ClientManagementModal';
 import SubscriptionManagementModal from '@/components/forms/SubscriptionManagementModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
+import ActivateSubscriptionModal from '@/components/admin/ActivateSubscriptionModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import CreateBlogModal from '@/components/CreateBlogModal';
 import NotificationModal from '@/components/NotificationModal';
@@ -79,6 +81,9 @@ export default function CoachDashboard() {
   const [subMode, setSubMode] = useState<'renew' | 'extend'>('renew');
   const [adjustDaysOpen, setAdjustDaysOpen] = useState(false);
   const [adjustDaysClient, setAdjustDaysClient] = useState<any>(null);
+  const [activateSubOpen, setActivateSubOpen] = useState(false);
+  const [activateSubData, setActivateSubData] = useState<any>(null);
+  const [deletingSubId, setDeletingSubId] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isTrainerAssignmentOpen, setIsTrainerAssignmentOpen] = useState(false);
@@ -383,6 +388,29 @@ export default function CoachDashboard() {
     } catch (error) {
       console.error('Error sending reminder:', error);
       alert('An error occurred while sending the reminder');
+    }
+  };
+
+  const handleDeleteSubscription = async (subId: number) => {
+    if (!confirm('Delete this subscription permanently? This cannot be undone.')) return;
+    setDeletingSubId(subId);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/admin/subscriptions?id=${subId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Failed to delete subscription');
+        return;
+      }
+      await fetchDashboardData();
+    } catch (error) {
+      console.error('Error deleting subscription:', error);
+      alert('An error occurred while deleting the subscription.');
+    } finally {
+      setDeletingSubId(null);
     }
   };
 
@@ -825,6 +853,34 @@ export default function CoachDashboard() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
+                                setActivateSubData({
+                                  id: sub.id,
+                                  endDate: sub.endDate,
+                                  startDate: sub.startDate,
+                                  plan: sub.plan,
+                                  user: { id: client.id, name: client.name || 'Client', email: client.email },
+                                });
+                                setActivateSubOpen(true);
+                              }}
+                              className="px-2 py-1 text-xs bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded hover:bg-cyan-500/30 transition-all flex items-center gap-1"
+                              title="Activate / Deactivate"
+                            >
+                              <Power className="w-3 h-3" /> Activate
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSubscription(sub.id);
+                              }}
+                              disabled={deletingSubId === sub.id}
+                              className="px-2 py-1 text-xs bg-red-500/20 text-red-400 border border-red-500/30 rounded hover:bg-red-500/30 transition-all flex items-center gap-1 disabled:opacity-50"
+                              title="Delete Subscription"
+                            >
+                              <Trash2 className="w-3 h-3" /> {deletingSubId === sub.id ? '...' : 'Delete'}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 handleSendReminder(client);
                               }}
                               className="p-1.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded hover:bg-orange-500/30 transition-all"
@@ -1179,6 +1235,12 @@ export default function CoachDashboard() {
         onOpenChange={setAdjustDaysOpen}
         onSuccess={fetchDashboardData}
         subscription={adjustDaysClient}
+      />
+      <ActivateSubscriptionModal
+        open={activateSubOpen}
+        onOpenChange={setActivateSubOpen}
+        onSuccess={fetchDashboardData}
+        subscription={activateSubData}
       />
       <ClientDetailModal
         isOpen={isClientDetailModalOpen}

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { verifyToken } from './auth';
 import { prisma } from './prisma';
-import { getMaxPauseDays, isElitePlan, getTotalSessions } from './planUtils';
+import { getMaxPauseDays, isElitePlan, getTotalSessions, getEffectiveTotalSessions } from './planUtils';
 
 export interface AuthUser {
   userId: number;
@@ -52,13 +52,15 @@ export async function checkSubscription(userId: number): Promise<{
       orderBy: { createdAt: 'desc' },
     });
 
-    // Only check expired session-based plans if there's NO newer subscription
+    // Only check session-based plans if there's NO newer subscription.
+    // Self-heal: an Elite (session-based) plan with sessions remaining must stay active
+    // regardless of endDate or a status that was wrongly set to 'expired'. We deliberately
+    // exclude 'cancelled' so genuinely refunded/cancelled subs are NOT resurrected.
     if (!newerActiveSub) {
-      const expiredSessionPlan = await prisma.userSubscription.findFirst({
+      const salvageableSessionPlan = await prisma.userSubscription.findFirst({
         where: {
           userId: userId,
           status: { in: ['active', 'paused', 'expired'] },
-          endDate: { lt: now },
         },
         include: {
           plan: true,
@@ -69,22 +71,25 @@ export async function checkSubscription(userId: number): Promise<{
         },
       });
 
-      if (expiredSessionPlan && isElitePlan(expiredSessionPlan.plan.name)) {
-        const totalSessions = getTotalSessions(expiredSessionPlan.plan.name);
-        const completedSessions = expiredSessionPlan.sessionTrackings.length;
+      if (salvageableSessionPlan && isElitePlan(salvageableSessionPlan.plan.name)) {
+        const totalSessions = getEffectiveTotalSessions(
+          salvageableSessionPlan.plan.name,
+          salvageableSessionPlan.bonusSessions
+        );
+        const completedSessions = salvageableSessionPlan.sessionTrackings.length;
 
         if (totalSessions && completedSessions < totalSessions) {
-          // Sessions remain — keep subscription active regardless of endDate
-          if (expiredSessionPlan.status !== 'active') {
+          // Sessions remain — keep subscription active regardless of endDate / wrong status
+          if (salvageableSessionPlan.status !== 'active') {
             await prisma.userSubscription.update({
-              where: { id: expiredSessionPlan.id },
+              where: { id: salvageableSessionPlan.id },
               data: { status: 'active', pausedAt: null },
             });
-            expiredSessionPlan.status = 'active';
+            salvageableSessionPlan.status = 'active';
           }
           return {
             isActive: true,
-            subscription: expiredSessionPlan,
+            subscription: salvageableSessionPlan,
           };
         }
       }
@@ -106,7 +111,7 @@ export async function checkSubscription(userId: number): Promise<{
 
     for (const sub of expiredSubs) {
       if (isElitePlan(sub.plan.name) && !newerActiveSub) {
-        const total = getTotalSessions(sub.plan.name);
+        const total = getEffectiveTotalSessions(sub.plan.name, sub.bonusSessions);
         const completed = sub.sessionTrackings.length;
         // Only expire session-based plans if all sessions are used (and no newer sub exists)
         if (total && completed >= total) {
@@ -248,6 +253,28 @@ export function requireCoach(handler: Function) {
     if (user.role !== 'coach') {
       return Response.json(
         { error: 'Forbidden. Coach access required.' },
+        { status: 403 }
+      );
+    }
+
+    return handler(request, { ...context, user });
+  };
+}
+
+export function requireCoachOrAdmin(handler: Function) {
+  return async (request: NextRequest, context?: any) => {
+    const user = await getAuthUser(request);
+
+    if (!user) {
+      return Response.json(
+        { error: 'Unauthorized. Please login.' },
+        { status: 401 }
+      );
+    }
+
+    if (user.role !== 'coach' && user.role !== 'admin') {
+      return Response.json(
+        { error: 'Forbidden. Coach or admin access required.' },
         { status: 403 }
       );
     }

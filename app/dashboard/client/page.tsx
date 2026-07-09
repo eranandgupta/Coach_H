@@ -42,7 +42,7 @@ import VideoLibrary from '@/components/VideoLibrary';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
-import { isElitePlan, getTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
+import { isElitePlan, getEffectiveTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
 
@@ -304,7 +304,7 @@ export default function ClientDashboard() {
     if (!subscription?.subscription) return 0;
     const pName = subscription.subscription.plan?.name || '';
     if (isElitePlan(pName)) {
-      const total = getTotalSessions(pName) || 1;
+      const total = getEffectiveTotalSessions(pName, subscription.subscription.bonusSessions) || 1;
       return Math.min((completedSessions.length / total) * 100, 100);
     }
     const start = new Date(subscription.subscription.startDate).getTime();
@@ -324,7 +324,7 @@ export default function ClientDashboard() {
 
     // Elite 1:1 plans: session-based milestones (confirmed by coach)
     if (isElitePlan(pName)) {
-      const total = getTotalSessions(pName) || 24;
+      const total = getEffectiveTotalSessions(pName, subscription.subscription.bonusSessions) || 24;
       const milestones = [];
       for (let i = 1; i <= total; i++) {
         milestones.push({
@@ -520,7 +520,7 @@ export default function ClientDashboard() {
                       <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
                       <span className="text-xs text-gray-300 font-medium">
                         {isEliteOneOnOnePlan
-                          ? `${(getTotalSessions(planName) || 0) - completedSessions.length} sessions left`
+                          ? `${(getEffectiveTotalSessions(planName, subscription?.subscription?.bonusSessions) || 0) - completedSessions.length} sessions left`
                           : `${getDaysRemaining(subscription.subscription.endDate)} days left`}
                       </span>
                     </div>
@@ -1296,7 +1296,7 @@ export default function ClientDashboard() {
                   {isSubscriptionActive && (
                     <div className="col-span-2 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
                       <p className="text-gray-500 text-xs mb-0.5">{isEliteOneOnOnePlan ? 'Sessions Remaining' : 'Days Remaining'}</p>
-                      <p className="text-white font-semibold">{isEliteOneOnOnePlan ? `${(getTotalSessions(planName) || 0) - completedSessions.length} sessions` : `${getDaysRemaining(subscription.subscription.endDate)} days`}</p>
+                      <p className="text-white font-semibold">{isEliteOneOnOnePlan ? `${(getEffectiveTotalSessions(planName, subscription?.subscription?.bonusSessions) || 0) - completedSessions.length} sessions` : `${getDaysRemaining(subscription.subscription.endDate)} days`}</p>
                     </div>
                   )}
                 </div>

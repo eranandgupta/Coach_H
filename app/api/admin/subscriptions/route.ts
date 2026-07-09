@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireCoach } from '@/lib/middleware';
+import { requireCoachOrAdmin } from '@/lib/middleware';
+import { createOrRenewSubscription } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +9,7 @@ export const dynamic = 'force-dynamic';
 async function postHandler(request: NextRequest, context: any) {
   try {
     const body = await request.json();
-    const { clientId, planId, duration, transactionId, paymentMode, mode } = body;
+    const { clientId, planId, duration, transactionId, paymentMode } = body;
 
     // Validate required fields
     if (!clientId || !planId) {
@@ -36,101 +37,15 @@ async function postHandler(request: NextRequest, context: any) {
       return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
     }
 
-    let startDate: Date;
-    let endDate: Date;
-
-    if (mode === 'extend') {
-      // Find the current active subscription
-      const activeSub = await prisma.userSubscription.findFirst({
-        where: {
-          userId: parseInt(clientId),
-          OR: [
-            { endDate: { gte: new Date() } },
-            { status: 'active' },
-          ],
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-
-      if (!activeSub) {
-        return NextResponse.json(
-          { error: 'No active subscription found to extend' },
-          { status: 400 }
-        );
-      }
-
-      // Extend: start from current endDate, new endDate = current endDate + plan duration
-      startDate = activeSub.endDate;
-      endDate = new Date(activeSub.endDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
-    } else {
-      // Renew or new: start from today
-      startDate = new Date();
-      endDate = new Date();
-      endDate.setDate(endDate.getDate() + (duration || plan.duration));
-    }
-
-    // Find the current active subscription before marking as expired (to transfer sessions)
-    const previousSub = await prisma.userSubscription.findFirst({
-      where: {
-        userId: parseInt(clientId),
-        status: { in: ['active', 'paused'] },
-      },
-      include: { sessionTrackings: true },
-      orderBy: { createdAt: 'desc' },
+    // Create/renew with the shared policy: calendar stacking (queue after current endDate)
+    // + Elite session rollover. `mode` is no longer needed — stacking is automatic.
+    const { subscription } = await createOrRenewSubscription({
+      userId: parseInt(clientId),
+      plan,
+      duration: duration ? parseInt(duration) : undefined,
+      transactionId: transactionId || null,
+      paymentMode: paymentMode || null,
     });
-
-    // Mark any existing active/future subscriptions as replaced
-    await prisma.userSubscription.updateMany({
-      where: {
-        userId: parseInt(clientId),
-        status: { in: ['active', 'paused'] },
-      },
-      data: { status: 'expired' },
-    });
-
-    // Create subscription
-    const subscription = await prisma.userSubscription.create({
-      data: {
-        userId: parseInt(clientId),
-        planId: parseInt(planId),
-        status: 'active',
-        startDate,
-        endDate,
-        transactionId: transactionId || null,
-        paymentMode: paymentMode || null,
-      },
-      include: {
-        plan: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    // Transfer completed sessions from previous subscription to new one
-    if (previousSub && previousSub.sessionTrackings.length > 0) {
-      const { getTotalSessions } = await import('@/lib/planUtils');
-      const newTotalSessions = getTotalSessions(plan.name) || 0;
-      // Only transfer sessions that fit within the new plan's total
-      const sessionsToTransfer = previousSub.sessionTrackings.filter(
-        (s) => s.sessionNumber <= newTotalSessions
-      );
-      if (sessionsToTransfer.length > 0) {
-        await prisma.sessionTracking.createMany({
-          data: sessionsToTransfer.map((s) => ({
-            subscriptionId: subscription.id,
-            sessionNumber: s.sessionNumber,
-            confirmedByCoachId: s.confirmedByCoachId,
-            notes: s.notes,
-            completedAt: s.completedAt,
-          })),
-        });
-      }
-    }
 
     return NextResponse.json({ subscription }, { status: 201 });
   } catch (error) {
@@ -241,6 +156,6 @@ async function deleteHandler(request: NextRequest, context: any) {
   }
 }
 
-export const POST = requireCoach(postHandler);
-export const PUT = requireCoach(putHandler);
-export const DELETE = requireCoach(deleteHandler);
+export const POST = requireCoachOrAdmin(postHandler);
+export const PUT = requireCoachOrAdmin(putHandler);
+export const DELETE = requireCoachOrAdmin(deleteHandler);

@@ -21,6 +21,7 @@ import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
+import { createOrRenewSubscription } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,8 +117,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
-    const startDate = new Date();
-    const endDate = new Date(startDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
+    // Set from the created subscription (calendar stacking may push the start into the future).
+    let startDate = new Date();
+    let endDate = new Date();
     const paidAmount = paidAmountPaise / 100;
 
     let isNewUser = false;
@@ -145,52 +147,22 @@ export async function POST(request: NextRequest) {
           isNewUser = true;
         }
 
-        // Find previous subscription to transfer sessions
-        const previousSub = await tx.userSubscription.findFirst({
-          where: { userId: user.id, status: { in: ['active', 'paused'] } },
-          include: { sessionTrackings: true },
-          orderBy: { createdAt: 'desc' },
-        });
-
-        await tx.userSubscription.updateMany({
-          where: { userId: user.id, status: { in: ['active', 'paused'] } },
-          data: { status: 'cancelled' },
-        });
-
-        const newSub = await tx.userSubscription.create({
-          data: {
+        // Create/renew with the shared policy: calendar stacking (no paid time lost on early
+        // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
+        const { subscription } = await createOrRenewSubscription(
+          {
             userId: user.id,
-            planId: plan.id,
-            status: 'active',
-            startDate,
-            endDate,
+            plan,
             paymentMode: 'razorpay',
             transactionId: paymentId,
             razorpayOrderId: orderId,
             razorpayPaymentId: paymentId,
             paidAmount,
           },
-        });
-
-        // Transfer completed sessions from previous subscription
-        if (previousSub && previousSub.sessionTrackings.length > 0) {
-          const { getTotalSessions } = await import('@/lib/planUtils');
-          const newTotalSessions = getTotalSessions(plan.name) || 0;
-          const sessionsToTransfer = previousSub.sessionTrackings.filter(
-            (s: any) => s.sessionNumber <= newTotalSessions
-          );
-          if (sessionsToTransfer.length > 0) {
-            await tx.sessionTracking.createMany({
-              data: sessionsToTransfer.map((s: any) => ({
-                subscriptionId: newSub.id,
-                sessionNumber: s.sessionNumber,
-                confirmedByCoachId: s.confirmedByCoachId,
-                notes: s.notes,
-                completedAt: s.completedAt,
-              })),
-            });
-          }
-        }
+          tx
+        );
+        startDate = new Date(subscription.startDate);
+        endDate = new Date(subscription.endDate);
       });
 
       console.log(`Webhook: subscription created for payment ${paymentId}, user ${emailToUse}`);

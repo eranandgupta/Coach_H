@@ -65,6 +65,7 @@ model UserSubscription {
   razorpaySignature String?
   pausedAt          DateTime?
   pauseDaysUsed     Int               @default(0)
+  bonusSessions     Int               @default(0)
   sessionTrackings  SessionTracking[]
   plan              SubscriptionPlan  @relation(fields: [planId], references: [id])
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)

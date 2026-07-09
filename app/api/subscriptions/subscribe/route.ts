@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth } from '@/lib/middleware';
+import { createOrRenewSubscription } from '@/lib/subscriptionService';
 
 
 export const dynamic = 'force-dynamic';
@@ -29,65 +30,11 @@ async function handler(request: NextRequest, context: any) {
       );
     }
 
-    // Calculate end date based on plan duration
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + plan.duration);
-
-    // Find current subscription to transfer sessions
-    const previousSub = await prisma.userSubscription.findFirst({
-      where: {
-        userId: user.userId,
-        status: { in: ['active', 'paused'] },
-      },
-      include: { sessionTrackings: true },
-      orderBy: { createdAt: 'desc' },
+    // Create/renew with the shared policy: calendar stacking + Elite session rollover.
+    const { subscription } = await createOrRenewSubscription({
+      userId: user.userId,
+      plan,
     });
-
-    // Cancel any existing active/paused subscriptions
-    await prisma.userSubscription.updateMany({
-      where: {
-        userId: user.userId,
-        status: { in: ['active', 'paused'] },
-      },
-      data: {
-        status: 'cancelled',
-      },
-    });
-
-    // Create new subscription
-    const subscription = await prisma.userSubscription.create({
-      data: {
-        userId: user.userId,
-        planId: plan.id,
-        status: 'active',
-        startDate,
-        endDate,
-      },
-      include: {
-        plan: true,
-      },
-    });
-
-    // Transfer completed sessions from previous subscription
-    if (previousSub && previousSub.sessionTrackings.length > 0) {
-      const { getTotalSessions } = await import('@/lib/planUtils');
-      const newTotalSessions = getTotalSessions(plan.name) || 0;
-      const sessionsToTransfer = previousSub.sessionTrackings.filter(
-        (s) => s.sessionNumber <= newTotalSessions
-      );
-      if (sessionsToTransfer.length > 0) {
-        await prisma.sessionTracking.createMany({
-          data: sessionsToTransfer.map((s) => ({
-            subscriptionId: subscription.id,
-            sessionNumber: s.sessionNumber,
-            confirmedByCoachId: s.confirmedByCoachId,
-            notes: s.notes,
-            completedAt: s.completedAt,
-          })),
-        });
-      }
-    }
 
     return NextResponse.json(
       {

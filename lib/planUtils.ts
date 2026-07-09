@@ -1,10 +1,23 @@
 export function isElitePlan(planName: string): boolean {
-  return planName.startsWith('Elite 1:1');
+  // Tolerant match: case-insensitive and separator-flexible (e.g. "Elite 1:1", "elite 1-1", "Elite 1 : 1").
+  return /elite\s*1\s*[:\-]?\s*1/i.test(planName || '');
 }
 
 export function getTotalSessions(planName: string): number | null {
-  const match = planName.match(/\((\d+)\s*Sessions?\)/i);
+  // Match "N Sessions" with or without surrounding parentheses (e.g. "(24 Sessions)" or "24 Session").
+  const match = (planName || '').match(/(\d+)\s*sessions?/i);
   return match ? parseInt(match[1], 10) : null;
+}
+
+// Effective total sessions for a subscription: the plan's nominal sessions plus any
+// bonus sessions rolled over from a previous plan on renewal.
+export function getEffectiveTotalSessions(
+  planName: string,
+  bonusSessions: number = 0
+): number | null {
+  const base = getTotalSessions(planName);
+  if (base === null) return bonusSessions > 0 ? bonusSessions : null;
+  return base + (bonusSessions || 0);
 }
 
 export function getSessionLabel(weekNumber: number, isElite: boolean): string {

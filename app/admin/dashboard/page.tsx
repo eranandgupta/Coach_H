@@ -24,6 +24,7 @@ import {
   Trash2,
   UserPlus,
   Play,
+  Power,
   CalendarCog,
   Megaphone,
   GripVertical,
@@ -53,6 +54,7 @@ import { isElitePlan } from '@/lib/planUtils';
 import CreateClientModal from '@/components/admin/CreateClientModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
+import ActivateSubscriptionModal from '@/components/admin/ActivateSubscriptionModal';
 import CreatePromoCodeModal from '@/components/admin/CreatePromoCodeModal';
 import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
 
@@ -136,6 +138,9 @@ export default function AdminDashboard() {
   const [invoiceSub, setInvoiceSub] = useState<Subscription | null>(null);
   const [adjustDaysOpen, setAdjustDaysOpen] = useState(false);
   const [adjustDaysSub, setAdjustDaysSub] = useState<Subscription | null>(null);
+  const [activateSubOpen, setActivateSubOpen] = useState(false);
+  const [activateSub, setActivateSub] = useState<Subscription | null>(null);
+  const [deletingSubId, setDeletingSubId] = useState<number | null>(null);
 
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [sendingReminder, setSendingReminder] = useState<number | null>(null);
@@ -202,6 +207,28 @@ export default function AdminDashboard() {
       setSubscriptions(data.subscriptions || []);
     } catch (error) {
       console.error('Error fetching subscriptions:', error);
+    }
+  };
+
+  const handleDeleteSubscription = async (subId: number) => {
+    if (!window.confirm('Delete this subscription permanently? This cannot be undone.')) return;
+    setDeletingSubId(subId);
+    try {
+      const res = await fetch(`/api/admin/subscriptions?id=${subId}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Failed to delete subscription');
+        return;
+      }
+      await Promise.all([fetchSubscriptions(), fetchClients()]);
+    } catch (error) {
+      console.error('Error deleting subscription:', error);
+      alert('An error occurred while deleting the subscription.');
+    } finally {
+      setDeletingSubId(null);
     }
   };
 
@@ -759,6 +786,31 @@ export default function AdminDashboard() {
                                     <CalendarCog className="h-4 w-4" /> Adjust Days
                                   </button>
                                 )}
+                                {client.subscriptions.length > 0 && (
+                                  <button
+                                    onClick={() => {
+                                      const sub = client.subscriptions[0];
+                                      setActivateSub({
+                                        id: sub.id,
+                                        endDate: sub.endDate,
+                                        startDate: sub.startDate,
+                                        plan: sub.plan,
+                                        user: { id: client.id, name: client.name || 'Client', email: client.email },
+                                      } as any);
+                                      setActivateSubOpen(true);
+                                    }}
+                                    className="flex items-center gap-1 px-3 py-1.5 bg-cyan-500/20 border border-cyan-500/30 rounded-lg text-cyan-400 hover:bg-cyan-500/30 hover:text-cyan-300 transition-all text-sm">
+                                    <Power className="h-4 w-4" /> Activate
+                                  </button>
+                                )}
+                                {client.subscriptions.length > 0 && (
+                                  <button
+                                    onClick={() => handleDeleteSubscription(client.subscriptions[0].id)}
+                                    disabled={deletingSubId === client.subscriptions[0].id}
+                                    className="flex items-center gap-1 px-3 py-1.5 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 hover:bg-red-500/30 hover:text-red-300 transition-all text-sm disabled:opacity-50">
+                                    <Trash2 className="h-4 w-4" /> {deletingSubId === client.subscriptions[0].id ? 'Deleting...' : 'Delete'}
+                                  </button>
+                                )}
                               </div>
                             </div>
                           </motion.div>
@@ -1229,6 +1281,12 @@ export default function AdminDashboard() {
         onOpenChange={setAdjustDaysOpen}
         onSuccess={() => { fetchSubscriptions(); fetchClients(); }}
         subscription={adjustDaysSub}
+      />
+      <ActivateSubscriptionModal
+        open={activateSubOpen}
+        onOpenChange={setActivateSubOpen}
+        onSuccess={() => { fetchSubscriptions(); fetchClients(); }}
+        subscription={activateSub as any}
       />
 
       {/* Mobile Bottom Navigation */}

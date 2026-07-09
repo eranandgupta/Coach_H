@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
+import { createOrRenewSubscription } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -119,9 +120,6 @@ export async function POST(request: NextRequest) {
     const paidAmount = paidPaise / 100;
 
     // --- 5. Atomic: find/create user + subscription ---
-    const startDate = new Date();
-    const endDate = new Date(startDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
-
     let isNewUser = false;
     let plainPassword: string | null = null;
 
@@ -147,27 +145,12 @@ export async function POST(request: NextRequest) {
         isNewUser = true;
       }
 
-      // Find previous subscription to transfer sessions
-      const previousSub = await tx.userSubscription.findFirst({
-        where: { userId: user.id, status: { in: ['active', 'paused'] } },
-        include: { sessionTrackings: true },
-        orderBy: { createdAt: 'desc' },
-      });
-
-      // Cancel existing active/paused subscriptions
-      await tx.userSubscription.updateMany({
-        where: { userId: user.id, status: { in: ['active', 'paused'] } },
-        data: { status: 'cancelled', pausedAt: null },
-      });
-
-      // Create new subscription
-      const subscription = await tx.userSubscription.create({
-        data: {
+      // Create/renew with the shared policy: calendar stacking (no paid time lost on early
+      // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
+      const { subscription } = await createOrRenewSubscription(
+        {
           userId: user.id,
-          planId: plan.id,
-          status: 'active',
-          startDate,
-          endDate,
+          plan,
           paymentMode: 'razorpay',
           transactionId: razorpay_payment_id,
           razorpayOrderId: razorpay_order_id,
@@ -177,30 +160,14 @@ export async function POST(request: NextRequest) {
           customerGoal: goal || null,
           customerNotes: notes || null,
         },
-      });
-
-      // Transfer completed sessions from previous subscription
-      if (previousSub && previousSub.sessionTrackings.length > 0) {
-        const { getTotalSessions } = await import('@/lib/planUtils');
-        const newTotalSessions = getTotalSessions(plan.name) || 0;
-        const sessionsToTransfer = previousSub.sessionTrackings.filter(
-          (s: any) => s.sessionNumber <= newTotalSessions
-        );
-        if (sessionsToTransfer.length > 0) {
-          await tx.sessionTracking.createMany({
-            data: sessionsToTransfer.map((s: any) => ({
-              subscriptionId: subscription.id,
-              sessionNumber: s.sessionNumber,
-              confirmedByCoachId: s.confirmedByCoachId,
-              notes: s.notes,
-              completedAt: s.completedAt,
-            })),
-          });
-        }
-      }
+        tx
+      );
 
       return { user, subscription };
     });
+
+    const startDate = new Date(result.subscription.startDate);
+    const endDate = new Date(result.subscription.endDate);
 
     // --- 6. Send emails (outside transaction — non-fatal) ---
     // Send credentials to new users
