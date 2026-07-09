@@ -6,21 +6,25 @@ import Image from 'next/image';
 export default function DashboardLoader() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy flex items-center justify-center relative overflow-hidden">
-      {/* Subtle ambient glow */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.05, 0.12, 0.05],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-blue rounded-full blur-[120px]"
-        />
-      </div>
+      {/* Ambient glow — radial gradient (NOT CSS blur, which Safari clips to a hard
+          square inside overflow-hidden). Renders as a soft feathered halo everywhere. */}
+      <motion.div
+        aria-hidden
+        animate={{
+          opacity: [0.45, 0.8, 0.45],
+          scale: [1, 1.08, 1],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(120vw,1000px)] h-[min(120vw,1000px)]"
+        style={{
+          background:
+            'radial-gradient(circle at center, rgba(23,95,255,0.20) 0%, rgba(23,95,255,0.08) 32%, rgba(23,95,255,0.02) 55%, transparent 70%)',
+        }}
+      />
 
       {/* Loading content */}
       <div className="relative z-10 text-center flex flex-col items-center">
