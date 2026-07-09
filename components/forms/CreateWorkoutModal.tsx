@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, Reorder } from 'framer-motion';
-import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
+import { toDateInputValue } from '@/lib/dateUtils';
 import VideoPickerModal from '@/components/modals/VideoPickerModal';
 import { VIDEO_CATEGORIES, ScreenPalVideo } from '@/lib/screenpal';
 
@@ -143,8 +144,8 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         setDescription(workout.description || '');
         setClientId(workout.clientId?.toString() || '');
         setWeekNumber(workout.weekNumber?.toString() || '1');
-        setStartDate(workout.startDate ? new Date(workout.startDate).toISOString().split('T')[0] : '');
-        setEndDate(workout.endDate ? new Date(workout.endDate).toISOString().split('T')[0] : '');
+        setStartDate(toDateInputValue(workout.startDate));
+        setEndDate(toDateInputValue(workout.endDate));
         setNotes(workout.notes || '');
 
         if (workout.exercises && workout.exercises.length > 0) {
@@ -474,20 +475,14 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                     </button>
                   </div>
 
-                  <Reorder.Group axis="y" values={exercises} onReorder={setExercises} className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                     {exercises.map((exercise, index) => (
-                      <Reorder.Item
+                      <div
                         key={exercise._id}
-                        value={exercise}
-                        className="bg-white/5 border border-white/10 rounded-lg p-4 select-none"
-                        style={{ WebkitUserSelect: 'none' }}
-                        whileDrag={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', zIndex: 50, cursor: 'grabbing' }}
+                        className="bg-white/5 border border-white/10 rounded-lg p-4"
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-2 cursor-grab active:cursor-grabbing">
-                            <div className="text-gray-500 hover:text-gray-300 transition-colors touch-none p-1 -m-1" title="Drag to reorder">
-                              <GripVertical size={18} />
-                            </div>
+                          <div className="flex items-center gap-2">
                             <span className="text-purple-400 font-semibold">Exercise {index + 1}</span>
                             {exercise.exerciseType === 'superset' && (
                               <span className="px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded text-xs font-medium">Superset</span>
@@ -691,9 +686,9 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                             placeholder="Exercise description/instructions"
                           />
                         </div>
-                      </Reorder.Item>
+                      </div>
                     ))}
-                  </Reorder.Group>
+                  </div>
                 </div>
 
                 <div>

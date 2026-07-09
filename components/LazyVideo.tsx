@@ -14,6 +14,7 @@ export default function LazyVideo({ src, className, style, ariaLabel, title }: L
   const ref = useRef<HTMLVideoElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Reveal when scrolled near the viewport.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -31,12 +32,31 @@ export default function LazyVideo({ src, className, style, ariaLabel, title }: L
     return () => observer.disconnect();
   }, []);
 
+  // Safari/WebKit does NOT reliably start playback for a <source> injected after mount,
+  // nor for autoPlay toggled post-mount. Set the src on the element directly and explicitly
+  // load() + play() once visible. play() may reject (e.g. iOS Low Power Mode) — ignore it.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !isVisible) return;
+    if (el.getAttribute('src') !== src) {
+      el.setAttribute('src', src);
+      el.load();
+    }
+    const tryPlay = () => {
+      const p = el.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    };
+    tryPlay();
+    // Retry once metadata is ready (covers Safari's delayed readiness).
+    el.addEventListener('loadedmetadata', tryPlay, { once: true });
+    return () => el.removeEventListener('loadedmetadata', tryPlay);
+  }, [isVisible, src]);
+
   return (
     <video
       ref={ref}
       className={className}
       style={style}
-      autoPlay={isVisible}
       loop
       muted
       playsInline
@@ -45,8 +65,6 @@ export default function LazyVideo({ src, className, style, ariaLabel, title }: L
       disableRemotePlayback
       aria-label={ariaLabel}
       title={title}
-    >
-      {isVisible && <source src={src} type="video/mp4" />}
-    </video>
+    />
   );
 }

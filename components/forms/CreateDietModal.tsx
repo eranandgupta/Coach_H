@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, Reorder } from 'framer-motion';
-import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
+import { toDateInputValue } from '@/lib/dateUtils';
 
 interface CreateDietModalProps {
   isOpen: boolean;
@@ -105,8 +106,8 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         setDescription(diet.description || '');
         setClientId(diet.clientId?.toString() || '');
         setWeekNumber(diet.weekNumber?.toString() || '1');
-        setStartDate(diet.startDate ? new Date(diet.startDate).toISOString().split('T')[0] : '');
-        setEndDate(diet.endDate ? new Date(diet.endDate).toISOString().split('T')[0] : '');
+        setStartDate(toDateInputValue(diet.startDate));
+        setEndDate(toDateInputValue(diet.endDate));
         setTargetCalories(diet.targetCalories?.toString() || '');
         setNotes(diet.notes || '');
 
@@ -465,20 +466,14 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                     </button>
                   </div>
 
-                  <Reorder.Group axis="y" values={meals} onReorder={setMeals} className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                     {meals.map((meal, index) => (
-                      <Reorder.Item
+                      <div
                         key={meal._id}
-                        value={meal}
-                        className="bg-white/5 border border-white/10 rounded-lg p-4 select-none"
-                        style={{ WebkitUserSelect: 'none' }}
-                        whileDrag={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', zIndex: 50, cursor: 'grabbing' }}
+                        className="bg-white/5 border border-white/10 rounded-lg p-4"
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-2 cursor-grab active:cursor-grabbing">
-                            <div className="text-gray-500 hover:text-gray-300 transition-colors touch-none p-1 -m-1" title="Drag to reorder">
-                              <GripVertical size={18} />
-                            </div>
+                          <div className="flex items-center gap-2">
                             <span className="text-green-400 font-semibold">Meal {index + 1}</span>
                           </div>
                           <div className="flex items-center gap-1">
@@ -628,9 +623,9 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                             placeholder="Additional notes..."
                           />
                         </div>
-                      </Reorder.Item>
+                      </div>
                     ))}
-                  </Reorder.Group>
+                  </div>
                 </div>
 
                 <div>
