@@ -796,7 +796,7 @@ export default function CoachDashboard() {
                       const isActive = new Date(sub.endDate) >= now || (isElitePlan(sub.plan?.name || '') && sub.status === 'active');
                       return (
                       <div className={`mb-3 p-2 rounded border ${isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                        <div className="flex items-center justify-between">
+                        <div>
                           <div>
                             <p className={`text-xs font-medium ${isActive ? 'text-green-400' : 'text-red-400'}`}>
                               {sub.plan.name} - {isActive ? 'active' : 'expired'}
@@ -805,7 +805,7 @@ export default function CoachDashboard() {
                               Expires: {new Date(sub.endDate).toLocaleDateString()}
                             </p>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex flex-wrap items-center gap-1.5 mt-2">
                             {isActive ? (
                               <button
                                 onClick={(e) => {
