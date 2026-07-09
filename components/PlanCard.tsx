@@ -20,6 +20,7 @@ interface PlanCardProps {
   liveOneOnOne?: boolean;
   whatsappOnly?: boolean;
   salePercent?: number;
+  bonusDays?: number;
   onAddToCart?: (plan: {
     id: number;
     name: string;
@@ -47,6 +48,7 @@ export default function PlanCard({
   liveOneOnOne = false,
   whatsappOnly = false,
   salePercent,
+  bonusDays,
   onAddToCart,
 }: PlanCardProps) {
   const salePrice = salePercent ? Math.round(priceValue * (1 - salePercent / 100)) : null;
@@ -302,6 +304,11 @@ export default function PlanCard({
                   </span>
                 )}
               </div>
+              {bonusDays ? (
+                <div className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 bg-brand-blue/15 text-brand-blue text-[11px] font-bold rounded-full border border-brand-blue/25">
+                  <Sparkles className="w-3 h-3" /> +{bonusDays} days free
+                </div>
+              ) : null}
             </div>
           </div>
 

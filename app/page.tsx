@@ -168,7 +168,8 @@ export default function Home() {
     return null;
   }, []);
 
-  // Returns the sale discount percentage for a plan, or 0 if no sale applies
+  // Returns the sale discount percentage for a plan, or 0 if no sale applies.
+  // July "Health Revolution Sale" spec.
   const getSalePercent = (plan: { duration: string; dbName: string; homeWorkout?: boolean; rehabilitation?: boolean; liveOneOnOne?: boolean }) => {
     if (!activeSale) return 0;
     const d = plan.duration.toLowerCase();
@@ -181,12 +182,30 @@ export default function Home() {
       if (name.includes('72 sessions')) return 20;
       return 0;
     }
+    // 1-month plans
+    if (d === 'month' || d === '1 month') return 5;
     // 3-month gym, home & rehab plans (including couple variants)
-    if (d === '3 months' && !name.includes('elite')) return 10;
+    if (d === '3 months') return 10;
     // 6-month gym plans (including couple)
-    if (d === '6 months') return 12;
+    if (d === '6 months') return 10;
     // 12-month gym plans (including couple)
-    if (d === '12 months') return 15;
+    if (d === '12 months') return 12;
+    return 0;
+  };
+
+  // Returns the bonus (free) days a plan gets during the sale, or 0. These are also
+  // applied to the actual subscription length at checkout (see lib/sale.ts on the server).
+  const getSaleBonusDays = (plan: { duration: string; dbName: string; liveOneOnOne?: boolean }) => {
+    if (!activeSale) return 0;
+    const d = plan.duration.toLowerCase();
+    const name = plan.dbName.toLowerCase();
+    if (plan.liveOneOnOne || name.includes('elite')) {
+      if (name.includes('24 sessions')) return 3;
+      if (name.includes('72 sessions')) return 7;
+      return 0;
+    }
+    if (d === '6 months') return 5;
+    if (d === '12 months') return 10;
     return 0;
   };
 
@@ -2126,7 +2145,7 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
                 {plans.filter(p => !p.couple && !p.homeWorkout && !p.rehabilitation && !p.liveGroup).map((plan) => (
                   <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                   </div>
                 ))}
               </div>
@@ -2141,7 +2160,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-2xl mx-auto">
                   {plans.filter(p => p.couple && !p.homeWorkout && !p.rehabilitation).map((plan) => (
                     <div key={plan.id} className="h-full">
-                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                     </div>
                   ))}
                 </div>
@@ -2172,12 +2191,12 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.homeWorkout && !p.couple).map((plan) => (
                   <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                   </div>
                 ))}
                 {plans.filter(p => p.homeWorkout && p.couple).map((plan) => (
                   <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} homeWorkout={false} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} homeWorkout={false} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                   </div>
                 ))}
               </div>
@@ -2207,12 +2226,12 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.rehabilitation && !p.couple).map((plan) => (
                   <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                   </div>
                 ))}
                 {plans.filter(p => p.rehabilitation && p.couple).map((plan) => (
                   <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} rehabilitation={false} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} rehabilitation={false} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                   </div>
                 ))}
               </div>
@@ -2235,7 +2254,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
                   {plans.filter(p => p.liveOneOnOne).map((plan) => (
                     <div key={plan.id} className="h-full">
-                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                     </div>
                   ))}
                 </div>
@@ -2268,7 +2287,7 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
                 {plans.filter(p => p.liveGroup && !p.liveOneOnOne).map((plan) => (
                   <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} onAddToCart={addToCart} />
+                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                   </div>
                 ))}
               </div>

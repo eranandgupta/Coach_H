@@ -22,6 +22,7 @@ import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
 import { createOrRenewSubscription } from '@/lib/subscriptionService';
+import { getSaleBonusDays } from '@/lib/sale';
 
 export const dynamic = 'force-dynamic';
 
@@ -149,10 +150,13 @@ export async function POST(request: NextRequest) {
 
         // Create/renew with the shared policy: calendar stacking (no paid time lost on early
         // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
+        // Add any July-sale bonus days to the purchased plan length.
+        const bonusDays = getSaleBonusDays(plan.name, plan.duration);
         const { subscription } = await createOrRenewSubscription(
           {
             userId: user.id,
             plan,
+            duration: plan.duration + bonusDays,
             paymentMode: 'razorpay',
             transactionId: paymentId,
             razorpayOrderId: orderId,
