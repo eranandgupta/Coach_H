@@ -154,42 +154,32 @@ export default function CoachDashboard() {
       });
       const userData = await userRes.json();
       setUser(userData.user);
+      setLoading(false); // dashboard shell can render now; rest streams in
 
-      // Fetch clients
-      const clientRes = await fetch('/api/clients', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (clientRes.ok) {
-        const clientData = await clientRes.json();
-        setClients(clientData.clients);
-      }
+      // Secondary data — fetched in parallel, never blocks the loader. Each
+      // section renders an empty state until its data lands. (Previously these
+      // ran sequentially before the loader cleared, stacking their latencies.)
+      const authHeader = { headers: { Authorization: `Bearer ${token}` } };
 
-      // Fetch workouts
-      const workoutRes = await fetch('/api/workouts', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (workoutRes.ok) {
-        const workoutData = await workoutRes.json();
-        setWorkouts(workoutData.workouts);
-      }
+      fetch('/api/clients', authHeader)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setClients(data.clients); })
+        .catch(() => {});
 
-      // Fetch diets
-      const dietRes = await fetch('/api/diets', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (dietRes.ok) {
-        const dietData = await dietRes.json();
-        setDiets(dietData.diets);
-      }
+      fetch('/api/workouts', authHeader)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setWorkouts(data.workouts); })
+        .catch(() => {});
 
-      // Fetch blogs
-      const blogRes = await fetch('/api/blog', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (blogRes.ok) {
-        const blogData = await blogRes.json();
-        setBlogs(blogData);
-      }
+      fetch('/api/diets', authHeader)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setDiets(data.diets); })
+        .catch(() => {});
+
+      fetch('/api/blog', authHeader)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setBlogs(data); })
+        .catch(() => {});
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
