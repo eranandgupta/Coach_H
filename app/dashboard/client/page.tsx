@@ -186,7 +186,12 @@ export default function ClientDashboard() {
         return;
       }
 
-      // Fetch user and subscription data
+      // Essential: /api/auth/me determines the user and any redirect. Block the
+      // loader on THIS request only. Previously all 5 calls below ran
+      // sequentially before the loader cleared, so the "Loading Dashboard"
+      // screen stayed up for the sum of every request's latency — 15-25s on a
+      // cold start / slow connection (worst in Safari). Everything else now
+      // loads in parallel in the background so the dashboard appears at once.
       const userRes = await fetch('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -200,40 +205,34 @@ export default function ClientDashboard() {
 
       setUser(userData.user);
       setSubscription(userData.subscription);
+      setLoading(false); // dashboard shell can render now; rest streams in
 
-      // Fetch workouts
-      const workoutRes = await fetch('/api/workouts/my-workouts', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (workoutRes.ok) {
-        const workoutData = await workoutRes.json();
-        setWorkouts(workoutData.currentWorkouts);
-      }
+      // Secondary data — fetched in parallel, never blocks the loader. Each
+      // section already renders an empty/placeholder state until its data lands.
+      const authHeader = { headers: { Authorization: `Bearer ${token}` } };
 
-      // Fetch diets
-      const dietRes = await fetch('/api/diets/my-diets', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (dietRes.ok) {
-        const dietData = await dietRes.json();
-        setDiets(dietData.currentDiets);
-      }
+      fetch('/api/workouts/my-workouts', authHeader)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setWorkouts(data.currentWorkouts); })
+        .catch(() => {});
 
-      // Fetch blog posts
-      const blogRes = await fetch('/api/blog');
-      if (blogRes.ok) {
-        const blogData = await blogRes.json();
-        setBlogPosts(blogData.slice(0, 6)); // Get latest 6 posts
-      }
+      fetch('/api/diets/my-diets', authHeader)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setDiets(data.currentDiets); })
+        .catch(() => {});
 
-      // Fetch completed sessions for Elite 1:1 plans
+      fetch('/api/blog')
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setBlogPosts(data.slice(0, 6)); }) // latest 6
+        .catch(() => {});
+
+      // Completed sessions for Elite 1:1 plans
       const subPlanName = userData.subscription?.subscription?.plan?.name || '';
       if (isElitePlan(subPlanName) && userData.subscription?.subscription?.id) {
-        const sessRes = await fetch(`/api/sessions?subscriptionId=${userData.subscription.subscription.id}`);
-        if (sessRes.ok) {
-          const sessData = await sessRes.json();
-          setCompletedSessions(sessData.sessions.map((s: any) => s.sessionNumber));
-        }
+        fetch(`/api/sessions?subscriptionId=${userData.subscription.subscription.id}`)
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => { if (data) setCompletedSessions(data.sessions.map((s: any) => s.sessionNumber)); })
+          .catch(() => {});
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

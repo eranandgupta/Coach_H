@@ -112,6 +112,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://ik.imagekit.io" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Exercise video host — warm the connection early so the ScreenPal
+            player iframe loads faster (notably in Safari). */}
+        <link rel="dns-prefetch" href="https://go.screenpal.com" />
+        <link rel="preconnect" href="https://go.screenpal.com" crossOrigin="anonymous" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
