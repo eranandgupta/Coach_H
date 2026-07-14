@@ -625,15 +625,20 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               <Loader2 className="w-10 h-10 text-brand-blue animate-spin" />
                             </div>
                           )}
+                          {/*
+                            Safari note: this iframe intentionally has NO `sandbox` attribute
+                            and NO `encrypted-media` in `allow`. EME/DRM inside a sandboxed
+                            iframe crashes Safari's WebContent process, which then auto-reloads
+                            the whole page. ScreenPal is a trusted first-party embed.
+                          */}
                           <div className="aspect-video w-full">
                             <iframe
                               key={selectedVideo.id}
                               src={`${selectedVideo.url}?autoplay=1`}
                               className="w-full h-full"
                               frameBorder="0"
-                              allow="autoplay; fullscreen; encrypted-media"
+                              allow="autoplay; fullscreen"
                               allowFullScreen
-                              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
                               title={selectedVideo.title}
                               onLoad={() => setIsIframeLoading(false)}
                             />
@@ -971,9 +976,8 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                               className="w-full h-full"
                               style={{ minHeight: '60vh' }}
                               frameBorder="0"
-                              allow="autoplay; fullscreen; encrypted-media"
+                              allow="autoplay; fullscreen"
                               allowFullScreen
-                              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
                               title={`${selectedCategory.name} Channel`}
                             />
                           </div>
