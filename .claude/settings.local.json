@@ -97,7 +97,13 @@
       "mcp__chrome-devtools__lighthouse_audit",
       "Read(//Users/agupta2/.claude/projects/**)",
       "Bash(wc -l \"/Users/agupta2/bin/untitled folder/Coach_H/components\"/*.tsx)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(env)",
+      "Bash(awk '{print $2, $11, $12, $13, $14}')",
+      "Bash(kill 31741 31753)",
+      "Bash(awk -F: '$1<1988')",
+      "Bash(echo \"tsc exit: $?\")",
+      "Bash(echo \"---EXIT:$?---\")"
     ],
     "deny": [],
     "ask": []

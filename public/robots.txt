@@ -11,7 +11,6 @@ Disallow: /api/
 Disallow: /dashboard/
 Disallow: /admin/
 Disallow: /_next/
-Disallow: /feedback
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Search Engine Crawlers

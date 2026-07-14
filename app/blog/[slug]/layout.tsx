@@ -129,17 +129,6 @@ export default async function BlogPostLayout({
         commentCount: 0,
         thumbnailUrl: post.coverImage || 'https://coachhimanshu.com/opengraph-image',
         contentRating: 'General',
-        interactionStatistic: {
-          '@type': 'InteractionCounter',
-          interactionType: 'https://schema.org/ReadAction',
-          userInteractionCount: wordCount > 0 ? Math.round(wordCount / 200) : 1,
-        },
-        review: {
-          '@type': 'Review',
-          reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-          author: { '@type': 'Organization', name: 'Coach Himanshu' },
-          reviewBody: 'Expert-reviewed fitness content by NASM Certified Coach',
-        },
       };
 
       // Extract FAQ schema from content if present

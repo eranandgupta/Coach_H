@@ -160,6 +160,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
           <nav className="flex justify-center items-center gap-2 text-sm text-gray-400 mb-8">
             <Link href="/" className="hover:text-brand-blue transition-colors">Home</Link>
             <span>/</span>
+            <Link href="/fitness-coach" className="hover:text-brand-blue transition-colors">Fitness Coach</Link>
+            <span>/</span>
             <span className="text-brand-gold">{city.name}</span>
           </nav>
 

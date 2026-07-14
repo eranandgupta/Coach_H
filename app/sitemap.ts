@@ -130,12 +130,23 @@ function getLocationPages(): MetadataRoute.Sitemap {
   const now = new Date();
   const citySlugs = getAllCitySlugs();
 
-  return citySlugs.map((slug) => ({
+  const hubPage: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/fitness-coach`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+  ];
+
+  const cityPages: MetadataRoute.Sitemap = citySlugs.map((slug) => ({
     url: `${baseUrl}/fitness-coach/${slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));
+
+  return [...hubPage, ...cityPages];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

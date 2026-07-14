@@ -217,6 +217,17 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Consolidate www → non-www so search engines index a single canonical host
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.coachhimanshu.com' }],
+        destination: 'https://coachhimanshu.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
