@@ -99,8 +99,8 @@ export default function FunFactWidget() {
 
     // Lightbulb icon area — glass circle
     const iconCx = W / 2;
-    const iconCy = 220;
-    const iconR = 45;
+    const iconCy = 240;
+    const iconR = 62;
     const iconGrad = ctx.createRadialGradient(iconCx, iconCy, 0, iconCx, iconCy, iconR);
     iconGrad.addColorStop(0, 'rgba(234, 179, 8, 0.15)');
     iconGrad.addColorStop(1, 'rgba(234, 179, 8, 0.03)');
@@ -109,39 +109,39 @@ export default function FunFactWidget() {
     ctx.arc(iconCx, iconCy, iconR, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = 'rgba(234, 179, 8, 0.2)';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.stroke();
 
     // Lightbulb emoji
-    ctx.font = '36px Arial';
+    ctx.font = '56px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('💡', iconCx, iconCy + 12);
+    ctx.fillText('💡', iconCx, iconCy + 18);
 
     // "Did You Know?" label
-    ctx.font = '600 16px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.font = '600 24px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = 'rgba(234, 179, 8, 0.6)';
     ctx.textAlign = 'center';
-    ctx.fillText('D I D   Y O U   K N O W ?', W / 2, 310);
+    ctx.fillText('D I D   Y O U   K N O W ?', W / 2, 360);
 
     // Decorative line under label
-    const lineGrad = ctx.createLinearGradient(W / 2 - 80, 0, W / 2 + 80, 0);
+    const lineGrad = ctx.createLinearGradient(W / 2 - 120, 0, W / 2 + 120, 0);
     lineGrad.addColorStop(0, 'transparent');
     lineGrad.addColorStop(0.5, 'rgba(23, 95, 255, 0.3)');
     lineGrad.addColorStop(1, 'transparent');
     ctx.strokeStyle = lineGrad;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(W / 2 - 100, 330);
-    ctx.lineTo(W / 2 + 100, 330);
+    ctx.moveTo(W / 2 - 120, 388);
+    ctx.lineTo(W / 2 + 120, 388);
     ctx.stroke();
 
     // Fun fact text — wrapped
-    ctx.font = '500 32px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    ctx.font = '500 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.textAlign = 'center';
 
-    const maxWidth = W - 180;
-    const lineHeight = 46;
+    const maxWidth = W - 160;
+    const lineHeight = 64;
     const words = fact.content.split(' ');
     const lines: string[] = [];
     let currentLine = '';
@@ -158,13 +158,14 @@ export default function FunFactWidget() {
     }
     if (currentLine) lines.push(currentLine);
 
-    const textStartY = 380 + ((6 - lines.length) * lineHeight) / 2;
+    // Vertically center the fact block in the space between the eyebrow and footer
+    const textStartY = 560 - ((lines.length - 1) * lineHeight) / 2;
     lines.forEach((line, i) => {
       ctx.fillText(line, W / 2, textStartY + i * lineHeight);
     });
 
     // Bottom branding area
-    const brandY = H - 180;
+    const brandY = H - 235;
 
     // Divider line
     const divGrad = ctx.createLinearGradient(100, 0, W - 100, 0);
@@ -188,27 +189,27 @@ export default function FunFactWidget() {
         logo.onerror = () => reject();
         logo.src = 'https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto';
       });
-      const logoH = 60;
+      const logoH = 84;
       const logoW = (logo.width / logo.height) * logoH;
-      ctx.drawImage(logo, W / 2 - logoW / 2, brandY + 25, logoW, logoH);
+      ctx.drawImage(logo, W / 2 - logoW / 2, brandY + 26, logoW, logoH);
     } catch {
       // Fallback text if logo fails
-      ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, sans-serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
       ctx.textAlign = 'center';
-      ctx.fillText('Coach Himanshu', W / 2, brandY + 60);
+      ctx.fillText('Coach Himanshu', W / 2, brandY + 80);
     }
 
     // Website and social
-    ctx.font = '400 14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.font = '400 22px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
     ctx.textAlign = 'center';
-    ctx.fillText('coachhimanshu.com  •  @coachhimanshusquad_', W / 2, brandY + 110);
+    ctx.fillText('coachhimanshu.com  •  @coachhimanshusquad_', W / 2, brandY + 128);
 
     // "NASM Certified" small badge
-    ctx.font = '500 11px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.font = '500 16px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = 'rgba(23, 95, 255, 0.4)';
-    ctx.fillText('NASM CERTIFIED FITNESS COACH', W / 2, brandY + 135);
+    ctx.fillText('NASM CERTIFIED FITNESS COACH', W / 2, brandY + 162);
 
     const dataUrl = canvas.toDataURL('image/png');
     setGeneratedImage(dataUrl);
