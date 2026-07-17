@@ -77,11 +77,16 @@ interface PreAssessmentFormProps {
   planName?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
+  // Couple flow: when provided, the form hands its built payload up instead of
+  // POSTing itself (the CoupleAssessmentFlow wrapper submits both partners together).
+  onComplete?: (payload: Record<string, any>) => void | Promise<void>;
+  partnerLabel?: string;       // e.g. "Partner 1 (You)" — shown in the header for couples
+  submitButtonLabel?: string;  // override the final button text (e.g. "Continue to Partner 2")
 }
 
 type Step = 'personal' | 'parq' | 'lifestyle' | 'fitness' | 'nutrition' | 'goals';
 
-export default function PreAssessmentForm({ userId, initialData, isEditMode = false, planName = '', onSuccess, onCancel }: PreAssessmentFormProps) {
+export default function PreAssessmentForm({ userId, initialData, isEditMode = false, planName = '', onSuccess, onCancel, onComplete, partnerLabel, submitButtonLabel }: PreAssessmentFormProps) {
   const isLiveSessionPlan = planName === 'She Strong Program' || planName === 'Active Parents Program';
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>('personal');
@@ -200,24 +205,36 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     }
   };
 
+  // Build the normalized payload (arrays stringified, numbers parsed) — shared by the
+  // normal submit and the couple flow so both partners are stored in the same shape.
+  const buildPayload = () => ({
+    ...formData,
+    familyOverweight: JSON.stringify(formData.familyOverweight),
+    eatingReasons: JSON.stringify(formData.eatingReasons),
+    alcoholGlassesPerWeek: formData.alcoholGlassesPerWeek ? parseInt(formData.alcoholGlassesPerWeek) : null,
+    sleepHours: formData.sleepHours ? parseInt(formData.sleepHours) : null,
+    stressLevel: formData.stressLevel ? parseInt(formData.stressLevel) : null,
+    currentFitnessLevel: formData.currentFitnessLevel ? parseInt(formData.currentFitnessLevel) : null,
+    mealsPerDay: formData.mealsPerDay ? parseInt(formData.mealsPerDay) : null,
+    eatOutsidePerWeek: formData.eatOutsidePerWeek ? parseInt(formData.eatOutsidePerWeek) : null,
+  });
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+      const payload = buildPayload();
+
+      // Couple flow: hand this partner's payload up to the wrapper, which collects both
+      // partners and submits them together. The form does not POST or redirect itself.
+      if (onComplete) {
+        await onComplete(payload);
+        return;
+      }
+
       const response = await fetch('/api/assessment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          ...formData,
-          familyOverweight: JSON.stringify(formData.familyOverweight),
-          eatingReasons: JSON.stringify(formData.eatingReasons),
-          alcoholGlassesPerWeek: formData.alcoholGlassesPerWeek ? parseInt(formData.alcoholGlassesPerWeek) : null,
-          sleepHours: formData.sleepHours ? parseInt(formData.sleepHours) : null,
-          stressLevel: formData.stressLevel ? parseInt(formData.stressLevel) : null,
-          currentFitnessLevel: formData.currentFitnessLevel ? parseInt(formData.currentFitnessLevel) : null,
-          mealsPerDay: formData.mealsPerDay ? parseInt(formData.mealsPerDay) : null,
-          eatOutsidePerWeek: formData.eatOutsidePerWeek ? parseInt(formData.eatOutsidePerWeek) : null,
-        }),
+        body: JSON.stringify({ userId, ...payload }),
       });
 
       if (response.ok) {
@@ -364,6 +381,12 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
               : 'Help us understand you better to create a personalized fitness plan'
             }
           </p>
+          {partnerLabel && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/30">
+              <Heart size={16} className="text-pink-400 fill-pink-400" />
+              <span className="text-pink-300 text-sm font-semibold">{partnerLabel}</span>
+            </div>
+          )}
         </div>
 
         {/* Progress Steps */}
@@ -1282,7 +1305,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
               ) : (
                 <>
                   <CheckCircle size={20} />
-                  {isEditMode ? 'Save Changes' : 'Submit Assessment'}
+                  {submitButtonLabel || (isEditMode ? 'Save Changes' : 'Submit Assessment')}
                 </>
               )}
             </button>

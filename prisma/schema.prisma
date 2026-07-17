@@ -251,6 +251,9 @@ model ClientAssessment {
   nonVegRestrictedDays   String?   @db.Text
   jobDescription         String?   @db.Text
   specialConditions      String?   @db.Text
+  // Couple plans: Partner 2's full assessment, stored as a JSON block on the shared
+  // account (same field shape as the Partner 1 columns above). Null for single plans.
+  partner2               Json?
   user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])

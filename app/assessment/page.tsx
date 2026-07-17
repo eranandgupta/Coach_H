@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PreAssessmentForm from '@/components/PreAssessmentForm';
+import CoupleAssessmentFlow from '@/components/CoupleAssessmentFlow';
 import { Loader2 } from 'lucide-react';
 
 export default function AssessmentPage() {
@@ -58,6 +59,12 @@ export default function AssessmentPage() {
         </div>
       </div>
     );
+  }
+
+  // Couple plans capture a full assessment for both partners under the one shared account.
+  const isCouplePlan = planName.toLowerCase().includes('couple');
+  if (isCouplePlan) {
+    return <CoupleAssessmentFlow userId={userId} planName={planName} />;
   }
 
   return <PreAssessmentForm userId={userId} planName={planName} />;

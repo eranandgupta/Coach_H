@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileText, Loader2 } from 'lucide-react';
 import PreAssessmentForm from '@/components/PreAssessmentForm';
+import CoupleAssessmentFlow from '@/components/CoupleAssessmentFlow';
 
 interface EditAssessmentModalProps {
   isOpen: boolean;
@@ -103,6 +104,16 @@ export default function EditAssessmentModal({ isOpen, onClose, userId, planName 
                     Try Again
                   </button>
                 </div>
+              ) : (planName || '').toLowerCase().includes('couple') ? (
+                <CoupleAssessmentFlow
+                  userId={userId}
+                  planName={planName}
+                  initialData={assessmentData}
+                  initialPartner2={assessmentData?.partner2 || null}
+                  isEditMode={true}
+                  onSuccess={handleSuccess}
+                  onCancel={handleClose}
+                />
               ) : (
                 <PreAssessmentForm
                   userId={userId}

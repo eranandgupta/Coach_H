@@ -5,6 +5,27 @@ import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
 import { createOrRenewSubscription } from '@/lib/subscriptionService';
+
+// Couple plans collect Partner 2's details at checkout. Persist them into the
+// subscription notes (previously they were dropped) so the coach receives them; the
+// full Partner-2 assessment is captured later on the shared account's assessment form.
+function buildNotesWithPartner2(
+  notes: string | undefined,
+  p2: { partner2Name?: string; partner2Whatsapp?: string; partner2Email?: string; partner2Goal?: string }
+): string | null {
+  const base = (notes || '').trim();
+  if (!p2.partner2Name && !p2.partner2Email && !p2.partner2Whatsapp) {
+    return base || null;
+  }
+  const lines = [
+    'Partner 2 (Couple plan):',
+    p2.partner2Name ? `  Name: ${p2.partner2Name}` : null,
+    p2.partner2Whatsapp ? `  WhatsApp: ${p2.partner2Whatsapp}` : null,
+    p2.partner2Email ? `  Email: ${p2.partner2Email}` : null,
+    p2.partner2Goal ? `  Goal: ${p2.partner2Goal}` : null,
+  ].filter(Boolean);
+  return [base, lines.join('\n')].filter(Boolean).join('\n\n');
+}
 import { getSaleBonusDays } from '@/lib/sale';
 
 export const dynamic = 'force-dynamic';
@@ -162,7 +183,7 @@ export async function POST(request: NextRequest) {
           razorpaySignature: razorpay_signature,
           paidAmount,
           customerGoal: goal || null,
-          customerNotes: notes || null,
+          customerNotes: buildNotesWithPartner2(notes, { partner2Name, partner2Whatsapp, partner2Email, partner2Goal }),
         },
         tx
       );

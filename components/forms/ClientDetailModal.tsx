@@ -41,7 +41,8 @@ export default function ClientDetailModal({
 }: ClientDetailModalProps) {
   const [assessment, setAssessment] = useState<any>(null);
   const [assessmentLoading, setAssessmentLoading] = useState(false);
-  const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState(false);
+  // Which assessment the results modal is showing (Partner 1 or, for couples, Partner 2).
+  const [assessmentView, setAssessmentView] = useState<{ data: any; label: string } | null>(null);
   const [isSendingCredentials, setIsSendingCredentials] = useState(false);
   const [credentialsSent, setCredentialsSent] = useState(false);
   const [completedSessions, setCompletedSessions] = useState<any[]>([]);
@@ -358,36 +359,71 @@ export default function ClientDetailModal({
                     <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
                   </div>
                 ) : assessment ? (
-                  <button
-                    onClick={() => setIsAssessmentModalOpen(true)}
-                    className="w-full bg-brand-blue/10 border border-brand-blue/30 rounded-lg p-5 hover:bg-brand-blue/20 transition-all group"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="text-left">
-                        <p className="text-brand-blue font-semibold mb-2">Assessment Completed ✓</p>
-                        <p className="text-gray-400 text-sm">
-                          Submitted: {new Date(assessment.createdAt).toLocaleDateString()}
-                        </p>
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          {assessment.goalLoseFat && (
-                            <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Lose Fat</span>
-                          )}
-                          {assessment.goalMuscleGain && (
-                            <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">Muscle Gain</span>
-                          )}
-                          {assessment.goalSportsTraining && (
-                            <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">Sports Training</span>
-                          )}
-                          {assessment.goalRehabilitate && (
-                            <span className="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">Rehab</span>
-                          )}
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setAssessmentView({ data: assessment, label: client.name || 'Client' })}
+                      className="w-full bg-brand-blue/10 border border-brand-blue/30 rounded-lg p-5 hover:bg-brand-blue/20 transition-all group"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="text-left">
+                          <p className="text-brand-blue font-semibold mb-2">
+                            {assessment.partner2 ? `${client.name || 'Partner 1'} (Partner 1) — Completed ✓` : 'Assessment Completed ✓'}
+                          </p>
+                          <p className="text-gray-400 text-sm">
+                            Submitted: {new Date(assessment.createdAt).toLocaleDateString()}
+                          </p>
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            {assessment.goalLoseFat && (
+                              <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Lose Fat</span>
+                            )}
+                            {assessment.goalMuscleGain && (
+                              <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">Muscle Gain</span>
+                            )}
+                            {assessment.goalSportsTraining && (
+                              <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">Sports Training</span>
+                            )}
+                            {assessment.goalRehabilitate && (
+                              <span className="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">Rehab</span>
+                            )}
+                          </div>
+                          <p className="text-brand-blue text-sm mt-3 font-medium">
+                            Click to view full assessment →
+                          </p>
                         </div>
-                        <p className="text-brand-blue text-sm mt-3 font-medium">
-                          Click to view full assessment →
-                        </p>
                       </div>
-                    </div>
-                  </button>
+                    </button>
+
+                    {/* Couple plan: Partner 2's assessment */}
+                    {assessment.partner2 && (
+                      <button
+                        onClick={() => setAssessmentView({ data: { ...assessment.partner2, createdAt: assessment.createdAt }, label: `${client.name || 'Client'} — Partner 2` })}
+                        className="w-full bg-pink-500/10 border border-pink-500/30 rounded-lg p-5 hover:bg-pink-500/20 transition-all group"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="text-left">
+                            <p className="text-pink-300 font-semibold mb-2">Partner 2 — Completed ✓</p>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {assessment.partner2.goalLoseFat && (
+                                <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Lose Fat</span>
+                              )}
+                              {assessment.partner2.goalMuscleGain && (
+                                <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">Muscle Gain</span>
+                              )}
+                              {assessment.partner2.goalSportsTraining && (
+                                <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">Sports Training</span>
+                              )}
+                              {assessment.partner2.goalRehabilitate && (
+                                <span className="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">Rehab</span>
+                              )}
+                            </div>
+                            <p className="text-pink-300 text-sm mt-3 font-medium">
+                              Click to view Partner 2's full assessment →
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    )}
+                  </div>
                 ) : (
                   <div className="text-center py-8 bg-white/5 rounded-lg border border-white/5">
                     <ClipboardList className="w-12 h-12 text-gray-600 mx-auto mb-2" />
@@ -640,13 +676,13 @@ export default function ClientDetailModal({
             )}
           </motion.div>
 
-          {/* Assessment Results Modal */}
-          {assessment && (
+          {/* Assessment Results Modal — shows Partner 1 or Partner 2 depending on selection */}
+          {assessmentView && (
             <AssessmentResultsModal
-              isOpen={isAssessmentModalOpen}
-              onClose={() => setIsAssessmentModalOpen(false)}
-              assessment={assessment}
-              clientName={client.name || 'Client'}
+              isOpen={!!assessmentView}
+              onClose={() => setAssessmentView(null)}
+              assessment={assessmentView.data}
+              clientName={assessmentView.label}
             />
           )}
         </motion.div>
