@@ -45,12 +45,14 @@ const APPLICABLE_PLANS = [
   'Couple Mastery Plan',
   'Couple Home Workout Plan',
   'Couple Rehabilitation Plan',
-  'She Strong Program',
-  'Active Parents Program',
   'Elite 1:1 - 1 Month (24 Sessions)',
   'Elite 1:1 - 1 Month (12 Sessions)',
   'Elite 1:1 - 3 Months (72 Sessions)',
   'Elite 1:1 - 3 Months (36 Sessions)',
+  'Elite 1:1 Couple - 1 Month (12 Sessions)',
+  'Elite 1:1 Couple - 1 Month (24 Sessions)',
+  'Elite 1:1 Couple - 3 Months (36 Sessions)',
+  'Elite 1:1 Couple - 3 Months (72 Sessions)',
 ];
 
 export default function CreatePromoCodeModal({

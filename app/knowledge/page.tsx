@@ -137,8 +137,8 @@ export default function KnowledgePage() {
                 </div>
 
                 <div className="rounded-xl border border-white/[0.06] p-5" style={{ background: 'rgba(23,95,255,0.04)' }}>
-                  <h3 className="text-lg font-semibold text-white mb-2">Live Group Sessions</h3>
-                  <p>Small-group live training sessions (maximum 10 members per group) led by Coach Himanshu. Includes the She Strong Program (for housewives below 50, focusing on fat loss, endurance, and cardiovascular health via HIIT and bodyweight training on Mondays and Wednesdays) and the Active Parents Program (for adults 50+, focusing on joint and muscle strengthening, balance, and coordination on Tuesdays and Thursdays). Each session is 60 minutes.</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">Couple 1:1 Coaching (Live)</h3>
+                  <p>Premium live 1:1 personal training for couples, led by Coach Himanshu. A couple shares one account and attends the same session slot together, so both partners train side by side. Each session is 60 minutes and includes personalised diet plans for each partner, supplement guidance, lifestyle guidance, WhatsApp support, and full video library access. Available in packages of 12, 24, 36, or 72 sessions.</p>
                 </div>
 
                 <div className="rounded-xl border border-white/[0.06] p-5" style={{ background: 'rgba(23,95,255,0.04)' }}>
@@ -300,18 +300,6 @@ export default function KnowledgePage() {
                   </thead>
                   <tbody className="text-gray-300">
                     <tr className="border-b border-white/[0.05]">
-                      <td className="py-3 px-4">She Strong Program</td>
-                      <td className="py-3 px-4">1 Month</td>
-                      <td className="py-3 px-4 font-medium">&#8377;999</td>
-                      <td className="py-3 px-4">8 group sessions, &#8377;124/session, housewives below 50</td>
-                    </tr>
-                    <tr className="border-b border-white/[0.05]">
-                      <td className="py-3 px-4">Active Parents Program</td>
-                      <td className="py-3 px-4">1 Month</td>
-                      <td className="py-3 px-4 font-medium">&#8377;999</td>
-                      <td className="py-3 px-4">8 group sessions, &#8377;124/session, adults 50+</td>
-                    </tr>
-                    <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Coaching</td>
                       <td className="py-3 px-4">1 Month (12 sessions)</td>
                       <td className="py-3 px-4 font-medium">&#8377;7,499</td>
@@ -334,6 +322,30 @@ export default function KnowledgePage() {
                       <td className="py-3 px-4">3 Months (72 sessions)</td>
                       <td className="py-3 px-4 font-medium">&#8377;29,999</td>
                       <td className="py-3 px-4">&#8377;416/session, most popular</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.05]">
+                      <td className="py-3 px-4">Elite 1:1 Couple</td>
+                      <td className="py-3 px-4">1 Month (12 sessions)</td>
+                      <td className="py-3 px-4 font-medium">&#8377;11,999</td>
+                      <td className="py-3 px-4">For 2 people, one shared slot</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.05]">
+                      <td className="py-3 px-4">Elite 1:1 Couple</td>
+                      <td className="py-3 px-4">1 Month (24 sessions)</td>
+                      <td className="py-3 px-4 font-medium">&#8377;18,999</td>
+                      <td className="py-3 px-4">For 2 people, one shared slot</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.05]">
+                      <td className="py-3 px-4">Elite 1:1 Couple</td>
+                      <td className="py-3 px-4">3 Months (36 sessions)</td>
+                      <td className="py-3 px-4 font-medium">&#8377;28,999</td>
+                      <td className="py-3 px-4">For 2 people, one shared slot</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.05]">
+                      <td className="py-3 px-4">Elite 1:1 Couple</td>
+                      <td className="py-3 px-4">3 Months (72 sessions)</td>
+                      <td className="py-3 px-4 font-medium">&#8377;44,999</td>
+                      <td className="py-3 px-4">For 2 people, one shared slot</td>
                     </tr>
                   </tbody>
                 </table>
@@ -430,12 +442,12 @@ export default function KnowledgePage() {
 
                 <div className="rounded-xl border border-white/[0.06] p-5" style={{ background: 'rgba(23,95,255,0.04)' }}>
                   <h3 className="text-lg font-semibold text-white mb-2">Homemakers &amp; Stay-at-Home Parents</h3>
-                  <p>Individuals who prefer or need to exercise at home. The She Strong Program and Home Workout Plans are specifically designed for this group.</p>
+                  <p>Individuals who prefer or need to exercise at home. The Home Workout Plans are specifically designed for this group.</p>
                 </div>
 
                 <div className="rounded-xl border border-white/[0.06] p-5" style={{ background: 'rgba(23,95,255,0.04)' }}>
                   <h3 className="text-lg font-semibold text-white mb-2">Seniors (50+)</h3>
-                  <p>Older adults seeking to maintain joint health, muscle strength, balance, and coordination through the Active Parents Program and customised plans.</p>
+                  <p>Older adults seeking to maintain joint health, muscle strength, balance, and coordination through customised plans and rehabilitation coaching.</p>
                 </div>
               </div>
             </div>
@@ -596,12 +608,12 @@ export default function KnowledgePage() {
 
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">How does online coaching work if I cannot visit a gym?</h3>
-                <p>Coach Himanshu offers dedicated Home Workout Plans that require no gym equipment. These include customised bodyweight exercise routines with video tutorials, personalised diet plans, and WhatsApp support. The She Strong Program and Active Parents Program are also conducted entirely via live video sessions from home.</p>
+                <p>Coach Himanshu offers dedicated Home Workout Plans that require no gym equipment. These include customised bodyweight exercise routines with video tutorials, personalised diet plans, and WhatsApp support.</p>
               </div>
 
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">What is the cheapest plan available?</h3>
-                <p>The most affordable plans are the She Strong Program and Active Parents Program at &#8377;999/month (&#8377;124 per session). For self-paced coaching, Home Workout plans start at &#8377;2,199 for 3 months (approximately &#8377;733/month), and Gym plans start at &#8377;1,099/month with the Kickstart Plan.</p>
+                <p>For self-paced coaching, Gym plans start at &#8377;1,099/month with the Kickstart Plan, and Home Workout plans start at &#8377;2,199 for 3 months (approximately &#8377;733/month).</p>
               </div>
 
               <div>

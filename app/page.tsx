@@ -1050,43 +1050,101 @@ export default function Home() {
       ],
       couple: true,
     },
+    // Couple 1:1 plans — one shared account/login/dashboard for the couple; both
+    // partners attend the same session slot together. Named "Elite 1:1 Couple ..."
+    // so all Elite 1:1 behavior (session tracking, live-session widget, trainer
+    // assignment) applies automatically via the startsWith('Elite 1:1') convention.
     {
-      id: 16,
-      dbName: 'She Strong Program',
-      title: 'SHE STRONG PROGRAM',
+      id: 22,
+      dbName: 'Elite 1:1 Couple - 1 Month (12 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING (COUPLE)',
       duration: 'Month',
-      price: '₹999',
-      priceValue: 999,
-      description: 'For Housewives Below 50 · Just ₹124/session',
+      price: '₹11,999',
+      priceValue: 11999,
+      description: '12 Sessions · For 2 (Shared Slot)',
       features: [
-        'Monday & Wednesday classes',
+        'Live 1:1 coaching for both partners',
+        '💕 One shared slot — both attend the same session',
+        'Personalised diet plan for each partner',
         '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
         'WhatsApp support',
-        'HIIT & Bodyweight training',
-        'Focus: fat loss, endurance, heart & lungs health',
-        'No equipment needed',
-        'Max 10 members per group',
+        'Full video library access',
+        '📋 Free Habit Tracker',
       ],
       liveGroup: true,
+      liveOneOnOne: true,
     },
     {
-      id: 17,
-      dbName: 'Active Parents Program',
-      title: 'ACTIVE PARENTS PROGRAM',
+      id: 23,
+      dbName: 'Elite 1:1 Couple - 1 Month (24 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING (COUPLE)',
       duration: 'Month',
-      price: '₹999',
-      priceValue: 999,
-      description: 'For Adults 50+ (Men & Women) · Just ₹124/session',
+      price: '₹18,999',
+      priceValue: 18999,
+      description: '24 Sessions · For 2 (Shared Slot)',
       features: [
-        'Tuesday & Thursday classes',
+        'Live 1:1 coaching for both partners',
+        '💕 One shared slot — both attend the same session',
+        'Personalised diet plan for each partner',
         '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
         'WhatsApp support',
-        'Bodyweight training',
-        'Focus: Joints & muscle strengthening, balancing & coordination',
-        'No equipment needed',
-        'Max 10 members per group',
+        'Full video library access',
+        '📋 Free Habit Tracker',
       ],
       liveGroup: true,
+      liveOneOnOne: true,
+    },
+    {
+      id: 24,
+      dbName: 'Elite 1:1 Couple - 3 Months (36 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING (COUPLE)',
+      duration: '3 Months',
+      price: '₹28,999',
+      priceValue: 28999,
+      description: '36 Sessions · For 2 (Shared Slot)',
+      features: [
+        'Live 1:1 coaching for both partners',
+        '💕 One shared slot — both attend the same session',
+        'Personalised diet plan for each partner',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
+        '⏸️ Pause option (7 days)',
+        '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
+    },
+    {
+      id: 25,
+      dbName: 'Elite 1:1 Couple - 3 Months (72 Sessions)',
+      title: 'ONE-ON-ONE ELITE COACHING (COUPLE)',
+      duration: '3 Months',
+      price: '₹44,999',
+      priceValue: 44999,
+      description: '72 Sessions · For 2 (Shared Slot)',
+      features: [
+        'Live 1:1 coaching for both partners',
+        '💕 One shared slot — both attend the same session',
+        'Personalised diet plan for each partner',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
+        '⏸️ Pause option (7 days)',
+        '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
     },
     {
       id: 18,
@@ -2252,7 +2310,7 @@ export default function Home() {
                   <p className="text-gray-400 text-xs italic">Not for everyone — only for serious individuals</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
-                  {plans.filter(p => p.liveOneOnOne).map((plan) => (
+                  {plans.filter(p => p.liveOneOnOne && !p.dbName?.includes('Couple')).map((plan) => (
                     <div key={plan.id} className="h-full">
                       <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
                     </div>
@@ -2278,18 +2336,23 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Live Group Sessions Section */}
-              <p className="text-center text-gray-400 text-sm mb-4 flex items-center justify-center gap-2">
-                <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
-                <span className="text-violet-400 font-semibold uppercase tracking-wider text-xs">Live Group Sessions</span>
-                <span className="flex-1 h-px bg-violet-500/20 max-w-[80px]"></span>
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 items-stretch max-w-3xl mx-auto">
-                {plans.filter(p => p.liveGroup && !p.liveOneOnOne).map((plan) => (
-                  <div key={plan.id} className="h-full">
-                    <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
-                  </div>
-                ))}
+              {/* Couple 1:1 Coaching Section — one shared account & session slot for two */}
+              <div className="mb-2">
+                <div className="text-center mb-4 px-4">
+                  <p className="flex items-center justify-center gap-2 mb-2">
+                    <span className="flex-1 h-px bg-pink-500/20 max-w-[80px]"></span>
+                    <span className="text-pink-400 font-semibold uppercase tracking-wider text-xs">Couple 1:1 Coaching</span>
+                    <span className="flex-1 h-px bg-pink-500/20 max-w-[80px]"></span>
+                  </p>
+                  <p className="text-gray-400 text-xs italic">Train together — one shared account & session slot for both partners</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 items-stretch">
+                  {plans.filter(p => p.liveOneOnOne && p.dbName?.includes('Couple')).map((plan) => (
+                    <div key={plan.id} className="h-full">
+                      <PlanCard {...plan} id={dbPlanIds[plan.dbName] ?? plan.id} salePercent={getSalePercent(plan)} bonusDays={getSaleBonusDays(plan)} onAddToCart={addToCart} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}

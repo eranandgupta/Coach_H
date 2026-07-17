@@ -148,34 +148,79 @@ const requiredPlans = [
       'FREE RhynoGrip Fitness Gear',
     ],
   },
+  // Couple 1:1 plans — one shared account/login/dashboard for the couple; both
+  // partners attend the same session slot together. Named "Elite 1:1 Couple ..." so
+  // all Elite 1:1 logic (session tracking, live sessions, trainer assignment) applies.
   {
-    name: 'She Strong Program',
-    description: 'For Housewives Below 50',
-    price: 999,
+    name: 'Elite 1:1 Couple - 1 Month (12 Sessions)',
+    description: 'For 2 People · One shared session slot',
+    price: 11999,
     duration: 30,
     features: [
-      'Monday & Wednesday classes',
+      'Live 1:1 coaching for both partners',
+      'One shared slot — both attend the same session',
+      'Personalised diet plan for each partner',
       '60 min per session',
+      'Supplement guidance',
+      'Lifestyle guidance',
       'WhatsApp support',
-      'HIIT & Bodyweight training',
-      'Focus: fat loss, endurance, heart & lungs health',
-      'No equipment needed',
-      'Max 10 members per group',
+      'Full video library access',
+      'Free Habit Tracker',
     ],
   },
   {
-    name: 'Active Parents Program',
-    description: 'For Adults 50+',
-    price: 999,
+    name: 'Elite 1:1 Couple - 1 Month (24 Sessions)',
+    description: 'For 2 People · One shared session slot',
+    price: 18999,
     duration: 30,
     features: [
-      'Tuesday & Thursday classes',
+      'Live 1:1 coaching for both partners',
+      'One shared slot — both attend the same session',
+      'Personalised diet plan for each partner',
       '60 min per session',
+      'Supplement guidance',
+      'Lifestyle guidance',
       'WhatsApp support',
-      'Bodyweight training',
-      'Focus: Joints & muscle strengthening, balancing & coordination',
-      'No equipment needed',
-      'Max 10 members per group',
+      'Full video library access',
+      'Free Habit Tracker',
+    ],
+  },
+  {
+    name: 'Elite 1:1 Couple - 3 Months (36 Sessions)',
+    description: 'For 2 People · One shared session slot',
+    price: 28999,
+    duration: 90,
+    features: [
+      'Live 1:1 coaching for both partners',
+      'One shared slot — both attend the same session',
+      'Personalised diet plan for each partner',
+      '60 min per session',
+      'Supplement guidance',
+      'Lifestyle guidance',
+      'WhatsApp support',
+      'Full video library access',
+      'Pause option (7 days)',
+      'Free Habit Tracker',
+      'FREE RhynoGrip Fitness Gear',
+    ],
+  },
+  {
+    name: 'Elite 1:1 Couple - 3 Months (72 Sessions)',
+    description: 'For 2 People · One shared session slot',
+    price: 44999,
+    duration: 90,
+    features: [
+      'Live 1:1 coaching for both partners',
+      'One shared slot — both attend the same session',
+      'Personalised diet plan for each partner',
+      '60 min per session',
+      'Supplement guidance',
+      'Lifestyle guidance',
+      'WhatsApp support',
+      'Full video library access',
+      'Pause option (7 days)',
+      'Free Habit Tracker',
+      'FREE RhynoGrip Fitness Gear',
     ],
   },
   {
@@ -312,6 +357,18 @@ async function main() {
       });
       console.log(`🆕 Created: ${plan.name} (id: ${created.id})`);
     }
+  }
+
+  // Deactivate retired plans (Live Group Sessions). Deactivate rather than delete so
+  // existing subscriptions keep their plan reference intact; inactive plans are hidden
+  // from all listings (/api/plans and /api/subscriptions/plans filter on isActive).
+  const retiredPlans = ['She Strong Program', 'Active Parents Program'];
+  for (const name of retiredPlans) {
+    const res = await prisma.subscriptionPlan.updateMany({
+      where: { name, isActive: true },
+      data: { isActive: false },
+    });
+    if (res.count > 0) console.log(`🗑️  Deactivated: ${name}`);
   }
 
   // Step 3: Print summary

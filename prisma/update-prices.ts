@@ -14,12 +14,14 @@ const planUpdates: Record<string, { price: number; duration: number }> = {
   'Rehabilitation Plan': { price: 2999, duration: 90 },
   'Couple Home Workout Plan': { price: 3799, duration: 90 },
   'Couple Rehabilitation Plan': { price: 5299, duration: 90 },
-  'She Strong Program': { price: 999, duration: 30 },
-  'Active Parents Program': { price: 999, duration: 30 },
   'Elite 1:1 - 1 Month (24 Sessions)': { price: 11999, duration: 30 },
   'Elite 1:1 - 1 Month (12 Sessions)': { price: 7499, duration: 30 },
   'Elite 1:1 - 3 Months (72 Sessions)': { price: 29999, duration: 90 },
   'Elite 1:1 - 3 Months (36 Sessions)': { price: 18999, duration: 90 },
+  'Elite 1:1 Couple - 1 Month (12 Sessions)': { price: 11999, duration: 30 },
+  'Elite 1:1 Couple - 1 Month (24 Sessions)': { price: 18999, duration: 30 },
+  'Elite 1:1 Couple - 3 Months (36 Sessions)': { price: 28999, duration: 90 },
+  'Elite 1:1 Couple - 3 Months (72 Sessions)': { price: 44999, duration: 90 },
 };
 
 async function main() {
