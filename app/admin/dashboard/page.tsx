@@ -45,6 +45,7 @@ import {
   Zap,
   Trophy,
   MessageCircle,
+  ClipboardList,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
@@ -57,6 +58,7 @@ import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
 import ActivateSubscriptionModal from '@/components/admin/ActivateSubscriptionModal';
 import CreatePromoCodeModal from '@/components/admin/CreatePromoCodeModal';
 import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
+import HabitSummaryView from '@/components/HabitSummaryView';
 
 interface Client {
   id: number;
@@ -136,6 +138,7 @@ export default function AdminDashboard() {
   const [createPromoOpen, setCreatePromoOpen] = useState(false);
   const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [invoiceSub, setInvoiceSub] = useState<Subscription | null>(null);
+  const [habitClient, setHabitClient] = useState<{ id: number; name: string } | null>(null);
   const [adjustDaysOpen, setAdjustDaysOpen] = useState(false);
   const [adjustDaysSub, setAdjustDaysSub] = useState<Subscription | null>(null);
   const [activateSubOpen, setActivateSubOpen] = useState(false);
@@ -756,6 +759,12 @@ export default function AdminDashboard() {
                                     {sub.plan.name.split(' ')[0]} {new Date(sub.startDate).toLocaleDateString('en-IN', { month: 'short', year: '2-digit' })}
                                   </button>
                                 ))}
+                                <button
+                                  onClick={() => setHabitClient({ id: client.id, name: client.name || 'Client' })}
+                                  title="View habit tracker"
+                                  className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 hover:bg-emerald-500/30 hover:text-emerald-300 transition-all text-sm">
+                                  <ClipboardList className="h-4 w-4" /> Habits
+                                </button>
                                 {subStatus.label === 'Active' ? (
                                   <button
                                     onClick={() => { setRenewSubClient({ id: client.id, name: client.name || 'Client', email: client.email }); setSubMode('extend'); setRenewSubOpen(true); }}
@@ -1276,6 +1285,22 @@ export default function AdminDashboard() {
       <CreatePromoCodeModal open={createPromoOpen} onOpenChange={setCreatePromoOpen}
         onSuccess={fetchPromoCodes} clients={clients.map((c) => ({ id: c.id, name: c.name || 'Unnamed', email: c.email }))} />
       <InvoicePreviewModal open={invoiceOpen} onOpenChange={setInvoiceOpen} subscription={invoiceSub} />
+
+      {/* Habit Tracker viewer */}
+      {habitClient && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={() => setHabitClient(null)}>
+          <div className="bg-[#0a0f1f] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <ClipboardList className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-lg font-bold text-white">{habitClient.name} — Habit Tracker</h3>
+              </div>
+              <button onClick={() => setHabitClient(null)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 text-xl leading-none">×</button>
+            </div>
+            <HabitSummaryView userId={habitClient.id} />
+          </div>
+        </div>
+      )}
       <AdjustDaysModal
         open={adjustDaysOpen}
         onOpenChange={setAdjustDaysOpen}

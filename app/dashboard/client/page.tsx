@@ -39,6 +39,7 @@ import NotificationPanel from '@/components/NotificationPanel';
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
+import HabitTracker from '@/components/HabitTracker';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
@@ -62,6 +63,7 @@ export default function ClientDashboard() {
   const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat'>('dashboard');
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
+  const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [completedSessions, setCompletedSessions] = useState<number[]>([]);
@@ -422,6 +424,14 @@ export default function ClientDashboard() {
             >
               <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
             </button>}
+            <button
+              onClick={() => setIsHabitTrackerOpen(true)}
+              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.03) 100%)' }}
+              title="Habit Tracker"
+            >
+              <ClipboardList className="w-4 h-4 md:w-5 md:h-5 text-emerald-400" />
+            </button>
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
               className="relative flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
@@ -1400,6 +1410,11 @@ export default function ClientDashboard() {
       />
 
       {/* Video Library Modal */}
+      <HabitTracker
+        isOpen={isHabitTrackerOpen}
+        onClose={() => setIsHabitTrackerOpen(false)}
+      />
+
       <VideoLibrary
         isOpen={isVideoLibraryOpen}
         onClose={() => setIsVideoLibraryOpen(false)}

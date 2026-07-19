@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
+import HabitSummaryView from '@/components/HabitSummaryView';
 import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
 
 interface ClientDetailModalProps {
@@ -431,6 +432,15 @@ export default function ClientDetailModal({
                     <p className="text-gray-600 text-xs mt-1">Client needs to complete the pre-assessment form</p>
                   </div>
                 )}
+              </div>
+
+              {/* Habit Tracker */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <ClipboardList className="w-5 h-5 text-emerald-400" />
+                  <h3 className="text-xl font-bold text-white">Habit Tracker</h3>
+                </div>
+                <HabitSummaryView userId={client.id} />
               </div>
 
               {/* Session Tracker — Elite 1:1 only */}

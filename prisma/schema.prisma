@@ -31,6 +31,7 @@ model User {
   clientConversations  Conversation[]     @relation("ClientConversations")
   trainerAssignments   TrainerClient[]    @relation("TrainerAssignments")
   clientAssignments    TrainerClient[]    @relation("ClientAssignments")
+  habitEntries         HabitEntry[]
 }
 
 model SubscriptionPlan {
@@ -256,6 +257,26 @@ model ClientAssessment {
   partner2               Json?
   user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+}
+
+// Daily habit tracker — one row per client per day (edit-in-place via upsert).
+// Columns mirror the printed Coach Himanshu habit card.
+model HabitEntry {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  date      DateTime @db.Date
+  protein   Int?     // grams
+  water     Decimal? @db.Decimal(4, 1) // litres
+  workout   Boolean  @default(false)   // yes / no
+  steps     Int?     // step count
+  sleep     Decimal? @db.Decimal(3, 1) // hours
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
   @@index([userId])
 }
 
