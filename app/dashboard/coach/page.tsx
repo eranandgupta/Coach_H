@@ -27,6 +27,7 @@ import {
   CalendarCog,
   Lightbulb,
   Settings,
+  LayoutTemplate,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import FunFactModal from '@/components/FunFactModal';
@@ -50,6 +51,7 @@ import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
 import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
 import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
+import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -88,6 +90,7 @@ export default function CoachDashboard() {
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isTrainerAssignmentOpen, setIsTrainerAssignmentOpen] = useState(false);
   const [isTrainerManagementOpen, setIsTrainerManagementOpen] = useState(false);
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
 
   const fetchEnrollments = async () => {
     try {
@@ -535,6 +538,16 @@ export default function CoachDashboard() {
               >
                 <UtensilsCrossed className="w-5 h-5" />
                 <span className="text-sm">Create Diet</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsTemplatesModalOpen(true)}
+                className="relative bg-gradient-to-r from-brand-blue to-cyan-500 hover:from-brand-blue/90 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <LayoutTemplate className="w-5 h-5" />
+                <span className="text-sm">Templates</span>
               </motion.button>
 
               <motion.button
@@ -1192,6 +1205,11 @@ export default function CoachDashboard() {
         }}
         onSuccess={fetchDashboardData}
         diet={selectedDiet}
+      />
+      <ManageTemplatesModal
+        isOpen={isTemplatesModalOpen}
+        onClose={() => setIsTemplatesModalOpen(false)}
+        currentUserId={user?.id}
       />
       <ClientManagementModal
         isOpen={isClientModalOpen}

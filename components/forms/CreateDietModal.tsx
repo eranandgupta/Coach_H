@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown } from 'lucide-react';
+import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown, LayoutTemplate, Save } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 import { toDateInputValue } from '@/lib/dateUtils';
 
@@ -10,7 +10,9 @@ interface CreateDietModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  diet?: any; // If provided, we're editing; otherwise, creating
+  diet?: any; // If provided, we're editing a client plan; otherwise, creating
+  mode?: 'plan' | 'template'; // 'template' builds a reusable template (no client/dates/week)
+  template?: any; // If provided (in template mode), we're editing that template
 }
 
 interface Meal {
@@ -29,7 +31,8 @@ interface Meal {
   time: string;
 }
 
-export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: CreateDietModalProps) {
+export default function CreateDietModal({ isOpen, onClose, onSuccess, diet, mode = 'plan', template }: CreateDietModalProps) {
+  const isTemplateMode = mode === 'template';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [clientId, setClientId] = useState('');
@@ -38,6 +41,15 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
   const [endDate, setEndDate] = useState('');
   const [targetCalories, setTargetCalories] = useState('');
   const [notes, setNotes] = useState('');
+  // Template mode: share toggle. Plan mode: "Load from template" + "Save as template".
+  const [isShared, setIsShared] = useState(false);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+  const [saveTemplateName, setSaveTemplateName] = useState('');
+  const [saveTemplateShared, setSaveTemplateShared] = useState(false);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateMsg, setTemplateMsg] = useState('');
   const mealIdCounter = useRef(1);
   const [meals, setMeals] = useState<Meal[]>([
     { _id: 0, name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' }
@@ -96,9 +108,91 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
     fetchNextNumber();
   }, [clientId, diet, clients]);
 
+  // Map a meals array (from a diet or a template) into editable form rows.
+  const mapMealsToState = (list: any[]) => {
+    const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const mealTypeOrder = ['Breakfast', 'Mid-Morning Snack', 'Lunch', 'Evening Snack', 'Dinner', 'Post-Dinner'];
+    const sorted = [...list].sort((a: any, b: any) => {
+      const dayDiff = dayOrder.indexOf(a.day || 'Monday') - dayOrder.indexOf(b.day || 'Monday');
+      if (dayDiff !== 0) return dayDiff;
+      return mealTypeOrder.indexOf(a.mealType || 'Breakfast') - mealTypeOrder.indexOf(b.mealType || 'Breakfast');
+    });
+    return sorted.map((meal: any) => ({
+      _id: mealIdCounter.current++,
+      name: meal.name || '',
+      description: meal.description || '',
+      mealType: meal.mealType || 'Breakfast',
+      calories: meal.calories?.toString() || '',
+      protein: meal.protein?.toString() || '',
+      carbs: meal.carbs?.toString() || '',
+      fats: meal.fats?.toString() || '',
+      ingredients: meal.ingredients || '',
+      instructions: meal.instructions || '',
+      alternatives: meal.alternatives || '',
+      day: meal.day || 'Monday',
+      time: meal.time || '',
+    }));
+  };
+
+  const blankMeal = () => ({ _id: mealIdCounter.current++, name: '', description: '', mealType: 'Breakfast', calories: '', protein: '', carbs: '', fats: '', ingredients: '', instructions: '', alternatives: '', day: 'Monday', time: '' });
+
+  // Fetch the templates available for the "Load from template" picker (plan mode).
+  const fetchTemplates = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/diet-templates', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setTemplates(data.templates || []);
+      }
+    } catch {
+      // silent — picker just stays empty
+    }
+  };
+
+  // Populate the meal rows (and optionally meta) from a chosen template.
+  const applyTemplate = (tpl: any) => {
+    if (!tpl) return;
+    if (!title.trim()) setTitle(tpl.name || '');
+    if (!description.trim()) setDescription(tpl.description || '');
+    if (!notes.trim()) setNotes(tpl.notes || '');
+    if (!targetCalories.trim() && tpl.targetCalories) setTargetCalories(tpl.targetCalories.toString());
+    setMeals(tpl.meals && tpl.meals.length > 0 ? mapMealsToState(tpl.meals) : [blankMeal()]);
+  };
+
+  // Template-mode open: populate from the template being edited, or reset for a new one.
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen || !isTemplateMode) return;
+    setTemplateMsg('');
+    setShowSaveTemplate(false);
+    if (template) {
+      setTitle(template.name || '');
+      setDescription(template.description || '');
+      setNotes(template.notes || '');
+      setTargetCalories(template.targetCalories?.toString() || '');
+      setIsShared(!!template.isShared);
+      mealIdCounter.current = 1;
+      setMeals(template.meals && template.meals.length > 0 ? mapMealsToState(template.meals) : [blankMeal()]);
+    } else {
+      setTitle('');
+      setDescription('');
+      setNotes('');
+      setTargetCalories('');
+      setIsShared(false);
+      mealIdCounter.current = 1;
+      setMeals([blankMeal()]);
+    }
+  }, [isOpen, isTemplateMode, template]);
+
+  useEffect(() => {
+    if (isOpen && !isTemplateMode) {
       fetchClients();
+      fetchTemplates();
+      setSelectedTemplateId('');
+      setShowSaveTemplate(false);
+      setTemplateMsg('');
 
       if (diet) {
         // Populate form with existing diet data
@@ -156,7 +250,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         setEndDate(weekEnd.toISOString().split('T')[0]);
       }
     }
-  }, [isOpen, diet]);
+  }, [isOpen, diet, isTemplateMode]);
 
   const fetchClients = async () => {
     setClientsLoading(true);
@@ -230,6 +324,48 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
     setMeals(updated);
   };
 
+  const cleanMeals = () => meals.filter(meal => meal.name.trim() !== '').map(({ _id, ...rest }) => rest);
+
+  // Plan mode: save the meals currently in the form as a reusable template.
+  const handleSaveAsTemplate = async () => {
+    const name = saveTemplateName.trim() || title.trim();
+    if (!name) {
+      setTemplateMsg('Enter a template name first.');
+      return;
+    }
+    setSavingTemplate(true);
+    setTemplateMsg('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/diet-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          name,
+          description,
+          notes,
+          targetCalories: targetCalories ? parseInt(targetCalories) : null,
+          isShared: saveTemplateShared,
+          meals: cleanMeals(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTemplateMsg(data.error || 'Failed to save template');
+      } else {
+        setTemplateMsg('Saved as template ✓');
+        setShowSaveTemplate(false);
+        setSaveTemplateName('');
+        setSaveTemplateShared(false);
+        fetchTemplates();
+      }
+    } catch {
+      setTemplateMsg('Network error saving template');
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -237,6 +373,36 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
 
     try {
       const token = localStorage.getItem('token');
+
+      // Template mode: save to the diet-templates API (no client / dates / week).
+      if (isTemplateMode) {
+        const method = template ? 'PUT' : 'POST';
+        const body: any = {
+          name: title,
+          description,
+          notes,
+          targetCalories: targetCalories ? parseInt(targetCalories) : null,
+          isShared,
+          meals: cleanMeals(),
+        };
+        if (template) body.id = template.id;
+
+        const res = await fetch('/api/diet-templates', {
+          method,
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || `Failed to ${template ? 'update' : 'create'} template`);
+          setLoading(false);
+          return;
+        }
+        onSuccess();
+        onClose();
+        return;
+      }
+
       const method = diet ? 'PUT' : 'POST';
       const body: any = {
         title,
@@ -246,7 +412,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
         endDate,
         targetCalories: targetCalories ? parseInt(targetCalories) : null,
         notes,
-        meals: meals.filter(meal => meal.name.trim() !== '').map(({ _id, ...rest }) => rest),
+        meals: cleanMeals(),
       };
 
       if (diet) {
@@ -319,10 +485,12 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
 
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-green-500/20 rounded-lg">
-                  <UtensilsCrossed className="w-6 h-6 text-green-400" />
+                  {isTemplateMode ? <LayoutTemplate className="w-6 h-6 text-green-400" /> : <UtensilsCrossed className="w-6 h-6 text-green-400" />}
                 </div>
                 <h2 className="text-3xl font-bold text-white">
-                  {diet ? 'Edit Diet Plan' : 'Create Diet Plan'}
+                  {isTemplateMode
+                    ? (template ? 'Edit Diet Template' : 'Create Diet Template')
+                    : (diet ? 'Edit Diet Plan' : 'Create Diet Plan')}
                 </h2>
               </div>
 
@@ -333,22 +501,49 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Load from Template (plan mode only) */}
+                {!isTemplateMode && templates.length > 0 && (
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                    <label className="flex items-center gap-2 text-green-200 text-sm font-medium mb-2">
+                      <LayoutTemplate size={16} /> Start from a template (optional)
+                    </label>
+                    <select
+                      value={selectedTemplateId}
+                      onChange={(e) => {
+                        setSelectedTemplateId(e.target.value);
+                        const tpl = templates.find((t) => t.id.toString() === e.target.value);
+                        if (tpl) applyTemplate(tpl);
+                      }}
+                      className="w-full bg-brand-navy/50 border border-green-500/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-400"
+                    >
+                      <option value="">Choose a template to load its meals…</option>
+                      {templates.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.name}{t.isShared ? ' (shared)' : ''} · {t.meals?.length || 0} meals
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-gray-400 text-xs mt-1.5">Loads meals into the form. Client, week and dates stay as you set them.</p>
+                  </div>
+                )}
+
                 {/* Basic Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Diet Plan Title *
+                      {isTemplateMode ? 'Template Name *' : 'Diet Plan Title *'}
                     </label>
                     <input
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
-                      placeholder="e.g., Week 1 - High Protein Diet"
+                      placeholder={isTemplateMode ? 'e.g., 1800 kcal High-Protein Veg' : 'e.g., Week 1 - High Protein Diet'}
                       required
                     />
                   </div>
 
+                  {!isTemplateMode && (
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
                       Select Client *
@@ -382,6 +577,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                       <p className="text-orange-400 text-xs mt-1">No clients found. Please add clients first.</p>
                     )}
                   </div>
+                  )}
                 </div>
 
                 <div>
@@ -393,10 +589,36 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                     rows={3}
-                    placeholder="Brief overview of the diet plan..."
+                    placeholder={isTemplateMode ? 'Brief overview of this template...' : 'Brief overview of the diet plan...'}
                   />
                 </div>
 
+                {isTemplateMode ? (
+                  <div className="space-y-4">
+                    <div className="md:w-1/2">
+                      <label className="block text-gray-300 text-sm font-medium mb-2">Target Calories</label>
+                      <input
+                        type="number"
+                        value={targetCalories}
+                        onChange={(e) => setTargetCalories(e.target.value)}
+                        className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                        placeholder="2000"
+                      />
+                    </div>
+                    <label className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg px-4 py-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isShared}
+                        onChange={(e) => setIsShared(e.target.checked)}
+                        className="w-4 h-4 accent-green-500"
+                      />
+                      <span className="text-sm text-gray-200">
+                        Share with the whole team
+                        <span className="block text-xs text-gray-400">Other coaches and trainers can load this template. Only you can edit or delete it.</span>
+                      </span>
+                    </label>
+                  </div>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
@@ -451,6 +673,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                     />
                   </div>
                 </div>
+                )}
 
                 {/* Meals */}
                 <div>
@@ -641,6 +864,54 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                   />
                 </div>
 
+                {/* Save as Template (plan mode only) */}
+                {!isTemplateMode && (
+                  <div className="border-t border-white/10 pt-4">
+                    {!showSaveTemplate ? (
+                      <button
+                        type="button"
+                        onClick={() => { setShowSaveTemplate(true); setSaveTemplateName(title); setTemplateMsg(''); }}
+                        className="flex items-center gap-2 text-green-300 hover:text-green-200 text-sm font-medium transition-colors"
+                      >
+                        <Save size={16} /> Save these meals as a reusable template
+                      </button>
+                    ) : (
+                      <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 space-y-3">
+                        <label className="block text-green-200 text-sm font-medium">Save as template</label>
+                        <input
+                          type="text"
+                          value={saveTemplateName}
+                          onChange={(e) => setSaveTemplateName(e.target.value)}
+                          className="w-full bg-brand-navy/50 border border-green-500/30 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-400"
+                          placeholder="Template name"
+                        />
+                        <label className="flex items-center gap-2 text-sm text-gray-200 cursor-pointer">
+                          <input type="checkbox" checked={saveTemplateShared} onChange={(e) => setSaveTemplateShared(e.target.checked)} className="w-4 h-4 accent-green-500" />
+                          Share with the whole team
+                        </label>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleSaveAsTemplate}
+                            disabled={savingTemplate}
+                            className="bg-green-500/30 text-green-100 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-500/40 transition-all disabled:opacity-50"
+                          >
+                            {savingTemplate ? 'Saving…' : 'Save template'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setShowSaveTemplate(false); setTemplateMsg(''); }}
+                            className="bg-white/5 text-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-white/10 transition-all"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {templateMsg && <p className="text-xs mt-2 text-green-300">{templateMsg}</p>}
+                  </div>
+                )}
+
                 <div className="flex gap-4 pt-4">
                   <button
                     type="button"
@@ -654,7 +925,9 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet }: Cr
                     disabled={loading}
                     className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition-all disabled:opacity-50"
                   >
-                    {loading ? (diet ? 'Updating...' : 'Creating...') : (diet ? 'Update Diet Plan' : 'Create Diet Plan')}
+                    {loading
+                      ? (isTemplateMode ? (template ? 'Updating…' : 'Saving…') : (diet ? 'Updating...' : 'Creating...'))
+                      : (isTemplateMode ? (template ? 'Update Template' : 'Save Template') : (diet ? 'Update Diet Plan' : 'Create Diet Plan'))}
                   </button>
                 </div>
               </form>

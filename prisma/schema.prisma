@@ -32,6 +32,8 @@ model User {
   trainerAssignments   TrainerClient[]    @relation("TrainerAssignments")
   clientAssignments    TrainerClient[]    @relation("ClientAssignments")
   habitEntries         HabitEntry[]
+  createdWorkoutTemplates WorkoutTemplate[] @relation("CreatedWorkoutTemplates")
+  createdDietTemplates    DietTemplate[]    @relation("CreatedDietTemplates")
 }
 
 model SubscriptionPlan {
@@ -173,6 +175,89 @@ model Meal {
   dietPlan     DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
 
   @@index([dietPlanId])
+}
+
+// Reusable workout template — a client-agnostic plan (no client/dates/week) that a
+// coach or trainer can load into the Create Workout form or save from an existing one.
+// isShared=true makes it visible to all coaches/trainers; otherwise only the creator.
+model WorkoutTemplate {
+  id          Int                @id @default(autoincrement())
+  name        String
+  description String?            @db.Text
+  notes       String?            @db.Text
+  createdById Int
+  isShared    Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  createdBy   User               @relation("CreatedWorkoutTemplates", fields: [createdById], references: [id], onDelete: Cascade)
+  exercises   TemplateExercise[]
+
+  @@index([createdById])
+  @@index([isShared])
+}
+
+// Template exercise rows — mirror Exercise, minus the client-plan link.
+model TemplateExercise {
+  id                Int             @id @default(autoincrement())
+  workoutTemplateId Int
+  name              String
+  description       String?         @db.Text
+  sets              Int?
+  reps              String?
+  duration          Int?
+  restTime          Int?
+  videoUrl          String?
+  day               String
+  order             Int             @default(0)
+  exerciseType      String          @default("normal")
+  supersetGroup     Int?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  workoutTemplate   WorkoutTemplate @relation(fields: [workoutTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([workoutTemplateId])
+}
+
+// Reusable diet template — mirrors DietPlan without the client/dates/week.
+model DietTemplate {
+  id             Int            @id @default(autoincrement())
+  name           String
+  description    String?        @db.Text
+  notes          String?        @db.Text
+  targetCalories Int?
+  createdById    Int
+  isShared       Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  createdBy      User           @relation("CreatedDietTemplates", fields: [createdById], references: [id], onDelete: Cascade)
+  meals          TemplateMeal[]
+
+  @@index([createdById])
+  @@index([isShared])
+}
+
+// Template meal rows — mirror Meal, minus the client-plan link.
+model TemplateMeal {
+  id             Int          @id @default(autoincrement())
+  dietTemplateId Int
+  name           String
+  description    String?      @db.Text
+  mealType       String
+  calories       Int?
+  protein        Decimal?     @db.Decimal(10, 2)
+  carbs          Decimal?     @db.Decimal(10, 2)
+  fats           Decimal?     @db.Decimal(10, 2)
+  ingredients    String?      @db.Text
+  instructions   String?      @db.Text
+  alternatives   String?      @db.Text
+  day            String
+  time           String?
+  order          Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  dietTemplate   DietTemplate @relation(fields: [dietTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([dietTemplateId])
 }
 
 model PromoCode {

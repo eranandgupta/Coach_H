@@ -13,11 +13,13 @@ import {
   Edit,
   Play,
   MessageSquare,
+  LayoutTemplate,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import LiveSessionModal from '@/components/LiveSessionModal';
 import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
+import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import ChatContainer from '@/components/chat/ChatContainer';
@@ -40,6 +42,7 @@ export default function TrainerDashboard() {
   const [isClientDetailModalOpen, setIsClientDetailModalOpen] = useState(false);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isLiveSessionModalOpen, setIsLiveSessionModalOpen] = useState(false);
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
@@ -277,6 +280,16 @@ export default function TrainerDashboard() {
               >
                 <Play className="w-5 h-5" />
                 <span className="text-sm">Video Library</span>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsTemplatesModalOpen(true)}
+                className="relative bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <LayoutTemplate className="w-5 h-5" />
+                <span className="text-sm">Templates</span>
               </motion.button>
             </div>
           </motion.div>
@@ -579,6 +592,11 @@ export default function TrainerDashboard() {
         }}
         onSuccess={fetchDashboardData}
         diet={selectedDiet}
+      />
+      <ManageTemplatesModal
+        isOpen={isTemplatesModalOpen}
+        onClose={() => setIsTemplatesModalOpen(false)}
+        currentUserId={user?.id}
       />
       <ClientDetailModal
         isOpen={isClientDetailModalOpen}

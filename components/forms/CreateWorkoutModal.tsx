@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown } from 'lucide-react';
+import { X, Plus, Trash2, Dumbbell, Calendar, User, Film, Play, Check, ChevronUp, ChevronDown, LayoutTemplate, Save } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 import { toDateInputValue } from '@/lib/dateUtils';
 import VideoPickerModal from '@/components/modals/VideoPickerModal';
@@ -12,7 +12,9 @@ interface CreateWorkoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  workout?: any; // If provided, we're editing; otherwise, creating
+  workout?: any; // If provided, we're editing a client plan; otherwise, creating
+  mode?: 'plan' | 'template'; // 'template' builds a reusable template (no client/dates/week)
+  template?: any; // If provided (in template mode), we're editing that template
 }
 
 interface Exercise {
@@ -29,7 +31,8 @@ interface Exercise {
   supersetGroup: string;
 }
 
-export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout }: CreateWorkoutModalProps) {
+export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout, mode = 'plan', template }: CreateWorkoutModalProps) {
+  const isTemplateMode = mode === 'template';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [clientId, setClientId] = useState('');
@@ -37,6 +40,15 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [notes, setNotes] = useState('');
+  // Template mode: share toggle. Plan mode: "Load from template" + "Save as template".
+  const [isShared, setIsShared] = useState(false);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+  const [saveTemplateName, setSaveTemplateName] = useState('');
+  const [saveTemplateShared, setSaveTemplateShared] = useState(false);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateMsg, setTemplateMsg] = useState('');
   const exerciseIdCounter = useRef(1);
   const [exercises, setExercises] = useState<Exercise[]>([
     { _id: 0, name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' }
@@ -134,9 +146,84 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
     fetchNextNumber();
   }, [clientId, workout, clients]);
 
+  // Map an exercises array (from a workout or a template) into editable form rows.
+  const mapExercisesToState = (list: any[]) => {
+    const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const sorted = [...list].sort((a: any, b: any) => {
+      const dayDiff = dayOrder.indexOf(a.day || 'Monday') - dayOrder.indexOf(b.day || 'Monday');
+      return dayDiff !== 0 ? dayDiff : (a.order || 0) - (b.order || 0);
+    });
+    return sorted.map((ex: any) => ({
+      _id: exerciseIdCounter.current++,
+      name: ex.name || '',
+      description: ex.description || '',
+      sets: ex.sets?.toString() || '',
+      reps: ex.reps || '',
+      duration: ex.duration?.toString() || '',
+      restTime: ex.restTime?.toString() || '',
+      videoUrl: ex.videoUrl || '',
+      day: ex.day || 'Monday',
+      exerciseType: ex.exerciseType || 'normal',
+      supersetGroup: ex.supersetGroup?.toString() || '',
+    }));
+  };
+
+  const blankExercise = () => ({ _id: exerciseIdCounter.current++, name: '', description: '', sets: '', reps: '', duration: '', restTime: '', videoUrl: '', day: 'Monday', exerciseType: 'normal', supersetGroup: '' });
+
+  // Fetch the templates available for the "Load from template" picker (plan mode).
+  const fetchTemplates = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/workout-templates', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setTemplates(data.templates || []);
+      }
+    } catch {
+      // silent — picker just stays empty
+    }
+  };
+
+  // Populate the exercise rows (and optionally meta) from a chosen template.
+  const applyTemplate = (tpl: any) => {
+    if (!tpl) return;
+    if (!title.trim()) setTitle(tpl.name || '');
+    if (!description.trim()) setDescription(tpl.description || '');
+    if (!notes.trim()) setNotes(tpl.notes || '');
+    setExercises(tpl.exercises && tpl.exercises.length > 0 ? mapExercisesToState(tpl.exercises) : [blankExercise()]);
+  };
+
+  // Template-mode open: populate from the template being edited, or reset for a new one.
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen || !isTemplateMode) return;
+    setTemplateMsg('');
+    setShowSaveTemplate(false);
+    if (template) {
+      setTitle(template.name || '');
+      setDescription(template.description || '');
+      setNotes(template.notes || '');
+      setIsShared(!!template.isShared);
+      exerciseIdCounter.current = 1;
+      setExercises(template.exercises && template.exercises.length > 0 ? mapExercisesToState(template.exercises) : [blankExercise()]);
+    } else {
+      setTitle('');
+      setDescription('');
+      setNotes('');
+      setIsShared(false);
+      exerciseIdCounter.current = 1;
+      setExercises([blankExercise()]);
+    }
+  }, [isOpen, isTemplateMode, template]);
+
+  useEffect(() => {
+    if (isOpen && !isTemplateMode) {
       fetchClients();
+      fetchTemplates();
+      setSelectedTemplateId('');
+      setShowSaveTemplate(false);
+      setTemplateMsg('');
 
       if (workout) {
         // Populate form with existing workout data
@@ -188,7 +275,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         setEndDate(weekEnd.toISOString().split('T')[0]);
       }
     }
-  }, [isOpen, workout]);
+  }, [isOpen, workout, isTemplateMode]);
 
   const fetchClients = async () => {
     setClientsLoading(true);
@@ -262,6 +349,8 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
     setExercises(updated);
   };
 
+  const cleanExercises = () => exercises.filter(ex => ex.name.trim() !== '').map(({ _id, ...rest }) => rest);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -269,6 +358,35 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
 
     try {
       const token = localStorage.getItem('token');
+
+      // Template mode: save to the workout-templates API (no client / dates / week).
+      if (isTemplateMode) {
+        const method = template ? 'PUT' : 'POST';
+        const body: any = {
+          name: title,
+          description,
+          notes,
+          isShared,
+          exercises: cleanExercises(),
+        };
+        if (template) body.id = template.id;
+
+        const res = await fetch('/api/workout-templates', {
+          method,
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || `Failed to ${template ? 'update' : 'create'} template`);
+          setLoading(false);
+          return;
+        }
+        onSuccess();
+        onClose();
+        return;
+      }
+
       const method = workout ? 'PUT' : 'POST';
       const body: any = {
         title,
@@ -277,7 +395,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
         startDate,
         endDate,
         notes,
-        exercises: exercises.filter(ex => ex.name.trim() !== '').map(({ _id, ...rest }) => rest),
+        exercises: cleanExercises(),
       };
 
       if (workout) {
@@ -312,6 +430,45 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
     }
   };
 
+  // Plan mode: save the exercises currently in the form as a reusable template.
+  const handleSaveAsTemplate = async () => {
+    const name = saveTemplateName.trim() || title.trim();
+    if (!name) {
+      setTemplateMsg('Enter a template name first.');
+      return;
+    }
+    setSavingTemplate(true);
+    setTemplateMsg('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/workout-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          name,
+          description,
+          notes,
+          isShared: saveTemplateShared,
+          exercises: cleanExercises(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTemplateMsg(data.error || 'Failed to save template');
+      } else {
+        setTemplateMsg('Saved as template ✓');
+        setShowSaveTemplate(false);
+        setSaveTemplateName('');
+        setSaveTemplateShared(false);
+        fetchTemplates();
+      }
+    } catch {
+      setTemplateMsg('Network error saving template');
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
   return (
     <>
     <AnimatePresence>
@@ -341,10 +498,12 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
 
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-purple-500/20 rounded-lg">
-                  <Dumbbell className="w-6 h-6 text-purple-400" />
+                  {isTemplateMode ? <LayoutTemplate className="w-6 h-6 text-purple-400" /> : <Dumbbell className="w-6 h-6 text-purple-400" />}
                 </div>
                 <h2 className="text-3xl font-bold text-white">
-                  {workout ? 'Edit Workout Plan' : 'Create Workout Plan'}
+                  {isTemplateMode
+                    ? (template ? 'Edit Workout Template' : 'Create Workout Template')
+                    : (workout ? 'Edit Workout Plan' : 'Create Workout Plan')}
                 </h2>
               </div>
 
@@ -355,22 +514,49 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Load from Template (plan mode only) */}
+                {!isTemplateMode && templates.length > 0 && (
+                  <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+                    <label className="flex items-center gap-2 text-purple-200 text-sm font-medium mb-2">
+                      <LayoutTemplate size={16} /> Start from a template (optional)
+                    </label>
+                    <select
+                      value={selectedTemplateId}
+                      onChange={(e) => {
+                        setSelectedTemplateId(e.target.value);
+                        const tpl = templates.find((t) => t.id.toString() === e.target.value);
+                        if (tpl) applyTemplate(tpl);
+                      }}
+                      className="w-full bg-brand-navy/50 border border-purple-500/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-400"
+                    >
+                      <option value="">Choose a template to load its exercises…</option>
+                      {templates.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.name}{t.isShared ? ' (shared)' : ''} · {t.exercises?.length || 0} exercises
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-gray-400 text-xs mt-1.5">Loads exercises into the form. Client, week and dates stay as you set them.</p>
+                  </div>
+                )}
+
                 {/* Basic Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Workout Title *
+                      {isTemplateMode ? 'Template Name *' : 'Workout Title *'}
                     </label>
                     <input
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
-                      placeholder="e.g., Week 1 - Strength Training"
+                      placeholder={isTemplateMode ? 'e.g., Push/Pull/Legs - Intermediate' : 'e.g., Week 1 - Strength Training'}
                       required
                     />
                   </div>
 
+                  {!isTemplateMode && (
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
                       Select Client *
@@ -404,6 +590,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                       <p className="text-orange-400 text-xs mt-1">No clients found. Please add clients first.</p>
                     )}
                   </div>
+                  )}
                 </div>
 
                 <div>
@@ -415,10 +602,24 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
                     rows={3}
-                    placeholder="Brief overview of the workout plan..."
+                    placeholder={isTemplateMode ? 'Brief overview of this template...' : 'Brief overview of the workout plan...'}
                   />
                 </div>
 
+                {isTemplateMode ? (
+                  <label className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg px-4 py-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isShared}
+                      onChange={(e) => setIsShared(e.target.checked)}
+                      className="w-4 h-4 accent-purple-500"
+                    />
+                    <span className="text-sm text-gray-200">
+                      Share with the whole team
+                      <span className="block text-xs text-gray-400">Other coaches and trainers can load this template. Only you can edit or delete it.</span>
+                    </span>
+                  </label>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-gray-300 text-sm font-medium mb-2">
@@ -460,6 +661,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                     />
                   </div>
                 </div>
+                )}
 
                 {/* Exercises */}
                 <div>
@@ -704,6 +906,54 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                   />
                 </div>
 
+                {/* Save as Template (plan mode only) */}
+                {!isTemplateMode && (
+                  <div className="border-t border-white/10 pt-4">
+                    {!showSaveTemplate ? (
+                      <button
+                        type="button"
+                        onClick={() => { setShowSaveTemplate(true); setSaveTemplateName(title); setTemplateMsg(''); }}
+                        className="flex items-center gap-2 text-purple-300 hover:text-purple-200 text-sm font-medium transition-colors"
+                      >
+                        <Save size={16} /> Save these exercises as a reusable template
+                      </button>
+                    ) : (
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 space-y-3">
+                        <label className="block text-purple-200 text-sm font-medium">Save as template</label>
+                        <input
+                          type="text"
+                          value={saveTemplateName}
+                          onChange={(e) => setSaveTemplateName(e.target.value)}
+                          className="w-full bg-brand-navy/50 border border-purple-500/30 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-400"
+                          placeholder="Template name"
+                        />
+                        <label className="flex items-center gap-2 text-sm text-gray-200 cursor-pointer">
+                          <input type="checkbox" checked={saveTemplateShared} onChange={(e) => setSaveTemplateShared(e.target.checked)} className="w-4 h-4 accent-purple-500" />
+                          Share with the whole team
+                        </label>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleSaveAsTemplate}
+                            disabled={savingTemplate}
+                            className="bg-purple-500/30 text-purple-100 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-500/40 transition-all disabled:opacity-50"
+                          >
+                            {savingTemplate ? 'Saving…' : 'Save template'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setShowSaveTemplate(false); setTemplateMsg(''); }}
+                            className="bg-white/5 text-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-white/10 transition-all"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {templateMsg && <p className="text-xs mt-2 text-purple-300">{templateMsg}</p>}
+                  </div>
+                )}
+
                 <div className="flex gap-4 pt-4">
                   <button
                     type="button"
@@ -717,7 +967,9 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                     disabled={loading}
                     className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50"
                   >
-                    {loading ? (workout ? 'Updating...' : 'Creating...') : (workout ? 'Update Workout Plan' : 'Create Workout Plan')}
+                    {loading
+                      ? (isTemplateMode ? (template ? 'Updating…' : 'Saving…') : (workout ? 'Updating...' : 'Creating...'))
+                      : (isTemplateMode ? (template ? 'Update Template' : 'Save Template') : (workout ? 'Update Workout Plan' : 'Create Workout Plan'))}
                   </button>
                 </div>
               </form>
