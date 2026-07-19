@@ -5,6 +5,7 @@ import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, Clipb
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
+import TransformationLogModal from '@/components/TransformationLogModal';
 import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
 
 interface ClientDetailModalProps {
@@ -50,6 +51,7 @@ export default function ClientDetailModal({
   const [sessionLoading, setSessionLoading] = useState(false);
   const [expiringSubId, setExpiringSubId] = useState<number | null>(null);
   const [showPreviousSubs, setShowPreviousSubs] = useState(false);
+  const [isLogbookOpen, setIsLogbookOpen] = useState(false);
 
   const clientPlanName = client?.subscriptions?.[0]?.plan?.name || '';
   const clientIsElite = isElitePlan(clientPlanName);
@@ -436,9 +438,17 @@ export default function ClientDetailModal({
 
               {/* Habit Tracker */}
               <div className="mb-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <ClipboardList className="w-5 h-5 text-emerald-400" />
-                  <h3 className="text-xl font-bold text-white">Habit Tracker</h3>
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <ClipboardList className="w-5 h-5 text-emerald-400" />
+                    <h3 className="text-xl font-bold text-white">Habit Tracker</h3>
+                  </div>
+                  <button
+                    onClick={() => setIsLogbookOpen(true)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 hover:bg-brand-blue/30 transition-all"
+                  >
+                    <Target className="w-4 h-4" /> Transformation Logbook
+                  </button>
                 </div>
                 <HabitSummaryView userId={client.id} />
               </div>
@@ -693,6 +703,16 @@ export default function ClientDetailModal({
               onClose={() => setAssessmentView(null)}
               assessment={assessmentView.data}
               clientName={assessmentView.label}
+            />
+          )}
+
+          {/* Transformation Logbook — coach/trainer can view & fill Day-30 measurements */}
+          {isLogbookOpen && (
+            <TransformationLogModal
+              isOpen={isLogbookOpen}
+              onClose={() => setIsLogbookOpen(false)}
+              userId={client.id}
+              userName={client.name}
             />
           )}
         </motion.div>

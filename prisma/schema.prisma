@@ -34,6 +34,7 @@ model User {
   habitEntries         HabitEntry[]
   createdWorkoutTemplates WorkoutTemplate[] @relation("CreatedWorkoutTemplates")
   createdDietTemplates    DietTemplate[]    @relation("CreatedDietTemplates")
+  transformationLogs   TransformationLog[] @relation("ClientTransformationLogs")
 }
 
 model SubscriptionPlan {
@@ -175,6 +176,25 @@ model Meal {
   dietPlan     DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
 
   @@index([dietPlanId])
+}
+
+// 30-Day Transformation Assessment Logbook — one row per client per cycle.
+// All the Day-1 / Day-30 sections (client info, fitness tests, strength, body
+// measurements, composition, self-reflection) live in `data` as JSON so the shape
+// can evolve without a migration. Client info + Day-1 composition are pre-filled
+// from ClientAssessment; the rest the client (or coach/trainer) fills in.
+model TransformationLog {
+  id        Int       @id @default(autoincrement())
+  userId    Int       // the client this logbook belongs to
+  title     String?   // optional label, e.g. "Cycle 1"
+  startDate DateTime?
+  endDate   DateTime?
+  data      Json      // { clientInfo, fitness, strength, measurements, composition, reflection }
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation("ClientTransformationLogs", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // Reusable workout template — a client-agnostic plan (no client/dates/week) that a

@@ -40,6 +40,7 @@ import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import HabitTracker from '@/components/HabitTracker';
+import TransformationLogModal from '@/components/TransformationLogModal';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
@@ -64,6 +65,7 @@ export default function ClientDashboard() {
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
+  const [isLogbookOpen, setIsLogbookOpen] = useState(false);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [completedSessions, setCompletedSessions] = useState<number[]>([]);
@@ -431,6 +433,14 @@ export default function ClientDashboard() {
               title="Habit Tracker"
             >
               <ClipboardList className="w-4 h-4 md:w-5 md:h-5 text-emerald-400" />
+            </button>
+            <button
+              onClick={() => setIsLogbookOpen(true)}
+              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
+              title="Transformation Logbook"
+            >
+              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-brand-blue" />
             </button>
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
@@ -1414,6 +1424,15 @@ export default function ClientDashboard() {
         isOpen={isHabitTrackerOpen}
         onClose={() => setIsHabitTrackerOpen(false)}
       />
+
+      {user && (
+        <TransformationLogModal
+          isOpen={isLogbookOpen}
+          onClose={() => setIsLogbookOpen(false)}
+          userId={user.id}
+          userName={user.name}
+        />
+      )}
 
       <VideoLibrary
         isOpen={isVideoLibraryOpen}
