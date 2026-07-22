@@ -72,6 +72,21 @@ export default function ClientDashboard() {
   const [pauseLoading, setPauseLoading] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
 
+  // "New feature" spotlight for the Habit Tracker + Transformation Logbook buttons.
+  // Shows a friendly callout + pulsing badges until the client acknowledges it.
+  const [showFeatureHint, setShowFeatureHint] = useState(false);
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem('ch_hint_habits_logbook_v1')) setShowFeatureHint(true);
+    } catch {
+      /* localStorage unavailable — skip the hint */
+    }
+  }, []);
+  const dismissFeatureHint = () => {
+    setShowFeatureHint(false);
+    try { localStorage.setItem('ch_hint_habits_logbook_v1', '1'); } catch {}
+  };
+
   // Push notifications
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
 
@@ -417,7 +432,7 @@ export default function ClientDashboard() {
             <p className="text-gray-300 text-xs lg:text-sm">Let's crush your fitness goals today</p>
           </div>
 
-          <div className="flex items-center gap-1.5 md:gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3 relative">
             {!isLiveSessionPlan && <button
               onClick={() => setIsVideoLibraryOpen(true)}
               className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
@@ -427,21 +442,62 @@ export default function ClientDashboard() {
               <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
             </button>}
             <button
-              onClick={() => setIsHabitTrackerOpen(true)}
-              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
+              className={`relative flex items-center justify-center p-2 rounded-xl border transition-all ${showFeatureHint ? 'border-amber-400/60' : 'border-white/[0.08] hover:border-white/[0.15]'}`}
               style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.03) 100%)' }}
               title="Habit Tracker"
             >
               <ClipboardList className="w-4 h-4 md:w-5 md:h-5 text-emerald-400" />
+              {showFeatureHint && (
+                <>
+                  <span className="absolute -inset-0.5 rounded-xl ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
+                  <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-black text-[8px] md:text-[9px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
+                </>
+              )}
             </button>
             <button
-              onClick={() => setIsLogbookOpen(true)}
-              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              onClick={() => { dismissFeatureHint(); setIsLogbookOpen(true); }}
+              className={`relative flex items-center justify-center p-2 rounded-xl border transition-all ${showFeatureHint ? 'border-amber-400/60' : 'border-white/[0.08] hover:border-white/[0.15]'}`}
               style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
               title="Transformation Logbook"
             >
               <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-brand-blue" />
+              {showFeatureHint && (
+                <>
+                  <span className="absolute -inset-0.5 rounded-xl ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
+                  <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-black text-[8px] md:text-[9px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
+                </>
+              )}
             </button>
+
+            {/* Friendly "hey, check this out" callout pointing at the two new buttons */}
+            {showFeatureHint && (
+              <div className="absolute top-full right-0 mt-3 z-50 w-[17rem] max-w-[80vw]">
+                <div className="absolute -top-1.5 right-10 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40" />
+                <div className="relative rounded-xl border border-amber-400/40 bg-[#0b1224] p-3.5 shadow-2xl">
+                  <p className="text-sm font-bold text-white flex items-center gap-1.5">
+                    <span>👋</span> New here!
+                  </p>
+                  <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+                    Track your daily habits and log your 30-day transformation — tap the glowing icons above. You can also download & print them.
+                  </p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <button
+                      onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
+                      className="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-brand-blue to-blue-600 hover:shadow-lg hover:shadow-brand-blue/25 transition-all"
+                    >
+                      Show me
+                    </button>
+                    <button
+                      onClick={dismissFeatureHint}
+                      className="px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 bg-white/[0.06] border border-white/10 hover:bg-white/10 transition-all"
+                    >
+                      Got it
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
               className="relative flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
