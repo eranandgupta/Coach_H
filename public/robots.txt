@@ -135,9 +135,10 @@ Allow: /
 #
 #   /sitemap/0.xml  → Core pages (home, about, assessment, contact)
 #   /sitemap/1.xml  → Blog content (64+ articles)
-#   /sitemap/2.xml  → Location pages (15 Indian cities)
+#   /sitemap/2.xml  → Location pages (Indian cities)
 #   /sitemap/3.xml  → Legal & policy pages
 #   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS)
+#   /sitemap/5.xml  → International pages (online coaching by country)
 # ─────────────────────────────────────────────────────────────────────────────
 
 Sitemap: https://coachhimanshu.com/sitemap.xml

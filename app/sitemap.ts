@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getAllCitySlugs } from '@/lib/cities';
+import { getAllCountrySlugs } from '@/lib/countries';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -22,6 +23,7 @@ export async function generateSitemaps() {
     { id: 2 }, // Location/city pages
     { id: 3 }, // Legal & policy pages
     { id: 4 }, // Resources, feeds & discovery
+    { id: 5 }, // International / country pages
   ];
 }
 
@@ -41,6 +43,8 @@ export default async function sitemap({
       return getLegalPages();
     case 4:
       return getResourcePages();
+    case 5:
+      return getInternationalPages();
     default:
       return [];
   }
@@ -196,4 +200,31 @@ function getResourcePages(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
   ];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 5: International Pages — programmatic country landing pages
+// Targets "online Indian fitness coach in {country}" / NRI queries worldwide
+// ─────────────────────────────────────────────────────────────────────────────
+function getInternationalPages(): MetadataRoute.Sitemap {
+  const now = new Date();
+  const countrySlugs = getAllCountrySlugs();
+
+  const hubPage: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/online-fitness-coach`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+  ];
+
+  const countryPages: MetadataRoute.Sitemap = countrySlugs.map((slug) => ({
+    url: `${baseUrl}/online-fitness-coach/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  return [...hubPage, ...countryPages];
 }

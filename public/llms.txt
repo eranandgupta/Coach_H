@@ -30,16 +30,24 @@
 - Weekly one-on-one consultations
 
 ## Key Differentiators
-- All coaching is online and accessible from anywhere
+- All coaching is online and accessible from anywhere in the world
 - Meal plans built around Indian foods (vegetarian and non-vegetarian)
-- Affordable pricing starting at INR 799/month
+- Affordable pricing starting at INR 799/month (approx USD 10)
 - Certified expertise (NASM) with scientific approach
 - Covers special populations: PCOS, diabetes, hypertension, post-injury
 - Available in English and Hindi
 
+## International & NRI Coaching
+- Serves Indians and NRIs worldwide, including the USA, Canada, UK, Ireland, UAE, Saudi Arabia, Qatar, Kuwait, Australia, New Zealand, and Singapore
+- Timezone-friendly live video sessions scheduled around the client's local hours
+- Indian meal plans designed around ingredients available in the client's country
+- Pricing in INR (from INR 799/month, approx USD 10) with international debit/credit cards accepted
+- Dedicated country pages: https://coachhimanshu.com/online-fitness-coach
+
 ## Target Audience
 - Beginners starting their fitness journey
 - Working professionals with busy schedules
+- NRIs and Indians living abroad who want Indian-food-based coaching on their timezone
 - Women dealing with PCOS, hormonal issues
 - People wanting to lose weight or build muscle
 - Seniors needing age-appropriate training
@@ -51,6 +59,7 @@
 - [About](https://coachhimanshu.com/about): Coach credentials and story
 - [Blog](https://coachhimanshu.com/blog): 50+ expert fitness articles
 - [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
+- [Online Fitness Coach Worldwide](https://coachhimanshu.com/online-fitness-coach): Coaching for NRIs by country
 - [FAQ](https://coachhimanshu.com/faq): Common questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Fitness education
 - [Fit Bharat Mission](https://coachhimanshu.com/fit-bharat-mission): Community initiative
