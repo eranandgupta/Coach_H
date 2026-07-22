@@ -73,19 +73,22 @@ export default function ClientDashboard() {
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
 
   // "New feature" spotlight for the Habit Tracker + Transformation Logbook buttons.
-  // Shows a friendly callout + pulsing badges until the client acknowledges it.
+  // Shows a friendly callout + pulsing badges on EVERY visit for one week after the
+  // client first sees it, then stops for good.
   const [showFeatureHint, setShowFeatureHint] = useState(false);
   useEffect(() => {
     try {
-      if (!localStorage.getItem('ch_hint_habits_logbook_v1')) setShowFeatureHint(true);
+      const KEY = 'ch_hint_habits_logbook_first_seen';
+      const WEEK = 7 * 24 * 60 * 60 * 1000;
+      let firstSeen = Number(localStorage.getItem(KEY));
+      if (!firstSeen) { firstSeen = Date.now(); localStorage.setItem(KEY, String(firstSeen)); }
+      if (Date.now() - firstSeen < WEEK) setShowFeatureHint(true);
     } catch {
       /* localStorage unavailable — skip the hint */
     }
   }, []);
-  const dismissFeatureHint = () => {
-    setShowFeatureHint(false);
-    try { localStorage.setItem('ch_hint_habits_logbook_v1', '1'); } catch {}
-  };
+  // Hides the callout for this visit only; it reappears on the next visit within the week.
+  const dismissFeatureHint = () => setShowFeatureHint(false);
 
   // Push notifications
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
