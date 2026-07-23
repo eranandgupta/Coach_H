@@ -49,7 +49,7 @@ export default function LatestBlogWidget() {
 
   if (loading) {
     return (
-      <div className="fixed bottom-36 lg:bottom-6 right-6 bg-gradient-to-br from-brand-navy-light to-brand-navy border border-brand-blue/30 rounded-2xl shadow-2xl p-6 w-80 z-40">
+      <div className="fixed bottom-36 lg:bottom-28 right-6 bg-gradient-to-br from-brand-navy-light to-brand-navy border border-brand-blue/30 rounded-2xl shadow-2xl p-6 w-80 z-40">
         <div className="flex items-center justify-center">
           <Loader2 className="w-6 h-6 text-brand-blue animate-spin" />
         </div>
@@ -70,7 +70,7 @@ export default function LatestBlogWidget() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
-            className="fixed bottom-36 lg:bottom-6 right-6 z-40"
+            className="fixed bottom-36 lg:bottom-28 right-6 z-40"
           >
             <button
               onClick={() => setIsExpanded(true)}
@@ -92,7 +92,7 @@ export default function LatestBlogWidget() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed bottom-36 lg:bottom-6 right-6 bg-gradient-to-br from-brand-navy-light to-brand-navy border border-brand-blue/30 rounded-2xl shadow-2xl overflow-hidden w-80 md:w-96 z-40"
+            className="fixed bottom-36 lg:bottom-28 right-6 bg-gradient-to-br from-brand-navy-light to-brand-navy border border-brand-blue/30 rounded-2xl shadow-2xl overflow-hidden w-80 md:w-96 z-40"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-brand-blue/20 to-brand-gold/20 border-b border-brand-blue/30 p-4 flex items-center justify-between">

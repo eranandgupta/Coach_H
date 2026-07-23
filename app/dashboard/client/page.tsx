@@ -444,6 +444,8 @@ export default function ClientDashboard() {
             >
               <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
             </button>}
+            {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
+            <div className="relative flex items-center gap-1.5 md:gap-3">
             <button
               onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
               className={`relative flex items-center justify-center p-2 rounded-xl border transition-all ${showFeatureHint ? 'border-amber-400/60' : 'border-white/[0.08] hover:border-white/[0.15]'}`}
@@ -473,10 +475,10 @@ export default function ClientDashboard() {
               )}
             </button>
 
-            {/* Friendly "hey, check this out" callout pointing at the two new buttons */}
+            {/* Friendly "hey, check this out" callout — anchored under the two glowing icons */}
             {showFeatureHint && (
               <div className="absolute top-full right-0 mt-3 z-50 w-[17rem] max-w-[80vw]">
-                <div className="absolute -top-1.5 right-10 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40" />
+                <div className="absolute -top-1.5 right-6 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40" />
                 <div className="relative rounded-xl border border-amber-400/40 bg-[#0b1224] p-3.5 shadow-2xl">
                   <p className="text-sm font-bold text-white flex items-center gap-1.5">
                     <span>👋</span> New here!
@@ -501,6 +503,7 @@ export default function ClientDashboard() {
                 </div>
               </div>
             )}
+            </div>
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
               className="relative flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
