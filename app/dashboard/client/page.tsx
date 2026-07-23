@@ -475,9 +475,11 @@ export default function ClientDashboard() {
               )}
             </button>
 
-            {/* Friendly "hey, check this out" callout — anchored under the two glowing icons */}
+            {/* Friendly "hey, check this out" callout.
+               Phones: a fixed, full-width banner just under the header (never clips off-screen).
+               sm+: an icon-anchored speech bubble under the two glowing icons. */}
             {showFeatureHint && (
-              <div className="absolute top-full right-0 mt-3 z-50 w-[17rem] max-w-[80vw]">
+              <div className="fixed left-3 right-3 top-[72px] z-50 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-3 sm:w-[17rem] sm:max-w-[80vw]">
                 <div className="absolute -top-1.5 right-6 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40" />
                 <div className="relative rounded-xl border border-amber-400/40 bg-[#0b1224] p-3.5 shadow-2xl">
                   <p className="text-sm font-bold text-white flex items-center gap-1.5">
