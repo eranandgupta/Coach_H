@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Dumbbell,
@@ -87,6 +87,29 @@ export default function ClientDashboard() {
       /* localStorage unavailable — skip the hint */
     }
   }, []);
+  // On phones the callout is a full-width banner, so its little arrow must be
+  // positioned by measurement to sit exactly under the two glowing NEW icons
+  // (not the row's far edge). We track the icon group's centre and offset the
+  // arrow from the banner's left inset (left-3 = 12px).
+  const newIconsRef = useRef<HTMLDivElement | null>(null);
+  const [hintArrowLeft, setHintArrowLeft] = useState<number | null>(null);
+  useEffect(() => {
+    if (!showFeatureHint) return;
+    const measure = () => {
+      const el = newIconsRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const BANNER_INSET = 12; // matches the banner's left-3
+      const ARROW_HALF = 6;    // half of the 12px (w-3) arrow
+      const center = rect.left + rect.width / 2;
+      // Clamp so the arrow never pokes past the rounded banner corners.
+      const left = Math.max(16, center - BANNER_INSET - ARROW_HALF);
+      setHintArrowLeft(left);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [showFeatureHint]);
   // Hides the callout for this visit only; it reappears on the next visit within the week.
   const dismissFeatureHint = () => setShowFeatureHint(false);
 
@@ -445,7 +468,7 @@ export default function ClientDashboard() {
               <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
             </button>}
             {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
-            <div className="relative flex items-center gap-1.5 md:gap-3">
+            <div ref={newIconsRef} className="relative flex items-center gap-1.5 md:gap-3">
             <button
               onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
               className={`relative flex items-center justify-center p-2 rounded-xl border transition-all ${showFeatureHint ? 'border-amber-400/60' : 'border-white/[0.08] hover:border-white/[0.15]'}`}
@@ -480,7 +503,13 @@ export default function ClientDashboard() {
                sm+: an icon-anchored speech bubble under the two glowing icons. */}
             {showFeatureHint && (
               <div className="fixed left-3 right-3 top-[72px] z-50 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-3 sm:w-[17rem] sm:max-w-[80vw]">
-                <div className="absolute -top-1.5 right-6 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40" />
+                {/* Phones: arrow measured to point at the two NEW icons. */}
+                <div
+                  className="absolute -top-1.5 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40 sm:hidden"
+                  style={{ left: hintArrowLeft ?? undefined, opacity: hintArrowLeft == null ? 0 : 1 }}
+                />
+                {/* sm+: bubble is anchored under the icons, so a fixed arrow lines up. */}
+                <div className="absolute -top-1.5 right-6 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40 hidden sm:block" />
                 <div className="relative rounded-xl border border-amber-400/40 bg-[#0b1224] p-3.5 shadow-2xl">
                   <p className="text-sm font-bold text-white flex items-center gap-1.5">
                     <span>👋</span> New here!
