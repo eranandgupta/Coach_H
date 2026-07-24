@@ -205,11 +205,14 @@ export default function TransformationLogModal({ isOpen, onClose, userId, userNa
   };
 
   const handleDownload = async () => {
-    if (!sheetRef.current) return;
     setDownloading(true);
     try {
-      const { exportElementToPdf } = await import('@/lib/pdf');
-      await exportElementToPdf(sheetRef.current, `Transformation-Logbook-${(userName || 'Client').replace(/\s+/g, '-')}.pdf`);
+      const { downloadLogbookPdf } = await import('@/lib/pdf');
+      await downloadLogbookPdf(
+        { userName, title, startDate, endDate },
+        data,
+        `Transformation-Logbook-${(userName || 'Client').replace(/\s+/g, '-')}.pdf`,
+      );
     } catch (e) {
       console.error('PDF generation failed', e);
       alert('Could not generate PDF. Please try again.');

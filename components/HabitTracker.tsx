@@ -79,9 +79,8 @@ export default function HabitTracker({ isOpen, onClose }: HabitTrackerProps) {
   const [dayForm, setDayForm] = useState<HabitFormState>({ ...EMPTY_FORM });
   const [savingDay, setSavingDay] = useState(false);
 
-  // Month PDF export (captures the off-screen printable sheet below)
+  // Month PDF export (built as vector PDF from the entries — see lib/pdf.ts)
   const [downloading, setDownloading] = useState(false);
-  const printRef = useRef<HTMLDivElement>(null);
 
   const entryFor = useCallback(
     (key: string) => entries.find((e) => e.date.slice(0, 10) === key),
@@ -169,11 +168,25 @@ export default function HabitTracker({ isOpen, onClose }: HabitTrackerProps) {
   // Download the whole month as an A4 PDF — every day printed (blank rows included,
   // so a client can print it and fill it in by hand).
   const handleDownloadMonth = async () => {
-    if (!printRef.current) return;
     setDownloading(true);
     try {
-      const { exportElementToPdf } = await import('@/lib/pdf');
-      await exportElementToPdf(printRef.current, `Habit-Tracker-${MONTH_NAMES[curM - 1]}-${curY}.pdf`);
+      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const days = Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
+        const key = `${curY}-${pad(curM)}-${pad(day)}`;
+        const e = entryFor(key);
+        return {
+          day,
+          weekday: weekdays[new Date(curY, curM - 1, day).getDay()],
+          protein: e?.protein != null ? String(e.protein) : '',
+          water: e?.water != null ? String(e.water) : '',
+          workout: e?.workout ? 'Yes' : '',
+          steps: e?.steps != null ? String(e.steps) : '',
+          sleep: e?.sleep != null ? String(e.sleep) : '',
+          notes: e?.notes || '',
+        };
+      });
+      const { downloadHabitMonthPdf } = await import('@/lib/pdf');
+      await downloadHabitMonthPdf({ monthName: MONTH_NAMES[curM - 1], year: curY }, days, `Habit-Tracker-${MONTH_NAMES[curM - 1]}-${curY}.pdf`);
     } catch (e) {
       console.error('Habit PDF failed', e);
       alert('Could not generate PDF. Please try again.');
@@ -387,11 +400,6 @@ export default function HabitTracker({ isOpen, onClose }: HabitTrackerProps) {
           </div>
         </motion.div>
 
-        {/* Off-screen printable month sheet (white/blue, matches the logbook) — captured for PDF */}
-        <div style={{ position: 'fixed', left: '-99999px', top: 0, width: '794px' }} aria-hidden>
-          <MonthPrintSheet printRef={printRef} year={curY} monthIndex={curM - 1} daysInMonth={daysInMonth} entryFor={entryFor} />
-        </div>
-
         {/* Day editor overlay */}
         <AnimatePresence>
           {editingDay && (
@@ -478,86 +486,3 @@ function Field({ icon, label, hint, children }: { icon: React.ReactNode; label: 
   );
 }
 
-/* ---- Printable month sheet (white/blue, matches the Transformation Logbook) ---- */
-
-const PRINT_COLS: { label: string; unit: string; get: (e?: HabitEntry) => string }[] = [
-  { label: 'Protein', unit: 'grams', get: (e) => (e?.protein != null ? String(e.protein) : '') },
-  { label: 'Water', unit: 'litres', get: (e) => (e?.water != null ? String(e.water) : '') },
-  { label: 'Workout', unit: 'yes / no', get: (e) => (e?.workout ? 'Yes' : '') },
-  { label: 'Steps', unit: 'count', get: (e) => (e?.steps != null ? String(e.steps) : '') },
-  { label: 'Sleep', unit: 'hours', get: (e) => (e?.sleep != null ? String(e.sleep) : '') },
-  { label: 'Notes', unit: '', get: (e) => e?.notes || '' },
-];
-
-const WEEKDAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-function MonthPrintSheet({
-  printRef, year, monthIndex, daysInMonth, entryFor,
-}: {
-  printRef: React.RefObject<HTMLDivElement>;
-  year: number;
-  monthIndex: number;
-  daysInMonth: number;
-  entryFor: (key: string) => HabitEntry | undefined;
-}) {
-  const cellBorder = '1px solid #cbd5e1';
-  return (
-    <div ref={printRef} style={{ background: '#ffffff', color: '#0a0f1f', padding: '32px', width: '794px', fontFamily: 'Arial, Helvetica, sans-serif' }}>
-      {/* Masthead — same white/blue treatment as the logbook */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #0b1224', paddingBottom: '14px', marginBottom: '16px' }}>
-        <div>
-          <p style={{ fontSize: '20px', fontWeight: 800, lineHeight: 1.1, margin: 0 }}>Coach Himanshu</p>
-          <p style={{ fontSize: '24px', fontWeight: 800, color: '#175FFF', margin: '2px 0 0' }}>HABIT TRACKER</p>
-          <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', color: '#475569', margin: '2px 0 0' }}>
-            {MONTH_NAMES[monthIndex]} {year} · SMALL DAILY HABITS CREATE BIG TRANSFORMATIONS
-          </p>
-        </div>
-        <div style={{ fontSize: '12px', color: '#475569', textAlign: 'right' }}>
-          <div style={{ marginBottom: '4px' }}><b style={{ color: '#0b1224' }}>Name:</b> ______________________</div>
-          <div><b style={{ color: '#0b1224' }}>Month:</b> {MONTH_NAMES[monthIndex]} {year}</div>
-        </div>
-      </div>
-
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', border: cellBorder }}>
-        <thead>
-          <tr>
-            <th style={{ background: '#175FFF', color: '#fff', border: cellBorder, padding: '6px 4px', textAlign: 'left', width: '90px' }}>Day</th>
-            {PRINT_COLS.map((c) => (
-              <th key={c.label} style={{ background: '#175FFF', color: '#fff', border: cellBorder, padding: '6px 4px', textAlign: c.label === 'Notes' ? 'left' : 'center' }}>
-                <div>{c.label}</div>
-                {c.unit && <div style={{ fontSize: '9px', fontWeight: 400, opacity: 0.85 }}>{c.unit}</div>}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-            const key = `${year}-${pad(monthIndex + 1)}-${pad(day)}`;
-            const e = entryFor(key);
-            const dow = WEEKDAY[new Date(year, monthIndex, day).getDay()];
-            const zebra = day % 2 === 0 ? '#f1f5f9' : '#ffffff';
-            return (
-              <tr key={day} data-pdf-break>
-                <td style={{ border: cellBorder, padding: '5px 6px', background: zebra, fontWeight: 600, color: '#0f172a' }}>
-                  {day} <span style={{ color: '#94a3b8', fontWeight: 400 }}>{dow}</span>
-                </td>
-                {PRINT_COLS.map((c) => (
-                  <td key={c.label} style={{ border: cellBorder, padding: '5px 6px', background: zebra, textAlign: c.label === 'Notes' ? 'left' : 'center', color: '#0f172a' }}>
-                    {c.get(e)}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <div data-pdf-break style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', fontWeight: 800, color: '#0b1224', margin: 0 }}>
-          “SMALL DAILY HABITS CREATE BIG <span style={{ color: '#175FFF' }}>TRANSFORMATIONS.”</span>
-        </p>
-        <p style={{ fontSize: '11px', color: '#64748b', margin: '4px 0 0' }}>Coach Himanshu · www.coachhimanshu.com</p>
-      </div>
-    </div>
-  );
-}
