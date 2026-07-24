@@ -280,6 +280,16 @@ export const CITIES: CityData[] = [
     landmarks: ['Lingaraj Temple', 'Nandankanan Zoo', 'Udayagiri Caves'],
     fitnessStats: 'a fast-growing IT workforce in Bhubaneswar is driving demand for structured fitness alongside the traditional rice-based diet',
   },
+  {
+    slug: 'kanpur',
+    name: 'Kanpur',
+    state: 'Uttar Pradesh',
+    population: '3.1 million',
+    description: 'the industrial hub of Uttar Pradesh',
+    localFoods: ['thaggu ke laddoo', 'bhugga', 'kachori sabzi', 'malai makhan', 'chhole samosa'],
+    landmarks: ['JK Temple', 'Moti Jheel', 'Green Park Stadium'],
+    fitnessStats: 'long working hours in Kanpur\'s leather and textile industries leave many professionals seeking online coaching that fits a busy shift-based routine',
+  },
 ];
 
 export function getCityBySlug(slug: string): CityData | undefined {
