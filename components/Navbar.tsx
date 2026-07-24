@@ -16,7 +16,7 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
-    { href: '/#plans', label: 'Plans' },
+    { href: '/plans', label: 'Plans' },
     { href: '/blog', label: 'Blog' },
     { href: 'https://rhynogrip.com', label: 'Store' },
   ];

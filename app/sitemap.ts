@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getAllCitySlugs } from '@/lib/cities';
 import { getAllCountrySlugs } from '@/lib/countries';
+import { getAllAudienceSlugs } from '@/lib/audiences';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -55,6 +56,14 @@ export default async function sitemap({
 // ─────────────────────────────────────────────────────────────────────────────
 function getCorePages(): MetadataRoute.Sitemap {
   const now = new Date();
+
+  const audiencePages: MetadataRoute.Sitemap = getAllAudienceSlugs().map((slug) => ({
+    url: `${baseUrl}/fitness-coaching-for/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }));
+
   return [
     {
       url: baseUrl,
@@ -69,11 +78,18 @@ function getCorePages(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/plans`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/assessment`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    ...audiencePages,
     {
       url: `${baseUrl}/fit-bharat-mission`,
       lastModified: now,

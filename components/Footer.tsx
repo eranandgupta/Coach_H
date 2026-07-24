@@ -52,10 +52,34 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="/#plans"
+                  href="/plans"
                   className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
                 >
-                  Plans
+                  Plans &amp; Pricing
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/fitness-coaching-for/women"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  Coaching for Women
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/fitness-coaching-for/men"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  Coaching for Men
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/fitness-coaching-for/family"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  Couple &amp; Family
                 </a>
               </li>
               <li>

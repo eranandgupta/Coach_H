@@ -209,13 +209,6 @@ export default function RootLayout({
                     "priceValidUntil": "2027-12-31"
                   }
                 ]
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "reviewCount": "1000",
-                "bestRating": "5",
-                "worstRating": "1"
               }
             })
           }}
@@ -338,13 +331,6 @@ export default function RootLayout({
                 "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                 "opens": "00:00",
                 "closes": "23:59"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "reviewCount": "1000",
-                "bestRating": "5",
-                "worstRating": "1"
               },
               "sameAs": [
                 "https://www.instagram.com/coach_himanshu_/",

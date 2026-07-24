@@ -60,12 +60,6 @@ export default function CityLayout({ children, params }: { children: React.React
     },
     serviceType: 'Online Personal Training',
     priceRange: '₹799 - ₹29,999',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '1000',
-      bestRating: '5',
-    },
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: 'https://coachhimanshu.com/assessment',
