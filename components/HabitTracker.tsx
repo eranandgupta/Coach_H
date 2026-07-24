@@ -172,25 +172,8 @@ export default function HabitTracker({ isOpen, onClose }: HabitTrackerProps) {
     if (!printRef.current) return;
     setDownloading(true);
     try {
-      const html2canvas = (await import('html2canvas')).default;
-      const jsPDF = (await import('jspdf')).default;
-      const canvas = await html2canvas(printRef.current, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-      const img = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pw = pdf.internal.pageSize.getWidth();
-      const ph = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pw) / canvas.width;
-      let heightLeft = imgH;
-      let position = 0;
-      pdf.addImage(img, 'PNG', 0, position, pw, imgH);
-      heightLeft -= ph;
-      while (heightLeft > 0) {
-        position -= ph;
-        pdf.addPage();
-        pdf.addImage(img, 'PNG', 0, position, pw, imgH);
-        heightLeft -= ph;
-      }
-      pdf.save(`Habit-Tracker-${MONTH_NAMES[curM - 1]}-${curY}.pdf`);
+      const { exportElementToPdf } = await import('@/lib/pdf');
+      await exportElementToPdf(printRef.current, `Habit-Tracker-${MONTH_NAMES[curM - 1]}-${curY}.pdf`);
     } catch (e) {
       console.error('Habit PDF failed', e);
       alert('Could not generate PDF. Please try again.');
@@ -554,7 +537,7 @@ function MonthPrintSheet({
             const dow = WEEKDAY[new Date(year, monthIndex, day).getDay()];
             const zebra = day % 2 === 0 ? '#f1f5f9' : '#ffffff';
             return (
-              <tr key={day}>
+              <tr key={day} data-pdf-break>
                 <td style={{ border: cellBorder, padding: '5px 6px', background: zebra, fontWeight: 600, color: '#0f172a' }}>
                   {day} <span style={{ color: '#94a3b8', fontWeight: 400 }}>{dow}</span>
                 </td>
@@ -569,7 +552,7 @@ function MonthPrintSheet({
         </tbody>
       </table>
 
-      <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', textAlign: 'center' }}>
+      <div data-pdf-break style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', textAlign: 'center' }}>
         <p style={{ fontSize: '13px', fontWeight: 800, color: '#0b1224', margin: 0 }}>
           “SMALL DAILY HABITS CREATE BIG <span style={{ color: '#175FFF' }}>TRANSFORMATIONS.”</span>
         </p>

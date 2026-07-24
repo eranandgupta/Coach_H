@@ -208,25 +208,8 @@ export default function TransformationLogModal({ isOpen, onClose, userId, userNa
     if (!sheetRef.current) return;
     setDownloading(true);
     try {
-      const html2canvas = (await import('html2canvas')).default;
-      const jsPDF = (await import('jspdf')).default;
-      const canvas = await html2canvas(sheetRef.current, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-      const img = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pw = pdf.internal.pageSize.getWidth();
-      const ph = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pw) / canvas.width;
-      let heightLeft = imgH;
-      let position = 0;
-      pdf.addImage(img, 'PNG', 0, position, pw, imgH);
-      heightLeft -= ph;
-      while (heightLeft > 0) {
-        position -= ph;
-        pdf.addPage();
-        pdf.addImage(img, 'PNG', 0, position, pw, imgH);
-        heightLeft -= ph;
-      }
-      pdf.save(`Transformation-Logbook-${(userName || 'Client').replace(/\s+/g, '-')}.pdf`);
+      const { exportElementToPdf } = await import('@/lib/pdf');
+      await exportElementToPdf(sheetRef.current, `Transformation-Logbook-${(userName || 'Client').replace(/\s+/g, '-')}.pdf`);
     } catch (e) {
       console.error('PDF generation failed', e);
       alert('Could not generate PDF. Please try again.');
@@ -485,7 +468,7 @@ function LogSheet(props: {
         <Reflect label="Any other notes for yourself:" value={data.reflection.otherNotes} onChange={(v) => setField((d) => { d.reflection.otherNotes = v; })} />
       </div>
 
-      <div className="mt-6 pt-4 border-t text-center" style={{ borderColor: '#e2e8f0' }}>
+      <div data-pdf-break className="mt-6 pt-4 border-t text-center" style={{ borderColor: '#e2e8f0' }}>
         <p className="text-sm font-extrabold" style={{ color: '#0b1224' }}>“WHAT GETS MEASURED GETS <span style={{ color: '#175FFF' }}>IMPROVED.”</span></p>
         <p className="text-[11px] mt-1" style={{ color: '#64748b' }}>Coach Himanshu · www.coachhimanshu.com · Evidence-Based Fitness. Real Results.</p>
       </div>
@@ -497,7 +480,7 @@ function LogSheet(props: {
 
 function SectionTitle({ children, noMargin }: { children: React.ReactNode; noMargin?: boolean }) {
   return (
-    <div className={noMargin ? '' : 'mt-6 mb-2'}>
+    <div data-pdf-break className={noMargin ? '' : 'mt-6 mb-2'}>
       <h3 className="text-sm font-extrabold uppercase tracking-wide inline-block px-2 py-1 rounded" style={{ background: '#0b1224', color: '#fff' }}>{children}</h3>
     </div>
   );
@@ -556,7 +539,7 @@ function CellInput({ value, onChange }: { value: string; onChange: (v: string) =
 
 function Row3({ label, p, onD1, onD30 }: { label: string; p: Pair; onD1: (v: string) => void; onD30: (v: string) => void }) {
   return (
-    <tr>
+    <tr data-pdf-break>
       <td className="px-2 py-1.5" style={{ border: '1px solid #cbd5e1', color: '#0f172a' }}>{label}</td>
       <td className="px-2 py-1" style={{ border: '1px solid #cbd5e1' }}><CellInput value={p.d1} onChange={onD1} /></td>
       <td className="px-2 py-1" style={{ border: '1px solid #cbd5e1' }}><CellInput value={p.d30} onChange={onD30} /></td>
@@ -567,7 +550,7 @@ function Row3({ label, p, onD1, onD30 }: { label: string; p: Pair; onD1: (v: str
 
 function SummaryRow({ label, p }: { label: string; p: Pair }) {
   return (
-    <tr>
+    <tr data-pdf-break>
       <td className="px-2 py-1.5" style={{ border: '1px solid #cbd5e1', color: '#0f172a' }}>{label}</td>
       <td className="px-2 py-1.5 text-center" style={{ border: '1px solid #cbd5e1' }}>{p.d1 || '—'}</td>
       <td className="px-2 py-1.5 text-center" style={{ border: '1px solid #cbd5e1' }}>{p.d30 || '—'}</td>
@@ -578,7 +561,7 @@ function SummaryRow({ label, p }: { label: string; p: Pair }) {
 
 function Reflect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div>
+    <div data-pdf-break>
       <p className="font-semibold mb-1" style={{ color: '#334155' }}>{label}</p>
       <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={2}
         style={{ width: '100%', border: '1px solid #cbd5e1', borderRadius: 6, background: 'transparent', color: '#0a0f1f', outline: 'none', padding: '6px 8px', resize: 'vertical' }} className="text-sm" />
