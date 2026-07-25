@@ -447,7 +447,7 @@ export default function Home() {
         name: 'How does online fitness coaching with Coach Himanshu work?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Once you subscribe to a plan, you receive a customised workout plan and personalised diet plan on WhatsApp. You get weekly one-on-one consultations, video tutorials for exercises, supplement guidance, and 24/7 WhatsApp support from Coach Himanshu.',
+          text: "Once you subscribe, you receive a fully personalised fitness program based on your goals, current fitness level, lifestyle, medical history, and available equipment. Depending on your plan, you'll receive a customised workout plan, personalised diet plan, exercise tutorial videos, regular progress reviews through online meetings or live training sessions, in-app coach support, WhatsApp assistance, habit tracking, and transformation monitoring. Your program is continuously updated based on your progress to help you achieve sustainable long-term results.",
         },
       },
       {
@@ -455,7 +455,7 @@ export default function Home() {
         name: 'What certifications does Coach Himanshu have?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Coach Himanshu is a NASM Certified Bodybuilding Coach with 6+ professional diplomas including Diploma in Personal Training, Diploma in Sports Nutrition, and certifications in TRX training and rehabilitation.',
+          text: 'Coach Himanshu holds a progressive line of credentials built over his coaching career: Diploma in Personal Training, Diploma in Master Trainer, Diploma in Sport Nutrition, Diploma in TRX Suspension Training, Diploma in Special Population training, and a NASM Certification as a Bodybuilding Preparation Coach — giving him a broad, layered foundation across general fitness, nutrition, functional training, and physique competition prep.',
         },
       },
       {
@@ -463,7 +463,7 @@ export default function Home() {
         name: 'What is the cost of online fitness coaching in India?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Coach Himanshu offers affordable plans starting at just ₹1,099/month for the Kickstart Plan. The Consistency Plan is ₹2,499 for 3 months, the Strength Plan is ₹4,299 for 6 months, and the Mastery Plan is ₹8,999 for 12 months. Home workout and rehabilitation plans are also available.',
+          text: 'The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ₹1,099 for recorded coaching, while live 1-on-1 personal training plans start from ₹7,499. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.',
         },
       },
       {
@@ -471,7 +471,7 @@ export default function Home() {
         name: 'Do I need a gym to follow Coach Himanshu\'s workout plans?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'No! Coach Himanshu offers dedicated Home Workout Plans that require no gym or equipment. You can train from home with bodyweight exercises and minimal equipment. Gym plans are also available for those who prefer working out at a gym.',
+          text: "No. Coach Himanshu offers both gym and home workout programs. If you train at home, your workouts are designed using TRX Suspension Trainers, resistance bands, or bodyweight exercises. If you have access to a gym, you'll receive a gym-specific training program that makes use of available equipment. Every plan is customised according to your training environment.",
         },
       },
       {
@@ -479,7 +479,7 @@ export default function Home() {
         name: 'Can I get a personalised diet plan for Indian food?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, all diet plans are personalised based on your goals, preferences, and Indian food habits. Whether you are vegetarian, non-vegetarian, or vegan, Coach Himanshu creates meal plans using Indian foods you actually enjoy eating.',
+          text: 'Yes. Every nutrition plan is customised according to your food preferences, lifestyle, daily routine, and fitness goals. Coach Himanshu provides practical Indian meal plans using easily available foods. Vegetarian, eggitarian, and non-vegetarian meal plans are available, making it easier to follow your nutrition plan consistently without relying on expensive or difficult-to-find foods.',
         },
       },
       {
@@ -487,7 +487,7 @@ export default function Home() {
         name: 'How many clients has Coach Himanshu trained?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Coach Himanshu has successfully helped 1000+ clients achieve their fitness transformations. From fat loss and muscle building to rehabilitation and sports performance, clients across India have benefited from his personalised coaching approach.',
+          text: 'Since beginning his professional coaching journey in February 2021, Coach Himanshu has trained 1,000+ clients across India and internationally, spanning fat loss, muscle building, strength training, and rehabilitation goals — experience that now shapes the personalized coaching delivered through the Coach Himanshu platform, launched in December 2025.',
         },
       },
       {
@@ -495,7 +495,7 @@ export default function Home() {
         name: 'Who is the best online fitness coach in India?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Coach Himanshu is one of India\'s top-rated online fitness coaches with NASM certification, 6+ professional diplomas, and 1000+ successful client transformations. He offers personalised workout and nutrition plans starting at just ₹799/month with dedicated WhatsApp support.',
+          text: 'The best online fitness coach is someone who provides personalised coaching, evidence-based guidance, continuous accountability, and long-term support rather than generic workout plans. Coach Himanshu focuses on customised workout programming, personalised nutrition, progress tracking, habit building, regular coach interactions, and ongoing support to help members achieve sustainable results safely and effectively.',
         },
       },
       {
@@ -503,7 +503,7 @@ export default function Home() {
         name: 'How much does online personal training cost in India?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Online personal training in India typically ranges from ₹2,000 to ₹30,000 per month. Coach Himanshu offers affordable plans starting at ₹799/month for home workouts and ₹1,099/month for gym plans, making professional coaching accessible to everyone.',
+          text: "Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ₹7,499 and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.",
         },
       },
       {
@@ -511,7 +511,7 @@ export default function Home() {
         name: 'Can I build muscle at home without gym equipment?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, you can build muscle at home without gym equipment. Coach Himanshu\'s Home Workout Plans use bodyweight exercises, resistance band routines, and progressive overload techniques to help you gain strength and muscle from home. Many clients have achieved significant transformations with home-only training.',
+          text: "Yes. Muscle can be built at home with the right training program, progressive overload, proper nutrition, and consistency. Coach Himanshu's home workout plans utilise bodyweight exercises, resistance bands, and TRX Suspension Trainers to help improve strength, increase muscle mass, and enhance overall fitness without requiring a traditional gym.",
         },
       },
       {
@@ -519,7 +519,7 @@ export default function Home() {
         name: 'Is online coaching effective compared to a gym trainer?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Online coaching can be more effective than a traditional gym trainer because you get a fully personalised plan, daily support via WhatsApp, weekly consultations, and expert nutrition guidance — all at a fraction of the cost. Coach Himanshu\'s 1000+ transformations prove that online coaching delivers real, measurable results.',
+          text: 'Yes. A structured online coaching program can be just as effective as in-person training when it includes personalised programming, nutrition guidance, regular progress reviews, accountability, and continuous support. Coach Himanshu combines customised coaching, exercise tutorial videos, direct communication, habit tracking, and regular program updates to ensure members stay on track and continue progressing.',
         },
       },
       {
@@ -527,7 +527,7 @@ export default function Home() {
         name: 'What results can I expect in 3 months of online coaching?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'With consistent effort and Coach Himanshu\'s guidance, clients typically lose 8-15 kg of fat or gain 3-5 kg of lean muscle in 3 months. Results vary based on your starting point, consistency, and adherence to the workout and nutrition plan. Weekly check-ins ensure your plan is adjusted for continuous progress.',
+          text: 'Results vary depending on your starting point, consistency, nutrition, sleep, and adherence to the program. Within three months, many members experience improvements in strength, body composition, fitness levels, exercise technique, energy, confidence, and healthy lifestyle habits. The focus is on achieving sustainable progress through scientifically designed training and nutrition rather than unrealistic promises.',
         },
       },
       {
@@ -535,7 +535,7 @@ export default function Home() {
         name: 'Does Coach Himanshu provide vegetarian meal plans?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, Coach Himanshu creates fully customised vegetarian, vegan, and eggetarian meal plans using Indian foods. Plans are designed around locally available ingredients you enjoy eating, ensuring high protein intake and proper nutrition without compromising on taste or cultural preferences.',
+          text: 'Yes. Coach Himanshu provides fully personalised vegetarian meal plans along with eggitarian and non-vegetarian options. Every diet plan is customised according to your calorie requirements, protein needs, food preferences, daily routine, and fitness goals while using practical Indian foods that are easy to prepare and follow.',
         },
       },
       {
@@ -543,7 +543,7 @@ export default function Home() {
         name: 'What happens after I subscribe to a plan?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'After subscribing, you receive a detailed fitness assessment form. Based on your goals, body type, and preferences, Coach Himanshu creates your personalised workout plan and meal plan within 24 hours. You get added to WhatsApp for daily support, receive video tutorials for all exercises, and have weekly one-on-one consultations.',
+          text: "After your subscription is confirmed, you'll complete a detailed assessment covering your goals, lifestyle, medical history, training experience, and dietary preferences. Based on this information, your personalised workout and diet plans are created. You'll receive access to the app, exercise tutorials, tracking tools, and coach support. Depending on your subscription, you'll also begin your scheduled online review meetings or live personal training sessions, with regular updates to your program as you progress.",
         },
       },
       {
@@ -551,7 +551,7 @@ export default function Home() {
         name: 'Does Coach Himanshu offer a refund policy?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, Coach Himanshu offers a transparent refund policy. If you are unsatisfied with the coaching within the initial period, you can request a refund. Full details are available on the refund policy page at coachhimanshu.com/refund-policy.',
+          text: 'Due to the personalised nature of the coaching services, customised workout plans, diet plans, and digital resources, subscriptions are generally non-refundable once the coaching process has started. If you have any concerns regarding your subscription or require assistance, the Coach Himanshu support team will work with you to provide the most appropriate solution. Please review the Terms & Conditions before purchasing any subscription.',
         },
       },
     ],
@@ -2704,13 +2704,13 @@ export default function Home() {
 
       {/* FAQ Section */}
       <section className="py-16 px-4 bg-brand-navy" aria-label="Frequently asked questions">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2
             className="text-2xl md:text-4xl font-bold text-white text-center mb-8 md:mb-12"
           >
             Frequently Asked Questions
           </h2>
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4 items-start">
             {faqSchema.mainEntity.map((faq, index) => (
               <details
                 key={index}
