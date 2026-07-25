@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { PLAN_GROUPS, PLAN_FAQS } from '@/lib/plans';
+import { PLAN_FAQS } from '@/lib/plans';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import PlanCompare from '@/components/PlanCompare';
 
 export default function PlansPage() {
   return (
@@ -41,7 +42,7 @@ export default function PlansPage() {
               href="/assessment"
               className="inline-flex items-center justify-center px-8 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
             >
-              Start Free Assessment
+              Start Consultation
             </Link>
             <Link
               href="#plans-list"
@@ -75,68 +76,8 @@ export default function PlansPage() {
         </div>
       </section>
 
-      {/* Plan groups */}
-      <div id="plans-list">
-        {PLAN_GROUPS.map((group, gi) => (
-          <section
-            key={group.key}
-            className={`py-16 md:py-24 ${gi % 2 === 1 ? 'border-y border-white/[0.06]' : ''}`}
-            style={gi % 2 === 1 ? { background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgba(10,15,31,1) 100%)' } : undefined}
-          >
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">{group.title}</h2>
-                <p className="text-gray-400 max-w-2xl mx-auto">{group.blurb}</p>
-              </div>
-
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {group.plans.map((plan, index) => (
-                  <div
-                    key={index}
-                    className={`relative flex flex-col p-6 rounded-2xl border transition-all duration-300 ${
-                      plan.popular
-                        ? 'border-brand-blue bg-brand-blue/5 shadow-lg shadow-brand-blue/10'
-                        : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]'
-                    }`}
-                  >
-                    {plan.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-blue text-white text-xs font-bold rounded-full whitespace-nowrap">
-                        MOST POPULAR
-                      </div>
-                    )}
-                    <div className="text-sm text-gray-400 mb-1">{plan.durationLabel}</div>
-                    <h3 className="text-lg font-bold text-white mb-1">{plan.name}</h3>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-3xl font-black text-brand-gold">{plan.priceLabel}</span>
-                    </div>
-                    <div className="text-xs text-gray-500 mb-4">{plan.tagline}</div>
-
-                    <ul className="space-y-2 mb-6 flex-1">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
-                          <span className="text-brand-blue mt-0.5 flex-shrink-0">&#10003;</span>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Link
-                      href="/#plans"
-                      className={`block text-center py-3 rounded-xl font-semibold transition-all duration-300 text-sm ${
-                        plan.popular
-                          ? 'bg-brand-blue text-white hover:bg-brand-blue-dark'
-                          : 'border border-white/20 text-white hover:border-brand-gold hover:bg-white/5'
-                      }`}
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        ))}
-      </div>
+      {/* Plan groups + interactive side-by-side comparison (client island) */}
+      <PlanCompare />
 
       {/* Who is it for — audience cross-links */}
       <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
@@ -188,16 +129,16 @@ export default function PlansPage() {
       <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgba(10,15,31,1) 100%)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Still Deciding? Start Free.
+            Still Deciding? Talk to Us First.
           </h2>
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-            Take the free fitness assessment and get a personalised plan recommendation — no payment required.
+            Start a free consultation and get a personalised plan recommendation — no payment required.
           </p>
           <Link
             href="/assessment"
             className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
           >
-            Take Free Assessment Now
+            Start Consultation
           </Link>
           <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-gray-400">
             <Link href="/about" className="hover:text-brand-blue transition-colors">About Coach Himanshu</Link>

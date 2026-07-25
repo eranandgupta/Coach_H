@@ -307,6 +307,50 @@ export const PLAN_GROUPS: PlanGroup[] = [
 // Every plan flattened — used for AggregateOffer low/high price + count.
 export const ALL_PLANS: PlanItem[] = PLAN_GROUPS.flatMap((g) => g.plans);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Side-by-side comparison matrix. Each row is one comparable attribute; text
+// rows (price/duration/people) show a value, boolean rows show a tick or dash.
+// Derived from each plan's advertised features so the matrix stays in sync with
+// what the cards show.
+// ─────────────────────────────────────────────────────────────────────────────
+export interface CompareRow {
+  label: string;
+  type: 'text' | 'bool';
+  values: (string | boolean)[];
+}
+
+function planHas(plan: PlanItem, keywords: string[]): boolean {
+  const hay = plan.features.join(' | ').toLowerCase();
+  return keywords.some((k) => hay.includes(k));
+}
+
+function isCouplePlan(plan: PlanItem): boolean {
+  return /couple/i.test(plan.name) || /for 2/i.test(plan.tagline);
+}
+
+export function comparePlans(plans: PlanItem[]): CompareRow[] {
+  const boolRow = (label: string, keywords: string[]): CompareRow => ({
+    label,
+    type: 'bool',
+    values: plans.map((p) => planHas(p, keywords)),
+  });
+
+  return [
+    { label: 'Price', type: 'text', values: plans.map((p) => p.priceLabel) },
+    { label: 'Duration', type: 'text', values: plans.map((p) => p.durationLabel) },
+    { label: 'For', type: 'text', values: plans.map((p) => (isCouplePlan(p) ? '2 people' : '1 person')) },
+    boolRow('Personalised workout plan', ['workout plan', 'workout plans']),
+    boolRow('Personalised diet plan', ['diet plan', 'diet plans', 'meal plan']),
+    boolRow('Exercise video tutorials / library', ['video']),
+    boolRow('Weekly 1-on-1 consultations', ['consultation']),
+    boolRow('Live 1:1 training sessions', ['live 1:1', 'live 1-on-1', 'personal training', 'per session']),
+    boolRow('Supplement guidance', ['supplement']),
+    boolRow('WhatsApp support', ['whatsapp']),
+    boolRow('Pause option', ['pause']),
+    boolRow('Free RhynoGrip fitness gear', ['rhynogrip']),
+  ];
+}
+
 export const PLAN_FAQS: { question: string; answer: string }[] = [
   {
     question: 'How much does online fitness coaching with Coach Himanshu cost?',
