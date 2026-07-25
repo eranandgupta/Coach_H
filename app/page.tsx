@@ -2710,17 +2710,17 @@ export default function Home() {
           >
             Frequently Asked Questions
           </h2>
-          <div className="grid md:grid-cols-2 gap-4 items-start">
+          <div className="grid md:grid-cols-2 gap-3 items-start">
             {faqSchema.mainEntity.map((faq, index) => (
               <details
                 key={index}
-                className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+                className="group bg-white/5 border border-white/10 rounded-lg overflow-hidden"
               >
-                <summary className="flex items-center justify-between cursor-pointer px-4 md:px-6 py-4 text-white font-medium text-sm md:text-lg hover:bg-white/5 transition-colors">
-                  <span className="pr-2">{faq.name}</span>
-                  <ChevronRight className="w-5 h-5 text-brand-blue transition-transform group-open:rotate-90 flex-shrink-0" />
+                <summary className="flex items-center justify-between gap-2 cursor-pointer px-4 py-3 text-white font-medium text-sm md:text-[15px] hover:bg-white/5 transition-colors">
+                  <span>{faq.name}</span>
+                  <ChevronRight className="w-4 h-4 text-brand-blue transition-transform group-open:rotate-90 flex-shrink-0" />
                 </summary>
-                <div className="px-4 md:px-6 pb-4 text-gray-300 text-sm md:text-base leading-relaxed">
+                <div className="px-4 pb-3.5 text-gray-300 text-sm leading-relaxed">
                   {faq.acceptedAnswer.text}
                 </div>
               </details>
