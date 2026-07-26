@@ -15,12 +15,12 @@ export default function CountryPage({ params }: { params: { country: string } })
 
   const plans = [
     {
-      name: 'Home Workout Plan',
+      name: 'Kickstart Plan',
       duration: '1 Month',
-      price: '₹799',
+      price: '₹1,099',
       perMonth: `≈ ${c.approxStart}/month`,
       features: [
-        'Home workout plan (no equipment)',
+        'Customised workout plan',
         'Personalised Indian diet plan',
         'Exercise video tutorials',
         'Weekly one-on-one video consultation',
@@ -108,7 +108,7 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
     {
       title: 'Exceptional Value',
-      description: `Plans start at just ₹799/month (≈ ${c.approxStart}) — a fraction of what personal training costs in ${c.name}. World-class, certified coaching without the local price tag. International cards accepted.`,
+      description: `Plans start at just ₹1,099/month (≈ ${c.approxStart}) — a fraction of what personal training costs in ${c.name}. World-class, certified coaching without the local price tag. International cards accepted.`,
     },
     {
       title: 'NASM Certified Expertise',
@@ -131,7 +131,7 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
     {
       question: `How do I pay from ${c.name}, and how much does it cost?`,
-      answer: `Plans start at ₹799/month, which is roughly ${c.approxStart}, going up to Elite 1:1 packages. Payment is handled through a secure checkout that accepts international debit and credit cards, so you can pay easily from ${c.name}. You get premium, NASM-certified coaching at a fraction of local personal-training prices.`,
+      answer: `Plans start at ₹1,099/month, which is roughly ${c.approxStart}, going up to Elite 1:1 packages. Payment is handled through a secure checkout that accepts international debit and credit cards, so you can pay easily from ${c.name}. You get premium, NASM-certified coaching at a fraction of local personal-training prices.`,
     },
     {
       question: `Will the diet plan work with the food available in ${c.name}?`,
@@ -139,7 +139,7 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
     {
       question: 'Do I need a gym, or can I train at home?',
-      answer: `You can do either. There are home workout plans that need zero equipment (₹799/month, ≈ ${c.approxStart}) and gym-based plans if you have access to one. Many NRI clients start with home workouts and add gym training later — your coach adapts the plan to whatever equipment you have.`,
+      answer: `You can do either. There are home workout plans that need minimal equipment and gym-based plans if you have access to one, with plans starting from ₹1,099/month (≈ ${c.approxStart}). Many NRI clients start with home workouts and add gym training later — your coach adapts the plan to whatever equipment you have.`,
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
@@ -196,7 +196,7 @@ export default function CountryPage({ params }: { params: { country: string } })
             </Link>
           </div>
           <p className="text-sm text-gray-500">
-            Plans from ₹799/month (≈ {c.approxStart}) · International cards accepted · English &amp; Hindi
+            Plans from ₹1,099/month (≈ {c.approxStart}) · International cards accepted · English &amp; Hindi
           </p>
         </div>
       </section>

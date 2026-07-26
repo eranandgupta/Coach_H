@@ -633,7 +633,7 @@ export default function Home() {
         '@type': 'HowToStep',
         position: 2,
         name: 'Choose Your Plan',
-        text: 'Select a coaching plan that fits your goals and budget — Gym Plans (₹1,099-₹8,999), Home Workout Plans (₹799-₹3,499), Rehabilitation Plans, or Live 1-on-1 Session packages.',
+        text: 'Select a coaching plan that fits your goals and budget — Gym Plans (₹1,099-₹8,999), Home Workout Plans (₹2,199-₹3,799), Rehabilitation Plans, or Live 1-on-1 Session packages.',
         url: 'https://coachhimanshu.com/#plans',
       },
       {

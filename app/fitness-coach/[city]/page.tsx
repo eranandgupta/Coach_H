@@ -46,11 +46,11 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       name: 'Home Workout Plan',
-      duration: '1 Month',
-      price: '₹799',
-      perMonth: '₹799/month',
+      duration: '3 Months',
+      price: '₹2,199',
+      perMonth: '₹733/month',
       features: [
-        'Home workout plan (no equipment)',
+        'Home workout plan (minimal equipment)',
         'Personalised diet plan',
         'Video tutorials',
         'Weekly one-on-one consultation',
@@ -113,7 +113,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       title: 'Affordable for Everyone',
-      description: `Plans start at just ₹799/month -- less than what most ${city.name} residents spend on one restaurant meal. Professional coaching shouldn't break the bank.`,
+      description: `Plans start at just ₹1,099/month -- less than what most ${city.name} residents spend on one restaurant meal. Professional coaching shouldn't break the bank.`,
     },
     {
       title: '24/7 WhatsApp Support',
@@ -136,7 +136,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       question: `Do I need a gym membership in ${city.name}?`,
-      answer: `Not necessarily! Coach Himanshu offers both gym-based plans (₹1,099/month) and home workout plans (₹799/month) that require zero equipment. Many clients in ${city.name} start with home workouts and transition to gym plans later.`,
+      answer: `Not necessarily! Coach Himanshu offers both gym-based plans (from ₹1,099/month) and home workout plans (from ₹733/month) that require minimal equipment. Many clients in ${city.name} start with home workouts and transition to gym plans later.`,
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
@@ -208,7 +208,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
             <div className="text-sm text-gray-400">Client Rating</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹799</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,099</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>

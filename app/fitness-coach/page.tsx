@@ -10,7 +10,7 @@ const baseUrl = 'https://coachhimanshu.com';
 export const metadata: Metadata = {
   title: 'Online Fitness Coach in India | City-by-City Personal Training',
   description:
-    'Find a NASM certified online fitness coach in your city. Coach Himanshu offers personalized workout plans, custom regional meal plans & 24/7 WhatsApp support across major Indian cities. 1000+ transformations. Plans from ₹799/month.',
+    'Find a NASM certified online fitness coach in your city. Coach Himanshu offers personalized workout plans, custom regional meal plans & 24/7 WhatsApp support across major Indian cities. 1000+ transformations. Plans from ₹1,099/month.',
   alternates: {
     canonical: `${baseUrl}/fitness-coach`,
   },

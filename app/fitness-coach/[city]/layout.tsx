@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!city) return { title: 'City Not Found' };
 
   const title = `Best Online Fitness Coach in ${city.name} | Coach Himanshu`;
-  const description = `Looking for a certified fitness coach in ${city.name}? Coach Himanshu provides NASM certified online personal training, custom ${city.name}-friendly meal plans, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹799/month.`;
+  const description = `Looking for a certified fitness coach in ${city.name}? Coach Himanshu provides NASM certified online personal training, custom ${city.name}-friendly meal plans, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,099/month.`;
 
   return {
     title,
@@ -59,7 +59,7 @@ export default function CityLayout({ children, params }: { children: React.React
       url: 'https://coachhimanshu.com/about',
     },
     serviceType: 'Online Personal Training',
-    priceRange: '₹799 - ₹29,999',
+    priceRange: '₹1,099 - ₹29,999',
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: 'https://coachhimanshu.com/assessment',

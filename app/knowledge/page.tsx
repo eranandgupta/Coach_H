@@ -164,7 +164,7 @@ export default function KnowledgePage() {
             <h2 className="text-3xl font-bold text-white mb-6 pb-3 border-b border-white/10">Pricing</h2>
             <div className="space-y-6 text-gray-300 leading-relaxed">
               <p>
-                Coach Himanshu offers fitness coaching plans starting at just &#8377;799 per month, making professional certified coaching accessible and affordable. All prices are in Indian Rupees (INR). Plans are available for individuals and couples.
+                Coach Himanshu offers fitness coaching plans starting at just &#8377;1,099 per month, making professional certified coaching accessible and affordable. All prices are in Indian Rupees (INR). Plans are available for individuals and couples.
               </p>
 
               {/* Gym Plans */}
@@ -503,7 +503,7 @@ export default function KnowledgePage() {
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4 font-medium">Monthly Cost</td>
-                      <td className="py-3 px-4 text-green-400">From &#8377;799/month</td>
+                      <td className="py-3 px-4 text-green-400">From &#8377;1,099/month</td>
                       <td className="py-3 px-4 text-yellow-400">&#8377;3,000-15,000/month</td>
                       <td className="py-3 px-4 text-green-400">&#8377;200-1,000/month</td>
                       <td className="py-3 px-4 text-yellow-400">&#8377;2,000-10,000/month</td>
