@@ -5,6 +5,10 @@ import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import PlanCompare from '@/components/PlanCompare';
 
+// Direct WhatsApp chat for "Start Consultation" CTAs.
+const WHATSAPP_CONSULT =
+  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20to%20start%20a%20free%20consultation.';
+
 export default function PlansPage() {
   return (
     <div className="min-h-screen bg-brand-navy">
@@ -38,12 +42,14 @@ export default function PlansPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/assessment"
+            <a
+              href={WHATSAPP_CONSULT}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
             >
               Start Consultation
-            </Link>
+            </a>
             <Link
               href="#plans-list"
               className="inline-flex items-center justify-center px-8 py-4 border border-white/20 hover:border-brand-gold text-white font-semibold rounded-xl transition-all duration-300 text-lg hover:bg-white/5"
@@ -134,12 +140,14 @@ export default function PlansPage() {
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">
             Start a free consultation and get a personalised plan recommendation — no payment required.
           </p>
-          <Link
-            href="/assessment"
+          <a
+            href={WHATSAPP_CONSULT}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
           >
             Start Consultation
-          </Link>
+          </a>
           <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-gray-400">
             <Link href="/about" className="hover:text-brand-blue transition-colors">About Coach Himanshu</Link>
             <Link href="/faq" className="hover:text-brand-blue transition-colors">All FAQs</Link>

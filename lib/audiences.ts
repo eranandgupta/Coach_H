@@ -43,7 +43,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Women',
     metaTitle: 'Online Fitness Coach for Women in India',
     metaDescription:
-      'Personalised online fitness coaching for women in India — fat loss, toning, PCOS & thyroid-friendly diets, and postpartum plans. Train from home. Plans from ₹799/month.',
+      'Personalised online fitness coaching for women in India — fat loss, toning, PCOS & thyroid-friendly diets, and postpartum plans. Train from home. Plans from ₹1,099/month.',
     heroLead: 'Fitness Coaching',
     heroTail: 'Built for Women',
     intro:
@@ -212,7 +212,7 @@ export const AUDIENCES: AudienceData[] = [
     ],
     ctaTitle: 'Ready to Train Smarter, Not Harder?',
     ctaText:
-      'Join the women across India transforming their health with a plan built for their body. Start with a free assessment — no payment required.',
+      'Join the women across India transforming their health with a plan built for their body. Start with a free consultation — no payment required.',
   },
 
   {
@@ -220,7 +220,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Men',
     metaTitle: 'Online Fitness Coach for Men in India',
     metaDescription:
-      'Online fitness coaching for men in India — build muscle, lose belly fat, gain strength and stamina. Custom workout + Indian diet plans. NASM certified. From ₹799/month.',
+      'Online fitness coaching for men in India — build muscle, lose belly fat, gain strength and stamina. Custom workout + Indian diet plans. NASM certified. From ₹1,099/month.',
     heroLead: 'Fitness Coaching',
     heroTail: 'Built for Men',
     intro:
@@ -390,7 +390,7 @@ export const AUDIENCES: AudienceData[] = [
     ],
     ctaTitle: 'Ready to Build the Body You Train For?',
     ctaText:
-      'Join 1000+ clients transforming with a plan built for their goal. Start with a free assessment — no payment required.',
+      'Join 1000+ clients transforming with a plan built for their goal. Start with a free consultation — no payment required.',
   },
 
   {
@@ -565,7 +565,7 @@ export const AUDIENCES: AudienceData[] = [
     ],
     ctaTitle: 'Ready to Get Fit Together?',
     ctaText:
-      'Start your transformation as a couple or family with a free assessment for each person — no payment required.',
+      'Start your transformation as a couple or family with a free consultation for each person — no payment required.',
   },
 ];
 

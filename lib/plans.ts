@@ -3,6 +3,13 @@
 // features in sync with that file (it is the DB source of truth). Grouped by the
 // way a buyer shops: recorded coaching, live 1:1, and couple/family.
 
+export interface PlanSpecs {
+  video: string;          // exact video access, e.g. 'Gym workout tutorials'
+  consultations?: string; // weekly video-call consults, e.g. '4 / month'
+  liveSessions?: string;  // live 1:1 sessions, e.g. '12 sessions'
+  pauseDays?: string;     // pause allowance, e.g. '7 days'
+}
+
 export interface PlanItem {
   name: string;
   price: number;          // INR, numeric — powers Offer schema
@@ -11,6 +18,7 @@ export interface PlanItem {
   tagline: string;        // short "for whom / what" line
   popular?: boolean;
   features: string[];
+  specs: PlanSpecs;       // structured attributes for the comparison matrix
 }
 
 export interface PlanGroup {
@@ -33,6 +41,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹1,099',
         durationLabel: '1 Month',
         tagline: 'Try it out — all inclusive',
+        specs: { video: 'Gym workout tutorials', consultations: '4 / month' },
         features: [
           'Customised workout plan',
           'Personalised diet plan',
@@ -50,6 +59,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         durationLabel: '3 Months',
         tagline: 'Most popular — build the habit',
         popular: true,
+        specs: { video: 'Gym workout tutorials', consultations: '4 / month' },
         features: [
           'Customised workout plan',
           'Personalised diet plan',
@@ -66,6 +76,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹4,299',
         durationLabel: '6 Months',
         tagline: 'Serious, sustained progress',
+        specs: { video: 'Gym workout tutorials', consultations: '6 / month', pauseDays: '7 days' },
         features: [
           'Customised workout plan',
           'Personalised diet plan',
@@ -83,6 +94,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹8,999',
         durationLabel: '12 Months',
         tagline: 'A full year, best value/month',
+        specs: { video: 'Complete video library', consultations: '6 / month', pauseDays: '15 days' },
         features: [
           'Customised workout plan',
           'Personalised diet plan',
@@ -100,6 +112,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹2,199',
         durationLabel: '3 Months',
         tagline: 'Train at home, minimal equipment',
+        specs: { video: 'Home workout tutorials', consultations: '2 / month' },
         features: [
           'Customised home workout plan',
           'Personalised diet plan',
@@ -116,6 +129,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹2,999',
         durationLabel: '3 Months',
         tagline: 'Recover & train around an injury',
+        specs: { video: 'Rehab tutorials', consultations: '2 / month' },
         features: [
           'Customised rehabilitation workout',
           'Rehab workout video tutorials',
@@ -139,6 +153,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹7,499',
         durationLabel: '1 Month',
         tagline: '12 live sessions · 60 min each',
+        specs: { video: 'Complete video library', liveSessions: '12 sessions' },
         features: [
           'Live 1:1 personal training',
           'Real-time form correction',
@@ -155,6 +170,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         durationLabel: '1 Month',
         tagline: '24 live sessions · 60 min each',
         popular: true,
+        specs: { video: 'Complete video library', liveSessions: '24 sessions' },
         features: [
           'Live 1:1 personal training',
           'Real-time form correction',
@@ -170,6 +186,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹18,999',
         durationLabel: '3 Months',
         tagline: '36 live sessions · 60 min each',
+        specs: { video: 'Complete video library', liveSessions: '36 sessions', pauseDays: '7 days' },
         features: [
           'Live 1:1 personal training',
           'Real-time form correction',
@@ -187,6 +204,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹29,999',
         durationLabel: '3 Months',
         tagline: '72 live sessions · 60 min each',
+        specs: { video: 'Complete video library', liveSessions: '72 sessions', pauseDays: '7 days' },
         features: [
           'Live 1:1 personal training',
           'Real-time form correction',
@@ -212,6 +230,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹3,799',
         durationLabel: '3 Months',
         tagline: 'For 2 · train at home together',
+        specs: { video: 'Home workout tutorials', consultations: '2 / month' },
         features: [
           'Individual home workout plan for each',
           'Personalised diet plan for each',
@@ -227,6 +246,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹5,299',
         durationLabel: '3 Months',
         tagline: 'For 2 · recover together',
+        specs: { video: 'Rehab tutorials', consultations: '2 / month' },
         features: [
           'Individual rehab workouts for each',
           'Rehab workout video tutorials',
@@ -242,6 +262,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         durationLabel: '6 Months',
         tagline: 'For 2 · best-selling couple plan',
         popular: true,
+        specs: { video: 'Gym workout tutorials', consultations: '6 / month', pauseDays: '7 days' },
         features: [
           'Individual workout plans for both',
           'Customised meal plans for both',
@@ -258,6 +279,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹15,999',
         durationLabel: '12 Months',
         tagline: 'For 2 · a full year together',
+        specs: { video: 'Complete video library', consultations: '6 / month', pauseDays: '15 days' },
         features: [
           'Individual workout & diet plans for both',
           'Full video library (gym, home, rehab)',
@@ -274,6 +296,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹11,999',
         durationLabel: '1 Month',
         tagline: 'For 2 · one shared live slot',
+        specs: { video: 'Complete video library', liveSessions: '12 sessions' },
         features: [
           'Live 1:1 coaching for both partners',
           'One shared slot — both attend together',
@@ -289,6 +312,7 @@ export const PLAN_GROUPS: PlanGroup[] = [
         priceLabel: '₹28,999',
         durationLabel: '3 Months',
         tagline: 'For 2 · one shared live slot',
+        specs: { video: 'Complete video library', liveSessions: '36 sessions', pauseDays: '7 days' },
         features: [
           'Live 1:1 coaching for both partners',
           'One shared slot — both attend together',
@@ -308,10 +332,9 @@ export const PLAN_GROUPS: PlanGroup[] = [
 export const ALL_PLANS: PlanItem[] = PLAN_GROUPS.flatMap((g) => g.plans);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Side-by-side comparison matrix. Each row is one comparable attribute; text
-// rows (price/duration/people) show a value, boolean rows show a tick or dash.
-// Derived from each plan's advertised features so the matrix stays in sync with
-// what the cards show.
+// Side-by-side comparison matrix. Text rows show a per-plan value (e.g. the exact
+// video access, consultation count, or pause days); boolean rows show a tick or
+// dash. Derived from each plan's structured specs + advertised features.
 // ─────────────────────────────────────────────────────────────────────────────
 export interface CompareRow {
   label: string;
@@ -334,19 +357,24 @@ export function comparePlans(plans: PlanItem[]): CompareRow[] {
     type: 'bool',
     values: plans.map((p) => planHas(p, keywords)),
   });
+  const textRow = (label: string, pick: (p: PlanItem) => string | undefined): CompareRow => ({
+    label,
+    type: 'text',
+    values: plans.map((p) => pick(p) ?? ''),
+  });
 
   return [
-    { label: 'Price', type: 'text', values: plans.map((p) => p.priceLabel) },
-    { label: 'Duration', type: 'text', values: plans.map((p) => p.durationLabel) },
-    { label: 'For', type: 'text', values: plans.map((p) => (isCouplePlan(p) ? '2 people' : '1 person')) },
+    textRow('Price', (p) => p.priceLabel),
+    textRow('Duration', (p) => p.durationLabel),
+    textRow('For', (p) => (isCouplePlan(p) ? '2 people' : '1 person')),
     boolRow('Personalised workout plan', ['workout plan', 'workout plans']),
     boolRow('Personalised diet plan', ['diet plan', 'diet plans', 'meal plan']),
-    boolRow('Exercise video tutorials / library', ['video']),
-    boolRow('Weekly 1-on-1 consultations', ['consultation']),
-    boolRow('Live 1:1 training sessions', ['live 1:1', 'live 1-on-1', 'personal training', 'per session']),
+    textRow('Exercise video tutorials / library', (p) => p.specs.video),
+    textRow('Weekly 1-on-1 consultations', (p) => p.specs.consultations),
+    textRow('Live 1:1 training sessions', (p) => p.specs.liveSessions),
     boolRow('Supplement guidance', ['supplement']),
     boolRow('WhatsApp support', ['whatsapp']),
-    boolRow('Pause option', ['pause']),
+    textRow('Pause option', (p) => p.specs.pauseDays),
     boolRow('Free RhynoGrip fitness gear', ['rhynogrip']),
   ];
 }
@@ -375,7 +403,7 @@ export const PLAN_FAQS: { question: string; answer: string }[] = [
   {
     question: 'Is there a free trial or free way to get started?',
     answer:
-      'Yes. You can take the free fitness assessment with no payment required. It helps Coach Himanshu understand your goals, lifestyle, and preferences and recommend the right plan before you commit.',
+      'Yes. You can take the free fitness assessment or start a free consultation on WhatsApp with no payment required. It helps Coach Himanshu understand your goals, lifestyle, and preferences and recommend the right plan before you commit.',
   },
   {
     question: 'Can I get coaching if I live outside India?',

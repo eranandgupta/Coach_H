@@ -5,6 +5,10 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 
+// Direct WhatsApp chat for "Start Consultation" CTAs.
+const WHATSAPP_CONSULT =
+  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20to%20start%20a%20free%20consultation.';
+
 export async function generateStaticParams() {
   return getAllAudienceSlugs().map((audience) => ({ audience }));
 }
@@ -76,7 +80,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
             <div className="text-sm text-gray-400">Personalised Plans</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹799</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,099</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>
@@ -278,12 +282,14 @@ export default function AudiencePage({ params }: { params: { audience: string } 
             {data.ctaText}
           </p>
 
-          <Link
-            href="/assessment"
+          <a
+            href={WHATSAPP_CONSULT}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
           >
-            Take Free Assessment Now
-          </Link>
+            Start Consultation
+          </a>
 
           {/* Cross-links to sibling audience pages */}
           <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-gray-400">

@@ -269,8 +269,10 @@ export default function PlanCompare() {
                               ) : (
                                 <span className="text-gray-600" aria-label="Not included">—</span>
                               )
-                            ) : (
+                            ) : v ? (
                               <span className="text-white font-semibold">{v}</span>
+                            ) : (
+                              <span className="text-gray-600" aria-label="Not included">—</span>
                             )}
                           </td>
                         ))}

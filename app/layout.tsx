@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'Coach Himanshu | NASM Certified Online Fitness Coach & Personal Trainer India',
     template: '%s | Coach Himanshu',
   },
-  description: 'Transform your body with NASM Certified Fitness Coach Himanshu. Get personalized online workout plans, custom meal plans, WhatsApp support & expert nutrition guidance. 1000+ transformations. Affordable fitness coaching in India starting at ₹799/month.',
+  description: 'Transform your body with NASM Certified Fitness Coach Himanshu. Get personalized online workout plans, custom meal plans, WhatsApp support & expert nutrition guidance. 1000+ transformations. Affordable fitness coaching in India starting at ₹1,099/month.',
   applicationName: 'Coach Himanshu',
   keywords: [
     'online fitness coach India',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: 'https://coachhimanshu.com',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach India',
-    description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, dedicated support. 1000+ success stories. Start from ₹799/month.',
+    description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, dedicated support. 1000+ success stories. Start from ₹1,099/month.',
     siteName: 'Coach Himanshu',
     images: [
       {
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach',
-    description: 'Transform your fitness with personalized coaching. 1000+ transformations. Start at ₹799/month.',
+    description: 'Transform your fitness with personalized coaching. 1000+ transformations. Start at ₹1,099/month.',
     images: ['/opengraph-image'],
     creator: '@coach_himanshu_',
   },
@@ -302,7 +302,7 @@ export default function RootLayout({
               "image": "https://coachhimanshu.com/opengraph-image",
               "url": "https://coachhimanshu.com",
               "telephone": "",
-              "priceRange": "₹799 - ₹29,999",
+              "priceRange": "₹1,099 - ₹29,999",
               "description": "NASM Certified online fitness coach providing personalized workout plans, custom Indian meal plans, 24/7 WhatsApp support, and weekly consultations. Serving clients across India and internationally.",
               "geo": {
                 "@type": "GeoCoordinates",
