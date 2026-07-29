@@ -456,6 +456,26 @@ export default function AdminDashboard() {
   const now = new Date();
   const totalClients = clients.length;
   const isSubActive = (s: any) => (s.status === 'active' || s.status === 'paused') && (new Date(s.endDate) >= now || (isElitePlan(s.plan?.name || '') && s.status === 'active'));
+
+  // Collapse exact-duplicate subscription rows (same client + plan + dates +
+  // amount + payment id) so a record that got created twice doesn't show as
+  // several identical rows. Genuine renewals (different dates) are preserved.
+  const dedupeKey = (s: any) => {
+    const d = (x: any) => new Date(x).toISOString().slice(0, 10);
+    return `${s.user?.id}|${s.plan?.id}|${d(s.startDate)}|${d(s.endDate)}|${s.paidAmount ?? ''}|${s.razorpayPaymentId || s.transactionId || ''}`;
+  };
+  const dedupedSubscriptions = (() => {
+    const seen = new Set<string>();
+    const out: Subscription[] = [];
+    for (const s of subscriptions) {
+      const k = dedupeKey(s);
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push(s);
+    }
+    return out;
+  })();
+  const hiddenDuplicateCount = subscriptions.length - dedupedSubscriptions.length;
   const activeClients = clients.filter((c) =>
     c.subscriptions?.some(isSubActive)
   ).length;
@@ -834,7 +854,14 @@ export default function AdminDashboard() {
               <TabsContent value="subscriptions">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-white">All Subscriptions</h2>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">All Subscriptions</h2>
+                      {hiddenDuplicateCount > 0 && (
+                        <p className="text-xs text-yellow-400/80 mt-1">
+                          {hiddenDuplicateCount} exact-duplicate {hiddenDuplicateCount === 1 ? 'row' : 'rows'} hidden
+                        </p>
+                      )}
+                    </div>
                     <button onClick={fetchSubscriptions} className="p-2 bg-white/10 border border-white/20 rounded-lg text-gray-300 hover:bg-white/20 transition-all">
                       <RefreshCw className="h-4 w-4" />
                     </button>
@@ -862,7 +889,7 @@ export default function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {subscriptions.map((sub) => (
+                          {dedupedSubscriptions.map((sub) => (
                             <tr key={sub.id} className="border-b border-white/5 hover:bg-white/5">
                               <td className="py-3 pr-4">
                                 <p className="font-medium text-white">{sub.user.name || 'Unnamed'}</p>
