@@ -103,13 +103,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             console.log('Client needs assessment - Redirecting to assessment...');
             onClose();
             router.push('/assessment');
-          } else if (data.subscription && !data.subscription.isActive) {
-            // Then check subscription status
-            alert(data.subscription.message || 'Your subscription has expired. Please renew to continue.');
-            onClose();
-            router.push('/#plans');
           } else {
-            // Redirect to dashboard
+            // Always let clients into their dashboard — even with an expired
+            // subscription. The dashboard shows the expired state with a Renew
+            // button so they can reactivate in-place (select plan → pay).
             console.log('Client login - Redirecting to dashboard...');
             onClose();
             router.push('/dashboard');

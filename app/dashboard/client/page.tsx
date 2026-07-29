@@ -41,6 +41,7 @@ import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import HabitTracker from '@/components/HabitTracker';
 import TransformationLogModal from '@/components/TransformationLogModal';
+import RenewModal from '@/components/RenewModal';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
@@ -67,6 +68,7 @@ export default function ClientDashboard() {
   const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
+  const [isRenewOpen, setIsRenewOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [completedSessions, setCompletedSessions] = useState<number[]>([]);
   const [pauseLoading, setPauseLoading] = useState(false);
@@ -663,13 +665,13 @@ export default function ClientDashboard() {
 
               {/* Renew Button (if expired) */}
               {!isSubscriptionActive && (
-                <Link
-                  href="/#plans"
+                <button
+                  onClick={() => setIsRenewOpen(true)}
                   className="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-all flex items-center gap-1.5 flex-shrink-0"
                 >
                   Renew
                   <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                </button>
               )}
             </div>
           </div>
@@ -1413,12 +1415,12 @@ export default function ClientDashboard() {
                   )}
                 </div>
                 {!isSubscriptionActive && (
-                  <Link
-                    href="/#plans"
+                  <button
+                    onClick={() => setIsRenewOpen(true)}
                     className="mt-4 w-full flex items-center justify-center gap-2 bg-brand-blue text-white px-4 py-3 rounded-xl text-sm font-semibold hover:bg-blue-600 transition-all"
                   >
                     Renew Subscription <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </button>
                 )}
               </div>
             )}
@@ -1543,6 +1545,14 @@ export default function ClientDashboard() {
           planName={planName}
         />
       )}
+
+      {/* Renew subscription (expired clients reactivate in-place) */}
+      <RenewModal
+        isOpen={isRenewOpen}
+        onClose={() => setIsRenewOpen(false)}
+        user={user}
+        onRenewed={fetchDashboardData}
+      />
 
       {/* Chat View */}
       {activeView === 'chat' && user && (
