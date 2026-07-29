@@ -206,9 +206,9 @@ export const AUDIENCES: AudienceData[] = [
       },
     ],
     relatedBlogs: [
-      { title: 'PCOS Weight Loss: Diet & Exercise Plan for Indian Women', href: '/blog/pcos-weight-loss-diet-exercise-plan-indian-women' },
+      { title: 'PCOS Weight Loss: Diet & Exercise Plan for Indian Women', href: '/blog/pcos-weight-loss-diet-exercise-plan-for-indian-women' },
       { title: 'Thyroid & Weight Loss: Complete Guide for Indian Women', href: '/blog/thyroid-and-weight-loss-complete-guide-for-indian-women' },
-      { title: 'Postpartum Weight Loss: Safe Exercise & Diet for New Moms', href: '/blog/postpartum-weight-loss-safe-exercise-diet-plan-new-moms' },
+      { title: 'Postpartum Weight Loss: Safe Exercise & Diet for New Moms', href: '/blog/postpartum-weight-loss-safe-exercise-and-diet-plan-for-new-moms' },
     ],
     ctaTitle: 'Ready to Train Smarter, Not Harder?',
     ctaText:
@@ -386,7 +386,7 @@ export const AUDIENCES: AudienceData[] = [
     relatedBlogs: [
       { title: 'Best Diet Plan for Muscle Building in India', href: '/blog/best-diet-plan-for-muscle-building-in-india' },
       { title: 'How to Fix Belly Fat: Science-Based Guide for Indians', href: '/blog/how-to-fix-belly-fat-science-based-guide-for-indians' },
-      { title: 'How to Gain Weight for Skinny Guys: Indian Diet Plan', href: '/blog/how-to-gain-weight-for-skinny-guys-india' },
+      { title: 'How to Gain Weight for Skinny Guys: Indian Diet Plan', href: '/blog/how-to-gain-weight-for-skinny-guys-indian-diet-plan' },
     ],
     ctaTitle: 'Ready to Build the Body You Train For?',
     ctaText:
@@ -559,9 +559,9 @@ export const AUDIENCES: AudienceData[] = [
       },
     ],
     relatedBlogs: [
-      { title: 'Couple Workout Plan: Train Together in India', href: '/blog/couple-workout-plan-train-together-india' },
+      { title: 'Couple Workout Plan: Train Together in India', href: '/blog/couple-workout-plan-train-together-transform-together' },
       { title: 'Top 10 Home Workout Exercises for Beginners in India', href: '/blog/top-10-home-workout-exercises-for-beginners-in-india' },
-      { title: 'How to Lose Weight Without Going to the Gym', href: '/blog/how-to-lose-weight-without-going-to-gym' },
+      { title: 'How to Lose Weight Without Going to the Gym', href: '/blog/how-to-lose-weight-without-going-to-the-gym' },
     ],
     ctaTitle: 'Ready to Get Fit Together?',
     ctaText:
