@@ -33,6 +33,7 @@ import PlanCard from '@/components/PlanCard';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import LazyVideo from '@/components/LazyVideo';
 import { useCart } from '@/contexts/CartContext';
+import { SALES_ENABLED } from '@/lib/sale';
 
 const CheckoutDrawer = dynamic(() => import('@/components/CheckoutDrawer'), { ssr: false });
 const LoginModal = dynamic(() => import('@/components/LoginModal'), { ssr: false });
@@ -86,6 +87,10 @@ export default function Home() {
 
   // Determine which sale is active based on current date
   const activeSale = useMemo(() => {
+    // Master switch: when sales are disabled, no offer surfaces render (banner,
+    // strikethrough "% OFF" pricing, bonus-day badges). Flip SALES_ENABLED in lib/sale.ts.
+    if (!SALES_ENABLED) return null;
+
     const now = new Date();
     const month = now.getMonth(); // 0-indexed, June = 5, July = 6
     const day = now.getDate();

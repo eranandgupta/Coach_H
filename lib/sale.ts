@@ -9,6 +9,14 @@
  * length at checkout — so it lives on the server.
  */
 
+/**
+ * Master on/off switch for ALL plan offers (sale banner, strikethrough "% OFF" pricing,
+ * "+N days free" badges, and checkout bonus days). Flip to `true` to run a seasonal sale;
+ * the existing date logic and discount/bonus tables resume automatically. Kept `false`
+ * to keep every offer surface off site-wide.
+ */
+export const SALES_ENABLED = false;
+
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
 function istParts(now: Date) {
@@ -18,6 +26,7 @@ function istParts(now: Date) {
 
 /** True during 10–31 July (IST). month is 0-indexed, so July === 6. */
 export function isJulySaleActive(now: Date = new Date()): boolean {
+  if (!SALES_ENABLED) return false;
   const { month, day } = istParts(now);
   return month === 6 && day >= 10 && day <= 31;
 }
