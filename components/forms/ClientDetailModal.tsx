@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
 import TransformationLogModal from '@/components/TransformationLogModal';
-import { isElitePlan, getTotalSessions } from '@/lib/planUtils';
+import { isElitePlan, getTotalSessions, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from '@/lib/planUtils';
 
 interface ClientDetailModalProps {
   isOpen: boolean;
@@ -260,18 +260,35 @@ export default function ClientDetailModal({
             <div className="flex-1 overflow-y-auto p-6">
               {/* Subscription Info */}
               {client.subscriptions && client.subscriptions.length > 0 && (() => {
-                const currentSub = client.subscriptions[0];
-                const previousSubs = client.subscriptions.slice(1);
-                const getStatusColor = (status: string) => status === 'paused' ? 'yellow' : status === 'active' ? 'green' : 'red';
-                const getStatusLabel = (status: string) => status === 'paused' ? 'Paused' : status === 'active' ? 'Active' : status === 'cancelled' ? 'Cancelled' : 'Expired';
+                const now = new Date();
+                const subs = client.subscriptions;
+                // Feature the subscription that actually covers today; else the queued
+                // (upcoming) renewal; else the newest row. This is what stops a still-valid
+                // plan from showing "Expired" the moment an early renewal is added.
+                const currentSub =
+                  subs.find((s: any) => isSubscriptionCurrentlyActive(s, now)) ||
+                  subs.find((s: any) => subscriptionDisplayStatus(s, now) === 'upcoming') ||
+                  subs[0];
+                const previousSubs = subs.filter((s: any) => s.id !== currentSub.id);
+
+                // Full literal class strings (not interpolated) so Tailwind's scanner keeps them.
+                const STATUS_STYLES: Record<string, { label: string; heading: string; card: string; prevCard: string; text: string }> = {
+                  active:    { label: 'Active',    heading: 'text-green-400',  card: 'bg-green-500/10 border-green-500/30',   prevCard: 'bg-green-500/5 border-green-500/20',   text: 'text-green-400' },
+                  paused:    { label: 'Paused',    heading: 'text-yellow-400', card: 'bg-yellow-500/10 border-yellow-500/30', prevCard: 'bg-yellow-500/5 border-yellow-500/20', text: 'text-yellow-400' },
+                  upcoming:  { label: 'Upcoming',  heading: 'text-blue-400',   card: 'bg-blue-500/10 border-blue-500/30',     prevCard: 'bg-blue-500/5 border-blue-500/20',     text: 'text-blue-400' },
+                  expired:   { label: 'Expired',   heading: 'text-red-400',    card: 'bg-red-500/10 border-red-500/30',       prevCard: 'bg-red-500/5 border-red-500/20',       text: 'text-red-400' },
+                  cancelled: { label: 'Cancelled', heading: 'text-gray-400',   card: 'bg-gray-500/10 border-gray-500/30',     prevCard: 'bg-gray-500/5 border-gray-500/20',     text: 'text-gray-400' },
+                };
+                const styleFor = (s: any) => STATUS_STYLES[subscriptionDisplayStatus(s, now)] || STATUS_STYLES.expired;
+                const cur = styleFor(currentSub);
 
                 return (
                   <div className="mb-6 space-y-3">
                     {/* Current Subscription */}
-                    <div className={`p-4 bg-${getStatusColor(currentSub.status)}-500/10 border border-${getStatusColor(currentSub.status)}-500/30 rounded-xl`}>
+                    <div className={`p-4 border rounded-xl ${cur.card}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className={`text-${getStatusColor(currentSub.status)}-400 font-semibold`}>
-                          {currentSub.status === 'paused' ? 'Paused' : currentSub.status === 'active' ? 'Active' : 'Expired'} Subscription
+                        <h3 className={`${cur.heading} font-semibold`}>
+                          {cur.label} Subscription
                         </h3>
                         {!isTrainer && (currentSub.status === 'active' || currentSub.status === 'paused') && (
                           <button
@@ -290,7 +307,7 @@ export default function ClientDetailModal({
                       </div>
                       <p className="text-white font-medium">{currentSub.plan.name}</p>
                       <p className="text-gray-400 text-sm">
-                        Status: <span className={`text-${getStatusColor(currentSub.status)}-400`}>{getStatusLabel(currentSub.status)}</span>
+                        Status: <span className={cur.text}>{cur.label}</span>
                       </p>
                       <p className="text-gray-400 text-sm">
                         {new Date(currentSub.startDate).toLocaleDateString()} → {new Date(currentSub.endDate).toLocaleDateString()}
@@ -310,16 +327,18 @@ export default function ClientDetailModal({
 
                         {showPreviousSubs && (
                           <div className="space-y-2 pl-2 border-l-2 border-white/10">
-                            {previousSubs.map((sub: any) => (
+                            {previousSubs.map((sub: any) => {
+                              const st = styleFor(sub);
+                              return (
                               <div
                                 key={sub.id}
-                                className={`p-3 bg-${getStatusColor(sub.status)}-500/5 border border-${getStatusColor(sub.status)}-500/20 rounded-lg`}
+                                className={`p-3 border rounded-lg ${st.prevCard}`}
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
                                     <p className="text-white text-sm font-medium">{sub.plan.name}</p>
                                     <p className="text-gray-500 text-xs">
-                                      <span className={`text-${getStatusColor(sub.status)}-400`}>{getStatusLabel(sub.status)}</span>
+                                      <span className={st.text}>{st.label}</span>
                                       {' · '}{new Date(sub.startDate).toLocaleDateString()} → {new Date(sub.endDate).toLocaleDateString()}
                                     </p>
                                   </div>
@@ -339,7 +358,8 @@ export default function ClientDetailModal({
                                   )}
                                 </div>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         )}
                       </>

@@ -51,7 +51,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import MobileBottomNav from '@/components/MobileBottomNav';
-import { isElitePlan } from '@/lib/planUtils';
+import { isElitePlan, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from '@/lib/planUtils';
 import CreateClientModal from '@/components/admin/CreateClientModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
@@ -455,7 +455,10 @@ export default function AdminDashboard() {
   // Computed stats
   const now = new Date();
   const totalClients = clients.length;
-  const isSubActive = (s: any) => (s.status === 'active' || s.status === 'paused') && (new Date(s.endDate) >= now || (isElitePlan(s.plan?.name || '') && s.status === 'active'));
+  // Window-aware: a sub is "active" only if it actually covers today (started, not ended,
+  // or an Elite session plan). A queued renewal that starts in the future is 'upcoming', not active.
+  const isSubActive = (s: any) => isSubscriptionCurrentlyActive(s, now);
+  const isSubUpcoming = (s: any) => subscriptionDisplayStatus(s, now) === 'upcoming';
 
   // Collapse exact-duplicate subscription rows (same client + plan + dates +
   // amount + payment id) so a record that got created twice doesn't show as
@@ -505,8 +508,11 @@ export default function AdminDashboard() {
 
   const getSubscriptionStatus = (client: Client) => {
     const activeSub = client.subscriptions?.find(isSubActive);
-    if (activeSub && activeSub.status === 'paused') return { label: 'Paused', color: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30', plan: activeSub.plan.name };
+    if (activeSub && subscriptionDisplayStatus(activeSub, now) === 'paused') return { label: 'Paused', color: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30', plan: activeSub.plan.name };
     if (activeSub) return { label: 'Active', color: 'text-green-400 bg-green-500/20 border-green-500/30', plan: activeSub.plan.name };
+    // No plan covers today, but a queued renewal is waiting to start.
+    const upcomingSub = client.subscriptions?.find(isSubUpcoming);
+    if (upcomingSub) return { label: 'Upcoming', color: 'text-blue-400 bg-blue-500/20 border-blue-500/30', plan: upcomingSub.plan.name };
     const lastSub = client.subscriptions?.[0];
     if (lastSub) return { label: 'Expired', color: 'text-red-400 bg-red-500/20 border-red-500/30', plan: lastSub.plan.name };
     return { label: 'No Plan', color: 'text-gray-400 bg-gray-500/20 border-gray-500/30', plan: '-' };
@@ -897,9 +903,21 @@ export default function AdminDashboard() {
                               </td>
                               <td className="py-3 pr-4 text-gray-300">{sub.plan.name}</td>
                               <td className="py-3 pr-4">
-                                <span className={`text-xs px-2 py-0.5 rounded-full border ${sub.status === 'paused' ? 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30' : isSubActive(sub) ? 'text-green-400 bg-green-500/20 border-green-500/30' : 'text-red-400 bg-red-500/20 border-red-500/30'}`}>
-                                  {sub.status === 'paused' ? 'paused' : isSubActive(sub) ? 'active' : 'expired'}
-                                </span>
+                                {(() => {
+                                  const ds = subscriptionDisplayStatus(sub, now);
+                                  const badge: Record<string, string> = {
+                                    active: 'text-green-400 bg-green-500/20 border-green-500/30',
+                                    paused: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30',
+                                    upcoming: 'text-blue-400 bg-blue-500/20 border-blue-500/30',
+                                    expired: 'text-red-400 bg-red-500/20 border-red-500/30',
+                                    cancelled: 'text-gray-400 bg-gray-500/20 border-gray-500/30',
+                                  };
+                                  return (
+                                    <span className={`text-xs px-2 py-0.5 rounded-full border ${badge[ds]}`}>
+                                      {ds}
+                                    </span>
+                                  );
+                                })()}
                               </td>
                               <td className="py-3 pr-4 text-gray-400">{formatDate(sub.startDate)}</td>
                               <td className="py-3 pr-4 text-gray-400">{formatDate(sub.endDate)}</td>
@@ -913,7 +931,7 @@ export default function AdminDashboard() {
                                     className="px-3 py-1 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-400 hover:bg-amber-500/30 text-xs transition-all">
                                     Invoice
                                   </button>
-                                  {isSubActive(sub) ? (
+                                  {(isSubActive(sub) || isSubUpcoming(sub)) ? (
                                     <button
                                       onClick={() => { setRenewSubClient({ id: sub.user.id, name: sub.user.name || 'Client', email: sub.user.email }); setSubMode('extend'); setRenewSubOpen(true); }}
                                       className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 hover:bg-green-500/30 text-xs transition-all">

@@ -10,8 +10,13 @@ import { isElitePlan, getEffectiveTotalSessions } from './planUtils';
  *  - Session rollover: when renewing one Elite (session-based) plan with another, any UNUSED
  *    sessions from the current plan are rolled over onto the new plan as `bonusSessions`
  *    (e.g. 5 left + 72 new = 77 total). Progress is NOT copied as completed sessions.
- *  - The previous active/paused subscription is marked `expired` (superseded); the new row is
- *    created `active`, so coverage is continuous.
+ *  - Superseding: when the renewal starts TODAY (no future-dated coverage left), or when it is
+ *    an Elite->Elite session rollover (sessions carried onto the new plan), the previous
+ *    active/paused subscription is marked `expired`. But when a time-based plan is renewed
+ *    EARLY — i.e. queued behind a still-valid subscription — the current subscription is left
+ *    `active` until its own endDate passes; the new row is created `active` too but, because it
+ *    starts in the future, it reads as `upcoming` everywhere (see subscriptionDisplayStatus).
+ *    This prevents the "renew early -> current plan instantly shows Expired" bug.
  *
  * Pass a Prisma transaction client as `db` to run inside an existing `$transaction`.
  */
@@ -66,30 +71,44 @@ export async function createOrRenewSubscription(
   const durationDays = duration ?? plan.duration;
 
   // Calendar stacking: queue after the current endDate if it is still in the future.
+  const isStacking = !!(previousSub && new Date(previousSub.endDate) > now);
   let startDate = now;
-  if (previousSub && new Date(previousSub.endDate) > now) {
+  if (isStacking) {
     startDate = new Date(previousSub.endDate);
   }
   const endDate = new Date(startDate.getTime() + durationDays * MS_PER_DAY);
 
   // Session rollover (Elite -> Elite only): carry unused sessions as bonus on the new plan.
-  let bonusSessions = 0;
-  if (
+  const isSessionRollover = !!(
     previousSub &&
     isElitePlan(previousSub.plan.name) &&
     isElitePlan(plan.name)
-  ) {
+  );
+  let bonusSessions = 0;
+  if (isSessionRollover) {
     const prevTotal =
       getEffectiveTotalSessions(previousSub.plan.name, previousSub.bonusSessions) ?? 0;
     const prevCompleted = previousSub.sessionTrackings.length;
     bonusSessions = Math.max(0, prevTotal - prevCompleted);
   }
 
-  // Supersede any existing active/paused subscriptions.
-  await db.userSubscription.updateMany({
-    where: { userId, status: { in: ['active', 'paused'] } },
-    data: { status: 'expired', pausedAt: null },
-  });
+  if (isStacking && !isSessionRollover) {
+    // Early renewal of a time-based plan: the new plan is QUEUED after the current one.
+    // Leave the still-valid current subscription active until its endDate passes — it is the
+    // one covering the client right now. Only clear rows whose window has already ended.
+    // (The queued new row is created 'active' below but reads as 'upcoming' until it starts.)
+    await db.userSubscription.updateMany({
+      where: { userId, status: { in: ['active', 'paused'] }, endDate: { lte: now } },
+      data: { status: 'expired', pausedAt: null },
+    });
+  } else {
+    // Renewal starts today (no future-dated coverage) or an Elite session rollover where the
+    // unused sessions have been carried onto the new plan — supersede all current coverage.
+    await db.userSubscription.updateMany({
+      where: { userId, status: { in: ['active', 'paused'] } },
+      data: { status: 'expired', pausedAt: null },
+    });
+  }
 
   // Create the new subscription.
   const subscription = await db.userSubscription.create({

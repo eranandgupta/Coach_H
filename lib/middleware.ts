@@ -130,12 +130,16 @@ export async function checkSubscription(userId: number): Promise<{
       }
     }
 
-    // Find the most recently created ACTIVE/PAUSED subscription with endDate in the future
-    // Explicitly exclude expired/cancelled to prevent re-activation of manually expired subs
+    // Find the ACTIVE/PAUSED subscription that actually covers `now`: it must already have
+    // started (startDate <= now) and not yet ended (endDate >= now). The startDate guard is
+    // essential for calendar stacking — a queued renewal that starts in the future must NOT be
+    // treated as the current plan (otherwise it reads as "active" while the real current plan
+    // shows expired). Expired/cancelled are excluded so manually-expired subs aren't re-activated.
     let subscription = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
         status: { in: ['active', 'paused'] },
+        startDate: { lte: now },
         endDate: { gte: now },
       },
       include: {
