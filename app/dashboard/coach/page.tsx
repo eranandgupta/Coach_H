@@ -46,7 +46,7 @@ import DashboardLoader from '@/components/DashboardLoader';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { isElitePlan } from '@/lib/planUtils';
+import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
 import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
@@ -413,13 +413,12 @@ export default function CoachDashboard() {
   );
 
   const now = new Date();
-  const activeClientsCount = clients.filter((c) => {
-    const sub = c.subscriptions?.[0];
-    if (!sub) return false;
-    if (new Date(sub.endDate) >= now) return true;
-    if (isElitePlan(sub.plan?.name || '') && sub.status === 'active') return true;
-    return false;
-  }).length;
+  // Window-aware & matches the admin panel: a client is active only if some subscription
+  // actually covers today (started, not ended, or an Elite session plan). A future-dated
+  // "Upcoming" renewal does NOT count as currently active.
+  const activeClientsCount = clients.filter((c) =>
+    c.subscriptions?.some((s: any) => isSubscriptionCurrentlyActive(s, now))
+  ).length;
   const inactiveClientsCount = clients.length - activeClientsCount;
 
   const getClientWorkouts = (clientId: number) => {
@@ -795,21 +794,37 @@ export default function CoachDashboard() {
 
                     {/* Subscription Info */}
                     {client.subscriptions && client.subscriptions.length > 0 && (() => {
-                      const sub = client.subscriptions[0];
-                      const isActive = new Date(sub.endDate) >= now || (isElitePlan(sub.plan?.name || '') && sub.status === 'active');
+                      // Feature the plan covering today; else the queued (upcoming) one; else newest.
+                      const subs = client.subscriptions;
+                      const sub =
+                        subs.find((s: any) => isSubscriptionCurrentlyActive(s, now)) ||
+                        subs.find((s: any) => subscriptionDisplayStatus(s, now) === 'upcoming') ||
+                        subs[0];
+                      const ds = subscriptionDisplayStatus(sub, now);
+                      const isActive = ds === 'active' || ds === 'paused';
+                      const hasCoverage = isActive || ds === 'upcoming';
+                      const tone = isActive ? 'green' : ds === 'upcoming' ? 'blue' : 'red';
+                      const box: Record<string, string> = {
+                        green: 'bg-green-500/10 border-green-500/30',
+                        blue: 'bg-blue-500/10 border-blue-500/30',
+                        red: 'bg-red-500/10 border-red-500/30',
+                      };
+                      const txt: Record<string, string> = {
+                        green: 'text-green-400', blue: 'text-blue-400', red: 'text-red-400',
+                      };
                       return (
-                      <div className={`mb-3 p-2 rounded border ${isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                      <div className={`mb-3 p-2 rounded border ${box[tone]}`}>
                         <div>
                           <div>
-                            <p className={`text-xs font-medium ${isActive ? 'text-green-400' : 'text-red-400'}`}>
-                              {sub.plan.name} - {isActive ? 'active' : 'expired'}
+                            <p className={`text-xs font-medium ${txt[tone]}`}>
+                              {sub.plan.name} - {ds}
                             </p>
                             <p className="text-gray-400 text-xs">
-                              Expires: {new Date(sub.endDate).toLocaleDateString()}
+                              {ds === 'upcoming' ? 'Starts' : 'Expires'}: {new Date(ds === 'upcoming' ? sub.startDate : sub.endDate).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                            {isActive ? (
+                            {hasCoverage ? (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1085,7 +1100,7 @@ export default function CoachDashboard() {
           ) : (
             <div className="space-y-3">
               {enrollments.map((enr, idx) => {
-                const isActive = (enr.status === 'active' || enr.status === 'paused') && (new Date(enr.endDate) >= now || isElitePlan(enr.plan?.name || ''));
+                const isActive = isSubscriptionCurrentlyActive(enr, now);
                 return (
                   <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
                     className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">

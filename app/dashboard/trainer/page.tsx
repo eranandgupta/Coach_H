@@ -26,7 +26,7 @@ import ChatContainer from '@/components/chat/ChatContainer';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { isElitePlan } from '@/lib/planUtils';
+import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 
 export default function TrainerDashboard() {
@@ -144,13 +144,11 @@ export default function TrainerDashboard() {
   );
 
   const now = new Date();
-  const activeClientsCount = clients.filter((c) => {
-    const sub = c.subscriptions?.[0];
-    if (!sub) return false;
-    if (new Date(sub.endDate) >= now) return true;
-    if (isElitePlan(sub.plan?.name || '') && sub.status === 'active') return true;
-    return false;
-  }).length;
+  // Window-aware & consistent with the admin/coach dashboards: active only if a
+  // subscription actually covers today (a future "Upcoming" renewal does not count).
+  const activeClientsCount = clients.filter((c) =>
+    c.subscriptions?.some((s: any) => isSubscriptionCurrentlyActive(s, now))
+  ).length;
 
   const getClientWorkouts = (clientId: number) => {
     return workouts.filter((w) => w.clientId === clientId);
@@ -415,16 +413,29 @@ export default function TrainerDashboard() {
 
                       {/* Subscription Info */}
                       {client.subscriptions && client.subscriptions.length > 0 && (() => {
-                        const sub = client.subscriptions[0];
-                        const isActive = new Date(sub.endDate) >= now || (isElitePlan(sub.plan?.name || '') && sub.status === 'active');
-                        const isPaused = sub.status === 'paused';
+                        const subs = client.subscriptions;
+                        const sub =
+                          subs.find((s: any) => isSubscriptionCurrentlyActive(s, now)) ||
+                          subs.find((s: any) => subscriptionDisplayStatus(s, now) === 'upcoming') ||
+                          subs[0];
+                        const ds = subscriptionDisplayStatus(sub, now);
+                        const tone = ds === 'paused' ? 'yellow' : (ds === 'active' ? 'green' : ds === 'upcoming' ? 'blue' : 'red');
+                        const box: Record<string, string> = {
+                          yellow: 'bg-yellow-500/10 border-yellow-500/30',
+                          green: 'bg-green-500/10 border-green-500/30',
+                          blue: 'bg-blue-500/10 border-blue-500/30',
+                          red: 'bg-red-500/10 border-red-500/30',
+                        };
+                        const txt: Record<string, string> = {
+                          yellow: 'text-yellow-400', green: 'text-green-400', blue: 'text-blue-400', red: 'text-red-400',
+                        };
                         return (
-                        <div className={`mb-3 p-2 rounded border ${isPaused ? 'bg-yellow-500/10 border-yellow-500/30' : isActive ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                          <p className={`text-xs font-medium ${isPaused ? 'text-yellow-400' : isActive ? 'text-green-400' : 'text-red-400'}`}>
-                            {sub.plan.name} - {isPaused ? 'paused' : isActive ? 'active' : 'expired'}
+                        <div className={`mb-3 p-2 rounded border ${box[tone]}`}>
+                          <p className={`text-xs font-medium ${txt[tone]}`}>
+                            {sub.plan.name} - {ds}
                           </p>
                           <p className="text-gray-400 text-xs">
-                            Expires: {new Date(sub.endDate).toLocaleDateString()}
+                            {ds === 'upcoming' ? 'Starts' : 'Expires'}: {new Date(ds === 'upcoming' ? sub.startDate : sub.endDate).toLocaleDateString()}
                           </p>
                         </div>
                         );
