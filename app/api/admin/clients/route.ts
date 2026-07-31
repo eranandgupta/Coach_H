@@ -34,7 +34,10 @@ async function getHandler(request: NextRequest, context: any) {
           orderBy: {
             createdAt: 'desc',
           },
-          take: 1,
+          // Return the FULL subscription history (not just the newest). The dashboard's
+          // active-client count and status use window-aware logic across all rows, so a
+          // client covered by an earlier row while a queued renewal sits on top is counted
+          // correctly — and matches the coach dashboard (/api/clients returns all rows too).
         },
       },
       orderBy: {

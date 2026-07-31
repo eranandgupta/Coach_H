@@ -791,7 +791,7 @@ export default function AdminDashboard() {
                                   className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 hover:bg-emerald-500/30 hover:text-emerald-300 transition-all text-sm">
                                   <ClipboardList className="h-4 w-4" /> Habits
                                 </button>
-                                {subStatus.label === 'Active' ? (
+                                {(subStatus.label === 'Active' || subStatus.label === 'Paused' || subStatus.label === 'Upcoming') ? (
                                   <button
                                     onClick={() => { setRenewSubClient({ id: client.id, name: client.name || 'Client', email: client.email }); setSubMode('extend'); setRenewSubOpen(true); }}
                                     className="flex items-center gap-1 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 hover:bg-green-500/30 hover:text-green-300 transition-all text-sm">
