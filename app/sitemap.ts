@@ -198,6 +198,12 @@ function getResourcePages(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
     {
+      url: `${baseUrl}/calorie-calculator`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/knowledge`,
       lastModified: now,
       changeFrequency: 'monthly',
