@@ -173,7 +173,7 @@ const RAW: RawFood[] = [
   { slug: 'banana', name: 'Banana', aliases: ['kela'], category: 'Fruits', per100g: { kcal: 89, protein: 1.1, carbs: 23, fat: 0.3 }, servings: [piece(120, 'banana')], source: 'USDA' },
   { slug: 'apple', name: 'Apple', aliases: ['seb'], category: 'Fruits', per100g: { kcal: 52, protein: 0.3, carbs: 14, fat: 0.2 }, servings: [piece(180, 'apple')], source: 'USDA' },
   { slug: 'mango', name: 'Mango', aliases: ['aam'], category: 'Fruits', per100g: { kcal: 60, protein: 0.8, carbs: 15, fat: 0.4 }, servings: [piece(200, 'mango')], source: 'USDA' },
-  { slug: 'orange', name: 'Orange', aliases: ['santra', 'mosambi'], category: 'Fruits', per100g: { kcal: 47, protein: 0.9, carbs: 12, fat: 0.1 }, servings: [piece(130, 'orange')], source: 'USDA' },
+  { slug: 'orange', name: 'Orange', aliases: ['santra'], category: 'Fruits', per100g: { kcal: 47, protein: 0.9, carbs: 12, fat: 0.1 }, servings: [piece(130, 'orange')], source: 'USDA' },
   { slug: 'grapes', name: 'Grapes', aliases: ['angoor'], category: 'Fruits', per100g: { kcal: 69, protein: 0.7, carbs: 18, fat: 0.2 }, servings: [katori(100)], source: 'USDA' },
   { slug: 'papaya', name: 'Papaya', aliases: ['papita'], category: 'Fruits', per100g: { kcal: 43, protein: 0.5, carbs: 11, fat: 0.3 }, servings: [katori(140)], source: 'USDA' },
   { slug: 'guava', name: 'Guava', aliases: ['amrood'], category: 'Fruits', per100g: { kcal: 68, protein: 2.6, carbs: 14, fat: 1 }, servings: [piece(120, 'guava')], source: 'USDA' },
@@ -271,6 +271,78 @@ const RAW: RawFood[] = [
   { slug: 'chicken-kathi-roll', name: 'Chicken Kathi Roll', aliases: ['chicken roll', 'chicken wrap'], category: 'Wraps & Rolls', per100g: { kcal: 240, protein: 12, carbs: 26, fat: 10 }, servings: [piece(180, 'roll')], source: 'INDB' },
   { slug: 'egg-roll', name: 'Egg Roll', aliases: ['anda roll', 'egg kathi roll'], category: 'Wraps & Rolls', per100g: { kcal: 230, protein: 9, carbs: 27, fat: 10 }, servings: [piece(160, 'roll')], source: 'INDB' },
   { slug: 'veg-frankie', name: 'Veg Frankie', aliases: ['frankie', 'mumbai frankie'], category: 'Wraps & Rolls', per100g: { kcal: 220, protein: 6, carbs: 30, fat: 8 }, servings: [piece(180, 'frankie')], source: 'INDB' },
+
+  // ── More grains & millets (cooked) ─────────────────────────────────────────
+  { slug: 'suji-cooked', name: 'Suji / Semolina (cooked, plain)', aliases: ['sooji', 'rava', 'semolina'], category: 'Rice & Grains', per100g: { kcal: 110, protein: 3.9, carbs: 22.3, fat: 0.6 }, servings: [katori(150), bowl(250)], source: 'IFCT' },
+  { slug: 'quinoa-cooked', name: 'Quinoa (cooked, plain)', aliases: ['kinwa'], category: 'Rice & Grains', per100g: { kcal: 120, protein: 4.4, carbs: 21.3, fat: 1.9 }, servings: [katori(150), cup(150)], source: 'USDA' },
+  { slug: 'vermicelli-cooked', name: 'Vermicelli (cooked, plain)', aliases: ['semiya', 'seviyan'], category: 'Rice & Grains', per100g: { kcal: 158, protein: 5.8, carbs: 30.9, fat: 0.9 }, servings: [katori(150), bowl(250)], source: 'IFCT' },
+  { slug: 'ragi-roti', name: 'Ragi Roti', aliases: ['finger millet roti', 'nachni roti'], category: 'Rotis & Breads', per100g: { kcal: 338, protein: 7.5, carbs: 72, fat: 1.3 }, servings: [piece(40, 'roti')], source: 'IFCT' },
+  { slug: 'makki-roti', name: 'Makki Roti', aliases: ['maize roti', 'corn roti'], category: 'Rotis & Breads', per100g: { kcal: 364, protein: 8.6, carbs: 76, fat: 4 }, servings: [piece(50, 'roti')], source: 'IFCT' },
+
+  // ── More dals, legumes & soy ───────────────────────────────────────────────
+  { slug: 'lobia-cooked', name: 'Black-Eyed Peas (Lobia, boiled)', aliases: ['chawli', 'cowpea', 'black eyed peas'], category: 'Dals & Legumes', per100g: { kcal: 116, protein: 7.7, carbs: 20.8, fat: 0.5 }, servings: [katori(150)], source: 'USDA' },
+  { slug: 'soy-chunks', name: 'Soya Chunks (cooked)', aliases: ['soya nuggets', 'nutrela', 'meal maker'], category: 'Dals & Legumes', per100g: { kcal: 115, protein: 17.5, carbs: 9.9, fat: 0.5 }, servings: [katori(100)], source: 'INDB' },
+  { slug: 'soybeans-cooked', name: 'Soybeans (boiled)', aliases: ['soybean', 'bhat'], category: 'Dals & Legumes', per100g: { kcal: 172, protein: 18.2, carbs: 8.4, fat: 9 }, servings: [katori(100)], source: 'USDA' },
+  { slug: 'roasted-chana', name: 'Roasted Chana (dry)', aliases: ['bhuna chana', 'roasted gram'], category: 'Snacks & Street Food', per100g: { kcal: 369, protein: 22.5, carbs: 60.7, fat: 5.3 }, servings: [katori(30), tbsp(15)], source: 'IFCT' },
+
+  // ── More gourds & raw veggies ──────────────────────────────────────────────
+  { slug: 'lauki-boiled', name: 'Bottle Gourd (Lauki, boiled)', aliases: ['ghiya', 'dudhi'], category: 'Salad & Raw Veggies', per100g: { kcal: 15, protein: 0.6, carbs: 3.7, fat: 0.1 }, servings: [katori(150)], source: 'IFCT' },
+  { slug: 'ridge-gourd', name: 'Ridge Gourd (Turai, boiled)', aliases: ['turai', 'tori', 'gilki'], category: 'Salad & Raw Veggies', per100g: { kcal: 18, protein: 0.8, carbs: 4.2, fat: 0.2 }, servings: [katori(150)], source: 'IFCT' },
+  { slug: 'karela-raw', name: 'Bitter Gourd (Karela, raw)', aliases: ['bitter gourd'], category: 'Salad & Raw Veggies', per100g: { kcal: 17, protein: 1, carbs: 3.7, fat: 0.2 }, servings: [katori(100)], source: 'IFCT' },
+  { slug: 'brinjal-raw', name: 'Brinjal / Eggplant (raw)', aliases: ['baingan', 'aubergine', 'eggplant'], category: 'Salad & Raw Veggies', per100g: { kcal: 25, protein: 1, carbs: 5.9, fat: 0.2 }, servings: [piece(100, 'brinjal')], source: 'USDA' },
+  { slug: 'bhindi-raw', name: 'Okra / Ladyfinger (Bhindi, raw)', aliases: ['okra', 'ladyfinger', 'bhindi'], category: 'Salad & Raw Veggies', per100g: { kcal: 33, protein: 1.9, carbs: 7.5, fat: 0.2 }, servings: [katori(100)], source: 'USDA' },
+  { slug: 'turnip-raw', name: 'Turnip (Shalgam, raw)', aliases: ['shalgam'], category: 'Salad & Raw Veggies', per100g: { kcal: 28, protein: 0.9, carbs: 6.4, fat: 0.1 }, servings: [piece(100, 'turnip')], source: 'USDA' },
+  { slug: 'drumstick', name: 'Drumstick (Moringa pods, raw)', aliases: ['moringa', 'sahjan', 'saijan'], category: 'Salad & Raw Veggies', per100g: { kcal: 37, protein: 2.1, carbs: 8.5, fat: 0.2 }, servings: [katori(100)], source: 'IFCT' },
+  { slug: 'tinda', name: 'Tinda (Apple Gourd, raw)', aliases: ['apple gourd', 'round gourd', 'indian squash'], category: 'Salad & Raw Veggies', per100g: { kcal: 21, protein: 0.9, carbs: 4.8, fat: 0.2 }, servings: [katori(100)], source: 'IFCT' },
+  { slug: 'ash-gourd', name: 'Ash Gourd (Petha, raw)', aliases: ['petha', 'winter melon', 'white pumpkin'], category: 'Salad & Raw Veggies', per100g: { kcal: 13, protein: 0.4, carbs: 3, fat: 0.2 }, servings: [katori(100)], source: 'IFCT' },
+  { slug: 'zucchini', name: 'Zucchini (raw)', aliases: ['courgette'], category: 'Salad & Raw Veggies', per100g: { kcal: 17, protein: 1.2, carbs: 3.1, fat: 0.3 }, servings: [katori(100)], source: 'USDA' },
+
+  // ── More fruits ────────────────────────────────────────────────────────────
+  { slug: 'mosambi', name: 'Sweet Lime (Mosambi)', aliases: ['mosambi', 'sweet lime', 'musambi'], category: 'Fruits', per100g: { kcal: 43, protein: 0.8, carbs: 10.5, fat: 0.2 }, servings: [piece(120, 'mosambi')], source: 'IFCT' },
+  { slug: 'cherries', name: 'Cherries (sweet, raw)', aliases: ['cherry'], category: 'Fruits', per100g: { kcal: 63, protein: 1.1, carbs: 16, fat: 0.2 }, servings: [katori(100)], source: 'USDA' },
+
+  // ── Chicken, fish & meat (raw & boiled, plain) ─────────────────────────────
+  { slug: 'chicken-breast-raw', name: 'Chicken Breast (raw)', aliases: ['raw chicken breast'], category: 'Chicken, Fish & Meat', per100g: { kcal: 120, protein: 22.5, carbs: 0, fat: 2.6 }, servings: [piece(120, 'breast')], source: 'USDA' },
+  { slug: 'chicken-thigh-raw', name: 'Chicken Thigh (raw)', aliases: ['raw chicken thigh'], category: 'Chicken, Fish & Meat', per100g: { kcal: 119, protein: 19.7, carbs: 0, fat: 4.1 }, servings: [piece(90, 'thigh')], source: 'USDA' },
+  { slug: 'chicken-thigh-cooked', name: 'Chicken Thigh (boiled)', aliases: ['boiled chicken thigh'], category: 'Chicken, Fish & Meat', per100g: { kcal: 209, protein: 26, carbs: 0, fat: 10.9 }, servings: [piece(90, 'thigh')], source: 'USDA' },
+  { slug: 'chicken-liver-raw', name: 'Chicken Liver (raw)', aliases: ['kaleji', 'liver'], category: 'Chicken, Fish & Meat', per100g: { kcal: 119, protein: 16.9, carbs: 0.7, fat: 4.8 }, servings: [piece(60, 'piece')], source: 'USDA' },
+  { slug: 'chicken-liver-cooked', name: 'Chicken Liver (boiled)', aliases: ['kaleji cooked'], category: 'Chicken, Fish & Meat', per100g: { kcal: 167, protein: 24.5, carbs: 1.1, fat: 6.5 }, servings: [piece(60, 'piece')], source: 'USDA' },
+  { slug: 'white-fish-raw', name: 'White Fish, lean (raw)', aliases: ['fish raw', 'lean fish'], category: 'Chicken, Fish & Meat', per100g: { kcal: 96, protein: 20.1, carbs: 0, fat: 1.7 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'white-fish-cooked', name: 'White Fish, lean (boiled)', aliases: ['fish boiled', 'lean fish cooked'], category: 'Chicken, Fish & Meat', per100g: { kcal: 128, protein: 26.2, carbs: 0, fat: 2.7 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'salmon-raw', name: 'Salmon (raw)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 208, protein: 20.4, carbs: 0, fat: 13.4 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'salmon-cooked', name: 'Salmon (boiled)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 232, protein: 25.4, carbs: 0, fat: 14.6 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'rohu-raw', name: 'Rohu Fish (raw)', aliases: ['rohu'], category: 'Chicken, Fish & Meat', per100g: { kcal: 97, protein: 17.8, carbs: 0, fat: 2.4 }, servings: [piece(120, 'piece')], source: 'IFCT' },
+  { slug: 'rohu-cooked', name: 'Rohu Fish (boiled)', aliases: ['rohu cooked'], category: 'Chicken, Fish & Meat', per100g: { kcal: 129, protein: 24, carbs: 0, fat: 3.2 }, servings: [piece(120, 'piece')], source: 'IFCT' },
+  { slug: 'katla-raw', name: 'Katla Fish (raw)', aliases: ['catla'], category: 'Chicken, Fish & Meat', per100g: { kcal: 111, protein: 18.5, carbs: 0, fat: 3.8 }, servings: [piece(120, 'piece')], source: 'IFCT' },
+  { slug: 'katla-cooked', name: 'Katla Fish (boiled)', aliases: ['catla cooked'], category: 'Chicken, Fish & Meat', per100g: { kcal: 145, protein: 24.5, carbs: 0, fat: 5 }, servings: [piece(120, 'piece')], source: 'IFCT' },
+  { slug: 'tilapia-raw', name: 'Tilapia (raw)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 96, protein: 20.1, carbs: 0, fat: 1.7 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'tilapia-cooked', name: 'Tilapia (boiled)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 128, protein: 26.2, carbs: 0, fat: 2.7 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'pomfret-raw', name: 'Pomfret (raw)', aliases: ['paplet'], category: 'Chicken, Fish & Meat', per100g: { kcal: 114, protein: 19.3, carbs: 0, fat: 4 }, servings: [piece(120, 'piece')], source: 'IFCT' },
+  { slug: 'pomfret-cooked', name: 'Pomfret (boiled)', aliases: ['paplet cooked'], category: 'Chicken, Fish & Meat', per100g: { kcal: 146, protein: 25.4, carbs: 0, fat: 5.2 }, servings: [piece(120, 'piece')], source: 'IFCT' },
+  { slug: 'tuna-raw', name: 'Tuna (raw)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 109, protein: 24.4, carbs: 0, fat: 0.5 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'tuna-cooked', name: 'Tuna (boiled)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 132, protein: 29.9, carbs: 0, fat: 1 }, servings: [piece(120, 'fillet')], source: 'USDA' },
+  { slug: 'prawns-raw', name: 'Prawns (raw)', aliases: ['shrimp', 'jhinga'], category: 'Chicken, Fish & Meat', per100g: { kcal: 85, protein: 20.1, carbs: 0.2, fat: 0.5 }, servings: [katori(100)], source: 'USDA' },
+  { slug: 'prawns-cooked', name: 'Prawns (boiled)', aliases: ['shrimp cooked', 'jhinga boiled'], category: 'Chicken, Fish & Meat', per100g: { kcal: 99, protein: 24, carbs: 0.2, fat: 0.8 }, servings: [katori(100)], source: 'USDA' },
+  { slug: 'mutton-raw', name: 'Mutton, lean (raw)', aliases: ['lamb raw', 'goat raw', 'gosht raw'], category: 'Chicken, Fish & Meat', per100g: { kcal: 143, protein: 20.3, carbs: 0, fat: 6.9 }, servings: [piece(120, 'piece')], source: 'USDA' },
+  { slug: 'mutton-cooked', name: 'Mutton, lean (boiled)', aliases: ['lamb cooked', 'goat cooked', 'gosht boiled'], category: 'Chicken, Fish & Meat', per100g: { kcal: 206, protein: 29.2, carbs: 0, fat: 9.6 }, servings: [piece(120, 'piece')], source: 'USDA' },
+  { slug: 'beef-raw', name: 'Beef, lean (raw)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 137, protein: 21.4, carbs: 0, fat: 5 }, servings: [piece(120, 'piece')], source: 'USDA' },
+  { slug: 'beef-cooked', name: 'Beef, lean (boiled)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 188, protein: 29, carbs: 0, fat: 7.6 }, servings: [piece(120, 'piece')], source: 'USDA' },
+  { slug: 'turkey-raw', name: 'Turkey Breast (raw)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 114, protein: 23.7, carbs: 0, fat: 1.6 }, servings: [piece(120, 'piece')], source: 'USDA' },
+  { slug: 'turkey-cooked', name: 'Turkey Breast (boiled)', aliases: [], category: 'Chicken, Fish & Meat', per100g: { kcal: 135, protein: 29, carbs: 0, fat: 1.8 }, servings: [piece(120, 'piece')], source: 'USDA' },
+
+  // ── More seeds, nuts & oils ────────────────────────────────────────────────
+  { slug: 'pistachios', name: 'Pistachios', aliases: ['pista'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 560, protein: 20.5, carbs: 28, fat: 45 }, servings: [{ label: '20 g (handful)', grams: 20 }], source: 'USDA' },
+  { slug: 'pumpkin-seeds', name: 'Pumpkin Seeds', aliases: ['kaddu seeds'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 560, protein: 30, carbs: 10.5, fat: 49 }, servings: [{ label: '20 g (2 tbsp)', grams: 20 }], source: 'USDA' },
+  { slug: 'sunflower-seeds', name: 'Sunflower Seeds', aliases: ['surajmukhi seeds'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 585, protein: 21, carbs: 20, fat: 51.5 }, servings: [{ label: '20 g (2 tbsp)', grams: 20 }], source: 'USDA' },
+  { slug: 'sesame-seeds', name: 'Sesame Seeds', aliases: ['til'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 575, protein: 18, carbs: 23.5, fat: 50 }, servings: [tbsp(9), { label: '20 g', grams: 20 }], source: 'USDA' },
+  { slug: 'olive-oil', name: 'Olive Oil', aliases: ['jaitun oil'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 900, protein: 0, carbs: 0, fat: 100 }, servings: [tsp(5), tbsp(14)], source: 'IFCT' },
+  { slug: 'mustard-oil', name: 'Mustard Oil', aliases: ['sarson oil'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 900, protein: 0, carbs: 0, fat: 100 }, servings: [tsp(5), tbsp(14)], source: 'IFCT' },
+  { slug: 'rice-bran-oil', name: 'Rice Bran Oil', aliases: [], category: 'Nuts, Seeds & Oils', per100g: { kcal: 900, protein: 0, carbs: 0, fat: 100 }, servings: [tsp(5), tbsp(14)], source: 'IFCT' },
+  { slug: 'coconut-oil', name: 'Coconut Oil', aliases: ['nariyal oil'], category: 'Nuts, Seeds & Oils', per100g: { kcal: 900, protein: 0, carbs: 0, fat: 100 }, servings: [tsp(5), tbsp(14)], source: 'IFCT' },
+
+  // ── More roasted snacks ────────────────────────────────────────────────────
+  { slug: 'makhana', name: 'Makhana (fox nuts, roasted)', aliases: ['fox nuts', 'phool makhana', 'lotus seeds'], category: 'Snacks & Street Food', per100g: { kcal: 347, protein: 9.7, carbs: 76.9, fat: 0.1 }, servings: [katori(20)], source: 'IFCT' },
+  { slug: 'popcorn', name: 'Popcorn (air-popped, plain)', aliases: [], category: 'Snacks & Street Food', per100g: { kcal: 387, protein: 12.9, carbs: 77.8, fat: 4.5 }, servings: [{ label: '1 bowl (15 g)', grams: 15 }], source: 'USDA' },
 ];
 
 /** Full dataset — each item guaranteed to include a "100 g" serving option. */
