@@ -5,7 +5,7 @@ const url = 'https://coachhimanshu.com/calorie-calculator';
 const title = 'Indian Food Calorie Calculator';
 const brandedTitle = 'Indian Food Calorie Calculator | Coach Himanshu';
 const description =
-  'Free calorie calculator for Indian food. Search dal, roti, rice, paneer and 130+ foods, pick a katori/roti/cup or grams, and get exact calories + protein, carbs & fat — for a single item or a full meal.';
+  'Free calorie calculator for Indian food. Search dal, roti, rice, paneer, fruits, salad & 180+ foods, pick a katori/roti/cup or grams, and get exact calories + protein, carbs & fat — for a single item or a full meal.';
 
 export const metadata: Metadata = {
   title,
