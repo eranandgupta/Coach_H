@@ -98,33 +98,18 @@ async function getHandler(request: NextRequest, context: any) {
       }
     }
 
-    // For coaches: return available clients without conversations
+    // For coaches: return every client (role 'user') without a conversation yet.
+    // Mirrors /api/clients so a coach can message ANY client — including ones who
+    // don't have a workout/diet plan created yet (e.g. a brand-new signup).
     let availableClients: { id: number; name: string | null; image: string | null }[] = [];
     if (isCoach) {
-      const workoutClients = await prisma.workoutPlan.findMany({
-        where: { coachId: user.userId },
-        select: { clientId: true, client: { select: { id: true, name: true, image: true } } },
-        distinct: ['clientId'],
+      const allClients = await prisma.user.findMany({
+        where: { role: 'user' },
+        select: { id: true, name: true, image: true },
+        orderBy: { createdAt: 'desc' },
       });
-      const dietClients = await prisma.dietPlan.findMany({
-        where: { coachId: user.userId },
-        select: { clientId: true, client: { select: { id: true, name: true, image: true } } },
-        distinct: ['clientId'],
-      });
-
       const existingConvClientIds = new Set(conversations.map((c) => c.clientId));
-      const allClientMap = new Map<number, { id: number; name: string | null; image: string | null }>();
-      for (const wp of workoutClients) {
-        if (!existingConvClientIds.has(wp.clientId)) {
-          allClientMap.set(wp.clientId, wp.client);
-        }
-      }
-      for (const dp of dietClients) {
-        if (!existingConvClientIds.has(dp.clientId)) {
-          allClientMap.set(dp.clientId, dp.client);
-        }
-      }
-      availableClients = Array.from(allClientMap.values());
+      availableClients = allClients.filter((c) => !existingConvClientIds.has(c.id));
     }
 
     // For trainers: return assigned clients without conversations
@@ -183,17 +168,18 @@ async function postHandler(request: NextRequest, context: any) {
 
       return Response.json({ conversation });
     } else {
-      // Coach-client conversation: verify relationship exists
-      const relationship = await prisma.workoutPlan.findFirst({
-        where: { coachId, clientId },
-      });
-      if (!relationship) {
-        const dietRelationship = await prisma.dietPlan.findFirst({
-          where: { coachId, clientId },
-        });
-        if (!dietRelationship) {
-          return Response.json({ error: 'No coach-client relationship found' }, { status: 403 });
-        }
+      // Coach-client conversation: a conversation is always coach(role coach/admin)
+      // <-> client(role user). We no longer require an existing workout/diet plan,
+      // so a coach can reach a client before any plan is created.
+      const [coachUser, clientUser] = await Promise.all([
+        prisma.user.findUnique({ where: { id: coachId }, select: { role: true } }),
+        prisma.user.findUnique({ where: { id: clientId }, select: { role: true } }),
+      ]);
+      if (!coachUser || (coachUser.role !== 'coach' && coachUser.role !== 'admin')) {
+        return Response.json({ error: 'Invalid coach' }, { status: 403 });
+      }
+      if (!clientUser || clientUser.role !== 'user') {
+        return Response.json({ error: 'Invalid client' }, { status: 403 });
       }
 
       const conversation = await prisma.conversation.upsert({
