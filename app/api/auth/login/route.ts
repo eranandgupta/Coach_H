@@ -51,6 +51,25 @@ export async function POST(request: NextRequest) {
     const token = generateToken(user.id, user.email, user.role);
     console.log('Token generated');
 
+    // Record the login (history + denormalized last-login). Never let logging
+    // break the login flow, so wrap it and ignore failures.
+    try {
+      const ipAddress =
+        request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        request.headers.get('x-real-ip') ||
+        null;
+      const userAgent = request.headers.get('user-agent') || null;
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          lastLoginAt: new Date(),
+          loginEvents: { create: { ipAddress, userAgent } },
+        },
+      });
+    } catch (logErr) {
+      console.error('Failed to record login event:', logErr);
+    }
+
     // Check subscription status (only for regular users, not coaches/admins)
     let subscriptionStatus = null;
     if (user.role !== 'coach' && user.role !== 'admin' && user.role !== 'trainer') {

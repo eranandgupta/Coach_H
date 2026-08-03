@@ -36,6 +36,7 @@ async function getHandler(request: NextRequest, context: any) {
         phone: !isTrainer,
         image: true,
         createdAt: true,
+        lastLoginAt: true,
         subscriptions: {
           include: {
             plan: true,

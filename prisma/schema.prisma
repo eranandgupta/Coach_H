@@ -35,6 +35,8 @@ model User {
   createdWorkoutTemplates WorkoutTemplate[] @relation("CreatedWorkoutTemplates")
   createdDietTemplates    DietTemplate[]    @relation("CreatedDietTemplates")
   transformationLogs   TransformationLog[] @relation("ClientTransformationLogs")
+  lastLoginAt          DateTime?          // denormalized latest login for quick "last active" display
+  loginEvents          LoginEvent[]
 }
 
 model SubscriptionPlan {
@@ -176,6 +178,21 @@ model Meal {
   dietPlan     DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
 
   @@index([dietPlanId])
+}
+
+// Login history — one row per successful login. Powers the coach's "last active"
+// badge and the per-client login timeline. `lastLoginAt` on User is the
+// denormalized latest value for cheap list rendering.
+model LoginEvent {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime @default(now())
+  ipAddress String?
+  userAgent String?  @db.Text
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 // 30-Day Transformation Assessment Logbook — one row per client per cycle.

@@ -1,12 +1,34 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
 import TransformationLogModal from '@/components/TransformationLogModal';
 import { isElitePlan, getTotalSessions, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from '@/lib/planUtils';
+
+// "2 days ago" style relative time; returns 'Never' for null.
+function timeSince(dateStr: string | null): string {
+  if (!dateStr) return 'Never';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} day${days > 1 ? 's' : ''} ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} month${months > 1 ? 's' : ''} ago`;
+  return `${Math.floor(months / 12)} year${Math.floor(months / 12) > 1 ? 's' : ''} ago`;
+}
+
+function formatDateTime(dateStr: string): string {
+  return new Date(dateStr).toLocaleString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true,
+  });
+}
 
 interface ClientDetailModalProps {
   isOpen: boolean;
@@ -52,6 +74,11 @@ export default function ClientDetailModal({
   const [expiringSubId, setExpiringSubId] = useState<number | null>(null);
   const [showPreviousSubs, setShowPreviousSubs] = useState(false);
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
+  const [loginHistory, setLoginHistory] = useState<any[]>([]);
+  const [loginTotal, setLoginTotal] = useState(0);
+  const [lastLoginAt, setLastLoginAt] = useState<string | null>(null);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [showAllLogins, setShowAllLogins] = useState(false);
 
   const clientPlanName = client?.subscriptions?.[0]?.plan?.name || '';
   const clientIsElite = isElitePlan(clientPlanName);
@@ -61,11 +88,37 @@ export default function ClientDetailModal({
   useEffect(() => {
     if (isOpen && client) {
       fetchAssessment();
+      fetchLoginHistory();
       if (clientIsElite && subscriptionId) {
         fetchSessions();
       }
     }
   }, [isOpen, client]);
+
+  const fetchLoginHistory = async () => {
+    setLoginLoading(true);
+    setShowAllLogins(false);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/login-history?userId=${client.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLoginHistory(data.events || []);
+        setLoginTotal(data.totalCount || 0);
+        setLastLoginAt(data.lastLoginAt || null);
+      } else {
+        setLoginHistory([]);
+        setLoginTotal(0);
+        setLastLoginAt(null);
+      }
+    } catch (error) {
+      console.error('Error fetching login history:', error);
+    } finally {
+      setLoginLoading(false);
+    }
+  };
 
   const fetchAssessment = async () => {
     setAssessmentLoading(true);
@@ -454,6 +507,46 @@ export default function ClientDetailModal({
                     <p className="text-gray-600 text-xs mt-1">Client needs to complete the pre-assessment form</p>
                   </div>
                 )}
+              </div>
+
+              {/* Login Activity */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-brand-blue" />
+                    <h3 className="text-xl font-bold text-white">Login Activity</h3>
+                  </div>
+                  <span className="text-sm text-gray-300">
+                    Last active: <span className={`font-semibold ${lastLoginAt ? 'text-white' : 'text-orange-400'}`}>{timeSince(lastLoginAt)}</span>
+                  </span>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  {loginLoading ? (
+                    <div className="flex items-center gap-2 text-gray-400 text-sm"><Loader2 className="w-4 h-4 animate-spin" /> Loading…</div>
+                  ) : loginHistory.length === 0 ? (
+                    <p className="text-gray-500 text-sm">This client has never logged in yet.</p>
+                  ) : (
+                    <>
+                      <p className="text-gray-400 text-xs mb-2">{loginTotal} total login{loginTotal === 1 ? '' : 's'}</p>
+                      <div className="space-y-1.5">
+                        {(showAllLogins ? loginHistory : loginHistory.slice(0, 5)).map((ev) => (
+                          <div key={ev.id} className="flex items-center justify-between text-sm border-b border-white/5 pb-1.5 last:border-0">
+                            <span className="text-gray-200">{formatDateTime(ev.createdAt)}</span>
+                            <span className="text-gray-500 text-xs">{timeSince(ev.createdAt)}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {loginHistory.length > 5 && (
+                        <button
+                          onClick={() => setShowAllLogins((v) => !v)}
+                          className="mt-2 text-brand-blue text-xs font-medium hover:text-brand-gold transition-colors"
+                        >
+                          {showAllLogins ? 'Show less' : `Show all ${loginHistory.length} recent logins`}
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Habit Tracker */}

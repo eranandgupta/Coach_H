@@ -53,6 +53,21 @@ import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
 import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
 import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 
+// Short "last active" label for client cards (e.g. "2d ago").
+function lastActiveLabel(dateStr: string | null): string {
+  if (!dateStr) return 'Never logged in';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Active now';
+  if (mins < 60) return `Active ${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `Active ${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `Active ${days}d ago`;
+  const months = Math.floor(days / 30);
+  return `Active ${months}mo ago`;
+}
+
 export default function CoachDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -788,6 +803,10 @@ export default function CoachDashboard() {
                           {client.phone && (
                             <p className="text-gray-500 text-xs">{client.phone}</p>
                           )}
+                          <p className={`text-xs mt-1 flex items-center gap-1.5 ${client.lastLoginAt ? 'text-gray-500' : 'text-orange-400/90'}`}>
+                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${client.lastLoginAt ? 'bg-emerald-400' : 'bg-orange-400'}`} />
+                            {lastActiveLabel(client.lastLoginAt)}
+                          </p>
                         </div>
                       </div>
                     </div>
