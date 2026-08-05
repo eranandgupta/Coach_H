@@ -27,9 +27,9 @@ async function getHandler(request: NextRequest, context: any) {
     const conversations = await prisma.conversation.findMany({
       where: whereClause,
       include: {
-        coach: { select: { id: true, name: true, image: true } },
-        trainer: { select: { id: true, name: true, image: true } },
-        client: { select: { id: true, name: true, image: true } },
+        coach: { select: { id: true, name: true, image: true, lastSeenAt: true } },
+        trainer: { select: { id: true, name: true, image: true, lastSeenAt: true } },
+        client: { select: { id: true, name: true, image: true, lastSeenAt: true } },
         messages: {
           orderBy: { createdAt: 'desc' },
           take: 1,
@@ -105,7 +105,7 @@ async function getHandler(request: NextRequest, context: any) {
     if (isCoach) {
       const allClients = await prisma.user.findMany({
         where: { role: 'user' },
-        select: { id: true, name: true, image: true },
+        select: { id: true, name: true, image: true, lastSeenAt: true },
         orderBy: { createdAt: 'desc' },
       });
       const existingConvClientIds = new Set(conversations.map((c) => c.clientId));
@@ -116,7 +116,7 @@ async function getHandler(request: NextRequest, context: any) {
     if (isTrainer) {
       const assignments = await prisma.trainerClient.findMany({
         where: { trainerId: user.userId },
-        include: { client: { select: { id: true, name: true, image: true } } },
+        include: { client: { select: { id: true, name: true, image: true, lastSeenAt: true } } },
       });
       const existingConvClientIds = new Set(conversations.map((c) => c.clientId));
       availableClients = assignments

@@ -36,6 +36,7 @@ model User {
   createdDietTemplates    DietTemplate[]    @relation("CreatedDietTemplates")
   transformationLogs   TransformationLog[] @relation("ClientTransformationLogs")
   lastLoginAt          DateTime?          // denormalized latest login for quick "last active" display
+  lastSeenAt           DateTime?          // presence heartbeat — updated while the app is open
   loginEvents          LoginEvent[]
 }
 

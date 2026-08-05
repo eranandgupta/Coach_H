@@ -48,6 +48,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import { usePresenceHeartbeat } from '@/lib/usePresence';
 import ChatContainer from '@/components/chat/ChatContainer';
 import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
 import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
@@ -95,6 +96,7 @@ function lastActiveLabel(dateStr: string | null): string {
 export default function CoachDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  usePresenceHeartbeat();
   const [clients, setClients] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [diets, setDiets] = useState<any[]>([]);

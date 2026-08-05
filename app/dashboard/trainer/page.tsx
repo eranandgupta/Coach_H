@@ -28,10 +28,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import { usePresenceHeartbeat } from '@/lib/usePresence';
 
 export default function TrainerDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  usePresenceHeartbeat();
   const [clients, setClients] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [diets, setDiets] = useState<any[]>([]);

@@ -9,6 +9,7 @@ interface Participant {
   id: number;
   name: string | null;
   image: string | null;
+  lastSeenAt?: string | null;
 }
 
 interface ConversationItem {

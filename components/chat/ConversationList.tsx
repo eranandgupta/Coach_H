@@ -5,7 +5,7 @@ import { Search, MessageSquare, ArrowLeft } from 'lucide-react';
 
 interface ConversationItem {
   id: number;
-  participant: { id: number; name: string | null; image: string | null };
+  participant: { id: number; name: string | null; image: string | null; lastSeenAt?: string | null };
   lastMessage: { content: string; createdAt: string; senderId: number; isRead: boolean } | null;
   unreadCount: number;
   updatedAt: string;

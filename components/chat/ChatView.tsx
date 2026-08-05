@@ -18,6 +18,22 @@ interface Participant {
   id: number;
   name: string | null;
   image: string | null;
+  lastSeenAt?: string | null;
+}
+
+// Online if seen within the last 2 minutes (heartbeat runs every 60s).
+const ONLINE_WINDOW_MS = 2 * 60 * 1000;
+function presenceLabel(lastSeenAt?: string | null): { online: boolean; text: string } {
+  if (!lastSeenAt) return { online: false, text: 'Offline' };
+  const diff = Date.now() - new Date(lastSeenAt).getTime();
+  if (diff < ONLINE_WINDOW_MS) return { online: true, text: 'Online' };
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return { online: false, text: `Last seen ${mins}m ago` };
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return { online: false, text: `Last seen ${hours}h ago` };
+  const days = Math.floor(hours / 24);
+  if (days < 30) return { online: false, text: `Last seen ${days}d ago` };
+  return { online: false, text: `Last seen ${new Date(lastSeenAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` };
 }
 
 interface ChatViewProps {
@@ -167,6 +183,7 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
   });
 
   const initials = (participant.name || '?').charAt(0).toUpperCase();
+  const presence = presenceLabel(participant.lastSeenAt);
 
   return (
     <motion.div
@@ -197,14 +214,14 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
               {initials}
             </div>
           )}
-          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-brand-navy" />
+          <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-brand-navy ${presence.online ? 'bg-emerald-400' : 'bg-gray-500'}`} />
         </div>
         <div className="flex-1">
           <p className="text-white font-semibold text-sm">{participant.name || 'Unknown'}</p>
           {readOnly && trainerName ? (
             <p className="text-amber-400/70 text-[10px] font-medium">Trainer: {trainerName} (View Only)</p>
           ) : (
-            <p className="text-emerald-400/70 text-[10px] font-medium">Online</p>
+            <p className={`text-[10px] font-medium ${presence.online ? 'text-emerald-400/70' : 'text-white/40'}`}>{presence.text}</p>
           )}
         </div>
         {showWhatsApp && (

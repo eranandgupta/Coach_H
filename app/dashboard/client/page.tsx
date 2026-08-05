@@ -45,6 +45,7 @@ import RenewModal from '@/components/RenewModal';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
+import { usePresenceHeartbeat } from '@/lib/usePresence';
 import { isElitePlan, getEffectiveTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
@@ -117,6 +118,7 @@ export default function ClientDashboard() {
 
   // Push notifications
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
+  usePresenceHeartbeat();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
