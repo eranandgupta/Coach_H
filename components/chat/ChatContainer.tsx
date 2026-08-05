@@ -26,9 +26,10 @@ interface ChatContainerProps {
   userId: number;
   userRole: string;
   onClose?: () => void;
+  onUnreadChange?: (count: number) => void;
 }
 
-export default function ChatContainer({ userId, userRole, onClose }: ChatContainerProps) {
+export default function ChatContainer({ userId, userRole, onClose, onUnreadChange }: ChatContainerProps) {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedConv, setSelectedConv] = useState<ConversationItem | null>(null);
   const [coachInfo, setCoachInfo] = useState<Participant | null>(null);
@@ -36,6 +37,15 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
   const [loading, setLoading] = useState(true);
   const pollRef = useRef<NodeJS.Timeout>();
   const mountedRef = useRef(true);
+  const onUnreadChangeRef = useRef(onUnreadChange);
+  onUnreadChangeRef.current = onUnreadChange;
+
+  // Keep the parent's unread badge in sync with the live conversation list, so
+  // reading a chat clears the count instantly (not after the next 30s poll).
+  const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+  useEffect(() => {
+    onUnreadChangeRef.current?.(totalUnread);
+  }, [totalUnread]);
 
   const isCoach = userRole === 'coach' || userRole === 'admin';
   const isTrainer = userRole === 'trainer';
@@ -110,9 +120,25 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
     }
   }, [isStaff, conversations, selectedConv]);
 
+  const selectedConvIdRef = useRef<number | null>(null);
+  selectedConvIdRef.current = selectedConv?.id ?? null;
+
   const handleSelect = (conv: ConversationItem) => {
     setSelectedConv(conv);
+    // Opening a chat reads it — clear its unread badge immediately (server marks
+    // the messages read when ChatView loads them).
+    if (conv.unreadCount > 0) {
+      setConversations((prev) => prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c)));
+    }
   };
+
+  // Fired by ChatView once it has read the open chat's messages (also handles
+  // messages that arrive while the chat is already open).
+  const handleMessagesRead = useCallback(() => {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === selectedConvIdRef.current ? { ...c, unreadCount: 0 } : c))
+    );
+  }, []);
 
   const handleStartChat = async (client: Participant) => {
     try {
@@ -161,6 +187,7 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
         conversationId={selectedConv.id}
         participant={selectedConv.participant}
         userId={userId}
+        onMessagesRead={handleMessagesRead}
         showWhatsApp
         onBack={onClose}
       />
@@ -193,6 +220,7 @@ export default function ChatContainer({ userId, userRole, onClose }: ChatContain
               conversationId={selectedConv.id}
               participant={selectedConv.participant}
               userId={userId}
+              onMessagesRead={handleMessagesRead}
               onBack={isStaff ? handleBack : undefined}
               readOnly={selectedConv.isTrainerConversation}
               trainerName={selectedConv.isTrainerConversation ? (selectedConv.trainer?.name || 'Trainer') : undefined}

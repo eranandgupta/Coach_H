@@ -17,6 +17,7 @@ interface AvailableClient {
   id: number;
   name: string | null;
   image: string | null;
+  lastSeenAt?: string | null;
 }
 
 interface ConversationListProps {
@@ -27,6 +28,11 @@ interface ConversationListProps {
   availableClients?: AvailableClient[];
   onStartChat?: (client: AvailableClient) => void;
   onBack?: () => void;
+}
+
+// Online if seen within the last 2 minutes (heartbeat runs every 60s).
+function isOnline(lastSeenAt?: string | null) {
+  return !!lastSeenAt && Date.now() - new Date(lastSeenAt).getTime() < 2 * 60 * 1000;
 }
 
 function timeAgo(dateStr: string) {
@@ -140,6 +146,7 @@ export default function ConversationList({
                       </span>
                     </div>
                   )}
+                  <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-brand-navy ${isOnline(conv.participant.lastSeenAt) ? 'bg-emerald-400' : 'bg-gray-500'}`} title={isOnline(conv.participant.lastSeenAt) ? 'Online' : 'Offline'} />
                 </div>
 
                 {/* Content */}
@@ -184,13 +191,16 @@ export default function ConversationList({
                   onClick={() => onStartChat?.(client)}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.04] transition-colors text-left border-b border-white/[0.04]"
                 >
-                  {client.image ? (
-                    <img src={client.image} alt={client.name ? `${client.name} profile photo` : 'Client profile photo'} className="w-12 h-12 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/50 to-cyan-500/50 flex items-center justify-center text-white font-bold text-lg">
-                      {initials}
-                    </div>
-                  )}
+                  <div className="relative flex-shrink-0">
+                    {client.image ? (
+                      <img src={client.image} alt={client.name ? `${client.name} profile photo` : 'Client profile photo'} className="w-12 h-12 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/50 to-cyan-500/50 flex items-center justify-center text-white font-bold text-lg">
+                        {initials}
+                      </div>
+                    )}
+                    <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-brand-navy ${isOnline(client.lastSeenAt) ? 'bg-emerald-400' : 'bg-gray-500'}`} title={isOnline(client.lastSeenAt) ? 'Online' : 'Offline'} />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white/70 font-medium truncate">{client.name || 'Unknown'}</p>
                     <p className="text-xs text-white/30 mt-0.5">Tap to start chatting</p>

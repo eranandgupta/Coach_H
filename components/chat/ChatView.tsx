@@ -45,9 +45,10 @@ interface ChatViewProps {
   readOnly?: boolean;
   trainerName?: string;
   trainerUserId?: number;
+  onMessagesRead?: () => void;
 }
 
-export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId }: ChatViewProps) {
+export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId, onMessagesRead }: ChatViewProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -69,6 +70,9 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
       if (!res.ok || !mountedRef.current) return;
       const data = await res.json();
       if (data.messages) {
+        // Opening this chat marks the other person's messages read server-side —
+        // tell the parent so the unread badges/counts clear immediately.
+        const hadUnread = data.messages.some((m: ChatMessage) => m.senderId !== userId && !m.isRead);
         setMessages((prev) => {
           // Keep any pending optimistic messages that the server doesn't have yet
           const serverIds = new Set(data.messages.map((m: ChatMessage) => m.id));
@@ -77,13 +81,14 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
           );
           return [...data.messages, ...pendingMessages];
         });
+        if (hadUnread) onMessagesRead?.();
       }
     } catch {
       // silent fail
     } finally {
       if (mountedRef.current) setLoading(false);
     }
-  }, [conversationId]);
+  }, [conversationId, userId, onMessagesRead]);
 
   useEffect(() => {
     mountedRef.current = true;
