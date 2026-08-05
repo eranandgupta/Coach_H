@@ -1,11 +1,12 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp, Clock } from 'lucide-react';
+import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp, Clock, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
 import TransformationLogModal from '@/components/TransformationLogModal';
+import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
 import { isElitePlan, getTotalSessions, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from '@/lib/planUtils';
 
 // "2 days ago" style relative time; returns 'Never' for null.
@@ -79,6 +80,29 @@ export default function ClientDetailModal({
   const [lastLoginAt, setLastLoginAt] = useState<string | null>(null);
   const [loginLoading, setLoginLoading] = useState(false);
   const [showAllLogins, setShowAllLogins] = useState(false);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
+  const [invoiceSub, setInvoiceSub] = useState<any>(null);
+
+  // Open the editable invoice for a given subscription (maps it to the invoice shape).
+  const openInvoice = (sub: any) => {
+    setInvoiceSub({
+      id: sub.id,
+      status: sub.status,
+      startDate: sub.startDate,
+      endDate: sub.endDate,
+      transactionId: sub.transactionId ?? null,
+      paymentMode: sub.paymentMode ?? null,
+      paidAmount: sub.paidAmount ?? null,
+      plan: {
+        id: sub.plan?.id,
+        name: sub.plan?.name ?? 'Plan',
+        price: String(sub.plan?.price ?? ''),
+        duration: sub.plan?.duration ?? 0,
+      },
+      user: { id: client.id, name: client.name ?? null, email: client.email ?? '', phone: client.phone ?? null },
+    });
+    setInvoiceOpen(true);
+  };
 
   const clientPlanName = client?.subscriptions?.[0]?.plan?.name || '';
   const clientIsElite = isElitePlan(clientPlanName);
@@ -343,19 +367,29 @@ export default function ClientDetailModal({
                         <h3 className={`${cur.heading} font-semibold`}>
                           {cur.label} Subscription
                         </h3>
-                        {!isTrainer && (currentSub.status === 'active' || currentSub.status === 'paused') && (
-                          <button
-                            onClick={() => handleMarkExpired(currentSub.id)}
-                            disabled={expiringSubId === currentSub.id}
-                            className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all text-xs font-medium disabled:opacity-50"
-                          >
-                            {expiringSubId === currentSub.id ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              <XCircle className="w-3 h-3" />
+                        {!isTrainer && (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => openInvoice(currentSub)}
+                              className="flex items-center gap-1 px-2 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg hover:bg-amber-500/30 transition-all text-xs font-medium"
+                            >
+                              <FileText className="w-3 h-3" /> Invoice
+                            </button>
+                            {(currentSub.status === 'active' || currentSub.status === 'paused') && (
+                              <button
+                                onClick={() => handleMarkExpired(currentSub.id)}
+                                disabled={expiringSubId === currentSub.id}
+                                className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all text-xs font-medium disabled:opacity-50"
+                              >
+                                {expiringSubId === currentSub.id ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <XCircle className="w-3 h-3" />
+                                )}
+                                Mark Expired
+                              </button>
                             )}
-                            Mark Expired
-                          </button>
+                          </div>
                         )}
                       </div>
                       <p className="text-white font-medium">{currentSub.plan.name}</p>
@@ -395,19 +429,29 @@ export default function ClientDetailModal({
                                       {' · '}{new Date(sub.startDate).toLocaleDateString()} → {new Date(sub.endDate).toLocaleDateString()}
                                     </p>
                                   </div>
-                                  {!isTrainer && (sub.status === 'active' || sub.status === 'paused') && (
-                                    <button
-                                      onClick={() => handleMarkExpired(sub.id)}
-                                      disabled={expiringSubId === sub.id}
-                                      className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all text-xs font-medium disabled:opacity-50"
-                                    >
-                                      {expiringSubId === sub.id ? (
-                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                      ) : (
-                                        <XCircle className="w-3 h-3" />
+                                  {!isTrainer && (
+                                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                                      <button
+                                        onClick={() => openInvoice(sub)}
+                                        className="flex items-center gap-1 px-2 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg hover:bg-amber-500/30 transition-all text-xs font-medium"
+                                      >
+                                        <FileText className="w-3 h-3" /> Invoice
+                                      </button>
+                                      {(sub.status === 'active' || sub.status === 'paused') && (
+                                        <button
+                                          onClick={() => handleMarkExpired(sub.id)}
+                                          disabled={expiringSubId === sub.id}
+                                          className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all text-xs font-medium disabled:opacity-50"
+                                        >
+                                          {expiringSubId === sub.id ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                          ) : (
+                                            <XCircle className="w-3 h-3" />
+                                          )}
+                                          Expire
+                                        </button>
                                       )}
-                                      Expire
-                                    </button>
+                                    </div>
                                   )}
                                 </div>
                               </div>
@@ -818,6 +862,9 @@ export default function ClientDetailModal({
               clientName={assessmentView.label}
             />
           )}
+
+          {/* Editable invoice — coaches/admins can adjust amounts (discounts, split payments) */}
+          <InvoicePreviewModal open={invoiceOpen} onOpenChange={setInvoiceOpen} subscription={invoiceSub} />
 
           {/* Transformation Logbook — coach/trainer can view & fill Day-30 measurements */}
           {isLogbookOpen && (
