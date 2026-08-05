@@ -53,6 +53,30 @@ import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
 import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
 import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 
+// Simple prev/next pager for long lists.
+function Pager({ page, pageCount, onPage }: { page: number; pageCount: number; onPage: (p: number) => void }) {
+  if (pageCount <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-3 mt-5">
+      <button
+        onClick={() => onPage(page - 1)}
+        disabled={page <= 1}
+        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        ← Prev
+      </button>
+      <span className="text-gray-400 text-sm">Page {page} of {pageCount}</span>
+      <button
+        onClick={() => onPage(page + 1)}
+        disabled={page >= pageCount}
+        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Next →
+      </button>
+    </div>
+  );
+}
+
 // Short "last active" label for client cards (e.g. "2d ago").
 function lastActiveLabel(dateStr: string | null): string {
   if (!dateStr) return 'Never logged in';
@@ -77,6 +101,9 @@ export default function CoachDashboard() {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [clientTab, setClientTab] = useState<'active' | 'inactive'>('active');
+  const [enrollPage, setEnrollPage] = useState(1);
+  const [blogPage, setBlogPage] = useState(1);
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
   const [isDietModalOpen, setIsDietModalOpen] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
@@ -422,19 +449,32 @@ export default function CoachDashboard() {
     }
   };
 
-  const filteredClients = clients.filter((client) =>
-    client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const now = new Date();
   // Window-aware & matches the admin panel: a client is active only if some subscription
   // actually covers today (started, not ended, or an Elite session plan). A future-dated
   // "Upcoming" renewal does NOT count as currently active.
-  const activeClientsCount = clients.filter((c) =>
-    c.subscriptions?.some((s: any) => isSubscriptionCurrentlyActive(s, now))
-  ).length;
+  const isClientActive = (c: any) =>
+    !!c.subscriptions?.some((s: any) => isSubscriptionCurrentlyActive(s, now));
+  const activeClientsCount = clients.filter(isClientActive).length;
   const inactiveClientsCount = clients.length - activeClientsCount;
+
+  const searchedClients = clients.filter((client) =>
+    client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  // My Clients is split into Active / Inactive tabs (default Active).
+  const filteredClients = searchedClients.filter((c) =>
+    clientTab === 'active' ? isClientActive(c) : !isClientActive(c)
+  );
+
+  // Pagination for New Enrollments and Manage Blog Posts.
+  const PAGE_SIZE = 6;
+  const enrollPageCount = Math.max(1, Math.ceil(enrollments.length / PAGE_SIZE));
+  const safeEnrollPage = Math.min(enrollPage, enrollPageCount);
+  const pagedEnrollments = enrollments.slice((safeEnrollPage - 1) * PAGE_SIZE, safeEnrollPage * PAGE_SIZE);
+  const blogPageCount = Math.max(1, Math.ceil(blogs.length / PAGE_SIZE));
+  const safeBlogPage = Math.min(blogPage, blogPageCount);
+  const pagedBlogs = blogs.slice((safeBlogPage - 1) * PAGE_SIZE, safeBlogPage * PAGE_SIZE);
 
   const getClientWorkouts = (clientId: number) => {
     return workouts.filter((w) => w.clientId === clientId);
@@ -759,6 +799,25 @@ export default function CoachDashboard() {
                 className="pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-blue w-full md:w-64"
               />
             </div>
+          </div>
+
+          {/* Active / Inactive tabs (default Active) */}
+          <div className="flex items-center gap-2 mb-5">
+            {([['active', 'Active', activeClientsCount], ['inactive', 'Inactive', inactiveClientsCount]] as const).map(([key, label, count]) => (
+              <button
+                key={key}
+                onClick={() => setClientTab(key)}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all border ${
+                  clientTab === key
+                    ? key === 'active'
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                      : 'bg-red-500/20 text-red-300 border-red-500/40'
+                    : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                }`}
+              >
+                {label} <span className="opacity-70">({count})</span>
+              </button>
+            ))}
           </div>
 
           {filteredClients.length === 0 ? (
@@ -1118,7 +1177,7 @@ export default function CoachDashboard() {
             <p className="text-gray-500 text-center py-8">No online enrollments yet</p>
           ) : (
             <div className="space-y-3">
-              {enrollments.map((enr, idx) => {
+              {pagedEnrollments.map((enr, idx) => {
                 const isActive = isSubscriptionCurrentlyActive(enr, now);
                 return (
                   <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
@@ -1152,6 +1211,7 @@ export default function CoachDashboard() {
                   </motion.div>
                 );
               })}
+              <Pager page={safeEnrollPage} pageCount={enrollPageCount} onPage={setEnrollPage} />
             </div>
           )}
         </motion.div>
@@ -1169,7 +1229,7 @@ export default function CoachDashboard() {
             Manage Blog Posts
           </h2>
           <div className="space-y-3">
-            {blogs.map((blog) => (
+            {pagedBlogs.map((blog) => (
               <div
                 key={blog.id}
                 className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-all group"
@@ -1216,6 +1276,7 @@ export default function CoachDashboard() {
             {blogs.length === 0 && (
               <p className="text-gray-500 text-center py-8">No blog posts created yet</p>
             )}
+            <Pager page={safeBlogPage} pageCount={blogPageCount} onPage={setBlogPage} />
           </div>
         </motion.div>
         </div>

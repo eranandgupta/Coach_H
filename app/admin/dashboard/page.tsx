@@ -119,10 +119,36 @@ interface Plan {
   duration: number;
 }
 
+// Simple prev/next pager for long lists.
+function Pager({ page, pageCount, onPage }: { page: number; pageCount: number; onPage: (p: number) => void }) {
+  if (pageCount <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-3 mt-5">
+      <button
+        onClick={() => onPage(page - 1)}
+        disabled={page <= 1}
+        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        ← Prev
+      </button>
+      <span className="text-gray-400 text-sm">Page {page} of {pageCount}</span>
+      <button
+        onClick={() => onPage(page + 1)}
+        disabled={page >= pageCount}
+        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Next →
+      </button>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('clients');
+  const [clientTab, setClientTab] = useState<'active' | 'inactive'>('active');
+  const [enrollPage, setEnrollPage] = useState(1);
 
   const [clients, setClients] = useState<Client[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -495,13 +521,24 @@ export default function AdminDashboard() {
     (s) => (s.status === 'active' || s.status === 'paused') && new Date(s.endDate) <= fourteenDaysFromNow && new Date(s.endDate) >= now
   );
 
-  const filteredClients = searchQuery
+  const isClientActive = (c: any) => !!c.subscriptions?.some(isSubActive);
+  const searchedClients = searchQuery
     ? clients.filter((c) =>
         c.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.phone?.includes(searchQuery)
       )
     : clients;
+  // Clients split into Active / Inactive tabs (default Active).
+  const filteredClients = searchedClients.filter((c) =>
+    clientTab === 'active' ? isClientActive(c) : !isClientActive(c)
+  );
+
+  // Pagination for New Enrollments.
+  const ENROLL_PAGE_SIZE = 6;
+  const enrollPageCount = Math.max(1, Math.ceil(enrollments.length / ENROLL_PAGE_SIZE));
+  const safeEnrollPage = Math.min(enrollPage, enrollPageCount);
+  const pagedEnrollments = enrollments.slice((safeEnrollPage - 1) * ENROLL_PAGE_SIZE, safeEnrollPage * ENROLL_PAGE_SIZE);
 
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -664,7 +701,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {enrollments.map((enr, idx) => {
+                      {pagedEnrollments.map((enr, idx) => {
                         const isActive = isSubActive(enr);
                         return (
                           <motion.div key={enr.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
@@ -698,6 +735,7 @@ export default function AdminDashboard() {
                           </motion.div>
                         );
                       })}
+                      <Pager page={safeEnrollPage} pageCount={enrollPageCount} onPage={setEnrollPage} />
                     </div>
                   )}
                 </div>
@@ -723,6 +761,25 @@ export default function AdminDashboard() {
                         <Plus className="h-4 w-4" /> Create Client
                       </motion.button>
                     </div>
+                  </div>
+
+                  {/* Active / Inactive tabs (default Active) */}
+                  <div className="flex items-center gap-2 mb-5">
+                    {([['active', 'Active', activeClients], ['inactive', 'Inactive', inactiveClients]] as const).map(([key, label, count]) => (
+                      <button
+                        key={key}
+                        onClick={() => setClientTab(key)}
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all border ${
+                          clientTab === key
+                            ? key === 'active'
+                              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                              : 'bg-red-500/20 text-red-300 border-red-500/40'
+                            : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        {label} <span className="opacity-70">({count})</span>
+                      </button>
+                    ))}
                   </div>
 
                   {filteredClients.length === 0 ? (
