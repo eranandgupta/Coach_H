@@ -222,7 +222,7 @@ export default function ClientDetailModal({
   };
 
   const handleMarkExpired = async (subId: number) => {
-    if (!confirm('Mark this subscription as expired? The client will no longer have access to this plan.')) return;
+    if (!confirm('Deactivate this subscription? The client will lose access to this plan and stay deactivated (even Elite 1:1 plans with sessions remaining) until you reactivate it.')) return;
 
     setExpiringSubId(subId);
     try {
@@ -233,11 +233,14 @@ export default function ClientDetailModal({
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: subId, status: 'expired' }),
+        // 'cancelled', not 'expired': checkSubscription() self-heals an Elite (session-based)
+        // plan back to 'active' whenever its status is 'expired' and sessions remain, so an
+        // 'expired' deactivation silently reverts. 'cancelled' is never resurrected.
+        body: JSON.stringify({ id: subId, status: 'cancelled' }),
       });
 
       if (res.ok) {
-        alert('Subscription marked as expired');
+        alert('Subscription deactivated');
         onRefreshClients?.();
       } else {
         const data = await res.json();
@@ -386,7 +389,7 @@ export default function ClientDetailModal({
                                 ) : (
                                   <XCircle className="w-3 h-3" />
                                 )}
-                                Mark Expired
+                                Deactivate
                               </button>
                             )}
                           </div>
@@ -448,7 +451,7 @@ export default function ClientDetailModal({
                                           ) : (
                                             <XCircle className="w-3 h-3" />
                                           )}
-                                          Expire
+                                          Deactivate
                                         </button>
                                       )}
                                     </div>

@@ -80,7 +80,11 @@ export default function ActivateSubscriptionModal({
         },
         body: JSON.stringify({
           id: subscription.id,
-          status: status === 'active' ? 'active' : 'expired',
+          // Deactivate uses 'cancelled', NOT 'expired'. checkSubscription() self-heals an
+          // Elite (session-based) plan with sessions remaining back to 'active' whenever its
+          // status is 'expired' — so an 'expired' deactivation silently reverts on the client's
+          // next login / /me poll. 'cancelled' is the one status that self-heal never resurrects.
+          status: status === 'active' ? 'active' : 'cancelled',
           // Set end date to end-of-day so an "activate until DD" reads inclusively.
           ...(status === 'active' ? { endDate: `${endDate}T23:59:59` } : {}),
         }),
@@ -176,8 +180,9 @@ export default function ActivateSubscriptionModal({
 
           {status === 'inactive' && (
             <div className="rounded-xl p-3 border bg-red-500/10 border-red-500/20 text-sm text-red-300">
-              This will mark the subscription as <span className="font-semibold">expired</span>. The client will see
-              &ldquo;Subscription Expired&rdquo; until it is reactivated.
+              This will <span className="font-semibold">deactivate</span> the subscription. The client loses access
+              immediately and stays deactivated — even for Elite 1:1 plans with sessions remaining — until you
+              reactivate it here.
             </div>
           )}
 
