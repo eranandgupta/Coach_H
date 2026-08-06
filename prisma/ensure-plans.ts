@@ -16,7 +16,7 @@ const requiredPlans = [
   {
     name: 'Kickstart Plan',
     description: 'All Inclusive',
-    price: 1099,
+    price: 1299,
     duration: 30,
     features: [
       'Customised workout plan',
@@ -32,7 +32,7 @@ const requiredPlans = [
   {
     name: 'Consistency Plan',
     description: 'All Inclusive',
-    price: 2499,
+    price: 2899,
     duration: 90,
     features: [
       'Customised workout plan',
@@ -48,7 +48,7 @@ const requiredPlans = [
   {
     name: 'Strength Plan',
     description: 'All Inclusive',
-    price: 4299,
+    price: 4999,
     duration: 180,
     features: [
       'Customised workout plan',
@@ -66,7 +66,7 @@ const requiredPlans = [
   {
     name: 'Mastery Plan',
     description: 'All Inclusive',
-    price: 8999,
+    price: 9999,
     duration: 365,
     features: [
       'Customised workout plan',
@@ -84,7 +84,7 @@ const requiredPlans = [
   {
     name: 'Home Workout',
     description: 'Home Workout',
-    price: 2199,
+    price: 2499,
     duration: 90,
     features: [
       'Customised home workout plan',
@@ -100,7 +100,7 @@ const requiredPlans = [
   {
     name: 'Rehabilitation Plan',
     description: 'Recovery & Healing',
-    price: 2999,
+    price: 3499,
     duration: 90,
     features: [
       'Customised rehabilitation workout',
@@ -115,7 +115,7 @@ const requiredPlans = [
   {
     name: 'Couple Strength',
     description: 'For 2 People',
-    price: 7999,
+    price: 8999,
     duration: 180,
     features: [
       'Personalized workout plans for both',
@@ -133,7 +133,7 @@ const requiredPlans = [
   {
     name: 'Couple Mastery',
     description: 'For 2 People',
-    price: 15999,
+    price: 17999,
     duration: 365,
     features: [
       'Personalized workout plans for both',
@@ -154,7 +154,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 1 Month (12 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 11999,
+    price: 12999,
     duration: 30,
     features: [
       'Live 1:1 coaching for both partners',
@@ -171,7 +171,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 1 Month (24 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 18999,
+    price: 19999,
     duration: 30,
     features: [
       'Live 1:1 coaching for both partners',
@@ -188,7 +188,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 3 Months (36 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 28999,
+    price: 30999,
     duration: 90,
     features: [
       'Live 1:1 coaching for both partners',
@@ -207,7 +207,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 3 Months (72 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 44999,
+    price: 47999,
     duration: 90,
     features: [
       'Live 1:1 coaching for both partners',
@@ -226,7 +226,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 1 Month (24 Sessions)',
     description: '24 Sessions',
-    price: 11999,
+    price: 12999,
     duration: 30,
     features: [
       'Live 1:1 personal training',
@@ -242,7 +242,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 1 Month (12 Sessions)',
     description: '12 Sessions',
-    price: 7499,
+    price: 7999,
     duration: 30,
     features: [
       'Live 1:1 personal training',
@@ -258,7 +258,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 3 Months (72 Sessions)',
     description: '72 Sessions',
-    price: 29999,
+    price: 31999,
     duration: 90,
     features: [
       'Live 1:1 personal training',
@@ -276,7 +276,7 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 3 Months (36 Sessions)',
     description: '36 Sessions',
-    price: 18999,
+    price: 19999,
     duration: 90,
     features: [
       'Live 1:1 personal training',
@@ -294,7 +294,7 @@ const requiredPlans = [
   {
     name: 'Couple Home Workout Plan',
     description: 'For 2 People',
-    price: 3799,
+    price: 4299,
     duration: 90,
     features: [
       'Customised home workout plans for both',
@@ -310,7 +310,7 @@ const requiredPlans = [
   {
     name: 'Couple Rehabilitation Plan',
     description: 'For 2 People',
-    price: 5299,
+    price: 5999,
     duration: 90,
     features: [
       'Customised rehabilitation workouts for both',

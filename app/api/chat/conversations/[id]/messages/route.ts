@@ -31,9 +31,13 @@ async function getHandler(request: NextRequest, context: any) {
     const cursor = searchParams.get('cursor');
     const limit = parseInt(searchParams.get('limit') || '50');
 
+    // Fetch the NEWEST `limit` messages (desc), then reverse to ascending for
+    // display. Ordering asc + take would return the OLDEST page and hide recent
+    // messages once a conversation grows past `limit` — the cursor is only sent
+    // when paging further back in history.
     const messages = await prisma.message.findMany({
       where: { conversationId: id },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       take: limit,
       ...(cursor ? { cursor: { id: parseInt(cursor) }, skip: 1 } : {}),
       select: {
@@ -44,20 +48,20 @@ async function getHandler(request: NextRequest, context: any) {
         createdAt: true,
       },
     });
+    messages.reverse();
 
-    // Mark unread messages as read only if user is a participant (not coach viewing)
+    // Mark unread messages as read only if user is a participant (not coach viewing).
+    // This must cover the whole conversation, not just the fetched page — otherwise
+    // unread messages beyond `limit` keep the unread badge stuck forever.
     if (isParticipant) {
-      const hasUnread = messages.some((m) => m.senderId !== user.userId && !m.isRead);
-      if (hasUnread) {
-        await prisma.message.updateMany({
-          where: {
-            conversationId: id,
-            senderId: { not: user.userId },
-            isRead: false,
-          },
-          data: { isRead: true },
-        });
-      }
+      await prisma.message.updateMany({
+        where: {
+          conversationId: id,
+          senderId: { not: user.userId },
+          isRead: false,
+        },
+        data: { isRead: true },
+      });
     }
 
     return Response.json({ messages, isReadOnly: isCoachViewing && !isParticipant });

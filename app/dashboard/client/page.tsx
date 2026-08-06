@@ -46,6 +46,7 @@ import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
 import { usePresenceHeartbeat } from '@/lib/usePresence';
+import { toast } from 'sonner';
 import { isElitePlan, getEffectiveTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import ChatContainer from '@/components/chat/ChatContainer';
@@ -463,13 +464,26 @@ export default function ClientDashboard() {
           </div>
 
           <div className="flex items-center gap-1.5 md:gap-3 relative">
+            {/* Video Library is an active-subscription perk. Inactive clients see it
+               disabled and get a "please renew" prompt with renewal plan options. */}
             {!isLiveSessionPlan && <button
-              onClick={() => setIsVideoLibraryOpen(true)}
-              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              onClick={() => {
+                if (isSubscriptionActive) {
+                  setIsVideoLibraryOpen(true);
+                } else {
+                  toast.error('Renew your subscription to unlock the Video Library', {
+                    description: 'The exercise video library is available to active members only.',
+                    action: { label: 'Renew', onClick: () => setIsRenewOpen(true) },
+                  });
+                }
+              }}
+              className={`flex items-center justify-center p-2 rounded-xl border transition-all ${
+                isSubscriptionActive ? 'border-white/[0.08] hover:border-white/[0.15]' : 'border-white/[0.05] opacity-50 cursor-not-allowed'
+              }`}
               style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}
-              title="Video Library"
+              title={isSubscriptionActive ? 'Video Library' : 'Video Library — renew to unlock'}
             >
-              <Play className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
+              <Play className={`w-4 h-4 md:w-5 md:h-5 ${isSubscriptionActive ? 'text-purple-400' : 'text-purple-400/50'}`} />
             </button>}
             {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
             <div ref={newIconsRef} className="relative flex items-center gap-1.5 md:gap-3">
@@ -1532,7 +1546,7 @@ export default function ClientDashboard() {
       )}
 
       <VideoLibrary
-        isOpen={isVideoLibraryOpen}
+        isOpen={isVideoLibraryOpen && !!isSubscriptionActive}
         onClose={() => setIsVideoLibraryOpen(false)}
         userEmail={user?.email}
         userPlan={subscription?.subscription?.plan?.name}

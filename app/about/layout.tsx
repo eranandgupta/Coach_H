@@ -108,7 +108,7 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
           '@type': 'PriceSpecification',
           priceCurrency: 'INR',
           minPrice: '799',
-          maxPrice: '29999',
+          maxPrice: '31999',
         },
       },
     },

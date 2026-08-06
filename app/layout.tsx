@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { CartProvider } from '@/contexts/CartContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import { Toaster } from 'sonner';
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -190,7 +191,7 @@ export default function RootLayout({
                   {
                     "@type": "Offer",
                     "itemOffered": { "@type": "Service", "name": "Gym Kickstart Plan" },
-                    "price": "1099",
+                    "price": "1299",
                     "priceCurrency": "INR",
                     "priceValidUntil": "2027-12-31"
                   },
@@ -272,7 +273,7 @@ export default function RootLayout({
                 "name": "Coaching Plans",
                 "itemListElement": [
                   { "@type": "Offer", "name": "Home Workout Plan", "price": "799", "priceCurrency": "INR" },
-                  { "@type": "Offer", "name": "Gym Kickstart Plan", "price": "1099", "priceCurrency": "INR" },
+                  { "@type": "Offer", "name": "Gym Kickstart Plan", "price": "1299", "priceCurrency": "INR" },
                   { "@type": "Offer", "name": "Rehabilitation Plan", "price": "1499", "priceCurrency": "INR" },
                   { "@type": "Offer", "name": "Live 1-on-1 Training", "price": "5999", "priceCurrency": "INR" }
                 ]
@@ -302,7 +303,7 @@ export default function RootLayout({
               "image": "https://coachhimanshu.com/opengraph-image",
               "url": "https://coachhimanshu.com",
               "telephone": "",
-              "priceRange": "₹1,099 - ₹29,999",
+              "priceRange": "₹1,299 - ₹31,999",
               "description": "NASM Certified online fitness coach providing personalized workout plans, custom Indian meal plans, 24/7 WhatsApp support, and weekly consultations. Serving clients across India and internationally.",
               "geo": {
                 "@type": "GeoCoordinates",
@@ -341,7 +342,7 @@ export default function RootLayout({
                 "name": "Fitness Coaching Plans",
                 "itemListElement": [
                   { "@type": "Offer", "name": "Home Workout Plan", "price": "799", "priceCurrency": "INR", "availability": "https://schema.org/InStock" },
-                  { "@type": "Offer", "name": "Gym Kickstart Plan", "price": "1099", "priceCurrency": "INR", "availability": "https://schema.org/InStock" },
+                  { "@type": "Offer", "name": "Gym Kickstart Plan", "price": "1299", "priceCurrency": "INR", "availability": "https://schema.org/InStock" },
                   { "@type": "Offer", "name": "Rehabilitation Plan", "price": "1499", "priceCurrency": "INR", "availability": "https://schema.org/InStock" },
                   { "@type": "Offer", "name": "Live 1-on-1 Training", "price": "5999", "priceCurrency": "INR", "availability": "https://schema.org/InStock" }
                 ]
@@ -356,6 +357,7 @@ export default function RootLayout({
           <PWAInstallPrompt />
           <WhatsAppButton />
         </CartProvider>
+        <Toaster position="top-center" richColors theme="dark" />
 
         {/* Google Analytics 4 — loaded after page is fully interactive */}
         {process.env.NEXT_PUBLIC_GA4_ID && (
