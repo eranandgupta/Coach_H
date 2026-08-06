@@ -10,7 +10,7 @@ export const CALCULATOR_FAQS: CalcFaq[] = [
   {
     question: 'How accurate is this calorie calculator?',
     answer:
-      'The values are reliable everyday estimates based on standard Indian food composition data (INDB and IFCT 2017). Real dishes vary with the amount of oil, ghee, sugar and portion size used at home, so treat the numbers as close approximations rather than lab-exact figures.',
+      'The values are reliable everyday estimates based on standard food composition data (INDB, IFCT 2017 and USDA FoodData Central). Real dishes vary with the amount of oil, ghee, sugar and portion size used at home, so treat the numbers as close approximations rather than lab-exact figures.',
   },
   {
     question: 'Are the calories for cooked or raw food?',
@@ -25,7 +25,12 @@ export const CALCULATOR_FAQS: CalcFaq[] = [
   {
     question: 'Can I calculate the calories of a full meal?',
     answer:
-      'Yes. Add several foods — for example 2 rotis, 1 katori dal and 1 cup rice — and the calculator shows each item’s calories plus the combined total for the whole meal, along with protein, carbs and fat.',
+      'Yes. Add several foods — for example 2 rotis, 1 katori dal and 1 cup rice — and the calculator shows each item’s calories plus the combined total for the whole meal, along with protein, carbs, fat and fibre.',
+  },
+  {
+    question: 'Does this show macros and micronutrients?',
+    answer:
+      'Yes. For every food and for your full meal you get the macros — calories, protein, carbs, fat, fibre and sugar — plus key micronutrients: sodium, calcium, iron, potassium and vitamin C. Values are per your chosen serving and are based on USDA FoodData Central and IFCT 2017 composition data.',
   },
   {
     question: 'Where does the nutrition data come from?',

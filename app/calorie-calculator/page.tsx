@@ -14,7 +14,14 @@ export default function CalorieCalculatorPage() {
     if (!food) return null;
     const serving = food.servings[0]; // first = household unit
     const m = caloriesForServing(food, serving.label, 1);
-    return { name: food.name, serving: serving.label, kcal: m.kcal, protein: m.protein };
+    return {
+      name: food.name,
+      serving: serving.label,
+      kcal: m.kcal,
+      protein: m.protein,
+      fiber: m.fiber,
+      vitaminC: m.vitaminC,
+    };
   }).filter((r): r is NonNullable<typeof r> => r !== null);
 
   return (
@@ -37,9 +44,10 @@ export default function CalorieCalculatorPage() {
             </span>
           </h1>
           <p className="mt-4 max-w-2xl text-gray-300 md:text-lg">
-            Search any Indian food — dal, roti, rice, paneer, chicken and {FOODS.length}+ more — choose a
-            katori, roti, cup or grams, and instantly see its calories with protein, carbs and fat. Add
-            several items to calculate a full meal.
+            Search any food — dal, roti, rice, paneer, chicken, fruits and {FOODS.length}+ more — choose a
+            katori, roti, cup or grams, and instantly see its calories with full macros (protein, carbs,
+            fat, fibre, sugar) and key micronutrients — sodium, calcium, iron, potassium and vitamin C.
+            Add several items to calculate a whole meal.
           </p>
         </div>
       </section>
@@ -66,6 +74,8 @@ export default function CalorieCalculatorPage() {
                   <th className="px-4 py-3 font-semibold">Serving</th>
                   <th className="px-4 py-3 font-semibold text-right">Calories</th>
                   <th className="px-4 py-3 font-semibold text-right">Protein</th>
+                  <th className="px-4 py-3 font-semibold text-right">Fibre</th>
+                  <th className="px-4 py-3 font-semibold text-right">Vitamin C</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,6 +85,8 @@ export default function CalorieCalculatorPage() {
                     <td className="px-4 py-2.5 text-gray-400">{r.serving}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-brand-gold">{r.kcal} kcal</td>
                     <td className="px-4 py-2.5 text-right">{r.protein} g</td>
+                    <td className="px-4 py-2.5 text-right">{r.fiber} g</td>
+                    <td className="px-4 py-2.5 text-right">{r.vitaminC} mg</td>
                   </tr>
                 ))}
               </tbody>

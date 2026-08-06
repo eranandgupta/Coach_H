@@ -174,10 +174,11 @@ export default function CalorieCalculator() {
                       </div>
                     </div>
 
-                    <div className="mt-2 flex gap-4 text-xs text-gray-400">
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
                       <span>P: <span className="text-gray-200">{m.protein} g</span></span>
                       <span>C: <span className="text-gray-200">{m.carbs} g</span></span>
                       <span>F: <span className="text-gray-200">{m.fat} g</span></span>
+                      <span>Fibre: <span className="text-gray-200">{m.fiber} g</span></span>
                     </div>
                   </div>
                 );
@@ -211,6 +212,41 @@ export default function CalorieCalculator() {
               <p className="text-base font-bold text-white">{total.fat}</p>
               <p className="text-[11px] text-gray-400">Fat (g)</p>
             </div>
+            <div className="rounded-lg bg-white/5 py-2">
+              <p className="text-base font-bold text-white">{total.fiber}</p>
+              <p className="text-[11px] text-gray-400">Fibre (g)</p>
+            </div>
+            <div className="rounded-lg bg-white/5 py-2">
+              <p className="text-base font-bold text-white">{total.sugar}</p>
+              <p className="text-[11px] text-gray-400">Sugar (g)</p>
+            </div>
+          </div>
+
+          {/* Micronutrients */}
+          <div className="mt-5 border-t border-white/10 pt-4">
+            <p className="text-xs font-semibold text-gray-300">Key micronutrients</p>
+            <dl className="mt-2 space-y-1.5 text-xs">
+              <div className="flex items-center justify-between">
+                <dt className="text-gray-400">Sodium</dt>
+                <dd className="font-medium text-gray-200">{total.sodium} mg</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-gray-400">Calcium</dt>
+                <dd className="font-medium text-gray-200">{total.calcium} mg</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-gray-400">Iron</dt>
+                <dd className="font-medium text-gray-200">{total.iron} mg</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-gray-400">Potassium</dt>
+                <dd className="font-medium text-gray-200">{total.potassium} mg</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-gray-400">Vitamin C</dt>
+                <dd className="font-medium text-gray-200">{total.vitaminC} mg</dd>
+              </div>
+            </dl>
           </div>
 
           <p className="mt-4 text-[11px] leading-relaxed text-gray-500">
