@@ -180,7 +180,7 @@ export default function Home() {
         endDate: 'August 20, 2026',
         offers: [] as { label: string; off: string }[],
         specials: null as string[] | null,
-        description: 'Celebrate your freedom to get fit. Spin the tricolour wheel and unlock a one-time coupon — win up to 30% OFF any Gym, Home, Rehab or 1:1 plan.',
+        description: 'Celebrate your freedom to get fit. Spin the tricolour wheel and unlock a one-time coupon — win up to 50% OFF any Gym, Home, Rehab or 1:1 plan.',
         spin: true,
       };
     }
@@ -1697,6 +1697,23 @@ export default function Home() {
               Start your transformation with <span className="text-brand-gold font-semibold">Coach Himanshu</span> today.
             </motion.p>
 
+            {/* Independence Day sale — jumps to the spin wheel */}
+            {activeSale?.theme === 'independence' && (
+              <motion.a
+                variants={itemVariants}
+                href="#sale"
+                className="group mb-6 inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-white/[0.14] shadow-lg overflow-hidden"
+                style={{ background: 'linear-gradient(135deg, rgba(255,153,51,0.18) 0%, rgba(255,255,255,0.06) 50%, rgba(19,136,8,0.18) 100%)' }}
+              >
+                <span className="text-lg leading-none" aria-hidden>🇮🇳</span>
+                <span className="text-[13px] leading-tight text-white">
+                  <span className="font-extrabold">Independence Day Sale</span>
+                  <span className="block text-orange-200/90 text-[11px] font-semibold">Spin &amp; Win up to 50% OFF</span>
+                </span>
+                <ArrowRight size={15} className="text-white/90 shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </motion.a>
+            )}
+
             {/* Social proof */}
             <motion.div variants={itemVariants} className="flex items-center gap-2.5 mb-6">
               <div className="flex -space-x-2">
@@ -1789,6 +1806,25 @@ export default function Home() {
                   Personalized training & nutrition — built for <span className="text-white font-medium">real results</span>.
                   Start your transformation with <span className="text-brand-blue font-medium">Coach Himanshu</span> today.
                 </motion.p>
+
+                {/* Independence Day sale — jumps to the spin wheel */}
+                {activeSale?.theme === 'independence' && (
+                  <motion.a
+                    variants={itemVariants}
+                    href="#sale"
+                    className="group mb-8 inline-flex items-center gap-3 pl-4 pr-5 py-3 rounded-2xl border border-white/[0.14] shadow-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
+                    style={{ background: 'linear-gradient(135deg, rgba(255,153,51,0.2) 0%, rgba(255,255,255,0.07) 50%, rgba(19,136,8,0.2) 100%)' }}
+                  >
+                    <span className="text-2xl leading-none" aria-hidden>🇮🇳</span>
+                    <span className="text-sm leading-tight text-white">
+                      <span className="font-extrabold text-base">Independence Day Sale</span>
+                      <span className="block text-orange-200/90 text-xs font-semibold">Spin the wheel &amp; win up to 50% OFF — one-time coupon</span>
+                    </span>
+                    <span className="ml-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 text-white text-xs font-bold shrink-0">
+                      Spin Now <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                  </motion.a>
+                )}
 
                 <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
                   <a href="#plans">
@@ -1913,7 +1949,7 @@ export default function Home() {
         const themeIcon = activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'independence' ? <Sparkles size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
 
         return (
-        <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
+        <section id="sale" className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden scroll-mt-20" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
           {/* Animated background effects */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full`} style={{ background: `radial-gradient(circle, var(--tw-gradient-from, rgba(23,95,255,0.04)) 0%, transparent 70%)` }} />
@@ -1980,7 +2016,7 @@ export default function Home() {
                           className={`mt-6 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${tc.ctaShadow}`}
                           style={{ background: tc.ctaBg }}
                         >
-                          🎡 Spin the Wheel — Win up to 30% OFF
+                          🎡 Spin the Wheel — Win up to 50% OFF
                           <ArrowRight size={16} />
                         </button>
                       )}

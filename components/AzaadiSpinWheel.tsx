@@ -16,13 +16,15 @@ import { Copy, Check, Gift, Loader2 } from 'lucide-react';
 type Segment = { value: number; color: string; text: string };
 
 // 6 segments, colours cycling saffron → white → green (three colours total).
+// NOTE: the 50% wedge is a DECOY — it's shown to entice, but the server (/api/spin)
+// only ever awards 10/20/25/30, so landOnPrize() can never target the 50% segment.
 const SEGMENTS: Segment[] = [
   { value: 10, color: '#FF9933', text: '#4A2500' },
   { value: 20, color: '#FFFFFF', text: '#0A1F44' },
-  { value: 25, color: '#138808', text: '#FFFFFF' },
-  { value: 10, color: '#FF9933', text: '#4A2500' },
-  { value: 20, color: '#FFFFFF', text: '#0A1F44' },
-  { value: 30, color: '#138808', text: '#FFFFFF' },
+  { value: 50, color: '#138808', text: '#FFFFFF' },
+  { value: 25, color: '#FF9933', text: '#4A2500' },
+  { value: 30, color: '#FFFFFF', text: '#0A1F44' },
+  { value: 20, color: '#138808', text: '#FFFFFF' },
 ];
 
 const SEG_ANGLE = 360 / SEGMENTS.length;
@@ -150,7 +152,7 @@ export default function AzaadiSpinWheel() {
     <div className="w-full h-full flex flex-col items-center justify-center gap-4 py-2">
       <div className="text-center">
         <h3 className="text-xl md:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
-          <span aria-hidden>🎡</span> Spin &amp; Win up to 30% OFF
+          <span aria-hidden>🎡</span> Spin &amp; Win up to 50% OFF
         </h3>
         <p className="text-orange-200/80 text-xs md:text-sm mt-1 font-medium">
           One free spin per device · One-time coupon
