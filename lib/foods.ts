@@ -424,6 +424,70 @@ const RAW: RawFood[] = [
   { slug: 'chicken-kathi-roll', name: 'Chicken Kathi Roll', aliases: ['chicken roll', 'chicken wrap'], category: 'Wraps & Rolls', per100g: nut(240, 12, 26, 10, 2, 2.5, 450, 40, 1.8, 220, 3), servings: [piece(180, 'roll')], source: 'INDB' },
   { slug: 'egg-roll', name: 'Egg Roll', aliases: ['anda roll', 'egg kathi roll'], category: 'Wraps & Rolls', per100g: nut(230, 9, 27, 10, 2, 2.5, 420, 45, 1.8, 150, 2), servings: [piece(160, 'roll')], source: 'INDB' },
   { slug: 'veg-frankie', name: 'Veg Frankie', aliases: ['frankie', 'mumbai frankie'], category: 'Wraps & Rolls', per100g: nut(220, 6, 30, 8, 3, 3, 420, 40, 1.7, 200, 4), servings: [piece(180, 'frankie')], source: 'INDB' },
+
+  // ── Batch: plain-boiled dals, rice varieties & more breads ─────────────────
+  { slug: 'rajma-boiled', name: 'Rajma (Kidney Beans, boiled plain)', aliases: ['boiled rajma', 'kidney beans boiled'], category: 'Dals & Legumes', per100g: nut(127, 8.7, 22.8, 0.5, 6.4, 0.3, 5, 35, 2.2, 405, 1), servings: [katori(150)], source: 'IFCT' },
+  { slug: 'red-rice', name: 'Red Rice (cooked)', aliases: ['matta rice', 'kerala rice'], category: 'Rice & Grains', per100g: nut(111, 2.6, 23.5, 0.9, 2, 0.2, 3, 10, 0.8, 80, 0), servings: [katori(150), cup(150)], source: 'IFCT' },
+  { slug: 'black-rice', name: 'Black Rice (cooked)', aliases: ['forbidden rice', 'chak hao'], category: 'Rice & Grains', per100g: nut(145, 4, 31, 1, 2.2, 0.2, 4, 12, 1.2, 90, 0), servings: [katori(150), cup(150)], source: 'USDA' },
+  { slug: 'basmati-rice', name: 'Basmati Rice (cooked)', aliases: ['basmati chawal'], category: 'Rice & Grains', per100g: nut(121, 3.5, 25.2, 0.4, 0.6, 0.1, 2, 8, 0.4, 35, 0), servings: [katori(150), cup(150)], source: 'IFCT' },
+  { slug: 'barley-roti', name: 'Barley Roti', aliases: ['jau roti'], category: 'Rotis & Breads', per100g: nut(275, 8, 55, 2, 8, 1, 200, 30, 2.5, 250, 0), servings: [piece(40, 'roti')], source: 'IFCT' },
+  { slug: 'pav-bread', name: 'Pav (bread bun)', aliases: ['pav', 'ladi pav'], category: 'Rotis & Breads', per100g: nut(280, 9, 53, 4.4, 2.5, 4, 480, 80, 3, 110, 0), servings: [piece(50, 'pav')], source: 'INDB' },
+  { slug: 'burger-bun', name: 'Burger Bun (plain)', aliases: ['bun'], category: 'Rotis & Breads', per100g: nut(283, 9.2, 52.5, 4.7, 2.3, 5.5, 490, 90, 3.2, 115, 0), servings: [piece(60, 'bun')], source: 'USDA' },
+  { slug: 'kulcha', name: 'Kulcha (plain)', aliases: ['amritsari kulcha'], category: 'Rotis & Breads', per100g: nut(275, 8.5, 51.3, 4.4, 2, 3, 420, 60, 2.6, 110, 0), servings: [piece(80, 'kulcha')], source: 'INDB' },
+  { slug: 'paneer-paratha', name: 'Paneer Paratha', aliases: ['paneer parantha'], category: 'Rotis & Breads', per100g: nut(220, 8.3, 24.7, 10.3, 3, 1.5, 380, 180, 2, 150, 1), servings: [piece(150, 'paratha')], source: 'INDB' },
+
+  // ── Batch: more raw/boiled veggies & sprouts ───────────────────────────────
+  { slug: 'baby-corn-raw', name: 'Baby Corn (raw)', aliases: ['baby corn'], category: 'Salad & Raw Veggies', per100g: nut(26, 2, 5.8, 0.2, 2.5, 2.5, 4, 12, 0.4, 180, 6), servings: [katori(100)], source: 'USDA' },
+  { slug: 'baby-corn-boiled', name: 'Baby Corn (boiled)', aliases: ['baby corn cooked'], category: 'Salad & Raw Veggies', per100g: nut(28, 2.1, 6.2, 0.3, 2.7, 2.6, 4, 12, 0.4, 170, 4), servings: [katori(100)], source: 'USDA' },
+  { slug: 'spring-onion', name: 'Spring Onion (Scallion)', aliases: ['scallion', 'hara pyaz'], category: 'Salad & Raw Veggies', per100g: nut(32, 1.8, 7.3, 0.2, 2.6, 2.3, 16, 72, 1.5, 276, 18), servings: [katori(50)], source: 'USDA' },
+  { slug: 'chana-sprouts', name: 'Chana Sprouts (sprouted, raw)', aliases: ['sprouted bengal gram', 'sprouted chana'], category: 'Salad & Raw Veggies', per100g: nut(122, 8.9, 22, 1.2, 7, 3, 12, 60, 2.5, 290, 4), servings: [katori(100)], source: 'IFCT' },
+
+  // ── Batch: more nuts & seeds ───────────────────────────────────────────────
+  { slug: 'pecans', name: 'Pecans', aliases: ['pecan'], category: 'Nuts, Seeds & Oils', per100g: nut(690, 9, 14, 72, 9.6, 4, 0, 70, 2.5, 410, 1), servings: [{ label: '20 g (handful)', grams: 20 }], source: 'USDA' },
+  { slug: 'pine-nuts', name: 'Pine Nuts', aliases: ['chilgoza'], category: 'Nuts, Seeds & Oils', per100g: nut(675, 13.5, 13, 68.5, 3.7, 3.6, 2, 16, 5.5, 597, 0.8), servings: [{ label: '20 g (handful)', grams: 20 }], source: 'USDA' },
+  { slug: 'watermelon-seeds', name: 'Watermelon Seeds (dried)', aliases: ['tarbooj seeds', 'magaz'], category: 'Nuts, Seeds & Oils', per100g: nut(555, 28, 15, 47.5, 3.5, 0, 100, 54, 7.3, 640, 0), servings: [{ label: '20 g', grams: 20 }], source: 'USDA' },
+  { slug: 'hemp-seeds', name: 'Hemp Seeds (hulled)', aliases: ['hemp hearts'], category: 'Nuts, Seeds & Oils', per100g: nut(555, 31.5, 9, 49, 4, 1.5, 5, 70, 8, 1200, 0.5), servings: [{ label: '20 g (2 tbsp)', grams: 20 }], source: 'USDA' },
+
+  // ── Batch: more dairy, egg & protein ───────────────────────────────────────
+  { slug: 'egg-yolk', name: 'Egg Yolk (raw)', aliases: ['yolk', 'anda peela'], category: 'Paneer, Egg & Dairy', per100g: nut(324, 15.9, 1.8, 26.5, 0, 0.6, 48, 129, 2.7, 109, 0), servings: [piece(17, 'yolk')], source: 'USDA' },
+  { slug: 'flavored-milk', name: 'Flavoured Milk', aliases: ['flavored milk', 'chocolate milk'], category: 'Paneer, Egg & Dairy', per100g: nut(72, 3.2, 10.4, 2, 0, 9.5, 60, 110, 0.1, 150, 0), servings: [glass(250)], source: 'INDB' },
+  { slug: 'lobster', name: 'Lobster (boiled)', aliases: ['jhinga bada'], category: 'Chicken, Fish & Meat', per100g: nut(98, 21, 0, 1, 0, 0, 420, 96, 0.3, 230, 0), servings: [piece(100, 'piece')], source: 'USDA' },
+  { slug: 'squid', name: 'Squid (boiled)', aliases: ['calamari'], category: 'Chicken, Fish & Meat', per100g: nut(92, 15.6, 3.1, 1.4, 0, 0, 44, 32, 0.7, 246, 4), servings: [piece(100, 'piece')], source: 'USDA' },
+
+  // ── Batch: sandwiches & shawarma ───────────────────────────────────────────
+  { slug: 'veg-sandwich', name: 'Veg Sandwich', aliases: ['vegetable sandwich'], category: 'Wraps & Rolls', per100g: nut(155, 5, 23.5, 4.5, 2.5, 4, 320, 60, 1.5, 150, 3), servings: [piece(200, 'sandwich')], source: 'INDB' },
+  { slug: 'chicken-sandwich', name: 'Chicken Sandwich', aliases: [], category: 'Wraps & Rolls', per100g: nut(177, 12.7, 17.3, 6.4, 1.5, 3, 380, 50, 1.3, 180, 2), servings: [piece(220, 'sandwich')], source: 'INDB' },
+  { slug: 'chicken-shawarma', name: 'Chicken Shawarma', aliases: ['shawarma'], category: 'Wraps & Rolls', per100g: nut(208, 11.6, 16.8, 10.4, 1.5, 2, 480, 40, 1.4, 200, 2), servings: [piece(250, 'roll')], source: 'INDB' },
+  { slug: 'veg-shawarma', name: 'Veg Shawarma', aliases: [], category: 'Wraps & Rolls', per100g: nut(172, 4.8, 20.8, 7.6, 2.5, 3, 420, 60, 1.5, 180, 3), servings: [piece(250, 'roll')], source: 'INDB' },
+
+  // ── Batch: biscuits ────────────────────────────────────────────────────────
+  { slug: 'digestive-biscuits', name: 'Digestive Biscuits', aliases: ['digestive'], category: 'Snacks & Street Food', per100g: nut(483, 7, 67, 19, 3.5, 20, 500, 40, 2.5, 180, 0), servings: [piece(15, 'biscuit')], source: 'USDA' },
+  { slug: 'cream-biscuits', name: 'Cream Biscuits', aliases: ['cream biscuit'], category: 'Snacks & Street Food', per100g: nut(510, 6, 69, 24, 1.5, 35, 300, 30, 2, 120, 0), servings: [piece(12, 'biscuit')], source: 'USDA' },
+
+  // ── Batch: sauces & spreads ────────────────────────────────────────────────
+  { slug: 'brown-sugar', name: 'Brown Sugar', aliases: ['brown chini'], category: 'Sauces & Spreads', per100g: nut(380, 0, 98, 0, 0, 97, 28, 83, 0.7, 133, 0), servings: [tsp(5), tbsp(15)], source: 'USDA' },
+  { slug: 'mayonnaise', name: 'Mayonnaise', aliases: ['mayo'], category: 'Sauces & Spreads', per100g: nut(667, 1.3, 4, 73.3, 0, 1, 700, 8, 0.2, 20, 0), servings: [tbsp(15)], source: 'USDA' },
+  { slug: 'jam', name: 'Fruit Jam', aliases: ['jam', 'mixed fruit jam'], category: 'Sauces & Spreads', per100g: nut(260, 0.5, 67, 0, 1, 60, 30, 20, 0.5, 80, 2), servings: [tbsp(20)], source: 'USDA' },
+  { slug: 'ketchup', name: 'Tomato Ketchup', aliases: ['ketchup', 'tomato sauce'], category: 'Sauces & Spreads', per100g: nut(113, 1.3, 28.7, 0, 0.3, 22, 900, 15, 0.5, 280, 4), servings: [tbsp(15)], source: 'USDA' },
+  { slug: 'nutella', name: 'Nutella (hazelnut spread)', aliases: ['chocolate spread', 'hazelnut spread'], category: 'Sauces & Spreads', per100g: nut(540, 6.5, 58, 31, 3, 54, 40, 110, 3, 180, 0), servings: [tbsp(20)], source: 'USDA' },
+
+  // ── Batch: juices, shakes, tea & coffee ────────────────────────────────────
+  { slug: 'sugarcane-juice', name: 'Sugarcane Juice', aliases: ['ganne ka ras'], category: 'Beverages', per100g: nut(45, 0.2, 11, 0.1, 0.1, 10, 5, 12, 0.3, 60, 1), servings: [glass(250)], source: 'IFCT' },
+  { slug: 'apple-juice', name: 'Apple Juice', aliases: [], category: 'Beverages', per100g: nut(46, 0.1, 11.2, 0.1, 0.2, 10, 4, 8, 0.1, 100, 1), servings: [glass(250)], source: 'USDA' },
+  { slug: 'grape-juice', name: 'Grape Juice', aliases: [], category: 'Beverages', per100g: nut(61, 0.4, 14.8, 0.1, 0.2, 14, 5, 10, 0.2, 100, 0.1), servings: [glass(250)], source: 'USDA' },
+  { slug: 'pineapple-juice', name: 'Pineapple Juice', aliases: [], category: 'Beverages', per100g: nut(53, 0.4, 13.2, 0.1, 0.2, 10, 2, 10, 0.3, 120, 10), servings: [glass(250)], source: 'USDA' },
+  { slug: 'pomegranate-juice', name: 'Pomegranate Juice', aliases: ['anar juice'], category: 'Beverages', per100g: nut(54, 0.2, 13.2, 0.2, 0.1, 12.6, 9, 11, 0.1, 214, 0.1), servings: [glass(250)], source: 'USDA' },
+  { slug: 'lemonade', name: 'Lemonade / Nimbu Paani (sweetened)', aliases: ['nimbu pani', 'nimbu paani', 'shikanji'], category: 'Beverages', per100g: nut(24, 0, 6, 0, 0, 5.8, 2, 4, 0, 15, 6), servings: [glass(250)], source: 'INDB' },
+  { slug: 'jaljeera', name: 'Jaljeera', aliases: ['jal jeera'], category: 'Beverages', per100g: nut(14, 0.2, 3.2, 0, 0.3, 2, 300, 10, 1, 40, 3), servings: [glass(250)], source: 'INDB' },
+  { slug: 'chai-no-sugar', name: 'Chai (milk, no sugar)', aliases: ['tea no sugar', 'sugarless chai'], category: 'Beverages', per100g: nut(30, 1.6, 1.8, 1.8, 0, 1.8, 15, 60, 0, 60, 0), servings: [cup(150), glass(200)], source: 'INDB' },
+  { slug: 'black-tea', name: 'Black Tea (no milk, no sugar)', aliases: ['kali chai', 'plain tea'], category: 'Beverages', per100g: nut(1, 0, 0, 0, 0, 0, 3, 0, 0, 20, 0), servings: [cup(150)], source: 'USDA' },
+  { slug: 'coffee-no-sugar', name: 'Coffee (milk, no sugar)', aliases: ['coffee no sugar'], category: 'Beverages', per100g: nut(33, 1.7, 2, 1.9, 0, 2, 15, 60, 0, 80, 0), servings: [cup(150), glass(200)], source: 'INDB' },
+  { slug: 'green-tea-sugar', name: 'Green Tea (with sugar)', aliases: ['sweet green tea'], category: 'Beverages', per100g: nut(15, 0, 3.3, 0, 0, 3.3, 2, 0, 0, 20, 0), servings: [cup(150), glass(200)], source: 'USDA' },
+  { slug: 'mango-shake-no-sugar', name: 'Mango Shake (no sugar)', aliases: [], category: 'Beverages', per100g: nut(66, 2.4, 10.8, 1.8, 0.6, 9, 30, 90, 0.1, 130, 8), servings: [glass(250)], source: 'INDB' },
+  { slug: 'banana-shake-sugar', name: 'Banana Shake (with sugar)', aliases: ['banana milkshake'], category: 'Beverages', per100g: nut(90, 2.5, 16.8, 1.8, 0.8, 14, 35, 100, 0.2, 200, 3), servings: [glass(250)], source: 'INDB' },
+  { slug: 'banana-shake-no-sugar', name: 'Banana Shake (no sugar)', aliases: [], category: 'Beverages', per100g: nut(70, 2.5, 12, 1.8, 0.9, 9, 35, 100, 0.2, 210, 3), servings: [glass(250)], source: 'INDB' },
+  { slug: 'whey-shake-water', name: 'Whey Protein (scoop + water)', aliases: ['whey water', 'protein shake water'], category: 'Beverages', per100g: nut(60, 12, 1.5, 0.8, 0, 1, 60, 60, 0.3, 80, 0), servings: [glass(200)], source: 'USDA' },
+  { slug: 'whey-shake-milk', name: 'Whey Protein (scoop + milk)', aliases: ['whey milk', 'protein shake milk'], category: 'Beverages', per100g: nut(105, 15.5, 6, 2.8, 0, 6, 90, 180, 0.4, 220, 0), servings: [glass(200)], source: 'USDA' },
 ];
 
 /** Full dataset — each item guaranteed to include a "100 g" serving option. */
