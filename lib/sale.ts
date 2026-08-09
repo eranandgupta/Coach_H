@@ -15,7 +15,7 @@
  * the existing date logic and discount/bonus tables resume automatically. Kept `false`
  * to keep every offer surface off site-wide.
  */
-export const SALES_ENABLED = false;
+export const SALES_ENABLED = true;
 
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 

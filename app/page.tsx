@@ -37,6 +37,7 @@ import { SALES_ENABLED } from '@/lib/sale';
 
 const CheckoutDrawer = dynamic(() => import('@/components/CheckoutDrawer'), { ssr: false });
 const LoginModal = dynamic(() => import('@/components/LoginModal'), { ssr: false });
+const AzaadiSpinWheel = dynamic(() => import('@/components/AzaadiSpinWheel'), { ssr: false });
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -170,13 +171,28 @@ export default function Home() {
       };
     }
 
+    // ── AUGUST SALE — Azaadi / Independence Day (Aug 10-20; live from Aug 9) ──
+    if (month === 7 && day >= 9 && day <= 20) {
+      return {
+        theme: 'independence' as const,
+        title: 'AZAADI FITNESS SALE 🇮🇳',
+        subtitle: 'Independence Day Special · Aug 10 - 20',
+        endDate: 'August 20, 2026',
+        offers: [] as { label: string; off: string }[],
+        specials: null as string[] | null,
+        description: 'Celebrate your freedom to get fit. Spin the tricolour wheel and unlock a one-time coupon — win up to 30% OFF any Gym, Home, Rehab or 1:1 plan.',
+        spin: true,
+      };
+    }
+
     return null;
   }, []);
 
   // Returns the sale discount percentage for a plan, or 0 if no sale applies.
   // July "Health Revolution Sale" spec.
   const getSalePercent = (plan: { duration: string; dbName: string; homeWorkout?: boolean; rehabilitation?: boolean; liveOneOnOne?: boolean }) => {
-    if (!activeSale) return 0;
+    // Azaadi sale is coupon-only (spin wheel) — no automatic strikethrough pricing.
+    if (!activeSale || activeSale.theme === 'independence') return 0;
     const d = plan.duration.toLowerCase();
     const name = plan.dbName.toLowerCase();
     // Elite 1:1 sessions
@@ -201,7 +217,7 @@ export default function Home() {
   // Returns the bonus (free) days a plan gets during the sale, or 0. These are also
   // applied to the actual subscription length at checkout (see lib/sale.ts on the server).
   const getSaleBonusDays = (plan: { duration: string; dbName: string; liveOneOnOne?: boolean }) => {
-    if (!activeSale) return 0;
+    if (!activeSale || activeSale.theme === 'independence') return 0;
     const d = plan.duration.toLowerCase();
     const name = plan.dbName.toLowerCase();
     if (plan.liveOneOnOne || name.includes('elite')) {
@@ -217,12 +233,13 @@ export default function Home() {
   const totalSaleSlides = activeSale?.specials ? 3 : activeSale ? 2 : 0;
 
   useEffect(() => {
-    if (totalSaleSlides === 0) return;
+    // Don't auto-rotate the Azaadi slide — the embedded spin wheel needs focus.
+    if (totalSaleSlides === 0 || activeSale?.theme === 'independence') return;
     const timer = setInterval(() => {
       setSaleSlide((prev) => (prev + 1) % totalSaleSlides);
     }, 5000);
     return () => clearInterval(timer);
-  }, [totalSaleSlides]);
+  }, [totalSaleSlides, activeSale]);
 
   // Fetch real plan IDs from DB so payments always use the correct ID
   useEffect(() => {
@@ -1890,9 +1907,10 @@ export default function Home() {
           environment: { bg: 'bg-green-500', bgLight: 'bg-emerald-500', border: 'border-green-500/20', text: 'text-green-300', textAccent: 'text-green-400', gradientBg: 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(16,185,129,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #10b981, #059669)', tagBg: 'rgba(34,197,94,0.08)', tagText: 'text-green-300', tagBorder: 'border-green-500/20', dotActive: 'bg-gradient-to-r from-green-500 to-emerald-400', timerBg: 'rgba(34,197,94,0.08)', ctaBg: 'linear-gradient(135deg, #10b981, #059669)', ctaShadow: 'hover:shadow-green-500/20' },
           health: { bg: 'bg-rose-500', bgLight: 'bg-red-500', border: 'border-rose-500/20', text: 'text-rose-300', textAccent: 'text-rose-400', gradientBg: 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, rgba(225,29,72,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #f43f5e, #e11d48)', tagBg: 'rgba(244,63,94,0.08)', tagText: 'text-rose-300', tagBorder: 'border-rose-500/20', dotActive: 'bg-gradient-to-r from-rose-500 to-red-400', timerBg: 'rgba(244,63,94,0.08)', ctaBg: 'linear-gradient(135deg, #f43f5e, #e11d48)', ctaShadow: 'hover:shadow-rose-500/20' },
           yoga: { bg: 'bg-purple-500', bgLight: 'bg-violet-500', border: 'border-purple-500/20', text: 'text-purple-300', textAccent: 'text-purple-400', gradientBg: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', tagBg: 'rgba(139,92,246,0.08)', tagText: 'text-purple-300', tagBorder: 'border-purple-500/20', dotActive: 'bg-gradient-to-r from-purple-500 to-violet-400', timerBg: 'rgba(139,92,246,0.08)', ctaBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', ctaShadow: 'hover:shadow-purple-500/20' },
+          independence: { bg: 'bg-orange-500', bgLight: 'bg-green-600', border: 'border-orange-400/25', text: 'text-orange-200', textAccent: 'text-orange-300', gradientBg: 'linear-gradient(135deg, rgba(255,153,51,0.14) 0%, rgba(19,136,8,0.10) 100%)', badgeBg: 'linear-gradient(135deg, #FF9933, #138808)', tagBg: 'rgba(255,153,51,0.08)', tagText: 'text-orange-200', tagBorder: 'border-orange-400/25', dotActive: 'bg-gradient-to-r from-orange-400 via-white to-green-500', timerBg: 'rgba(255,153,51,0.08)', ctaBg: 'linear-gradient(135deg, #FF9933, #138808)', ctaShadow: 'hover:shadow-orange-500/20' },
         };
         const tc = themeColors[activeSale.theme] || themeColors.yoga;
-        const themeIcon = activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
+        const themeIcon = activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'independence' ? <Sparkles size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
 
         return (
         <section className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
@@ -1918,7 +1936,7 @@ export default function Home() {
             {/* Carousel Container */}
             <div className="relative">
               <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(26,37,64,0.5) 0%, rgba(10,15,31,0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
-                <div className="relative min-h-[420px] md:min-h-[400px]">
+                <div className={`relative ${activeSale.theme === 'independence' ? 'min-h-[600px] md:min-h-[560px]' : 'min-h-[420px] md:min-h-[400px]'}`}>
                   {/* Slide 0: Main Headline */}
                   <motion.div
                     initial={false}
@@ -1956,6 +1974,16 @@ export default function Home() {
                           ))}
                         </div>
                       )}
+                      {activeSale.theme === 'independence' && (
+                        <button
+                          onClick={() => setSaleSlide(1)}
+                          className={`mt-6 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${tc.ctaShadow}`}
+                          style={{ background: tc.ctaBg }}
+                        >
+                          🎡 Spin the Wheel — Win up to 30% OFF
+                          <ArrowRight size={16} />
+                        </button>
+                      )}
                     </div>
                   </motion.div>
 
@@ -1966,17 +1994,21 @@ export default function Home() {
                     transition={{ duration: 0.5, ease: 'easeInOut' }}
                     className={`absolute inset-0 p-6 md:p-10 ${saleSlide === 1 ? 'pointer-events-auto' : 'pointer-events-none'}`}
                   >
-                    <div className="h-full flex flex-col justify-center">
-                      <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6">📋 DISCOUNTS ON ALL PLANS</h3>
-                      <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
-                        {activeSale.offers.map((offer, i) => (
-                          <div key={i} className="relative rounded-2xl border border-white/[0.08] p-3 md:p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
-                            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: tc.badgeBg }}>{offer.off}</span>
-                            <p className="text-gray-400 text-xs font-medium mt-2">{offer.label}</p>
-                          </div>
-                        ))}
+                    {activeSale.theme === 'independence' ? (
+                      <AzaadiSpinWheel />
+                    ) : (
+                      <div className="h-full flex flex-col justify-center">
+                        <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6">📋 DISCOUNTS ON ALL PLANS</h3>
+                        <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
+                          {activeSale.offers.map((offer, i) => (
+                            <div key={i} className="relative rounded-2xl border border-white/[0.08] p-3 md:p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+                              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: tc.badgeBg }}>{offer.off}</span>
+                              <p className="text-gray-400 text-xs font-medium mt-2">{offer.label}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </motion.div>
 
                   {/* Slide 2: Specials (health awareness day / June 21 etc.) */}

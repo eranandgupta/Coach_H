@@ -12,6 +12,9 @@ export async function GET() {
       where: {
         isActive: true,
         targetUserId: null,
+        // Exclude personal one-time "Azaadi Spin" codes (prefix AZS) — these are
+        // issued per-device by the spin wheel and must never be advertised publicly.
+        NOT: { code: { startsWith: 'AZS' } },
         OR: [
           { expiryDate: null },
           { expiryDate: { gte: now } },
