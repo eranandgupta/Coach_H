@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!c) return { title: 'Country Not Found' };
 
   const title = `Online Indian Fitness Coach in ${c.name} | Coach Himanshu`;
-  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,099/month (≈ ${c.approxStart}), international cards accepted.`;
+  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,299/month (≈ ${c.approxStart}), international cards accepted.`;
 
   return {
     title,
@@ -66,7 +66,7 @@ export default function CountryLayout({ children, params }: { children: React.Re
       url: 'https://coachhimanshu.com/about',
     },
     serviceType: 'Online Personal Training',
-    priceRange: '₹1,099 - ₹29,999',
+    priceRange: '₹1,299 - ₹31,999',
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: 'https://coachhimanshu.com/assessment',

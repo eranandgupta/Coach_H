@@ -68,7 +68,7 @@ export default function PlansPage() {
             <div className="text-sm text-gray-400">Transformations</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,099</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,299</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>

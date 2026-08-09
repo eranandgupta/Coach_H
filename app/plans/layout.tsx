@@ -5,7 +5,7 @@ const url = 'https://coachhimanshu.com/plans';
 const title = 'Fitness Coaching Plans & Pricing';
 const brandedTitle = 'Fitness Coaching Plans & Pricing | Coach Himanshu';
 const description =
-  'Online fitness coaching plans & pricing. Personalised coaching from ₹1,099, live 1-on-1 Elite training from ₹7,499, and couple plans from ₹3,799. Custom workout + Indian diet plans.';
+  'Online fitness coaching plans & pricing. Personalised coaching from ₹1,299, live 1-on-1 Elite training from ₹7,999, and couple plans from ₹4,299. Custom workout + Indian diet plans.';
 
 export const metadata: Metadata = {
   title,

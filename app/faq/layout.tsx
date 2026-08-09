@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions | Coach Himanshu',
   description:
-    'Find answers to common questions about online fitness coaching with Coach Himanshu. Learn about personalised workout and diet plans, pricing (recorded coaching from ₹1,099, live 1-on-1 from ₹7,499), certifications, and support.',
+    'Find answers to common questions about online fitness coaching with Coach Himanshu. Learn about personalised workout and diet plans, pricing (recorded coaching from ₹1,299, live 1-on-1 from ₹7,999), certifications, and support.',
   openGraph: {
     title: 'Frequently Asked Questions | Coach Himanshu',
     description:
@@ -32,12 +32,12 @@ const faqData = [
   {
     name: 'What is the cost of online fitness coaching in India?',
     answer:
-      'The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ₹1,099 for recorded coaching, while live 1-on-1 personal training plans start from ₹7,499. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.',
+      'The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ₹1,299 for recorded coaching, while live 1-on-1 personal training plans start from ₹7,999. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.',
   },
   {
     name: 'How much does online personal training cost in India?',
     answer:
-      "Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ₹7,499 and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.",
+      "Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ₹7,999 and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.",
   },
   {
     name: 'Does Coach Himanshu offer a refund policy?',

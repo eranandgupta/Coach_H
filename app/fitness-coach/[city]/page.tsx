@@ -17,8 +17,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Kickstart Plan',
       duration: '1 Month',
-      price: '₹1,099',
-      perMonth: '₹1,099/month',
+      price: '₹1,299',
+      perMonth: '₹1,299/month',
       features: [
         'Customised workout plan',
         'Personalised diet plan',
@@ -31,8 +31,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Consistency Plan',
       duration: '3 Months',
-      price: '₹2,499',
-      perMonth: '₹833/month',
+      price: '₹2,899',
+      perMonth: '₹966/month',
       popular: true,
       features: [
         'Customised workout plan',
@@ -47,8 +47,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Home Workout Plan',
       duration: '3 Months',
-      price: '₹2,199',
-      perMonth: '₹733/month',
+      price: '₹2,499',
+      perMonth: '₹833/month',
       features: [
         'Home workout plan (minimal equipment)',
         'Personalised diet plan',
@@ -60,8 +60,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Transformation Plan',
       duration: '6 Months',
-      price: '₹4,299',
-      perMonth: '₹716/month',
+      price: '₹4,999',
+      perMonth: '₹833/month',
       features: [
         'Customised workout plan',
         'Personalised diet plan',
@@ -113,7 +113,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       title: 'Affordable for Everyone',
-      description: `Plans start at just ₹1,099/month -- less than what most ${city.name} residents spend on one restaurant meal. Professional coaching shouldn't break the bank.`,
+      description: `Plans start at just ₹1,299/month -- less than what most ${city.name} residents spend on one restaurant meal. Professional coaching shouldn't break the bank.`,
     },
     {
       title: '24/7 WhatsApp Support',
@@ -136,7 +136,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       question: `Do I need a gym membership in ${city.name}?`,
-      answer: `Not necessarily! Coach Himanshu offers both gym-based plans (from ₹1,099/month) and home workout plans (from ₹733/month) that require minimal equipment. Many clients in ${city.name} start with home workouts and transition to gym plans later.`,
+      answer: `Not necessarily! Coach Himanshu offers both gym-based plans (from ₹1,299/month) and home workout plans (from ₹833/month) that require minimal equipment. Many clients in ${city.name} start with home workouts and transition to gym plans later.`,
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
@@ -208,7 +208,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
             <div className="text-sm text-gray-400">Client Rating</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,099</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,299</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>

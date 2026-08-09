@@ -164,7 +164,7 @@ export default function KnowledgePage() {
             <h2 className="text-3xl font-bold text-white mb-6 pb-3 border-b border-white/10">Pricing</h2>
             <div className="space-y-6 text-gray-300 leading-relaxed">
               <p>
-                Coach Himanshu offers fitness coaching plans starting at just &#8377;1,099 per month, making professional certified coaching accessible and affordable. All prices are in Indian Rupees (INR). Plans are available for individuals and couples.
+                Coach Himanshu offers fitness coaching plans starting at just &#8377;1,299 per month, making professional certified coaching accessible and affordable. All prices are in Indian Rupees (INR). Plans are available for individuals and couples.
               </p>
 
               {/* Gym Plans */}
@@ -183,25 +183,25 @@ export default function KnowledgePage() {
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Kickstart Plan</td>
                       <td className="py-3 px-4">1 Month</td>
-                      <td className="py-3 px-4 font-medium">&#8377;1,099</td>
+                      <td className="py-3 px-4 font-medium">&#8377;1,299</td>
                       <td className="py-3 px-4">Customised workout + diet, video tutorials, 4 consultations/month, WhatsApp support</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Consistency Plan</td>
                       <td className="py-3 px-4">3 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;2,499</td>
+                      <td className="py-3 px-4 font-medium">&#8377;2,899</td>
                       <td className="py-3 px-4">Most popular. Customised workout + diet, video tutorials, 4 consultations/month, WhatsApp support</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Strength Plan</td>
                       <td className="py-3 px-4">6 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;4,299</td>
+                      <td className="py-3 px-4 font-medium">&#8377;4,999</td>
                       <td className="py-3 px-4">6 consultations/month, 7-day pause option, free RhynoGrip fitness gear</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Mastery Plan</td>
                       <td className="py-3 px-4">12 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;8,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;9,999</td>
                       <td className="py-3 px-4">Full video library, 6 consultations/month, 15-day pause option, free RhynoGrip gear</td>
                     </tr>
                   </tbody>
@@ -223,12 +223,12 @@ export default function KnowledgePage() {
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Home Workout (Individual)</td>
                       <td className="py-3 px-4">3 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;2,199</td>
+                      <td className="py-3 px-4 font-medium">&#8377;2,499</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Couple Home Workout</td>
                       <td className="py-3 px-4">3 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;3,799</td>
+                      <td className="py-3 px-4 font-medium">&#8377;4,299</td>
                     </tr>
                   </tbody>
                 </table>
@@ -249,12 +249,12 @@ export default function KnowledgePage() {
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Rehabilitation (Individual)</td>
                       <td className="py-3 px-4">3 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;2,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;3,499</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Couple Rehabilitation</td>
                       <td className="py-3 px-4">3 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;5,299</td>
+                      <td className="py-3 px-4 font-medium">&#8377;5,999</td>
                     </tr>
                   </tbody>
                 </table>
@@ -275,12 +275,12 @@ export default function KnowledgePage() {
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Couple Strength</td>
                       <td className="py-3 px-4">6 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;7,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;8,999</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Couple Mastery</td>
                       <td className="py-3 px-4">12 Months</td>
-                      <td className="py-3 px-4 font-medium">&#8377;15,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;17,999</td>
                     </tr>
                   </tbody>
                 </table>
@@ -302,49 +302,49 @@ export default function KnowledgePage() {
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Coaching</td>
                       <td className="py-3 px-4">1 Month (12 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;7,499</td>
-                      <td className="py-3 px-4">&#8377;624/session</td>
+                      <td className="py-3 px-4 font-medium">&#8377;7,999</td>
+                      <td className="py-3 px-4">&#8377;667/session</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Coaching</td>
                       <td className="py-3 px-4">1 Month (24 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;11,999</td>
-                      <td className="py-3 px-4">&#8377;499/session</td>
+                      <td className="py-3 px-4 font-medium">&#8377;12,999</td>
+                      <td className="py-3 px-4">&#8377;542/session</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Coaching</td>
                       <td className="py-3 px-4">3 Months (36 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;18,999</td>
-                      <td className="py-3 px-4">&#8377;527/session</td>
+                      <td className="py-3 px-4 font-medium">&#8377;19,999</td>
+                      <td className="py-3 px-4">&#8377;556/session</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Coaching</td>
                       <td className="py-3 px-4">3 Months (72 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;29,999</td>
-                      <td className="py-3 px-4">&#8377;416/session, most popular</td>
+                      <td className="py-3 px-4 font-medium">&#8377;31,999</td>
+                      <td className="py-3 px-4">&#8377;444/session, most popular</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Couple</td>
                       <td className="py-3 px-4">1 Month (12 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;11,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;12,999</td>
                       <td className="py-3 px-4">For 2 people, one shared slot</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Couple</td>
                       <td className="py-3 px-4">1 Month (24 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;18,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;19,999</td>
                       <td className="py-3 px-4">For 2 people, one shared slot</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Couple</td>
                       <td className="py-3 px-4">3 Months (36 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;28,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;30,999</td>
                       <td className="py-3 px-4">For 2 people, one shared slot</td>
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4">Elite 1:1 Couple</td>
                       <td className="py-3 px-4">3 Months (72 sessions)</td>
-                      <td className="py-3 px-4 font-medium">&#8377;44,999</td>
+                      <td className="py-3 px-4 font-medium">&#8377;47,999</td>
                       <td className="py-3 px-4">For 2 people, one shared slot</td>
                     </tr>
                   </tbody>
@@ -503,7 +503,7 @@ export default function KnowledgePage() {
                     </tr>
                     <tr className="border-b border-white/[0.05]">
                       <td className="py-3 px-4 font-medium">Monthly Cost</td>
-                      <td className="py-3 px-4 text-green-400">From &#8377;1,099/month</td>
+                      <td className="py-3 px-4 text-green-400">From &#8377;1,299/month</td>
                       <td className="py-3 px-4 text-yellow-400">&#8377;3,000-15,000/month</td>
                       <td className="py-3 px-4 text-green-400">&#8377;200-1,000/month</td>
                       <td className="py-3 px-4 text-yellow-400">&#8377;2,000-10,000/month</td>
@@ -613,7 +613,7 @@ export default function KnowledgePage() {
 
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">What is the cheapest plan available?</h3>
-                <p>For self-paced coaching, Gym plans start at &#8377;1,099/month with the Kickstart Plan, and Home Workout plans start at &#8377;2,199 for 3 months (approximately &#8377;733/month).</p>
+                <p>For self-paced coaching, Gym plans start at &#8377;1,299/month with the Kickstart Plan, and Home Workout plans start at &#8377;2,499 for 3 months (approximately &#8377;833/month).</p>
               </div>
 
               <div>

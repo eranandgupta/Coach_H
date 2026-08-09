@@ -66,21 +66,21 @@ export default function CancellationPolicy() {
                   <strong className="text-white">Important:</strong> Regardless of when you cancel, you will NOT receive a refund for:
                 </p>
                 <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Monthly Plans (Kickstart - ₹999/month) - No refund for current month</li>
-                  <li>3-Month Plans (Consistency - ₹2,099 / Rehabilitation - ₹2,299 / Home Workout - ₹1,799) - No refund for remaining months</li>
-                  <li>6-Month Plans (Strength - ₹3,599 / Couple Strength - ₹6,999) - No refund for remaining months</li>
-                  <li>12-Month Plans (Mastery - ₹7,499 / Couple Mastery - ₹13,899) - No refund for remaining months</li>
+                  <li>Monthly Plans (Kickstart - ₹1,299/month) - No refund for current month</li>
+                  <li>3-Month Plans (Consistency - ₹2,899 / Rehabilitation - ₹3,499 / Home Workout - ₹2,499) - No refund for remaining months</li>
+                  <li>6-Month Plans (Strength - ₹4,999 / Couple Strength - ₹8,999) - No refund for remaining months</li>
+                  <li>12-Month Plans (Mastery - ₹9,999 / Couple Mastery - ₹17,999) - No refund for remaining months</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold text-white mb-3">3.2 Example Scenarios</h3>
                 <div className="bg-brand-navy-light/50 rounded-lg p-4 mb-4">
                   <p className="text-gray-300 text-sm leading-relaxed">
-                    <strong className="text-white">Example 1:</strong> You purchase a 6-month plan for ₹3,599 and cancel after 2 months. You will continue to have access for the remaining 4 months, but you will NOT receive a refund of any amount.
+                    <strong className="text-white">Example 1:</strong> You purchase a 6-month plan for ₹4,999 and cancel after 2 months. You will continue to have access for the remaining 4 months, but you will NOT receive a refund of any amount.
                   </p>
                 </div>
                 <div className="bg-brand-navy-light/50 rounded-lg p-4">
                   <p className="text-gray-300 text-sm leading-relaxed">
-                    <strong className="text-white">Example 2:</strong> You purchase a monthly plan for ₹999 and cancel after 2 weeks. You will continue to have access for the remaining 2 weeks of the month, but you will NOT receive a refund.
+                    <strong className="text-white">Example 2:</strong> You purchase a monthly plan for ₹1,299 and cancel after 2 weeks. You will continue to have access for the remaining 2 weeks of the month, but you will NOT receive a refund.
                   </p>
                 </div>
               </section>
