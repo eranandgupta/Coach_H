@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import CalorieCalculator from '@/components/CalorieCalculator';
+import IndependenceDayBanner from '@/components/IndependenceDayBanner';
 import { FOODS, getFoodBySlug } from '@/lib/foods';
 import { caloriesForServing } from '@/lib/nutrition';
 import { CALCULATOR_FAQS, COMMON_FOOD_SLUGS } from './content';
@@ -37,6 +38,9 @@ export default function CalorieCalculatorPage() {
             <span className="mx-1.5">/</span>
             <span className="text-gray-400">Calorie Calculator</span>
           </nav>
+
+          {/* Festive Independence Day message (auto-shows 1–20 Aug, then hides) */}
+          <IndependenceDayBanner />
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-white">
             Indian Food{' '}
             <span className="bg-gradient-to-r from-brand-blue to-brand-gold bg-clip-text text-transparent">
