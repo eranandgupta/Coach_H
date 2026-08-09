@@ -460,10 +460,60 @@ export default function Home() {
   };
 
   // FAQ Schema for rich snippets
+  // ── Independence Day (Azaadi) sale — SEO / AEO / GEO surfaces ──
+  // Only emitted while the sale is live so search + AI answer engines never cite an
+  // expired offer. The wheel awards 10–30% (the 50% wedge is a visual decoy), so all
+  // structured data states the real, achievable 10–30% range — never the 50% decoy —
+  // to stay within Google's "no misleading structured data" policy.
+  const isIndependenceSale = activeSale?.theme === 'independence';
+
+  const saleFaqs = isIndependenceSale ? [
+    {
+      '@type': 'Question',
+      name: 'Is there an Independence Day (Azaadi) sale on Coach Himanshu fitness plans?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. The Azaadi Fitness Sale runs from 9 to 20 August 2026. On the Coach Himanshu homepage you can spin the tricolour Independence Day wheel to unlock a one-time discount coupon — every spin wins a coupon worth 10% to 30% OFF. The coupon applies at checkout to any gym, home workout, rehabilitation, couple, or live 1-on-1 Elite plan. One free spin per device.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much discount can I get in the Coach Himanshu Independence Day sale?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Each spin of the Independence Day wheel guarantees a personal one-time coupon worth between 10% and 30% OFF your plan price. The discount works across recorded coaching (gym, home, rehab), couple plans, and live 1-on-1 Elite personal training, and is valid until 20 August 2026.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I claim the Coach Himanshu Independence Day coupon?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Open coachhimanshu.com, tap the Independence Day Sale banner in the hero to open the spin wheel, enter your name, email, and phone number, and spin once for free. You instantly receive a one-time coupon code — paste it into the promo-code box when you subscribe to any plan before 20 August 2026.',
+      },
+    },
+  ] : [];
+
+  const saleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SaleEvent',
+    name: 'Azaadi Independence Day Fitness Sale',
+    description: 'Independence Day fitness sale by Coach Himanshu — spin the tricolour wheel to unlock a one-time coupon worth 10% to 30% OFF any gym, home, rehabilitation, couple, or live 1-on-1 Elite coaching plan. Valid 9–20 August 2026.',
+    startDate: '2026-08-09',
+    endDate: '2026-08-20',
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+    location: { '@type': 'VirtualLocation', url: 'https://coachhimanshu.com/#sale' },
+    image: 'https://coachhimanshu.com/opengraph-image',
+    organizer: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
+    url: 'https://coachhimanshu.com/#sale',
+  };
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
+      ...saleFaqs,
       {
         '@type': 'Question',
         name: 'How does online fitness coaching with Coach Himanshu work?',
@@ -1611,6 +1661,12 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(glossarySchema) }}
       />
+      {isIndependenceSale && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(saleSchema) }}
+        />
+      )}
 
       <main className="min-h-screen bg-brand-navy">
         <AnnouncementBar />
