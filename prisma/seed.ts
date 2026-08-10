@@ -49,7 +49,7 @@ async function main() {
     data: {
       name: 'Kickstart Plan',
       description: 'All Inclusive',
-      price: 1099,
+      price: 1299,
       duration: 30, // 1 Month
       features: JSON.stringify([
         'Customised workout plan',

@@ -1269,9 +1269,7 @@ export default function CoachDashboard() {
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <Calendar className="w-3 h-3" />
                   {new Date(blog.createdAt).toLocaleDateString()}
-                  {blog.views > 0 && (
-                    <span className="ml-2">{blog.views} views</span>
-                  )}
+                  <span className="ml-2">{blog.views ?? 0} views</span>
                 </div>
               </div>
             ))}

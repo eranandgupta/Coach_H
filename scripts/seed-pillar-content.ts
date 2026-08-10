@@ -60,7 +60,7 @@ const posts = [
 </div>
 
 <ol>
-<li><strong>Affordability:</strong> Online coaching costs a fraction of in-person personal training. Where a gym trainer in Delhi or Mumbai charges Rs 8,000-15,000 per month, quality online coaching starts at Rs 799-1,099 per month with more comprehensive services included.</li>
+<li><strong>Affordability:</strong> Online coaching costs a fraction of in-person personal training. Where a gym trainer in Delhi or Mumbai charges Rs 8,000-15,000 per month, quality online coaching starts at Rs 799-1,299 per month with more comprehensive services included.</li>
 <li><strong>Accessibility:</strong> India is a vast country. If you live in a tier-2 or tier-3 city, finding a certified, experienced trainer locally can be nearly impossible. Online coaching removes the geography barrier entirely.</li>
 <li><strong>Smartphone penetration:</strong> With over 700 million smartphone users and 500 million WhatsApp users, India has the infrastructure for seamless coach-client communication.</li>
 <li><strong>Rising health awareness:</strong> Lifestyle diseases like diabetes, hypertension, and PCOS are affecting Indians at younger ages. More people are realising that professional guidance -- not just gym memberships -- is needed to address these conditions.</li>
@@ -453,7 +453,7 @@ const posts = [
 
 <div class="highlight-box">
 <p><strong>Coach Himanshu -- NASM Certified Online Fitness Coach</strong></p>
-<p>With 1000+ client transformations across India and internationally, Coach Himanshu offers personalised online coaching that includes custom workout plans, Indian-food-focused meal plans, 24/7 WhatsApp support, weekly consultation calls, supplement guidance, and form check reviews. Plans start at just Rs 799/month for home workouts and Rs 1,099/month for gym plans.</p>
+<p>With 1000+ client transformations across India and internationally, Coach Himanshu offers personalised online coaching that includes custom workout plans, Indian-food-focused meal plans, 24/7 WhatsApp support, weekly consultation calls, supplement guidance, and form check reviews. Plans start at just Rs 799/month for home workouts and Rs 1,299/month for gym plans.</p>
 <p><a href="/about">Learn more about Coach Himanshu's credentials and approach</a>.</p>
 </div>
 

@@ -578,7 +578,7 @@ const posts = [
 
 <h2>How Coach Himanshu's Online Coaching Compares</h2>
 
-<p>Coach Himanshu offers NASM-certified online coaching with fully personalised workout plans, Indian-food-focused meal plans, 24/7 WhatsApp support, and weekly one-on-one consultations -- starting at just Rs 799/month for home plans and Rs 1,099/month for gym plans.</p>
+<p>Coach Himanshu offers NASM-certified online coaching with fully personalised workout plans, Indian-food-focused meal plans, 24/7 WhatsApp support, and weekly one-on-one consultations -- starting at just Rs 799/month for home plans and Rs 1,299/month for gym plans.</p>
 
 <blockquote>With 1000+ client transformations across India and internationally, the results speak for themselves.</blockquote>
 
@@ -864,7 +864,7 @@ const posts = [
 
 <div class="stat-grid">
 <div class="stat-card"><strong>Rs 799/mo</strong>Home Workout Plans</div>
-<div class="stat-card"><strong>Rs 1,099/mo</strong>Gym Plans (Kickstart)</div>
+<div class="stat-card"><strong>Rs 1,299/mo</strong>Gym Plans (Kickstart)</div>
 <div class="stat-card"><strong>Rs 1,499/mo</strong>Rehabilitation Plans</div>
 <div class="stat-card"><strong>Rs 5,999</strong>Live 1-on-1 (12 Sessions)</div>
 </div>

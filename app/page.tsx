@@ -462,9 +462,10 @@ export default function Home() {
   // FAQ Schema for rich snippets
   // ── Independence Day (Azaadi) sale — SEO / AEO / GEO surfaces ──
   // Only emitted while the sale is live so search + AI answer engines never cite an
-  // expired offer. The wheel awards 10–30% (the 50% wedge is a visual decoy), so all
-  // structured data states the real, achievable 10–30% range — never the 50% decoy —
-  // to stay within Google's "no misleading structured data" policy.
+  // expired offer. Marketing copy says "up to 50% OFF" (the wheel visibly shows a 50%
+  // wedge); every spin still guarantees at least 10% OFF. NOTE: this "up to 50%" claim
+  // is also in the FAQPage structured data — the real awarded max is 30%, so this is a
+  // known SEO trade-off (Google may flag it as a misleading offer). Owner-approved.
   const isIndependenceSale = activeSale?.theme === 'independence';
 
   const saleFaqs = isIndependenceSale ? [
@@ -473,7 +474,7 @@ export default function Home() {
       name: 'Is there an Independence Day (Azaadi) sale on Coach Himanshu fitness plans?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The Azaadi Fitness Sale runs from 9 to 20 August 2026. On the Coach Himanshu homepage you can spin the tricolour Independence Day wheel to unlock a one-time discount coupon — every spin wins a coupon worth 10% to 30% OFF. The coupon applies at checkout to any gym, home workout, rehabilitation, couple, or live 1-on-1 Elite plan. One free spin per device.',
+        text: 'Yes. The Azaadi Fitness Sale runs from 9 to 20 August 2026. On the Coach Himanshu homepage you can spin the tricolour Independence Day wheel to unlock a one-time discount coupon — win up to 50% OFF, with every spin guaranteeing at least 10% OFF. The coupon applies at checkout to any gym, home workout, rehabilitation, couple, or live 1-on-1 Elite plan. One free spin per device.',
       },
     },
     {
@@ -481,7 +482,7 @@ export default function Home() {
       name: 'How much discount can I get in the Coach Himanshu Independence Day sale?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Each spin of the Independence Day wheel guarantees a personal one-time coupon worth between 10% and 30% OFF your plan price. The discount works across recorded coaching (gym, home, rehab), couple plans, and live 1-on-1 Elite personal training, and is valid until 20 August 2026.',
+        text: 'Each spin of the Independence Day wheel gives a personal one-time coupon worth up to 50% OFF your plan price, and every spin is guaranteed to win at least 10% OFF. The discount works across recorded coaching (gym, home, rehab), couple plans, and live 1-on-1 Elite personal training, and is valid until 20 August 2026.',
       },
     },
     {
@@ -498,7 +499,7 @@ export default function Home() {
     '@context': 'https://schema.org',
     '@type': 'SaleEvent',
     name: 'Azaadi Independence Day Fitness Sale',
-    description: 'Independence Day fitness sale by Coach Himanshu — spin the tricolour wheel to unlock a one-time coupon worth 10% to 30% OFF any gym, home, rehabilitation, couple, or live 1-on-1 Elite coaching plan. Valid 9–20 August 2026.',
+    description: 'Independence Day fitness sale by Coach Himanshu — spin the tricolour wheel to unlock a one-time coupon worth up to 50% OFF any gym, home, rehabilitation, couple, or live 1-on-1 Elite coaching plan. Valid 9–20 August 2026.',
     startDate: '2026-08-09',
     endDate: '2026-08-20',
     eventStatus: 'https://schema.org/EventScheduled',
@@ -1219,6 +1220,27 @@ export default function Home() {
       liveOneOnOne: true,
     },
     {
+      id: 19,
+      dbName: 'Elite 1:1 - 1 Month (12 Sessions)',
+      title: '1:1 ELITE COACHING',
+      duration: 'Month',
+      price: '₹7,999',
+      priceValue: 7999,
+      description: '12 Sessions · Just ₹667/session',
+      features: [
+        'Live 1:1 personal training',
+        'Personalised diet plan',
+        '60 min per session',
+        'Supplement guidance',
+        'Lifestyle guidance',
+        'WhatsApp support',
+        'Full video library access',
+        '📋 Free Habit Tracker',
+      ],
+      liveGroup: true,
+      liveOneOnOne: true,
+    },
+    {
       id: 18,
       dbName: 'Elite 1:1 - 1 Month (24 Sessions)',
       title: '1:1 ELITE COACHING',
@@ -1240,13 +1262,13 @@ export default function Home() {
       liveOneOnOne: true,
     },
     {
-      id: 19,
-      dbName: 'Elite 1:1 - 1 Month (12 Sessions)',
+      id: 21,
+      dbName: 'Elite 1:1 - 3 Months (36 Sessions)',
       title: '1:1 ELITE COACHING',
-      duration: 'Month',
-      price: '₹7,999',
-      priceValue: 7999,
-      description: '12 Sessions · Just ₹667/session',
+      duration: '3 Months',
+      price: '₹19,999',
+      priceValue: 19999,
+      description: '36 Sessions · Just ₹556/session',
       features: [
         'Live 1:1 personal training',
         'Personalised diet plan',
@@ -1255,7 +1277,9 @@ export default function Home() {
         'Lifestyle guidance',
         'WhatsApp support',
         'Full video library access',
+        '⏸️ Pause option (7 days)',
         '📋 Free Habit Tracker',
+        '🎁 FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1283,29 +1307,6 @@ export default function Home() {
       liveGroup: true,
       liveOneOnOne: true,
       popular: true,
-    },
-    {
-      id: 21,
-      dbName: 'Elite 1:1 - 3 Months (36 Sessions)',
-      title: '1:1 ELITE COACHING',
-      duration: '3 Months',
-      price: '₹19,999',
-      priceValue: 19999,
-      description: '36 Sessions · Just ₹556/session',
-      features: [
-        'Live 1:1 personal training',
-        'Personalised diet plan',
-        '60 min per session',
-        'Supplement guidance',
-        'Lifestyle guidance',
-        'WhatsApp support',
-        'Full video library access',
-        '⏸️ Pause option (7 days)',
-        '📋 Free Habit Tracker',
-        '🎁 FREE RhynoGrip Fitness Gear',
-      ],
-      liveGroup: true,
-      liveOneOnOne: true,
     },
   ];
 

@@ -7,6 +7,7 @@ import YouTubeEmbed from '@/components/YouTubeEmbed';
 import Link from 'next/link';
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
 import { BackToBlogButton, ExplorePlansButton, StickyCtaBanner } from '@/components/BlogPostCTA';
+import BlogViewTracker from '@/components/BlogViewTracker';
 
 // On-demand ISR: don't enumerate slugs at build time (that queried the DB during
 // the build and made deploys fail when the DB was unreachable / over its connection
@@ -195,6 +196,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-brand-navy">
+      <BlogViewTracker slug={post.slug} />
       <AnnouncementBar />
       <Navbar />
 
