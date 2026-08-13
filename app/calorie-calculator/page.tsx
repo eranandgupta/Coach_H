@@ -8,6 +8,10 @@ import { FOODS, getFoodBySlug } from '@/lib/foods';
 import { caloriesForServing } from '@/lib/nutrition';
 import { CALCULATOR_FAQS, COMMON_FOOD_SLUGS } from './content';
 
+// Same WhatsApp consult link used across the site (plans, audience pages).
+const WHATSAPP_CONSULT =
+  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20to%20start%20a%20free%20consultation.';
+
 export default function CalorieCalculatorPage() {
   // Precompute the static "common foods" table (household serving of each) — SSR'd for SEO/AEO.
   const commonRows = COMMON_FOOD_SLUGS.map((slug) => {
@@ -131,18 +135,22 @@ export default function CalorieCalculatorPage() {
               Get a personalised Indian diet + workout plan built around your body, routine and goal.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/assessment"
+              <a
+                href={WHATSAPP_CONSULT}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-xl bg-gradient-to-r from-brand-blue to-blue-500 px-6 py-3 font-semibold text-white shadow-lg shadow-brand-blue/25 hover:-translate-y-0.5 transition-transform"
               >
                 Take the free assessment
-              </Link>
-              <Link
-                href="/plans"
+              </a>
+              <a
+                href={WHATSAPP_CONSULT}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/5 transition-colors"
               >
                 View coaching plans
-              </Link>
+              </a>
             </div>
           </div>
         </div>

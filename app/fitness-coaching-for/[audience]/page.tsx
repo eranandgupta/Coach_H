@@ -52,12 +52,14 @@ export default function AudiencePage({ params }: { params: { audience: string } 
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
-            <Link
-              href="/assessment"
+            <a
+              href={WHATSAPP_CONSULT}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
             >
-              Start Free Assessment
-            </Link>
+              Start Consultation
+            </a>
             <Link
               href="/plans"
               className="inline-flex items-center justify-center px-8 py-4 border border-white/20 hover:border-brand-gold text-white font-semibold rounded-xl transition-all duration-300 text-lg hover:bg-white/5"
