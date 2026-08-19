@@ -94,7 +94,7 @@ export default function IndependenceDayBanner() {
 
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-200 md:text-base">
               This free calorie calculator — with full macros and{' '}
-              <span className="font-semibold text-white">360+ Indian foods</span> — is our gift to the
+              <span className="font-semibold text-white">600+ Indian foods</span> — is our gift to the
               nation this Independence Day. So every Indian can eat wisely, track their food, and get
               fit. <span className="font-semibold text-white">Free for everyone, forever</span> — our
               first step toward a healthier, fitter India.
