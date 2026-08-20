@@ -3,6 +3,10 @@
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
+/** WhatsApp chat for the free-assessment CTA (same number used across the site). */
+const WHATSAPP_ASSESSMENT =
+  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20my%20free%20fitness%20assessment.';
+
 export function BackToBlogButton() {
   return (
     <Link
@@ -39,12 +43,14 @@ export function StickyCtaBanner() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <Link
-            href="/assessment"
+          <a
+            href={WHATSAPP_ASSESSMENT}
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-3 md:px-5 py-1.5 md:py-2 text-xs md:text-sm rounded-xl font-semibold transition-all duration-300 relative overflow-hidden inline-flex items-center justify-center bg-gradient-to-r from-brand-blue to-blue-500 text-white shadow-lg shadow-brand-blue/25 hover:shadow-[0_8px_30px_rgba(23,95,255,0.45)] hover:-translate-y-0.5 whitespace-nowrap"
           >
             Free Assessment
-          </Link>
+          </a>
         </div>
       </div>
     </div>

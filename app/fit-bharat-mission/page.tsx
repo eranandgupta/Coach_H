@@ -15,8 +15,7 @@ import {
   Beef,
   Leaf,
   Clock,
-  Sparkles,
-  Flag
+  Sparkles
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -298,20 +297,6 @@ export default function FitBharatMissionPage() {
               transition={{ duration: 0.8 }}
               className="text-center"
             >
-              {/* Republic Day Badge */}
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="inline-flex items-center gap-2 mb-6 px-6 py-3 bg-gradient-to-r from-orange-500/20 via-white/10 to-green-500/20 border border-orange-500/30 rounded-full"
-              >
-                <Flag className="w-5 h-5 text-orange-400" />
-                <span className="text-white font-semibold text-sm tracking-wide">
-                  26 January 2026 - Republic Day Special
-                </span>
-                <Flag className="w-5 h-5 text-green-400" />
-              </motion.div>
-
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
