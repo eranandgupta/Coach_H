@@ -60,6 +60,7 @@ export default function ClientDashboard() {
   const [loading, setLoading] = useState(true);
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
   const [isDietModalOpen, setIsDietModalOpen] = useState(false);
+  const [selectedWorkoutIndex, setSelectedWorkoutIndex] = useState(0);
   const [selectedDietIndex, setSelectedDietIndex] = useState(0);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -430,7 +431,7 @@ export default function ClientDashboard() {
   }
 
   const isSubscriptionActive = subscription?.isActive;
-  const currentWorkout = workouts[0];
+  const currentWorkout = workouts[selectedWorkoutIndex] || workouts[0];
   const currentDiet = diets[selectedDietIndex] || diets[0];
   const planName = subscription?.subscription?.plan?.name || '';
   const isLiveSessionPlan = planName === 'She Strong Program' || planName === 'Active Parents Program';
@@ -1167,6 +1168,24 @@ export default function ClientDashboard() {
                 <h2 className="text-2xl font-bold text-white">Current Workout</h2>
               </div>
             </div>
+
+            {workouts.length > 1 && (
+              <div className="flex gap-2 mb-4 flex-wrap">
+                {workouts.map((workout: any, idx: number) => (
+                  <button
+                    key={workout.id}
+                    onClick={() => setSelectedWorkoutIndex(idx)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      selectedWorkoutIndex === idx
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
+                    }`}
+                  >
+                    {workout.title || `Plan ${idx + 1}`}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {currentWorkout ? (
               <div className="space-y-4">
