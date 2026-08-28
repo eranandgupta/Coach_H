@@ -97,6 +97,11 @@ export const metadata: Metadata = {
       'x-default': 'https://coachhimanshu.com',
     },
   },
+  // Renders <meta name="google-site-verification"> only once the code is set in
+  // the deploy env. Get it from Search Console → Settings → Ownership → HTML tag.
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({

@@ -239,20 +239,9 @@ const nextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
-      {
-        source: '/llms.txt',
-        headers: [
-          { key: 'Content-Type', value: 'text/plain; charset=utf-8' },
-          { key: 'Cache-Control', value: 'public, max-age=86400' },
-        ],
-      },
-      {
-        source: '/llms-full.txt',
-        headers: [
-          { key: 'Content-Type', value: 'text/plain; charset=utf-8' },
-          { key: 'Cache-Control', value: 'public, max-age=86400' },
-        ],
-      },
+      // /llms.txt and /llms-full.txt are now dynamic route handlers
+      // (app/llms.txt/route.ts, app/llms-full.txt/route.ts) that set their own
+      // Content-Type and Cache-Control from live data.
     ];
   },
   webpack: (config, { isServer }) => {
