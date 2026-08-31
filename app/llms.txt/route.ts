@@ -63,6 +63,14 @@ All coaching is online. Prices are in INR and include a customised workout plan,
 
 ${services}
 
+## Live 1-on-1 Online Personal Training (Flagship Offer)
+Coach Himanshu's premium service is live, real-time, one-on-one online personal training (the "Elite 1:1" plans). Each session is 60 minutes on a live video call with real-time form correction — the closest thing to an in-person personal trainer, from anywhere in the world.
+- Packages: 12, 24, 36, and 72 sessions; individual and couple options
+- Starting price: ${inr(Math.min(...PLAN_GROUPS.find((g) => g.key === 'elite')?.plans.map((p) => p.price) ?? [7999]))}
+- Includes a personalised Indian diet plan, full video library, supplement guidance, and WhatsApp support
+- Flexible scheduling, including NRI-friendly timezones; English and Hindi
+- Dedicated page: https://coachhimanshu.com/online-personal-trainer
+
 ## What Every Plan Includes
 - Personalized workout plan tailored to individual goals
 - Custom Indian meal plan based on food preferences
@@ -101,6 +109,7 @@ ${services}
 - [About](https://coachhimanshu.com/about): Coach credentials and story
 - [Blog](https://coachhimanshu.com/blog): ${blogLabel}
 - [Plans & Pricing](https://coachhimanshu.com/plans): All plans with a comparison matrix
+- [Online Personal Trainer](https://coachhimanshu.com/online-personal-trainer): Live 1-on-1 personal training with real-time form correction, from ₹7,999
 - [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
 - [Online Fitness Coach Worldwide](https://coachhimanshu.com/online-fitness-coach): Coaching for NRIs by country
 - [FAQ](https://coachhimanshu.com/faq): Common questions answered

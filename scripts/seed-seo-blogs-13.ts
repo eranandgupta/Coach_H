@@ -3,178 +3,189 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Batch 13 — high-intent, decision-stage posts that funnel readers to the live
+// 1:1 personal-training offer (/online-personal-trainer). These target queries
+// people search right before they buy a personal trainer, so they convert.
+
 const posts = [
   {
-    title: 'How to Start Your Fitness Journey This Independence Day',
-    slug: 'how-to-start-your-fitness-journey-india',
-    excerpt: 'Ready for azaadi from excuses? A simple, no-overwhelm guide to starting your fitness journey in India — the first 4 weeks, diet, workouts and mindset.',
-    readTime: 10,
-    content: `<p>The best day to start your fitness journey isn't January 1st — it's today. This Independence Day, the freedom worth fighting for is <strong>azaadi from excuses, crash diets, and the belief that you need a perfect plan before you begin</strong>. You don't. You need one honest first step.</p>
+    title: 'Online Personal Trainer vs Gym Trainer: Which Is Better in India?',
+    slug: 'online-personal-trainer-vs-gym-trainer-india',
+    excerpt:
+      'Online personal trainer or gym trainer? A clear, honest comparison of cost, results, form correction, and convenience for Indians — and how to choose the right one for you.',
+    readTime: 8,
+    content: `<p>If you want a personal trainer in India, you have two real choices today: a <strong>live online personal trainer</strong> who coaches you one-on-one over video, or a <strong>gym trainer</strong> who stands next to you in person. Both can work — but they cost very different amounts and suit very different lives.</p>
 
-<p>This guide walks you through exactly how to start getting fit in India — without a fancy gym, without giving up dal-chawal, and without burning out in week two. No jargon, no extremes, just the first 4 weeks laid out simply so you can actually stick with it.</p>
+<p>This guide compares them honestly on the things that actually matter: results, cost, form correction, convenience, and accountability — so you can pick the right one.</p>
 
 <div class="stat-grid">
-<div class="stat-card"><strong>Today</strong>The Best Day to Start</div>
-<div class="stat-card"><strong>4 Weeks</strong>To Build the First Real Habit</div>
-<div class="stat-card"><strong>7,000+</strong>Steps a Day to Begin With</div>
-<div class="stat-card"><strong>No Gym</strong>Needed to Get Started</div>
+<div class="stat-card"><strong>₹7,999+</strong>Typical live online 1:1 (per package)</div>
+<div class="stat-card"><strong>₹15,000-40,000+</strong>In-person gym trainer / month in metros</div>
+<div class="stat-card"><strong>Both</strong>Give real-time form correction</div>
+<div class="stat-card"><strong>Online</strong>Wins on cost, flexibility & reach</div>
 </div>
 
 <div class="callout">
-<strong>Quick answer:</strong> Start with three things you can do this week — walk 7,000+ steps a day, eat protein at every meal, and do 2-3 short strength sessions. Master consistency first; add intensity later. That's it. Everything else is detail.
+<strong>Quick answer:</strong> A live online personal trainer gives you the same real-time coaching and form correction as a good gym trainer — because the coach watches you on video and corrects you rep by rep — but at a fraction of the price, on your own schedule, from home or any gym. For most people in India, live online 1:1 is the better value. Choose an in-person trainer only if you specifically want hands-on spotting for very heavy lifting.
 </div>
 
 <hr>
 
-<h2>Why Most Fitness Journeys Fail in Week Two</h2>
+<h2>What's the Difference?</h2>
 
-<p>People don't quit because they're lazy. They quit because they start too hard. A 6-day gym split, 1,200-calorie diet, no rice, no sugar, wake up at 5am — all at once, from zero. It's unsustainable by design, and when it collapses, they blame themselves instead of the plan.</p>
+<p>A <strong>gym trainer</strong> works at a fixed location. You travel to the gym, train in their time slot, and pay premium metro rates. A <strong>live online personal trainer</strong> coaches you in real time over a video call — watching your form, correcting your technique, and adjusting your workout as you go — from wherever you are.</p>
+
+<p>Note: live online 1:1 is <em>not</em> the same as a pre-recorded app plan. In a live session, a real coach is watching <em>you</em>, right now. That's why it matches in-person quality.</p>
+
+<hr>
+
+<h2>Head-to-Head Comparison</h2>
+
+<table>
+<thead>
+<tr><th>What matters</th><th>Live Online Personal Trainer</th><th>In-Person Gym Trainer</th></tr>
+</thead>
+<tbody>
+<tr><td>Real-time form correction</td><td>Yes — coach watches every rep on video</td><td>Yes — in person</td></tr>
+<tr><td>Cost</td><td>From ₹7,999 per package</td><td>₹15,000-40,000+ / month in metros</td></tr>
+<tr><td>Train from anywhere</td><td>Home, gym, hotel, abroad</td><td>Only at that one gym</td></tr>
+<tr><td>Scheduling</td><td>Flexible — early morning, late night, your timezone</td><td>Fixed slots + travel time</td></tr>
+<tr><td>Diet plan included</td><td>Usually yes (personalised)</td><td>Often not, or generic</td></tr>
+<tr><td>Accountability between sessions</td><td>WhatsApp + in-app chat</td><td>Only during your session</td></tr>
+<tr><td>Choice of coach</td><td>Pick the best coach anywhere in India</td><td>Limited to who works at your gym</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>Cost: Online Wins Clearly</h2>
+
+<p>In-person personal training in Indian metros typically runs <strong>₹15,000 to ₹40,000+ a month</strong>, because you're paying for the trainer's travel, the gym's premium, and their limited daily slots.</p>
+
+<div class="highlight-box">
+<p>Live online 1:1 removes that overhead. <a href="/online-personal-trainer">Coach Himanshu's Elite 1:1 personal training</a> starts at <strong>₹7,999 for 12 live 60-minute sessions</strong>, with a personalised Indian diet plan, supplement guidance, and WhatsApp support included — a fraction of in-person rates for the same real-time coaching.</p>
+</div>
+
+<hr>
+
+<h2>Results: It Comes Down to the Coach, Not the Location</h2>
+
+<p>Here's the truth most people miss: <strong>results are driven by expert programming, correct form, and consistency — not by whether the coach is standing next to you.</strong> In a live video session, a good coach sees your full range of motion and fixes your technique in real time, just like in person.</p>
 
 <div class="callout-warning">
-<strong>The real enemy isn't your willpower — it's overwhelm.</strong> Doing five new things badly beats nothing, but doing two things consistently beats everything. Start smaller than you think you need to.
+<strong>The one exception:</strong> if you're lifting very heavy (near-max squats/bench) and want a physical spotter, in-person has an edge. For fat loss, muscle building, toning, beginners, and 95% of goals, live online 1:1 delivers the same results.
 </div>
 
 <hr>
 
-<h2>Step 1: Get Clear on Your "Why"</h2>
+<h2>Convenience & Consistency: Online Wins Again</h2>
 
-<p>Before diet and workouts, get honest about why you want this. "To look good" fades in week two. Anchor to something that lasts:</p>
+<p>The best workout is the one you actually do. An online 1:1 session removes the two biggest reasons people quit: <strong>travel time and rigid schedules</strong>. Train before work, after the kids sleep, or while travelling — and never lose your coach because you moved cities.</p>
+
+<hr>
+
+<h2>Who Should Choose What?</h2>
 
 <div class="highlight-box">
-<p><strong>Health:</strong> Keeping diabetes, blood pressure, or fatty liver away — a real concern for millions of Indians.</p>
-<p><strong>Energy:</strong> Not crashing at 4pm, keeping up with your kids, feeling strong through a long workday.</p>
-<p><strong>Confidence:</strong> Fitting into old clothes, standing taller, feeling in control of your body again.</p>
-<p><strong>Freedom:</strong> Azaadi from breathlessness on stairs, from constant tiredness, from the excuses that have held you back for years.</p>
+<p><strong>Choose a live online personal trainer if</strong> you want expert 1:1 coaching at a sensible price, a flexible schedule, coaching that follows you anywhere, and a diet plan built around Indian food. This fits most people — beginners, busy professionals, women, and NRIs.</p>
+<p><strong>Choose an in-person gym trainer if</strong> you specifically need hands-on spotting for heavy lifting and don't mind paying metro premium rates for fixed slots.</p>
 </div>
 
 <hr>
 
-<h2>Step 2: Fix Your Diet Before Your Workout</h2>
+<h2>How to Start With a Live Online Personal Trainer</h2>
 
-<p>Diet drives 70-80% of results. You cannot out-train a bad one. The good news: you don't need to give up Indian food — just rebalance your plate.</p>
-
-<table>
-<thead>
-<tr><th>Do This</th><th>Why It Works</th></tr>
-</thead>
-<tbody>
-<tr><td>Protein at every meal (dal, eggs, paneer, curd, chicken, soya)</td><td>Keeps you full, protects muscle, curbs cravings</td></tr>
-<tr><td>Fill half your plate with sabzi/salad</td><td>Fibre and volume for fewer calories</td></tr>
-<tr><td>Keep rice/roti — just portion it</td><td>Sustainable beats "no carbs" that never lasts</td></tr>
-<tr><td>Cut sugary chai, colds drinks, packaged snacks</td><td>The easiest calories to remove without hunger</td></tr>
-<tr><td>Drink 2.5-3 litres of water a day</td><td>Reduces false hunger and fatigue</td></tr>
-</tbody>
-</table>
-
-<div class="callout-tip">
-<strong>Start with one change, not ten.</strong> This week, just add protein to every meal. Next week, cut the sugary drinks. Layering small changes sticks far better than overhauling everything overnight — see our guide on <a href="/blog/how-much-protein-per-day-india">how much protein you need per day</a>.
-</div>
-
-<hr>
-
-<h2>Step 3: Move Every Day (Start With Walking)</h2>
-
-<p>You don't need a gym membership to begin. Walking is the most underrated fat-loss tool there is — free, joint-friendly, and impossible to overdo.</p>
-
-<ol>
-<li><strong>Aim for 7,000+ steps a day</strong> to start, building toward 8,000-10,000.</li>
-<li>Take a 10-15 minute walk after meals — great for digestion and blood sugar.</li>
-<li>Use stairs, park farther, walk during phone calls — steps add up invisibly.</li>
-</ol>
-
-<div class="callout-tip">
-<strong>Steps are the perfect week-one goal</strong> because you literally cannot fail at them. Read more on <a href="/blog/how-many-steps-per-day-to-lose-weight">how many steps a day to lose weight</a>.
-</div>
-
-<hr>
-
-<h2>Step 4: Add Strength Training (2-3x a Week)</h2>
-
-<p>Strength training keeps muscle while you lose fat, shapes your body, and boosts metabolism. You can start entirely at home with bodyweight — no equipment needed.</p>
-
-<table>
-<thead>
-<tr><th>Beginner Home Moves</th><th>Targets</th></tr>
-</thead>
-<tbody>
-<tr><td>Squats / chair sit-to-stand</td><td>Legs, glutes</td></tr>
-<tr><td>Knee or wall push-ups</td><td>Chest, shoulders, arms</td></tr>
-<tr><td>Glute bridges</td><td>Glutes, lower back</td></tr>
-<tr><td>Plank (start with 15-20s)</td><td>Core, whole body</td></tr>
-</tbody>
-</table>
-
-<p>Do 2-3 rounds, 2-3 times a week. That's enough to start. Progress by adding reps, then difficulty. Our <a href="/blog/top-10-home-workout-exercises-for-beginners-in-india">top 10 home workout exercises for beginners</a> gives you a full routine to follow.</p>
-
-<hr>
-
-<h2>Your First 4 Weeks (Simple Plan)</h2>
-
-<table>
-<thead>
-<tr><th>Week</th><th>Focus</th></tr>
-</thead>
-<tbody>
-<tr><td>Week 1</td><td>Walk 7,000 steps daily + add protein to every meal</td></tr>
-<tr><td>Week 2</td><td>Keep week 1 + cut sugary drinks and packaged snacks</td></tr>
-<tr><td>Week 3</td><td>Keep above + start 2 short home strength sessions</td></tr>
-<tr><td>Week 4</td><td>Keep above + add a 3rd session, walk 8,000+ steps</td></tr>
-</tbody>
-</table>
+<p>Getting started is simple. Book a free consultation, share your goals and schedule, and get matched to the right package.</p>
 
 <div class="callout">
-<strong>Notice what's missing:</strong> no starvation, no 5am boot camp, no giving up your culture's food. Just small, stacking wins. By week 4, you've built the habits most people never do — and that's what actually changes your body over the months that follow.
+<strong>Ready to try it?</strong> Explore <a href="/online-personal-trainer">live 1-on-1 online personal training with Coach Himanshu</a> — a NASM-certified coach with 1000+ transformations — or see every option on the <a href="/plans">plans &amp; pricing page</a>. Not sure yet? Read our honest guide on <a href="/blog/is-online-personal-training-worth-it">whether online personal training is worth it</a>.
+</div>`,
+  },
+  {
+    title: 'Is Online Personal Training Worth It? An Honest Guide',
+    slug: 'is-online-personal-training-worth-it',
+    excerpt:
+      'Is online personal training worth the money? An honest look at what you get, who it works for, common myths, and how to tell a live 1:1 coach from a generic app plan.',
+    readTime: 7,
+    content: `<p>Short answer: <strong>yes — online personal training is worth it for most people</strong>, as long as you pick the right kind. A live 1-on-1 online coach gives you expert programming, real-time form correction, and accountability at a fraction of in-person prices. A generic app plan with no real coach behind it is a different (and weaker) thing.</p>
+
+<p>This guide explains exactly what you're paying for, who it works best for, the myths that hold people back, and how to choose so your money is well spent.</p>
+
+<div class="stat-grid">
+<div class="stat-card"><strong>Live 1:1</strong>Real coach watching your form in real time</div>
+<div class="stat-card"><strong>From ₹7,999</strong>vs ₹15,000-40,000+ in-person</div>
+<div class="stat-card"><strong>Anywhere</strong>Home, gym, or abroad</div>
+<div class="stat-card"><strong>Included</strong>Diet plan + WhatsApp support</div>
+</div>
+
+<div class="callout">
+<strong>Quick answer:</strong> Online personal training is worth it when there's a real, qualified coach personally programming your training, correcting your form (ideally live on video), and holding you accountable. It's not worth it if it's just an auto-generated PDF with no human behind it. Know which one you're buying.
 </div>
 
 <hr>
 
-<h2>Step 5: Track, and Be Patient</h2>
-
-<p>Progress in the first month is often invisible on the scale. Don't panic and quit. Track more than weight:</p>
+<h2>What You Actually Get With Good Online Coaching</h2>
 
 <div class="highlight-box">
-<p><strong>Measurements:</strong> Waist, in particular — it often drops even when the scale doesn't.</p>
-<p><strong>Photos:</strong> Front, side, back once a week in the same light. The mirror lies day to day; photos don't.</p>
-<p><strong>Energy &amp; strength:</strong> More reps, longer walks, better sleep — these come before visible change and predict it.</p>
+<p><strong>A plan built for your body:</strong> a workout and diet plan matched to your goal, experience, equipment, and food preferences — not a template.</p>
+<p><strong>Real-time form correction:</strong> in a live 1:1 session, the coach watches every rep on video and fixes your technique on the spot, so you train safely and progress faster.</p>
+<p><strong>Accountability:</strong> scheduled sessions plus WhatsApp and in-app check-ins keep you consistent — the single biggest driver of results.</p>
+<p><strong>Expert access:</strong> you can work with the best coach in the country, not just whoever happens to work at your local gym.</p>
 </div>
 
-<blockquote>You didn't get unfit in a month, and you won't get fit in one either. Fitness is a habit you keep, not a challenge you finish. Play the long game and it works every single time.</blockquote>
+<hr>
+
+<h2>Live 1:1 vs a Generic App Plan — Don't Confuse Them</h2>
+
+<p>This is where people get burned. "Online training" can mean two very different things:</p>
+
+<table>
+<thead>
+<tr><th></th><th>Live 1:1 Online Coaching</th><th>Generic App Plan</th></tr>
+</thead>
+<tbody>
+<tr><td>Real coach behind it</td><td>Yes</td><td>Often no</td></tr>
+<tr><td>Form correction</td><td>Live, on video</td><td>None</td></tr>
+<tr><td>Personalised to you</td><td>Fully</td><td>Loosely / by quiz</td></tr>
+<tr><td>Worth the money?</td><td>Yes, for most people</td><td>Only as a cheap starting point</td></tr>
+</tbody>
+</table>
+
+<div class="callout-warning">
+<strong>Before you pay, ask:</strong> "Is a real, qualified coach personally building and adjusting my plan, and can I get my form checked?" If yes, it's worth it. If it's just an app spitting out a PDF, keep your expectations low.
+</div>
 
 <hr>
 
-<h2>Celebrate Your Freedom — Start Today</h2>
+<h2>Is It as Effective as In-Person Training?</h2>
 
-<p>This Independence Day, give yourself real azaadi: freedom from excuses, from yo-yo dieting, and from putting your health last. You don't need the perfect Monday, the perfect plan, or the perfect body to begin. You need to start — imperfectly, today.</p>
-
-<p><a href="/about">Coach Himanshu</a> is a NASM-certified coach who builds simple, personalised plans around your real Indian lifestyle — your food, your schedule, your starting point. No crash diets, no punishment, just a plan you can actually keep.</p>
-
-<p><a href="/assessment">Take the free fitness assessment</a> to get your starting plan, or <a href="/plans">explore the coaching plans</a>. You may also like <a href="/blog/how-to-lose-weight-without-going-to-gym">how to lose weight without a gym</a>, <a href="/blog/complete-guide-to-body-transformation-in-90-days">the 90-day transformation guide</a>, and more on our <a href="/blog">fitness blog</a> and <a href="/knowledge">knowledge hub</a>.</p>
+<p>For the vast majority of goals — fat loss, muscle gain, toning, general strength — <strong>yes</strong>. The coach sees your movement on camera and corrects it in real time. What drives results is expert programming and consistency, both of which online delivers well. The only real edge for in-person is hands-on spotting for very heavy lifts.</p>
 
 <hr>
 
-<h2>Frequently Asked Questions</h2>
+<h2>Who Is Online Personal Training Best For?</h2>
 
-<h3>How do I start my fitness journey as a complete beginner in India?</h3>
-<p>Start with three simple things you can do this week: walk at least 7,000 steps a day, add a protein source (dal, eggs, paneer, curd, chicken or soya) to every meal, and do two or three short bodyweight strength sessions at home. Don't try to change everything at once. Master consistency with these basics first, then add intensity and detail over the following weeks. You do not need a gym, supplements, or a perfect plan to begin.</p>
-
-<h3>Do I need a gym to get fit?</h3>
-<p>No. You can start and make excellent progress entirely at home. Daily walking handles most of your fat loss, and bodyweight moves like squats, push-ups, glute bridges and planks build real strength with zero equipment. A gym or dumbbells help later as you get stronger, but they are not required to begin your fitness journey or to see results in the first few months.</p>
-
-<h3>What should I eat to start losing weight in India?</h3>
-<p>Keep your Indian meals but rebalance the plate: protein at every meal, half the plate as sabzi or salad, and a controlled portion of rice or roti. Cut the easy, hidden calories first — sugary chai, cold drinks, and packaged snacks — and drink 2.5 to 3 litres of water daily. You don't need to give up rice or go on an extreme diet; sustainable, portion-controlled Indian food works far better long term.</p>
-
-<h3>How long does it take to see results?</h3>
-<p>Most beginners notice better energy, sleep and strength within the first 2 to 3 weeks, while visible changes in the mirror and on the scale usually take 6 to 12 weeks of consistency. The first month is about building habits, not chasing fast results. Track your waist measurement and weekly photos, not just the scale — progress often shows there first. Be patient; steady change that lasts always beats rapid results that don't.</p>
-
-<h3>What is the biggest mistake beginners make?</h3>
-<p>Starting too hard, too fast. People jump into a 6-day gym split, an extreme low-calorie diet, and 5am workouts all at once, then burn out within two weeks and blame themselves. The fix is to start smaller than feels necessary — two or three habits done consistently beat ten done briefly. Fitness is a marathon of small, repeatable wins, not a sprint you power through on motivation alone.</p>
-
-<h3>How do I stay consistent and not quit?</h3>
-<p>Anchor to a strong "why" beyond looks — health, energy, confidence, or freedom from feeling tired and unfit. Set goals you can't fail at first (like a daily step count), track progress in more than one way, and build habits in small layers rather than all at once. Having a coach or accountability also dramatically improves consistency, because someone adjusting your plan and checking in keeps you going on the days motivation dips.</p>
+<div class="highlight-box">
+<p><strong>Beginners</strong> who want to learn correct form from day one.</p>
+<p><strong>Busy professionals</strong> who can't commit to fixed gym slots and travel.</p>
+<p><strong>Women</strong> who want private, judgment-free coaching from home.</p>
+<p><strong>NRIs</strong> who want an Indian coach and Indian-food diet plans on their own timezone.</p>
+<p><strong>Anyone on a budget</strong> who wants real 1:1 coaching without metro in-person prices.</p>
+</div>
 
 <hr>
 
-<p><em>The freedom you want starts with a single step, taken today. Walk, add protein, move a little — and let consistency do the rest over the months ahead. When you're ready for a plan built around your life, <a href="/assessment">take the free assessment</a> or explore the <a href="/knowledge">knowledge hub</a>. Happy Independence Day — here's to your azaadi from excuses.</em></p>`,
+<h2>How Much Should It Cost?</h2>
+
+<p>Good live 1:1 online coaching is far cheaper than in-person. <a href="/online-personal-trainer">Coach Himanshu's live 1:1 personal training</a> starts at <strong>₹7,999 for 12 live 60-minute sessions</strong>, including a personalised Indian diet plan and support — versus ₹15,000-40,000+ a month for an in-person trainer in metros. Recorded coaching plans start even lower, from ₹1,299.</p>
+
+<hr>
+
+<h2>The Verdict</h2>
+
+<div class="callout">
+<strong>Worth it — if you choose a real coach.</strong> Live 1-on-1 online personal training gives you in-person-quality coaching, on your schedule, for a fraction of the price. Explore <a href="/online-personal-trainer">Coach Himanshu's live 1:1 personal training</a>, compare it with the alternatives in our <a href="/blog/online-personal-trainer-vs-gym-trainer-india">online vs gym trainer guide</a>, or see all options on the <a href="/plans">plans &amp; pricing page</a>. Start with a free consultation — no payment required.
+</div>`,
   },
 ];
 
@@ -204,6 +215,7 @@ async function main() {
         slug: post.slug,
         excerpt: post.excerpt,
         content: post.content,
+        readTime: post.readTime,
         authorId: coach.id,
         published: true,
         publishedAt: new Date(),
@@ -213,7 +225,7 @@ async function main() {
     console.log(`Upserted: "${result.title}" (ID: ${result.id})`);
   }
 
-  console.log('\nDone! SEO blog post (batch 13) has been seeded/updated.');
+  console.log('\nDone! SEO blog posts (batch 13 — 1:1 conversion) have been seeded/updated.');
 }
 
 main()

@@ -2322,6 +2322,12 @@ export default function Home() {
               Select the perfect package for your fitness goals. All plans
               include personalized guidance and dedicated support.
             </p>
+            <p className="text-sm text-gray-400 mt-4">
+              Want a coach live on every rep?{' '}
+              <a href="/online-personal-trainer" className="text-brand-gold hover:text-white font-semibold underline underline-offset-4 transition-colors">
+                Explore live 1-on-1 personal training →
+              </a>
+            </p>
           </div>
 
           {/* Category Tabs */}

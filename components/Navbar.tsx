@@ -17,6 +17,7 @@ export default function Navbar() {
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/plans', label: 'Plans' },
+    { href: '/online-personal-trainer', label: '1:1 Coaching' },
     { href: '/calorie-calculator', label: 'Calorie Calculator' },
     { href: '/blog', label: 'Blog' },
     { href: 'https://rhynogrip.com', label: 'Store' },

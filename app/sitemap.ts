@@ -84,6 +84,13 @@ function getCorePages(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      // Flagship conversion page for the highest-value offer (live 1:1 training).
+      url: `${baseUrl}/online-personal-trainer`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/assessment`,
       lastModified: now,
       changeFrequency: 'monthly',

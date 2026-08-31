@@ -82,6 +82,31 @@ export default function PlansPage() {
         </div>
       </section>
 
+      {/* Live 1:1 spotlight — routes high-intent buyers to the dedicated page */}
+      <section className="py-6">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="relative overflow-hidden rounded-2xl border border-brand-gold/25 bg-gradient-to-r from-brand-blue/10 to-brand-gold/5 p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 mb-2 rounded-full border border-brand-gold/30 bg-brand-gold/5 text-brand-gold text-[11px] font-semibold uppercase tracking-wider">
+                Most personal · Live &amp; real-time
+              </div>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-1">
+                Want a coach live on every rep? Try Elite 1-on-1 Personal Training
+              </h2>
+              <p className="text-gray-400 text-sm md:text-base">
+                60-minute live video sessions with real-time form correction — from ₹7,999. The closest thing to a trainer beside you.
+              </p>
+            </div>
+            <Link
+              href="/online-personal-trainer"
+              className="inline-flex items-center justify-center whitespace-nowrap px-6 py-3 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-brand-blue/25"
+            >
+              Explore Live 1:1 →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Plan groups + interactive side-by-side comparison (client island) */}
       <PlanCompare />
 

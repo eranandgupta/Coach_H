@@ -416,7 +416,15 @@ export default function CityPage({ params }: { params: { city: string } }) {
             Take Free Assessment Now
           </Link>
 
+          <p className="text-gray-400 text-base mt-8">
+            Prefer a coach live on every rep?{' '}
+            <Link href="/online-personal-trainer" className="text-brand-gold hover:text-white font-semibold underline underline-offset-4 transition-colors">
+              Explore live 1-on-1 online personal training →
+            </Link>
+          </p>
+
           <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-gray-400">
+            <Link href="/online-personal-trainer" className="hover:text-brand-blue transition-colors">Live 1:1 Training</Link>
             <Link href="/about" className="hover:text-brand-blue transition-colors">About Coach Himanshu</Link>
             <Link href="/blog" className="hover:text-brand-blue transition-colors">Fitness Blog</Link>
             <Link href="/faq" className="hover:text-brand-blue transition-colors">All FAQs</Link>

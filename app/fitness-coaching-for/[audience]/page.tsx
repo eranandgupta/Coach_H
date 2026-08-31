@@ -223,7 +223,10 @@ export default function AudiencePage({ params }: { params: { audience: string } 
           </div>
 
           <p className="text-center text-gray-500 text-sm mt-8">
-            See every plan, including all durations and Elite 1:1 options, on the{' '}
+            Prefer a coach live on every rep? Explore{' '}
+            <Link href="/online-personal-trainer" className="text-brand-blue hover:text-brand-gold transition-colors underline">
+              live 1-on-1 personal training
+            </Link>, or see every plan and duration on the{' '}
             <Link href="/plans" className="text-brand-blue hover:text-brand-gold transition-colors underline">
               full plans &amp; pricing page
             </Link>.

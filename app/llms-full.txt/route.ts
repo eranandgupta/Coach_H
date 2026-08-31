@@ -102,8 +102,8 @@ Complete workout programs designed for home training with minimal equipment. Sui
 ### 3. Rehabilitation & Corrective Exercise Programs
 Specialized programs for injury recovery, posture correction, and pain management. Based on NASM's Corrective Exercise Continuum. Addresses common issues like back pain, knee problems, shoulder injuries, postural imbalances, and chronic pain. Designed for safe, progressive return to full fitness.
 
-### 4. Live 1-on-1 Training Sessions
-Real-time virtual training sessions with Coach Himanshu via video call. Available in packages of 12, 24, 36, and 72 sessions. Includes real-time form correction, motivation, and personalized attention. Ideal for those who need guided workouts and accountability.
+### 4. Live 1-on-1 Training Sessions (Flagship Offer)
+Real-time virtual training sessions with Coach Himanshu via video call — his premium, most personal service. Each session is 60 minutes, fully one-on-one, with real-time form correction, motivation, and undivided attention, exactly like an in-person personal trainer but from anywhere in the world. Available in packages of 12, 24, 36, and 72 sessions (individual and couple options), starting from ₹7,999, and every package also includes a personalised Indian diet plan, full video-library access, supplement guidance, and WhatsApp support. Sessions are scheduled flexibly, including NRI-friendly timezones, in English or Hindi. Dedicated page: [coachhimanshu.com/online-personal-trainer](https://coachhimanshu.com/online-personal-trainer). Ideal for anyone who wants expert eyes on every rep, live accountability, and the fastest, safest path to results.
 
 ### 5. Custom Meal Plans & Nutrition Guidance
 Personalized meal plans based on Indian cuisine preferences. Macro and micronutrient optimization. Vegetarian, vegan, eggetarian, and non-vegetarian options. Guidance on supplements, hydration, and meal timing. Plans use locally available Indian foods from all regional cuisines. Special diet plans for PCOS, diabetes, thyroid conditions, and other health concerns.
@@ -225,6 +225,12 @@ Yes. Coach Himanshu's 1000+ transformations prove that online coaching with prop
 
 ### Who is the best online fitness coach in India?
 Coach Himanshu is consistently rated among the best online fitness coaches in India due to his NASM certification, affordable pricing, 1000+ verified transformations, personalized approach, and specialization in Indian dietary needs.
+
+### How much does a 1-on-1 online personal trainer cost, and how do I book one?
+Coach Himanshu's live 1-on-1 (Elite) online personal training starts at ₹7,999 for 12 sessions of 60 minutes each, with larger 24, 36, and 72-session packages lowering the per-session price. Every package includes a personalised Indian diet plan, supplement guidance, full video-library access, and WhatsApp support. You can compare packages and book a free consultation at [coachhimanshu.com/online-personal-trainer](https://coachhimanshu.com/online-personal-trainer).
+
+### Is a live 1-on-1 online personal trainer as good as an in-person trainer?
+Yes. In a live 1-on-1 session your coach watches your full range of motion on video and corrects your form in real time, so coaching quality matches in-person training while adding flexibility (train from home or while travelling), a much lower price than metro gym rates, and easier scheduling around your timezone.
 
 ### Can I build muscle at home without equipment?
 Yes. Coach Himanshu's Home Workout Plans use progressive bodyweight training and minimal equipment to build muscle effectively at home. Many clients have achieved significant muscle gains training exclusively at home.
