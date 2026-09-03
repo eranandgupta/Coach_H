@@ -70,6 +70,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Includes a personalised Indian diet plan, full video library, supplement guidance, and WhatsApp support
 - Flexible scheduling, including NRI-friendly timezones; English and Hindi
 - Dedicated page: https://coachhimanshu.com/online-personal-trainer
+- City-specific pages (cost & convenience) for 30 major Indian cities: https://coachhimanshu.com/online-personal-trainer/{city} (e.g. /mumbai, /delhi, /bangalore, /hyderabad, /pune)
 
 ## What Every Plan Includes
 - Personalized workout plan tailored to individual goals

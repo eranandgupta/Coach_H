@@ -1,9 +1,43 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
-import { getElitePlans } from '@/lib/personalTraining';
+import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { PT_COMPARISON, PT_FAQS } from '@/lib/personalTraining';
+import { CITIES } from '@/lib/cities';
+
+const PAGE_URL = 'https://coachhimanshu.com/online-personal-trainer';
+
+export const metadata: Metadata = {
+  title: 'Online Personal Trainer — Live 1-on-1 Training | Coach Himanshu',
+  description:
+    'Train live 1-on-1 with Coach Himanshu, a NASM-certified online personal trainer. Real-time form correction, personalised Indian diet plan, sessions on your schedule from anywhere. Packages from ₹7,999.',
+  keywords: [
+    'online personal trainer',
+    'live 1 on 1 personal training',
+    'online personal trainer India',
+    'live online fitness coach',
+    'virtual personal trainer',
+    '1 on 1 online personal training',
+    'personal trainer online India',
+    'online personal training for NRIs',
+  ],
+  openGraph: {
+    title: 'Online Personal Trainer — Live 1-on-1 Training | Coach Himanshu',
+    description:
+      'Live one-on-one online personal training with real-time form correction, a personalised Indian diet plan, and flexible scheduling. Packages from ₹7,999.',
+    url: PAGE_URL,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Online Personal Trainer — Live 1-on-1 Training | Coach Himanshu',
+    description:
+      'Live one-on-one online personal training with a NASM-certified coach. Real-time form correction, personalised diet, flexible scheduling. From ₹7,999.',
+  },
+  alternates: { canonical: PAGE_URL },
+};
 
 // Direct WhatsApp chat for "Book a free consultation" CTAs — pre-filled for 1:1.
 const WHATSAPP_1ON1 =
@@ -34,9 +68,67 @@ const STEPS = [
 
 export default function OnlinePersonalTrainerPage() {
   const elitePlans = getElitePlans();
+  const { low, high, count } = getEliteOfferRange();
+
+  const serviceSchema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Live 1-on-1 Online Personal Training',
+    description:
+      'Real-time one-on-one online personal training with Coach Himanshu — live form correction, a personalised Indian diet plan, and flexible scheduling from anywhere in the world.',
+    url: PAGE_URL,
+    serviceType: 'Online Personal Training',
+    provider: {
+      '@type': 'Person',
+      name: 'Coach Himanshu',
+      jobTitle: 'NASM Certified Personal Trainer',
+      url: 'https://coachhimanshu.com/about',
+    },
+    areaServed: { '@type': 'GeoShape', name: 'Worldwide' },
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      serviceUrl: PAGE_URL,
+      availableLanguage: ['English', 'Hindi'],
+    },
+    ...(low && high
+      ? {
+          offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'INR',
+            lowPrice: String(low),
+            highPrice: String(high),
+            offerCount: String(count),
+            url: PAGE_URL,
+          },
+        }
+      : {}),
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: PT_FAQS.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://coachhimanshu.com' },
+      { '@type': 'ListItem', position: 2, name: 'Coaching', item: 'https://coachhimanshu.com/plans' },
+      { '@type': 'ListItem', position: 3, name: 'Online Personal Trainer', item: PAGE_URL },
+    ],
+  };
 
   return (
     <div className="min-h-screen bg-brand-navy">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <AnnouncementBar />
       <Navbar />
 
@@ -318,8 +410,33 @@ export default function OnlinePersonalTrainerPage() {
         </div>
       </section>
 
-      {/* FAQ — AEO */}
+      {/* Cities — internal links to programmatic city pages */}
       <section className="py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            Online Personal Trainer, City by City
+          </h2>
+          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+            Coaching is 100% online, so you can train live from anywhere — but here&apos;s the local
+            picture on cost and convenience for major Indian cities.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {CITIES.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/online-personal-trainer/${c.slug}`}
+                className="flex items-center justify-between p-4 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-brand-blue/30 transition-all duration-300"
+              >
+                <span className="text-white text-sm font-medium">{c.name}</span>
+                <span className="text-brand-gold text-sm">→</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ — AEO */}
+      <section className="py-16 md:py-24 border-t border-white/[0.06]">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
             Live 1:1 Personal Training — FAQs

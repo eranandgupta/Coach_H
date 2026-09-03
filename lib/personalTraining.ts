@@ -8,6 +8,7 @@
 // Perplexity, Gemini) can lift a clean, correct answer straight into a citation.
 
 import { PLAN_GROUPS, type PlanItem } from '@/lib/plans';
+import type { CityData } from '@/lib/cities';
 
 // The individual live 1:1 packages (the "elite" group in lib/plans.ts).
 export function getElitePlans(): PlanItem[] {
@@ -135,3 +136,59 @@ export const PT_FAQS: PTFaq[] = [
       'Yes. Coach Himanshu offers Elite 1:1 Couple packages where both partners share one live session slot and train together, each with their own personalised plan — a motivating, more affordable way for couples to transform side by side. Ask about couple options in your free consultation.',
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// City-level live 1:1 pages — /online-personal-trainer/[city]
+//
+// Targets the high-intent query "online personal trainer in {city}" — distinct
+// from the /fitness-coach/{city} pages (which target "fitness coach in {city}").
+// Copy is woven from real CityData (landmarks, local foods, fitness stats) so
+// each page is genuinely city-specific, not a name-swapped template.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function ptCityMeta(city: CityData): { title: string; description: string } {
+  return {
+    title: `Online Personal Trainer in ${city.name} — Live 1-on-1 Training`,
+    description: `Get a live 1-on-1 online personal trainer in ${city.name}. Real-time form correction over video, a personalised Indian diet plan around ${city.name} foods, and flexible sessions — no commute, no ${city.name} gym premium. Packages from ₹7,999.`,
+  };
+}
+
+// The local "why live 1:1 works here" angle — commute/traffic + gym-cost framing.
+export function ptCityAngle(city: CityData): { commute: string; diet: string; cost: string } {
+  const foods = city.localFoods.slice(0, 3).join(', ');
+  return {
+    commute: `Skip the ${city.name} traffic and the trek to a gym near ${city.landmarks[0]}. Your coach trains you live over video from home, your society gym, or wherever you are in ${city.name} — every minute goes into training, not commuting.`,
+    diet: `Your Indian diet plan is built around what you actually eat in ${city.name} — ${foods} and more — with the right portions for your goal, using ingredients from your local ${city.state} market.`,
+    cost: `In-person personal training in ${city.name} can run ₹15,000–₹40,000+ a month. Live online 1:1 gives you the same real-time coaching and form correction from ₹7,999 — a fraction of the ${city.name} in-person rate.`,
+  };
+}
+
+export function ptCityFaqs(city: CityData): PTFaq[] {
+  const foods = city.localFoods.slice(0, 3).join(', ');
+  return [
+    {
+      question: `How does an online personal trainer in ${city.name} work?`,
+      answer: `You train live, one-on-one, over a video call with Coach Himanshu — a NASM-certified personal trainer. He watches every rep and corrects your form in real time, exactly like an in-person trainer, but you train from home or any gym in ${city.name} with no commute. Each session is 60 minutes and includes a personalised Indian diet plan and WhatsApp support.`,
+    },
+    {
+      question: `How much does a personal trainer cost in ${city.name}?`,
+      answer: `In-person personal training in ${city.name} typically costs ₹15,000 to ₹40,000+ per month. Coach Himanshu's live 1-on-1 online personal training starts at ₹7,999 for 12 sixty-minute sessions — the same real-time coaching and form correction at a fraction of the ${city.name} in-person price, with a personalised diet plan included.`,
+    },
+    {
+      question: `Is online personal training as effective as a gym trainer in ${city.name}?`,
+      answer: `Yes. In a live session your coach sees your full range of motion on video and fixes your technique on the spot, so results match in-person training — while saving you ${city.name} traffic, travel time, and gym-premium fees. What drives results is expert coaching and consistency, not location.`,
+    },
+    {
+      question: `Will my diet plan use ${city.name} foods?`,
+      answer: `Absolutely. Your plan is built around foods you already eat in ${city.name} — ${foods} and other local favourites — portioned for fat loss or muscle gain, using ingredients from your local ${city.state} market. No bland "diet food," no imported supplements.`,
+    },
+    {
+      question: `Can I train from home in ${city.name} without a gym or equipment?`,
+      answer: `Yes. Coach Himanshu tailors your live sessions to whatever you have in ${city.name} — a full gym, a few dumbbells at home, or just bodyweight. Tell him your setup in the free consultation and every session is programmed around it.`,
+    },
+    {
+      question: `How do I start with a live 1:1 personal trainer in ${city.name}?`,
+      answer: `Start with a free WhatsApp consultation. Coach Himanshu learns your goals, schedule, and equipment, recommends the right Elite 1:1 package, and you book your first live session — usually within a day or two, at a time that suits your ${city.name} routine.`,
+    },
+  ];
+}

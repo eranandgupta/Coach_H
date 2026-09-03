@@ -25,6 +25,7 @@ export async function generateSitemaps() {
     { id: 3 }, // Legal & policy pages
     { id: 4 }, // Resources, feeds & discovery
     { id: 5 }, // International / country pages
+    { id: 6 }, // Live 1:1 personal-trainer city pages
   ];
 }
 
@@ -46,6 +47,8 @@ export default async function sitemap({
       return getResourcePages();
     case 5:
       return getInternationalPages();
+    case 6:
+      return getPersonalTrainerCityPages();
     default:
       return [];
   }
@@ -256,4 +259,19 @@ function getInternationalPages(): MetadataRoute.Sitemap {
   }));
 
   return [...hubPage, ...countryPages];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 6: Live 1:1 Personal-Trainer City Pages — programmatic pages targeting
+// "online personal trainer in {city}" (the highest-value, one-to-one offer).
+// ─────────────────────────────────────────────────────────────────────────────
+function getPersonalTrainerCityPages(): MetadataRoute.Sitemap {
+  const now = new Date();
+
+  return getAllCitySlugs().map((slug) => ({
+    url: `${baseUrl}/online-personal-trainer/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.85,
+  }));
 }
