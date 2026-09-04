@@ -87,7 +87,19 @@ Disallow: /api/
 Disallow: /dashboard/
 Disallow: /admin/
 
+User-agent: OAI-SearchBot
+Allow: /
+
 User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: DuckAssistBot
 Allow: /
 
 User-agent: Google-Extended
@@ -139,6 +151,7 @@ Allow: /
 #   /sitemap/3.xml  → Legal & policy pages
 #   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS)
 #   /sitemap/5.xml  → International pages (online coaching by country)
+#   /sitemap/6.xml  → Live 1:1 personal-trainer city pages
 # ─────────────────────────────────────────────────────────────────────────────
 
 Sitemap: https://coachhimanshu.com/sitemap.xml

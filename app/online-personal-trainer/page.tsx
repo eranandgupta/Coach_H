@@ -124,11 +124,40 @@ export default function OnlinePersonalTrainerPage() {
     ],
   };
 
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'How to start live 1-on-1 online personal training with Coach Himanshu',
+    description:
+      'Start live one-on-one online personal training in four steps — from a free consultation to your first live session.',
+    totalTime: 'P2D',
+    step: STEPS.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.title,
+      text: s.description,
+      url: `${PAGE_URL}#packages`,
+    })),
+  };
+
+  const speakableSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Online Personal Trainer — Live 1-on-1 Training',
+    url: PAGE_URL,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', 'h2'],
+    },
+  };
+
   return (
     <div className="min-h-screen bg-brand-navy">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
       <AnnouncementBar />
       <Navbar />
 
