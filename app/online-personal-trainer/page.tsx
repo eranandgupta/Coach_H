@@ -6,6 +6,7 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { PT_COMPARISON, PT_FAQS } from '@/lib/personalTraining';
 import { CITIES } from '@/lib/cities';
+import { PT_GOALS } from '@/lib/ptGoals';
 
 const PAGE_URL = 'https://coachhimanshu.com/online-personal-trainer';
 
@@ -439,8 +440,33 @@ export default function OnlinePersonalTrainerPage() {
         </div>
       </section>
 
-      {/* Cities — internal links to programmatic city pages */}
+      {/* Goals — internal links to goal-specific 1:1 pages */}
       <section className="py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            Live 1:1 Coaching for Your Goal
+          </h2>
+          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+            Whatever you&apos;re training for, the plan is built around it — coached live, one-on-one.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {PT_GOALS.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/online-personal-trainer/for/${g.slug}`}
+                className="block p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-brand-blue/30 transition-all duration-300"
+              >
+                <h3 className="text-lg font-bold text-white mb-1">For {g.name}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{g.metaDescription.split('.')[0]}.</p>
+                <span className="inline-block mt-3 text-brand-gold text-sm">Explore →</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Cities — internal links to programmatic city pages */}
+      <section className="py-16 md:py-24 border-t border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             Online Personal Trainer, City by City

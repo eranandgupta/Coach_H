@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getAllCitySlugs } from '@/lib/cities';
 import { getAllCountrySlugs } from '@/lib/countries';
 import { getAllAudienceSlugs } from '@/lib/audiences';
+import { getAllGoalSlugs } from '@/lib/ptGoals';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -268,10 +269,19 @@ function getInternationalPages(): MetadataRoute.Sitemap {
 function getPersonalTrainerCityPages(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  return getAllCitySlugs().map((slug) => ({
+  const cityPages: MetadataRoute.Sitemap = getAllCitySlugs().map((slug) => ({
     url: `${baseUrl}/online-personal-trainer/${slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.85,
   }));
+
+  const goalPages: MetadataRoute.Sitemap = getAllGoalSlugs().map((slug) => ({
+    url: `${baseUrl}/online-personal-trainer/for/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.85,
+  }));
+
+  return [...cityPages, ...goalPages];
 }

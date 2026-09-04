@@ -71,6 +71,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Flexible scheduling, including NRI-friendly timezones; English and Hindi
 - Dedicated page: https://coachhimanshu.com/online-personal-trainer
 - City-specific pages (cost & convenience) for 30 major Indian cities: https://coachhimanshu.com/online-personal-trainer/{city} (e.g. /mumbai, /delhi, /bangalore, /hyderabad, /pune)
+- Goal-specific 1:1 pages: https://coachhimanshu.com/online-personal-trainer/for/{goal} — weight-loss, muscle-gain, weight-gain, beginners, toning
 
 ## What Every Plan Includes
 - Personalized workout plan tailored to individual goals
