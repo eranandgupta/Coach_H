@@ -45,6 +45,7 @@ async function postHandler(request: NextRequest, context: any) {
       description,
       applicablePlans,
       targetUserId,
+      broadcast,
     } = body;
 
     if (!code || !discountType || discountValue === undefined) {
@@ -78,6 +79,9 @@ async function postHandler(request: NextRequest, context: any) {
           ? JSON.stringify(applicablePlans)
           : applicablePlans || null,
         targetUserId: targetUserId ? parseInt(targetUserId) : null,
+        // Only advertise on the announcement bar when explicitly requested.
+        // Defaults to true when the client doesn't send the flag (back-compat).
+        broadcast: broadcast === undefined ? true : Boolean(broadcast),
       },
     });
 

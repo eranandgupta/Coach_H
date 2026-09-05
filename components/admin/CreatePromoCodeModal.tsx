@@ -69,6 +69,7 @@ export default function CreatePromoCodeModal({
   const [description, setDescription] = useState('');
   const [targetClient, setTargetClient] = useState('');
   const [applicablePlans, setApplicablePlans] = useState<string[]>([]);
+  const [broadcast, setBroadcast] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -98,6 +99,7 @@ export default function CreatePromoCodeModal({
     setDescription('');
     setTargetClient('');
     setApplicablePlans([]);
+    setBroadcast(true);
     setError('');
   }
 
@@ -119,7 +121,8 @@ export default function CreatePromoCodeModal({
       if (maxUses) body.maxUses = Number(maxUses);
       if (expiryDate) body.expiryDate = expiryDate;
       if (description) body.description = description;
-      if (targetClient) body.targetUserId = Number(targetClient);
+      if (targetClient && targetClient !== 'all') body.targetUserId = Number(targetClient);
+      body.broadcast = broadcast;
 
       const res = await fetch('/api/admin/promo-codes', {
         method: 'POST',
@@ -242,7 +245,15 @@ export default function CreatePromoCodeModal({
 
           <div className="space-y-2">
             <Label htmlFor="targetClient">Target Client</Label>
-            <Select value={targetClient} onValueChange={setTargetClient}>
+            <Select
+              value={targetClient}
+              onValueChange={(value) => {
+                setTargetClient(value);
+                // Picking a specific person implies a private code — default it off.
+                // Choosing "All Clients" restores the public default.
+                setBroadcast(value === '' || value === 'all');
+              }}
+            >
               <SelectTrigger id="targetClient">
                 <SelectValue placeholder="All Clients" />
               </SelectTrigger>
@@ -255,6 +266,26 @@ export default function CreatePromoCodeModal({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="broadcast"
+                checked={broadcast}
+                onCheckedChange={(value) => setBroadcast(value === true)}
+                className="mt-0.5"
+              />
+              <div className="space-y-0.5">
+                <Label htmlFor="broadcast" className="text-sm font-medium cursor-pointer">
+                  Broadcast on the announcement bar
+                </Label>
+                <p className="text-xs text-gray-500">
+                  Show this code publicly in the scrolling announcement bar. Uncheck for a private
+                  code you share only with a specific person.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">

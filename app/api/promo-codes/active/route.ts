@@ -11,6 +11,8 @@ export async function GET() {
     const promoCodes = await prisma.promoCode.findMany({
       where: {
         isActive: true,
+        // Coach can opt a code out of the public announcement bar at creation time.
+        broadcast: true,
         targetUserId: null,
         // Exclude personal one-time "Azaadi Spin" codes (prefix AZS) — these are
         // issued per-device by the spin wheel and must never be advertised publicly.

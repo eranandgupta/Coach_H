@@ -308,6 +308,7 @@ model PromoCode {
   minPurchaseAmount Decimal?  @db.Decimal(10, 2)
   expiryDate        DateTime?
   isActive          Boolean   @default(true)
+  broadcast         Boolean   @default(true) // show on the public announcement bar
   description       String?   @db.Text
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
