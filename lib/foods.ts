@@ -898,14 +898,39 @@ export const FOOD_CATEGORIES: string[] = FOODS.reduce<string[]>((acc, f) => {
 
 const norm = (s: string) => s.toLowerCase().trim();
 
-/** Case-insensitive search over name + aliases + category. Empty query -> all foods. */
+/**
+ * Case-insensitive, relevance-ranked search over name + aliases + category.
+ * Empty query -> all foods.
+ *
+ * Results are scored so the closest name match ranks first. Without this, a
+ * query like "roti" matches the CATEGORY "Rotis & Breads" too, so every bread
+ * matched and the plain "Roti / Chapati" got buried under alphabetical noise
+ * (Aloo Naan, Bagel…). Now: exact/name matches beat word matches beat category.
+ */
+function scoreFood(f: FoodItem, q: string): number {
+  const name = norm(f.name);
+  const aliases = (f.aliases ?? []).map(norm);
+  const category = norm(f.category);
+  const nameWords = name.split(/[^a-z0-9]+/).filter(Boolean);
+
+  if (name === q || aliases.includes(q)) return 100;             // exact name / alias
+  if (name.startsWith(q)) return 90;                             // name prefix ("roti" -> "Roti / Chapati")
+  if (nameWords.some((w) => w.startsWith(q))) return 80;         // a word in the name ("Tandoori Roti")
+  if (name.includes(q)) return 70;                               // name contains
+  if (aliases.some((a) => a.startsWith(q))) return 60;           // alias prefix
+  if (aliases.some((a) => a.includes(q))) return 50;             // alias contains
+  if (category.includes(q)) return 20;                           // category only (weakest)
+  return 0;                                                      // no match
+}
+
 export function searchFoods(query: string): FoodItem[] {
   const q = norm(query);
   if (!q) return FOODS;
-  return FOODS.filter((f) => {
-    const hay = [f.name, f.category, ...(f.aliases ?? [])].map(norm).join(' ');
-    return hay.includes(q);
-  });
+
+  return FOODS.map((f) => ({ f, score: scoreFood(f, q) }))
+    .filter((s) => s.score > 0)
+    .sort((a, b) => b.score - a.score || a.f.name.localeCompare(b.f.name))
+    .map((s) => s.f);
 }
 
 export function getFoodBySlug(slug: string): FoodItem | undefined {
