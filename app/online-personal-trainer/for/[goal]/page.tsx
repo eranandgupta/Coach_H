@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { getGoalBySlug, getAllGoalSlugs, PT_GOALS } from '@/lib/ptGoals';
+import { CITIES } from '@/lib/cities';
 
 const WHATSAPP_1ON1 =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20live%201-on-1%20personal%20training.%20Please%20help%20me%20pick%20a%20plan.';
@@ -225,9 +226,16 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
           <a href={WHATSAPP_1ON1} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40">Book a Free Consultation</a>
 
           <p className="text-gray-500 text-sm mt-12 mb-4">Live 1:1 coaching for other goals:</p>
-          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400">
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400 mb-8">
             {siblings.map((s) => (
               <Link key={s.slug} href={`/online-personal-trainer/for/${s.slug}`} className="hover:text-brand-blue transition-colors">For {s.name}</Link>
+            ))}
+          </div>
+
+          <p className="text-gray-500 text-sm mb-4">Popular cities for live 1:1 training:</p>
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400">
+            {CITIES.slice(0, 8).map((c) => (
+              <Link key={c.slug} href={`/online-personal-trainer/${c.slug}`} className="hover:text-brand-blue transition-colors">{c.name}</Link>
             ))}
             <Link href="/online-personal-trainer" className="text-brand-gold hover:text-white transition-colors">All 1:1 Coaching →</Link>
           </div>

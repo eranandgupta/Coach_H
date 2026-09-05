@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronRight, ArrowRight, ClipboardCheck, CreditCard, Dumbbell, UserCheck } from 'lucide-react';
+import { ChevronRight, ArrowRight, ClipboardCheck, CreditCard, Dumbbell, UserCheck, Video } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
@@ -43,6 +43,28 @@ const categories = [
       {
         q: 'Does Coach Himanshu offer a refund policy?',
         a: 'Due to the personalised nature of the coaching services, customised workout plans, diet plans, and digital resources, subscriptions are generally non-refundable once the coaching process has started. If you have any concerns regarding your subscription or require assistance, the Coach Himanshu support team will work with you to provide the most appropriate solution. Please review the Terms & Conditions before purchasing any subscription.',
+      },
+    ],
+  },
+  {
+    title: 'Live 1-on-1 Personal Training',
+    icon: Video,
+    questions: [
+      {
+        q: 'What is live 1-on-1 online personal training?',
+        a: 'Live 1-on-1 online personal training is a real-time video session where Coach Himanshu trains only you — watching every rep, correcting your form on the spot, and adjusting the workout as you go, exactly like an in-person personal trainer standing beside you. Each Elite 1:1 session is 60 minutes, fully one-on-one, and you can train from your home or gym anywhere in the world. Packages start from ₹7,999 and include a personalised Indian diet plan and WhatsApp support. Full details are on the online personal trainer page.',
+      },
+      {
+        q: 'Is a live 1-on-1 online personal trainer as effective as an in-person gym trainer?',
+        a: 'Yes. In a live session your coach sees your full range of motion on video and corrects your technique in real time, so the coaching quality matches in-person training — while adding flexibility (train from home or while travelling), a much lower price than metro gym rates, and easier scheduling. What drives results is expert programming and consistency, not whether the coach is physically in the room.',
+      },
+      {
+        q: 'Can I do live 1-on-1 personal training from home without equipment?',
+        a: 'Yes. Coach Himanshu tailors each live session to whatever you have — a full gym, a few dumbbells at home, or just bodyweight. You tell him your setup in the free consultation and every session is programmed around your equipment, space, and goals.',
+      },
+      {
+        q: 'How do I book a live 1-on-1 personal training session with Coach Himanshu?',
+        a: 'Start with a free consultation on WhatsApp. Coach Himanshu learns your goals, schedule, and equipment, then recommends the right Elite 1:1 package (12, 24, 36, or 72 sessions). Once you enrol, you complete a short assessment, get your personalised plan, and book your first live session — usually within a day or two, at a time that suits your routine.',
       },
     ],
   },
@@ -226,6 +248,15 @@ export default function FAQPage() {
                     className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-brand-gold to-yellow-600 text-white font-bold rounded-xl hover:shadow-[0_0_30px_rgba(234,179,8,0.5)] transition-all duration-300"
                   >
                     View Plans & Pricing
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.a>
+                  <motion.a
+                    href="/online-personal-trainer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/25 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300"
+                  >
+                    Live 1-on-1 Training
                     <ArrowRight className="w-5 h-5" />
                   </motion.a>
                 </div>

@@ -45,6 +45,26 @@ const faqData = [
       'Due to the personalised nature of the coaching services, customised workout plans, diet plans, and digital resources, subscriptions are generally non-refundable once the coaching process has started. If you have any concerns regarding your subscription or require assistance, the Coach Himanshu support team will work with you to provide the most appropriate solution. Please review the Terms & Conditions before purchasing any subscription.',
   },
   {
+    name: 'What is live 1-on-1 online personal training?',
+    answer:
+      'Live 1-on-1 online personal training is a real-time video session where Coach Himanshu trains only you — watching every rep, correcting your form on the spot, and adjusting the workout as you go, exactly like an in-person personal trainer standing beside you. Each Elite 1:1 session is 60 minutes, fully one-on-one, and you can train from your home or gym anywhere in the world. Packages start from ₹7,999 and include a personalised Indian diet plan and WhatsApp support. Full details are on the online personal trainer page.',
+  },
+  {
+    name: 'Is a live 1-on-1 online personal trainer as effective as an in-person gym trainer?',
+    answer:
+      'Yes. In a live session your coach sees your full range of motion on video and corrects your technique in real time, so the coaching quality matches in-person training — while adding flexibility (train from home or while travelling), a much lower price than metro gym rates, and easier scheduling. What drives results is expert programming and consistency, not whether the coach is physically in the room.',
+  },
+  {
+    name: 'Can I do live 1-on-1 personal training from home without equipment?',
+    answer:
+      'Yes. Coach Himanshu tailors each live session to whatever you have — a full gym, a few dumbbells at home, or just bodyweight. You tell him your setup in the free consultation and every session is programmed around your equipment, space, and goals.',
+  },
+  {
+    name: 'How do I book a live 1-on-1 personal training session with Coach Himanshu?',
+    answer:
+      'Start with a free consultation on WhatsApp. Coach Himanshu learns your goals, schedule, and equipment, then recommends the right Elite 1:1 package (12, 24, 36, or 72 sessions). Once you enrol, you complete a short assessment, get your personalised plan, and book your first live session — usually within a day or two, at a time that suits your routine.',
+  },
+  {
     name: "Do I need a gym to follow Coach Himanshu's workout plans?",
     answer:
       "No. Coach Himanshu offers both gym and home workout programs. If you train at home, your workouts are designed using TRX Suspension Trainers, resistance bands, or bodyweight exercises. If you have access to a gym, you'll receive a gym-specific training program that makes use of available equipment. Every plan is customised according to your training environment.",

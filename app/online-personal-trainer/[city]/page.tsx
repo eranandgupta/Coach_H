@@ -12,6 +12,7 @@ import {
   ptCityFaqs,
   ptCityMeta,
 } from '@/lib/personalTraining';
+import { PT_GOALS } from '@/lib/ptGoals';
 
 const WHATSAPP_1ON1 =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20live%201-on-1%20personal%20training.%20Please%20help%20me%20pick%20a%20plan.';
@@ -342,7 +343,16 @@ export default function CityPersonalTrainerPage({ params }: { params: { city: st
             Book a Free Consultation
           </a>
 
-          <p className="text-gray-500 text-sm mt-12 mb-4">Live 1:1 personal training in other cities:</p>
+          <p className="text-gray-500 text-sm mt-12 mb-4">Live 1:1 training in {city.name} for your goal:</p>
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400 mb-8">
+            {PT_GOALS.map((g) => (
+              <Link key={g.slug} href={`/online-personal-trainer/for/${g.slug}`} className="hover:text-brand-blue transition-colors">
+                For {g.name}
+              </Link>
+            ))}
+          </div>
+
+          <p className="text-gray-500 text-sm mb-4">Live 1:1 personal training in other cities:</p>
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400">
             {nearbyCities.map((c) => (
               <Link key={c.slug} href={`/online-personal-trainer/${c.slug}`} className="hover:text-brand-blue transition-colors">
