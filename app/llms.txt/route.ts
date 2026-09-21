@@ -50,10 +50,12 @@ export async function GET() {
 > Coach Himanshu is a NASM Certified online fitness coach providing personalized workout plans, custom meal plans, and expert nutrition guidance to 1000+ clients worldwide. Coaching is delivered 100% online to any country and time zone. Plans start from ${inr(low)}.
 
 ## About Coach Himanshu
-- NASM Certified Personal Trainer (CPT)
-- NASM Bodybuilding Coach
-- NASM Sports Nutrition Specialist
-- NASM Corrective Exercise Specialist
+- NASM Certified Bodybuilding Coach (USA)
+- Diploma in Personal Training
+- Diploma in Master Training
+- Diploma in Sports Nutrition
+- Diploma in TRX Suspension Training
+- Diploma in Special Population Training
 - 6+ years of coaching experience
 - 1000+ client transformations
 - Specializes in home workouts, gym training, rehabilitation, and nutrition

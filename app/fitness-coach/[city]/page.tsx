@@ -140,7 +140,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
-      answer: 'Coach Himanshu is a NASM Certified Bodybuilding Coach with 6+ professional diplomas in fitness science, nutrition, and specialized training including Corrective Exercise Specialist (CES), Sports Nutrition Specialist, and TRX Suspension Training certifications.',
+      answer: 'Coach Himanshu is a NASM Certified Bodybuilding Coach (USA) with professional diplomas in Personal Training, Master Training, Sports Nutrition, TRX Suspension Training, and Special Population Training.',
     },
   ];
 

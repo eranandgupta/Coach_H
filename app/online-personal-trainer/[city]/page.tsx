@@ -64,7 +64,7 @@ export default function CityPersonalTrainerPage({ params }: { params: { city: st
     provider: {
       '@type': 'Person',
       name: 'Coach Himanshu',
-      jobTitle: 'NASM Certified Personal Trainer',
+      jobTitle: 'NASM Certified Fitness Coach',
       url: 'https://coachhimanshu.com/about',
     },
     areaServed: { '@type': 'City', name: city.name, containedInPlace: { '@type': 'AdministrativeArea', name: city.state } },

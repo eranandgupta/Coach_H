@@ -53,7 +53,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
     provider: {
       '@type': 'Person',
       name: 'Coach Himanshu',
-      jobTitle: 'NASM Certified Personal Trainer',
+      jobTitle: 'NASM Certified Fitness Coach',
       url: 'https://coachhimanshu.com/about',
     },
     areaServed: { '@type': 'GeoShape', name: 'Worldwide' },

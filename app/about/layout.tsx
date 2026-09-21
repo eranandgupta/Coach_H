@@ -42,7 +42,7 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
         'Muscle Building',
         'Sports Nutrition',
         'TRX Training',
-        'Corrective Exercise',
+        'Special Population Training',
         'Rehabilitation',
         'PCOS Management',
         'Diabetes Management',
@@ -65,28 +65,28 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
         },
         {
           '@type': 'EducationalOccupationalCredential',
-          credentialCategory: 'Certification',
-          name: 'Sports Nutrition Specialist',
-        },
-        {
-          '@type': 'EducationalOccupationalCredential',
-          credentialCategory: 'Certification',
-          name: 'Corrective Exercise Specialist (CES)',
-        },
-        {
-          '@type': 'EducationalOccupationalCredential',
-          credentialCategory: 'Certification',
-          name: 'TRX Suspension Training Certified',
-        },
-        {
-          '@type': 'EducationalOccupationalCredential',
           credentialCategory: 'Diploma',
           name: 'Diploma in Personal Training',
         },
         {
           '@type': 'EducationalOccupationalCredential',
           credentialCategory: 'Diploma',
+          name: 'Diploma in Master Training',
+        },
+        {
+          '@type': 'EducationalOccupationalCredential',
+          credentialCategory: 'Diploma',
           name: 'Diploma in Sports Nutrition',
+        },
+        {
+          '@type': 'EducationalOccupationalCredential',
+          credentialCategory: 'Diploma',
+          name: 'Diploma in TRX Suspension Training',
+        },
+        {
+          '@type': 'EducationalOccupationalCredential',
+          credentialCategory: 'Diploma',
+          name: 'Diploma in Special Population Training',
         },
       ],
       worksFor: {

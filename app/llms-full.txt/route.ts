@@ -51,14 +51,12 @@ export async function GET() {
 Coach Himanshu is a NASM (National Academy of Sports Medicine) Certified personal trainer and online fitness coach based in India. He provides personalized fitness coaching to clients across India and worldwide through his platform at [coachhimanshu.com](https://coachhimanshu.com).
 
 ## Credentials & Certifications
-1. NASM Certified Personal Trainer (CPT)
-2. NASM Certified Bodybuilding Coach
-3. NASM Sports Nutrition Specialist
-4. NASM Corrective Exercise Specialist (CES)
-5. TRX Suspension Training Certified
-6. Diploma in Personal Training
-7. Diploma in Sports Nutrition
-8. 6+ total professional diplomas in fitness science
+1. NASM Certified Bodybuilding Coach (USA)
+2. Diploma in Personal Training
+3. Diploma in Master Training
+4. Diploma in Sports Nutrition
+5. Diploma in TRX Suspension Training
+6. Diploma in Special Population Training
 
 ## Experience & Track Record
 - 6+ years of professional fitness coaching experience
@@ -207,7 +205,7 @@ Coach Himanshu publishes ${blogCountLabel} expert fitness articles at [coachhima
 After subscribing to a plan, you receive a personalized workout program and meal plan based on your fitness assessment. You get WhatsApp support, weekly check-ins, and plan adjustments based on your progress. Everything is delivered digitally — no need to visit a gym or office.
 
 ### What certifications does Coach Himanshu hold?
-Coach Himanshu holds NASM CPT, NASM Bodybuilding Coach, Sports Nutrition Specialist, Corrective Exercise Specialist, and TRX certifications, plus 6+ professional diplomas in fitness science and nutrition.
+Coach Himanshu is an NASM Certified Bodybuilding Coach (USA), with professional diplomas in Personal Training, Master Training, Sports Nutrition, TRX Suspension Training, and Special Population Training.
 
 ### What are the pricing plans?
 Personalised recorded coaching starts at ${inr(low)}, with 3, 6, and 12-month plans offering better value per month. Live 1:1 Elite personal training and couple/family plans are also available, up to ${inr(high)} for the largest packages. Every plan includes a customised workout plan, a personalised Indian meal plan, and WhatsApp support.
