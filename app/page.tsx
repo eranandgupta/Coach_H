@@ -285,11 +285,6 @@ export default function Home() {
           'https://www.instagram.com/coach_himanshu_',
           'https://www.youtube.com/@coachhimanshu',
         ],
-        alumniOf: {
-          '@type': 'Organization',
-          name: 'National Academy of Sports Medicine (NASM)',
-          url: 'https://www.nasm.org',
-        },
         hasCredential: [
           {
             '@type': 'EducationalOccupationalCredential',
@@ -308,22 +303,22 @@ export default function Home() {
           {
             '@type': 'EducationalOccupationalCredential',
             credentialCategory: 'Diploma',
+            name: 'Diploma in Master Training',
+          },
+          {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'Diploma',
             name: 'Diploma in Sports Nutrition',
           },
           {
             '@type': 'EducationalOccupationalCredential',
-            credentialCategory: 'Certification',
-            name: 'Corrective Exercise Specialist (CES)',
+            credentialCategory: 'Diploma',
+            name: 'Diploma in TRX Suspension Training',
           },
           {
             '@type': 'EducationalOccupationalCredential',
-            credentialCategory: 'Certification',
-            name: 'Sports Nutrition Specialist',
-          },
-          {
-            '@type': 'EducationalOccupationalCredential',
-            credentialCategory: 'Certification',
-            name: 'TRX Suspension Training Certified',
+            credentialCategory: 'Diploma',
+            name: 'Diploma in Special Population Training',
           },
         ],
       },
@@ -334,36 +329,12 @@ export default function Home() {
         image: 'https://coachhimanshu.com/logo.png',
         url: 'https://coachhimanshu.com',
         telephone: '+91-7303484648',
-        priceRange: '₹1299-₹31999',
-        address: {
-          '@type': 'PostalAddress',
-          addressCountry: 'IN',
-          addressLocality: 'India',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          addressCountry: 'IN',
-        },
         areaServed: {
-          '@type': 'Country',
-          name: 'India',
+          '@type': 'Place',
+          name: 'Worldwide',
         },
         availableLanguage: ['English', 'Hindi'],
-        description: 'Online fitness coaching services providing personalized workout plans, nutrition guidance, and dedicated support',
-        offers: {
-          '@type': 'AggregateOffer',
-          priceCurrency: 'INR',
-          lowPrice: '1299',
-          highPrice: '31999',
-          offerCount: '7',
-        },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          reviewCount: '1000',
-          bestRating: '5',
-          worstRating: '1',
-        },
+        description: 'Online fitness coaching delivered worldwide — personalized workout plans, nutrition guidance, and dedicated support for clients in any country and time zone',
         serviceType: [
           'Online Personal Training',
           'Nutrition Coaching',
@@ -385,76 +356,10 @@ export default function Home() {
           '@type': 'SearchAction',
           target: {
             '@type': 'EntryPoint',
-            urlTemplate: 'https://coachhimanshu.com/search?q={search_term_string}',
+            urlTemplate: 'https://coachhimanshu.com/blog?q={search_term_string}',
           },
           'query-input': 'required name=search_term_string',
         },
-      },
-      {
-        '@type': 'ItemList',
-        '@id': 'https://coachhimanshu.com/#plans',
-        itemListElement: [
-          {
-            '@type': 'Offer',
-            position: 1,
-            name: 'Kickstart Plan',
-            description: 'Monthly fitness coaching plan with personalized workout and meal plans',
-            price: '1299',
-            priceCurrency: 'INR',
-            availability: 'https://schema.org/InStock',
-            url: 'https://coachhimanshu.com/#plans',
-          },
-          {
-            '@type': 'Offer',
-            position: 2,
-            name: 'Consistency Plan',
-            description: '3 months fitness coaching with comprehensive support',
-            price: '2899',
-            priceCurrency: 'INR',
-            availability: 'https://schema.org/InStock',
-            url: 'https://coachhimanshu.com/#plans',
-          },
-          {
-            '@type': 'Offer',
-            position: 3,
-            name: 'Strength Plan',
-            description: '6 months intensive fitness transformation program with FREE RhynoGrip fitness gear',
-            price: '4999',
-            priceCurrency: 'INR',
-            availability: 'https://schema.org/InStock',
-            url: 'https://coachhimanshu.com/#plans',
-          },
-          {
-            '@type': 'Offer',
-            position: 4,
-            name: 'Mastery Plan',
-            description: '12 months comprehensive fitness mastery program with FREE RhynoGrip fitness gear',
-            price: '9999',
-            priceCurrency: 'INR',
-            availability: 'https://schema.org/InStock',
-            url: 'https://coachhimanshu.com/#plans',
-          },
-          {
-            '@type': 'Offer',
-            position: 5,
-            name: 'Rehabilitation Plan',
-            description: '3 months rehabilitation and injury recovery program with personalized exercises',
-            price: '3499',
-            priceCurrency: 'INR',
-            availability: 'https://schema.org/InStock',
-            url: 'https://coachhimanshu.com/#plans',
-          },
-          {
-            '@type': 'Offer',
-            position: 6,
-            name: 'Home Workout Plan',
-            description: '3 months home workout plan — no gym or equipment needed',
-            price: '2499',
-            priceCurrency: 'INR',
-            availability: 'https://schema.org/InStock',
-            url: 'https://coachhimanshu.com/#plans',
-          },
-        ],
       },
     ],
   };
@@ -823,10 +728,10 @@ export default function Home() {
         item: {
           '@type': 'Course',
           name: 'Home Workout Program',
-          description: 'Complete home workout program requiring no gym or equipment. Bodyweight exercises, resistance band routines, and progressive overload training with personalised nutrition.',
+          description: '3-month home workout program requiring no gym or equipment. Bodyweight exercises, resistance band routines, and progressive overload training with personalised nutrition.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '799', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
-          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P1M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          offers: { '@type': 'Offer', price: '2499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P3M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Beginner',
           inLanguage: ['en', 'hi'],
         },
@@ -839,8 +744,8 @@ export default function Home() {
           name: 'Rehabilitation & Corrective Exercise Program',
           description: 'Specialised rehabilitation program based on NASM Corrective Exercise Continuum for injury recovery, posture correction, and pain management.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '1499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
-          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P1M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
+          offers: { '@type': 'Offer', price: '3499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P3M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Beginner',
           inLanguage: ['en', 'hi'],
         },
@@ -2196,7 +2101,7 @@ export default function Home() {
         );
       })()}
 
-      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass" aria-label="Why choose Coach Himanshu">
+      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass cv-auto" aria-label="Why choose Coach Himanshu">
         {/* Background ambient glow */}
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }} />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.03) 0%, transparent 70%)' }} />
@@ -2261,7 +2166,7 @@ export default function Home() {
       </section>
 
       {/* Qualifications Marquee */}
-      <section className="py-5 border-y border-white/[0.04] overflow-hidden relative" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(26,37,64,0.15) 50%, rgba(10,15,31,0.95) 100%)' }}>
+      <section className="py-5 border-y border-white/[0.04] overflow-hidden relative cv-auto" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(26,37,64,0.15) 50%, rgba(10,15,31,0.95) 100%)' }}>
         <div className="relative">
           {/* Gradient overlays for fade effect */}
           <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-brand-navy to-transparent z-10"></div>
@@ -2532,7 +2437,7 @@ export default function Home() {
       </section>
 
       {/* Rhynogrip Fitness Gear Partner Section */}
-      <section className="py-12 md:py-16 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Fitness gear partner Rhynogrip">
+      <section className="py-12 md:py-16 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04] cv-auto" aria-label="Fitness gear partner Rhynogrip">
         {/* Ambient glow effects */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.04) 0%, transparent 70%)' }}></div>
@@ -2663,7 +2568,7 @@ export default function Home() {
       </section>
 
       {/* Client Testimonials Section */}
-      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04]" aria-label="Client testimonials">
+      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden section-glass border-y border-white/[0.04] cv-auto" aria-label="Client testimonials">
         <div
           className="max-w-7xl mx-auto"
         >
@@ -2732,6 +2637,8 @@ export default function Home() {
                             src={testimonial.beforePhoto}
                             alt="Before transformation"
                             className="w-full h-32 object-cover rounded-lg border border-brand-gold/30"
+                            loading="lazy"
+                            decoding="async"
                           />
                         </div>
                       )}
@@ -2742,6 +2649,8 @@ export default function Home() {
                             src={testimonial.afterPhoto}
                             alt="After transformation"
                             className="w-full h-32 object-cover rounded-lg border border-brand-gold/30"
+                            loading="lazy"
+                            decoding="async"
                           />
                         </div>
                       )}
@@ -2755,6 +2664,8 @@ export default function Home() {
                         src={testimonial.profilePhoto}
                         alt={testimonial.name}
                         className="w-12 h-12 rounded-full object-cover border-2 border-brand-gold/50 flex-shrink-0"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-gold rounded-full flex items-center justify-center flex-shrink-0">
@@ -2828,7 +2739,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden border-t border-white/[0.04]" aria-label="Get started with transformation">
+      <section className="py-12 md:py-24 px-4 md:px-6 relative overflow-hidden border-t border-white/[0.04] cv-auto" aria-label="Get started with transformation">
         <div
           className="max-w-7xl mx-auto"
         >
@@ -2875,7 +2786,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 px-4 bg-brand-navy" aria-label="Frequently asked questions">
+      <section className="py-16 px-4 bg-brand-navy cv-auto" aria-label="Frequently asked questions">
         <div className="max-w-6xl mx-auto">
           <h2
             className="text-2xl md:text-4xl font-bold text-white text-center mb-8 md:mb-12"

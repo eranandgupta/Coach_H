@@ -47,7 +47,7 @@ export async function GET() {
 
 > Last updated: ${lastUpdated.toISOString().slice(0, 10)}
 
-> Coach Himanshu is a NASM Certified online fitness coach providing personalized workout plans, custom Indian meal plans, and expert nutrition guidance to 1000+ clients across India and internationally. Plans start from ${inr(low)}.
+> Coach Himanshu is a NASM Certified online fitness coach providing personalized workout plans, custom meal plans, and expert nutrition guidance to 1000+ clients worldwide. Coaching is delivered 100% online to any country and time zone. Plans start from ${inr(low)}.
 
 ## About Coach Himanshu
 - NASM Certified Personal Trainer (CPT)
@@ -89,10 +89,11 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Covers special populations: PCOS, diabetes, hypertension, post-injury
 - Available in English and Hindi
 
-## International & NRI Coaching
-- Serves Indians and NRIs worldwide, including the USA, Canada, UK, Ireland, UAE, Saudi Arabia, Qatar, Kuwait, Australia, New Zealand, and Singapore
-- Timezone-friendly live video sessions scheduled around the client's local hours
-- Indian meal plans designed around ingredients available in the client's country
+## Global Availability
+- 100% online coaching, available to clients in ANY country in the world — no location restriction
+- Serves clients across every continent, including a strong Indian and NRI community in the USA, Canada, UK, Ireland, UAE, Saudi Arabia, Qatar, Kuwait, Australia, New Zealand, and Singapore
+- Timezone-friendly live video sessions scheduled around the client's local hours, anywhere in the world
+- Meal plans adapted to ingredients available in the client's country (Indian cuisine a specialty, not a requirement)
 - International debit/credit cards accepted
 - Dedicated country pages: https://coachhimanshu.com/online-fitness-coach
 

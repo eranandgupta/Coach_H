@@ -65,7 +65,8 @@ Coach Himanshu is a NASM (National Academy of Sports Medicine) Certified persona
 - 1000+ successful client transformations
 - 95% client commitment-to-results rate
 - Specializes in both online and in-person coaching
-- Clients across India (Delhi, Mumbai, Bangalore, Pune, Hyderabad, Kolkata, Chennai, Jaipur, Ahmedabad, Lucknow, etc.) and internationally (UK, UAE, USA, Canada, Australia, Singapore)
+- Clients across India (Delhi, Mumbai, Bangalore, Pune, Hyderabad, Kolkata, Chennai, Jaipur, Ahmedabad, Lucknow, etc.) and worldwide (UK, UAE, USA, Canada, Australia, Singapore, and beyond)
+- Coaching is 100% online and available in every country — location is never a barrier; live sessions are scheduled to fit any time zone
 - Started fitness journey in 2012 through martial arts (2 international medals in karate)
 - Trusted by beginners, working professionals, athletes, and special populations
 

@@ -274,6 +274,16 @@
     contain: layout style paint;
   }
 
+  /* Skip layout/paint for off-screen sections on this long single-page route.
+     `auto` intrinsic size makes the browser remember each section's real height
+     after first render, so the scrollbar never jumps. Biggest scroll-perf win
+     on a 2800-line client page — off-screen sections cost ~nothing until near
+     the viewport. Applied only to below-the-fold, non-anchor sections. */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 700px;
+  }
+
   /* Safe area support for notched phones */
   .safe-top {
     padding-top: env(safe-area-inset-top, 0);
