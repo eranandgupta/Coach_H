@@ -815,7 +815,7 @@ export default function AdminDashboard() {
                                   )}
                                 </div>
                               </div>
-                              <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
+                              <div className="flex gap-2 flex-wrap justify-end min-w-0">
                                 {client.subscriptions?.map((sub) => (
                                   <button
                                     key={sub.id}
