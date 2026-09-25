@@ -84,6 +84,22 @@ export default function Footer() {
               </li>
               <li>
                 <a
+                  href="/fitness-coaching-for/seniors"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  Coaching for Seniors
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/fitness-coaching-for/working-professionals"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  For Working Professionals
+                </a>
+              </li>
+              <li>
+                <a
                   href="/blog"
                   className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
                 >

@@ -124,6 +124,8 @@ export default function PlansPage() {
               { href: '/fitness-coaching-for/women', title: 'For Women', text: 'Fat loss, toning, PCOS/thyroid & postpartum — hormone-aware plans.' },
               { href: '/fitness-coaching-for/men', title: 'For Men', text: 'Muscle, fat loss, strength & weight gain with progressive training.' },
               { href: '/fitness-coaching-for/family', title: 'Couples & Family', text: 'Two plans, one journey — get fit together and stay accountable.' },
+              { href: '/fitness-coaching-for/seniors', title: 'For Seniors & 50+', text: 'Joint-friendly strength, balance & mobility with BP/sugar-aware plans.' },
+              { href: '/fitness-coaching-for/working-professionals', title: 'For Working Professionals', text: 'Time-efficient workouts, desk-posture fixes & eat-out-friendly diets.' },
             ].map((c) => (
               <Link
                 key={c.href}

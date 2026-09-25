@@ -567,6 +567,360 @@ export const AUDIENCES: AudienceData[] = [
     ctaText:
       'Start your transformation as a couple or family with a free consultation for each person — no payment required.',
   },
+
+  {
+    slug: 'seniors',
+    audience: 'Seniors',
+    metaTitle: 'Online Fitness Coach for Seniors & 50+ in India',
+    metaDescription:
+      'Online fitness coaching for seniors & adults 50+ in India. Joint-friendly strength, balance & mobility, and BP/sugar-aware Indian diets. Train from home. From ₹1,299/mo.',
+    heroLead: 'Fitness Coaching',
+    heroTail: 'for Seniors & Adults 50+',
+    intro:
+      "It is never too late to get stronger. Coach Himanshu builds gentle, joint-friendly programs for adults in their 40s, 50s, 60s and beyond — designed to rebuild strength, protect your joints, steady your balance, and keep everyday life easy. With a Special Population Training background, your plan works around conditions like high blood pressure, diabetes, and knee or back pain, using Indian food you already eat. Train safely from home, at your own pace, with guidance every step of the way.",
+    goalChipsHeading: 'What We Help Older Adults With',
+    goalChipsSub:
+      'Realistic, safe goals for the second half of life — not a young gym-bro workout forced onto a 55-year-old body.',
+    goalChips: [
+      'Joint-friendly strength',
+      'Better balance & mobility',
+      'Bone & muscle preservation',
+      'Manage BP, sugar & cholesterol',
+      'Reduce knee & back pain',
+      'Stay independent & active',
+      'Safe, low-impact home workouts',
+      'More energy every day',
+    ],
+    reasons: [
+      {
+        title: 'Age-Appropriate Programming',
+        description:
+          'Your plan is built for a mature body — controlled tempo, safe ranges of motion, and sensible progression. No ego lifting, no risky jumps, just steady gains that respect your joints.',
+      },
+      {
+        title: 'Strength to Stay Independent',
+        description:
+          'After 40, we lose muscle and bone every year unless we train. Progressive strength work rebuilds it — so climbing stairs, lifting grandkids, and carrying groceries stay easy for years to come.',
+      },
+      {
+        title: 'Condition-Aware Coaching',
+        description:
+          'High blood pressure, type-2 diabetes, cholesterol, thyroid or arthritis? Your training and Indian diet are adjusted around them, so exercise supports your health instead of straining it.',
+      },
+      {
+        title: 'Balance, Mobility & Fall Prevention',
+        description:
+          'Mobility drills and balance work reduce stiffness and the risk of falls — one of the biggest threats to independence as we age — while making daily movement feel effortless again.',
+      },
+      {
+        title: 'Train From Home, No Gym Needed',
+        description:
+          'No crowded gyms or intimidating machines. Effective, low-impact home workouts with clear video tutorials you follow at your own pace, in your own space.',
+      },
+      {
+        title: '24/7 WhatsApp Support',
+        description:
+          'Not sure if an exercise is safe with your knee or your medication? Message your coach anytime, with weekly check-ins and someone keeping you consistent and accountable.',
+      },
+    ],
+    steps: [
+      {
+        number: '01',
+        title: 'Take the Free Assessment',
+        description:
+          'Share your age, health conditions, medications, past injuries, and daily routine so your plan is safe and truly personalised — not a generic template.',
+      },
+      {
+        number: '02',
+        title: 'Get Your Custom Plan',
+        description:
+          'Receive a joint-friendly workout and an Indian diet plan matched to your goals and any conditions like BP, sugar, or joint pain — with home or gym options.',
+      },
+      {
+        number: '03',
+        title: 'Train With Guidance',
+        description:
+          'Follow easy-to-watch video tutorials, weekly consultations, and 24/7 WhatsApp support. Intensity starts gentle and progresses only as you get stronger.',
+      },
+      {
+        number: '04',
+        title: 'Feel Stronger & More Capable',
+        description:
+          'Track progress with regular reviews and enjoy steady results — less pain, better balance, more energy, and the confidence that comes from staying strong and independent.',
+      },
+    ],
+    plans: [
+      {
+        name: 'Home Workout Plan',
+        duration: '3 Months',
+        price: '₹2,499',
+        perMonth: '₹833/month',
+        features: [
+          'Joint-friendly home workout plan',
+          'Personalised Indian diet plan',
+          'Exercise video tutorials',
+          'Weekly one-on-one consultation',
+          'WhatsApp support',
+        ],
+      },
+      {
+        name: 'Consistency Plan',
+        duration: '3 Months',
+        price: '₹2,899',
+        perMonth: '₹966/month',
+        popular: true,
+        features: [
+          'Customised workout plan (home or gym)',
+          'Condition-aware diet (BP / sugar / cholesterol)',
+          'Video tutorials',
+          'Weekly one-on-one consultation',
+          'Supplement guidance',
+          'WhatsApp support',
+          'Lifestyle & mobility coaching',
+        ],
+      },
+      {
+        name: 'Strength Plan',
+        duration: '6 Months',
+        price: '₹4,999',
+        perMonth: '₹833/month',
+        features: [
+          'Fully customised, progressive plan',
+          'Personalised Indian diet plan',
+          'Full video library access',
+          'Weekly one-on-one consultation',
+          'Supplement guidance',
+          'WhatsApp support',
+          'Pause option (7 days)',
+        ],
+      },
+      {
+        name: 'Elite 1:1 Coaching',
+        duration: '1 Month',
+        price: '₹7,999',
+        perMonth: '12 live sessions',
+        features: [
+          'Live 1-on-1 online personal training',
+          'Real-time form & safety correction',
+          'Personalised workout & diet plan',
+          'Balance, mobility & habit tracking',
+          'Direct coach support',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is it safe to start strength training at 50, 60, or older?',
+        answer:
+          'Yes — with the right guidance it is one of the best things you can do for your health. Research consistently shows adults in their 50s, 60s, and 70s can build strength, bone density, and balance safely. Coach Himanshu starts gently, works around your conditions and past injuries, and progresses only as your body is ready. If you have a medical condition, we recommend a quick doctor’s clearance before beginning.',
+      },
+      {
+        question: 'Can I train with high blood pressure, diabetes, or joint pain?',
+        answer:
+          'Absolutely. Programs are designed with these conditions in mind. Training and your Indian diet are adjusted to support blood pressure, blood sugar, and cholesterol, while exercises are chosen and modified to protect painful knees, backs, and shoulders. Your coach adapts the plan as you progress and always errs on the side of safety.',
+      },
+      {
+        question: 'Do I need a gym or special equipment?',
+        answer:
+          'No. Most seniors start with a home workout plan that needs little or no equipment — often just a chair, a resistance band, or light dumbbells. Every exercise comes with a clear video tutorial so you can follow along safely at your own pace. If you prefer a gym, a gym-based plan is available too.',
+      },
+      {
+        question: 'I have not exercised in years. Is this for me?',
+        answer:
+          'Yes — this is exactly who these plans are built for. You start at your current level, not someone else’s. The first weeks focus on gentle movement, mobility, and building a habit, then strength is added gradually. There is no rush and no comparison to anyone else.',
+      },
+      {
+        question: 'Will online coaching really work for older adults?',
+        answer:
+          'It works very well. You get a plan built for your body and health, weekly one-on-one check-ins, video tutorials for correct and safe form, and 24/7 WhatsApp support to ask questions anytime. Many older clients prefer it because they train privately at home on their own schedule, with a coach guiding every step.',
+      },
+    ],
+    relatedBlogs: [
+      { title: 'Fitness After 50: Strength Training Guide for Seniors in India', href: '/blog/fitness-after-50-strength-training-guide-for-seniors-in-india' },
+      { title: 'After 40, Joint Pain Is Not Normal — It’s Your Lifestyle', href: '/blog/after-40-joint-pain-is-not-normal-it-s-your-poor-lifestyle' },
+      { title: 'Hypertension & Strength Training: Control High BP Naturally', href: '/blog/hypertension-strength-training-a-scientific-guide-to-controlling-high-blood-pressure-naturally' },
+    ],
+    ctaTitle: 'It’s Never Too Late to Get Stronger',
+    ctaText:
+      'Start with a free consultation and get an age-appropriate plan built around your body and health — no payment required.',
+  },
+
+  {
+    slug: 'working-professionals',
+    audience: 'Working Professionals',
+    metaTitle: 'Online Fitness Coach for Working Professionals',
+    metaDescription:
+      'Online fitness coaching for busy professionals in India. Time-efficient 30–45 min workouts, desk-posture fixes & eat-out-friendly Indian diets. From ₹1,299/mo.',
+    heroLead: 'Fitness Coaching',
+    heroTail: 'for Busy Professionals',
+    intro:
+      "No time for the gym, back stiff from a desk all day, meetings that run late, and dinner ordered in more often than you'd like? Coach Himanshu builds fitness around a demanding career — short, efficient workouts you can do at home or the gym, posture and mobility work to undo desk damage, and an Indian diet that survives office canteens, ordering out, and travel. Train on your schedule, not someone else's, with a coach in your pocket over WhatsApp.",
+    goalChipsHeading: 'What We Help Professionals With',
+    goalChipsSub:
+      'Built for packed calendars and desk-bound days — real results without living in the gym.',
+    goalChips: [
+      'Time-efficient 30–45 min workouts',
+      'Fat loss on a busy schedule',
+      'Fix desk posture & back pain',
+      'Beat the afternoon energy crash',
+      'Eat-out & canteen-friendly diets',
+      'Train early morning or late night',
+      'Stay consistent while travelling',
+      'Stress & better sleep',
+    ],
+    reasons: [
+      {
+        title: 'Short, High-Return Workouts',
+        description:
+          'You do not need two hours a day. Focused 30–45 minute sessions built around progressive overload give you real results with the least time cost — the highest ROI on a busy calendar.',
+      },
+      {
+        title: 'Undo the Desk Damage',
+        description:
+          'Eight hours at a screen wrecks posture and stiffens the back, neck, and hips. Your plan includes mobility and corrective work so you move — and feel — better, not just look better.',
+      },
+      {
+        title: 'Nutrition That Survives Real Life',
+        description:
+          'Office canteens, client dinners, ordering in, and travel. Your Indian diet is built to flex around all of it — practical swaps and portions, not a rigid plan that collapses on a busy Tuesday.',
+      },
+      {
+        title: 'Train On Your Schedule',
+        description:
+          'Early morning before work, a quick lunch-hour session, or late evening — your plan works whenever you can, at home or the gym, and adapts when meetings and travel get in the way.',
+      },
+      {
+        title: 'Accountability That Keeps You Going',
+        description:
+          'Motivation fades when work gets heavy. Weekly check-ins and a coach who follows up keep you consistent through crunch weeks, deadlines, and business trips.',
+      },
+      {
+        title: '24/7 WhatsApp Support',
+        description:
+          'Stuck at the airport, at a hotel gym, or staring at a restaurant menu? Message your coach anytime for a quick workout swap or the smarter thing to order.',
+      },
+    ],
+    steps: [
+      {
+        number: '01',
+        title: 'Take the Free Assessment',
+        description:
+          'Share your schedule, work setup, travel frequency, food habits, and goals so your plan fits your real week — not an idealised one.',
+      },
+      {
+        number: '02',
+        title: 'Get Your Custom Plan',
+        description:
+          'Receive time-efficient workouts (home or gym) and a flexible Indian diet designed to survive canteens, ordering out, and travel.',
+      },
+      {
+        number: '03',
+        title: 'Train Around Work',
+        description:
+          'Follow quick video-guided sessions, weekly check-ins, and 24/7 WhatsApp support. Your plan flexes around meetings, deadlines, and trips.',
+      },
+      {
+        number: '04',
+        title: 'Get Lean, Energetic & Consistent',
+        description:
+          'Track progress with regular reviews and see steady results — more energy, better posture, less stress, and a routine that finally sticks despite a busy career.',
+      },
+    ],
+    plans: [
+      {
+        name: 'Home Workout Plan',
+        duration: '3 Months',
+        price: '₹2,499',
+        perMonth: '₹833/month',
+        features: [
+          'Time-efficient home workout plan',
+          'Flexible, eat-out-friendly diet plan',
+          'Exercise video tutorials',
+          'Weekly one-on-one consultation',
+          'WhatsApp support',
+        ],
+      },
+      {
+        name: 'Consistency Plan',
+        duration: '3 Months',
+        price: '₹2,899',
+        perMonth: '₹966/month',
+        popular: true,
+        features: [
+          'Customised workout plan (home or gym)',
+          'Desk-posture & mobility work',
+          'Flexible Indian diet plan',
+          'Video tutorials',
+          'Weekly one-on-one consultation',
+          'Supplement guidance',
+          'WhatsApp support',
+        ],
+      },
+      {
+        name: 'Strength Plan',
+        duration: '6 Months',
+        price: '₹4,999',
+        perMonth: '₹833/month',
+        features: [
+          'Fully customised, progressive plan',
+          'Personalised Indian diet plan',
+          'Full video library access',
+          'Weekly one-on-one consultation',
+          'Supplement guidance',
+          'WhatsApp support',
+          'Pause option (7 days)',
+        ],
+      },
+      {
+        name: 'Elite 1:1 Coaching',
+        duration: '1 Month',
+        price: '₹7,999',
+        perMonth: '12 live sessions',
+        features: [
+          'Live 1-on-1 online personal training',
+          'Sessions scheduled around work',
+          'Personalised workout & diet plan',
+          'Real-time form correction',
+          'Direct coach support',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'I barely have time. How long are the workouts?',
+        answer:
+          'Most plans are built around 30–45 minute sessions, 3–5 days a week, and can be scaled shorter on your busiest days. The focus is on efficient, high-return training — progressive overload and compound movements — so you get real results without spending two hours in the gym.',
+      },
+      {
+        question: 'Can I do this with a lot of work travel?',
+        answer:
+          'Yes. Plans are designed to travel with you — hotel-room and minimal-equipment workout options, plus guidance on eating well in airports, restaurants, and different cities. Message your coach on WhatsApp anytime for a quick swap when your schedule changes.',
+      },
+      {
+        question: 'My job is a desk job and my back hurts. Can coaching help?',
+        answer:
+          'Absolutely. Your plan includes mobility and corrective exercises that target the stiffness and posture problems caused by long hours at a screen. Combined with strength work, most desk-bound clients feel noticeably less back and neck tension within a few weeks.',
+      },
+      {
+        question: 'I eat out and order in a lot. Will the diet work for me?',
+        answer:
+          'Yes — the diet is built for real professional life, not a perfect kitchen. You get practical swaps, portion guidance, and smart choices for canteens, restaurants, and delivery, all based on Indian food you actually eat. No weighing every gram, no boiled-chicken misery.',
+      },
+      {
+        question: 'When should I train — morning or evening?',
+        answer:
+          'Whichever you can do consistently. Coach Himanshu builds your plan around your real schedule — early morning before work, a lunch-hour session, or after office hours. Consistency matters far more than the exact time; see our guide on the best time to work out for the full picture.',
+      },
+    ],
+    relatedBlogs: [
+      { title: 'Best Workout Schedule for Working Professionals in India', href: '/blog/best-workout-schedule-for-working-professionals-in-india' },
+      { title: 'Best Time to Work Out: Morning vs Evening', href: '/blog/best-time-to-work-out-morning-vs-evening-india-guide' },
+      { title: 'How to Lose Weight Without Going to the Gym', href: '/blog/how-to-lose-weight-without-going-to-the-gym' },
+    ],
+    ctaTitle: 'Fitness That Fits Your Career',
+    ctaText:
+      'Get a time-efficient plan built around your schedule. Start with a free consultation — no payment required.',
+  },
 ];
 
 export function getAudienceBySlug(slug: string): AudienceData | undefined {
