@@ -61,6 +61,7 @@ export default function CountryLayout({ children, params }: { children: React.Re
     },
     provider: {
       '@type': 'Person',
+      '@id': 'https://coachhimanshu.com/#coach',
       name: 'Coach Himanshu',
       jobTitle: 'NASM Certified Fitness Coach',
       url: 'https://coachhimanshu.com/about',

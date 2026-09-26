@@ -52,6 +52,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
     serviceType: 'Online Personal Training',
     provider: {
       '@type': 'Person',
+      '@id': 'https://coachhimanshu.com/#coach',
       name: 'Coach Himanshu',
       jobTitle: 'NASM Certified Fitness Coach',
       url: 'https://coachhimanshu.com/about',

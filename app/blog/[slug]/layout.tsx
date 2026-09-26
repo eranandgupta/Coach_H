@@ -91,12 +91,14 @@ export default async function BlogPostLayout({
         wordCount,
         author: {
           '@type': 'Person',
+          '@id': 'https://coachhimanshu.com/#coach',
           name: post.author?.name || 'Coach Himanshu',
           url: 'https://coachhimanshu.com/about',
           jobTitle: 'NASM Certified Fitness Coach',
         },
         publisher: {
           '@type': 'Organization',
+          '@id': 'https://coachhimanshu.com/#organization',
           name: 'Coach Himanshu',
           url: 'https://coachhimanshu.com',
           logo: {

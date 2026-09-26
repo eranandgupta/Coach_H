@@ -64,6 +64,7 @@ export default function AudienceLayout({
     serviceType: 'Online Personal Training and Nutrition Coaching',
     provider: {
       '@type': 'Person',
+      '@id': 'https://coachhimanshu.com/#coach',
       name: 'Coach Himanshu',
       jobTitle: 'NASM Certified Fitness Coach',
       url: 'https://coachhimanshu.com/about',

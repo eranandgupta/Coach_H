@@ -54,6 +54,7 @@ export default function CityLayout({ children, params }: { children: React.React
     },
     provider: {
       '@type': 'Person',
+      '@id': 'https://coachhimanshu.com/#coach',
       name: 'Coach Himanshu',
       jobTitle: 'NASM Certified Fitness Coach',
       url: 'https://coachhimanshu.com/about',
