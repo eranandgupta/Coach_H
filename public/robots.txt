@@ -152,6 +152,7 @@ Allow: /
 #   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS)
 #   /sitemap/5.xml  → International pages (online coaching by country)
 #   /sitemap/6.xml  → Live 1:1 personal-trainer city pages
+#   /sitemap/7.xml  → Food calorie pages (/calories + one per food)
 # ─────────────────────────────────────────────────────────────────────────────
 
 Sitemap: https://coachhimanshu.com/sitemap.xml

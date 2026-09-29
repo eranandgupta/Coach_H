@@ -118,6 +118,8 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
 - [Online Fitness Coach Worldwide](https://coachhimanshu.com/online-fitness-coach): Coaching for NRIs by country
 - Coaching by audience: [Women](https://coachhimanshu.com/fitness-coaching-for/women), [Men](https://coachhimanshu.com/fitness-coaching-for/men), [Couples & Family](https://coachhimanshu.com/fitness-coaching-for/family), [Seniors & 50+](https://coachhimanshu.com/fitness-coaching-for/seniors), [Working Professionals](https://coachhimanshu.com/fitness-coaching-for/working-professionals)
+- [Calorie Calculator](https://coachhimanshu.com/calorie-calculator): Free Indian food calorie + macro calculator for single foods or full meals
+- [Food Calorie Chart](https://coachhimanshu.com/calories): Calories, protein, carbs, fat and micronutrients for 850+ Indian and everyday foods, with one page per food at /calories/{food} (for example [roti](https://coachhimanshu.com/calories/roti-chapati) and [dal tadka](https://coachhimanshu.com/calories/dal-tadka)). Data from INDB, IFCT 2017 (NIN-ICMR) and USDA
 - [FAQ](https://coachhimanshu.com/faq): Common questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Fitness education
 - [Fit Bharat Mission](https://coachhimanshu.com/fit-bharat-mission): Community initiative

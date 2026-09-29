@@ -20,6 +20,7 @@ export default function CalorieCalculatorPage() {
     const serving = food.servings[0]; // first = household unit
     const m = caloriesForServing(food, serving.label, 1);
     return {
+      slug: food.slug,
       name: food.name,
       serving: serving.label,
       kcal: m.kcal,
@@ -72,7 +73,8 @@ export default function CalorieCalculatorPage() {
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-white">Calories in common Indian foods</h2>
           <p className="mt-2 text-sm text-gray-400">
-            Quick reference for a standard serving. Use the calculator above for other quantities.
+            Quick reference for a standard serving. Use the calculator above for other quantities, or browse the{' '}
+            <Link href="/calories" className="text-brand-blue hover:underline">full food calorie chart</Link> ({FOODS.length} foods).
           </p>
           <div className="mt-5 overflow-x-auto rounded-xl border border-white/10">
             <table className="w-full text-sm">
@@ -89,7 +91,9 @@ export default function CalorieCalculatorPage() {
               <tbody>
                 {commonRows.map((r) => (
                   <tr key={r.name} className="border-t border-white/5 text-gray-300">
-                    <td className="px-4 py-2.5 font-medium text-white">{r.name}</td>
+                    <td className="px-4 py-2.5 font-medium text-white">
+                      <Link href={`/calories/${r.slug}`} className="hover:text-brand-blue">{r.name}</Link>
+                    </td>
                     <td className="px-4 py-2.5 text-gray-400">{r.serving}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-brand-gold">{r.kcal} kcal</td>
                     <td className="px-4 py-2.5 text-right">{r.protein} g</td>

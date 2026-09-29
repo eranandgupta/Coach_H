@@ -4,6 +4,7 @@ import { getAllCitySlugs } from '@/lib/cities';
 import { getAllCountrySlugs } from '@/lib/countries';
 import { getAllAudienceSlugs } from '@/lib/audiences';
 import { getAllGoalSlugs } from '@/lib/ptGoals';
+import { getAllFoodSlugs } from '@/lib/foodPages';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -16,6 +17,7 @@ const baseUrl = 'https://coachhimanshu.com';
 //   /sitemap/2.xml  → Location pages (15 city-specific SEO pages)
 //   /sitemap/3.xml  → Legal & policy pages
 //   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS, llms.txt)
+//   /sitemap/7.xml  → Food calorie pages (/calories + one page per food)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function generateSitemaps() {
@@ -27,6 +29,7 @@ export async function generateSitemaps() {
     { id: 4 }, // Resources, feeds & discovery
     { id: 5 }, // International / country pages
     { id: 6 }, // Live 1:1 personal-trainer city pages
+    { id: 7 }, // Food calorie pages
   ];
 }
 
@@ -50,6 +53,8 @@ export default async function sitemap({
       return getInternationalPages();
     case 6:
       return getPersonalTrainerCityPages();
+    case 7:
+      return getFoodCaloriePages();
     default:
       return [];
   }
@@ -284,4 +289,20 @@ function getPersonalTrainerCityPages(): MetadataRoute.Sitemap {
   }));
 
   return [...cityPages, ...goalPages];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sitemap 7: Food calorie pages — "calories in {food}" answer pages from lib/foods.ts
+// ─────────────────────────────────────────────────────────────────────────────
+function getFoodCaloriePages(): MetadataRoute.Sitemap {
+  const now = new Date();
+  return [
+    { url: `${baseUrl}/calories`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    ...getAllFoodSlugs().map((slug) => ({
+      url: `${baseUrl}/calories/${slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ];
 }

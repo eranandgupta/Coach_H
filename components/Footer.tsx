@@ -116,6 +116,14 @@ export default function Footer() {
               </li>
               <li>
                 <a
+                  href="/calories"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  Food Calorie Chart
+                </a>
+              </li>
+              <li>
+                <a
                   href="/dashboard"
                   className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
                 >

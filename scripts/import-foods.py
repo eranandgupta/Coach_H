@@ -32,7 +32,11 @@ def parse_servings(s):
     for tok in str(s).split('·'):
         tok = tok.strip()
         if not tok: continue
-        m = re.search(r'\((\d+(?:\.\d+)?)\s*g\)', tok)
+        # Weight in the label's parentheses, most specific first:
+        #   "(30 ml ≈ 28 g)" -> 28 · "(40 g dry)" -> 40 · "(330 ml)" -> 330 (liquids: 1 ml ≈ 1 g)
+        m = (re.search(r'≈\s*(\d+(?:\.\d+)?)\s*g\b', tok)
+             or re.search(r'\((\d+(?:\.\d+)?)\s*g\b', tok)
+             or re.search(r'\((\d+(?:\.\d+)?)\s*ml\b', tok))
         if m: g = float(m.group(1))
         else:
             m2 = re.match(r'(\d+(?:\.\d+)?)\s*g', tok); g = float(m2.group(1)) if m2 else 100.0
