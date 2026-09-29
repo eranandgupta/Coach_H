@@ -131,7 +131,7 @@ export default function ClientDetailModal({
         const data = await res.json();
         setLoginHistory(data.events || []);
         setLoginTotal(data.totalCount || 0);
-        setLastLoginAt(data.lastLoginAt || null);
+        setLastLoginAt(data.lastActiveAt || data.lastLoginAt || null);
       } else {
         setLoginHistory([]);
         setLoginTotal(0);

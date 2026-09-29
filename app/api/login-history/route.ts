@@ -35,10 +35,14 @@ async function getHandler(request: NextRequest, context: any) {
         select: { id: true, createdAt: true, ipAddress: true, userAgent: true },
       }),
       prisma.loginEvent.count({ where: { userId } }),
-      prisma.user.findUnique({ where: { id: userId }, select: { lastLoginAt: true } }),
+      prisma.user.findUnique({ where: { id: userId }, select: { lastLoginAt: true, lastSeenAt: true } }),
     ]);
 
-    return NextResponse.json({ events, totalCount: count, lastLoginAt: lastLogin?.lastLoginAt ?? null });
+    // Real "last active" = latest of password login and the in-app presence heartbeat
+    // (lastLoginAt alone only moves on a fresh login — the token lasts 7 days).
+    const times = [lastLogin?.lastLoginAt, lastLogin?.lastSeenAt].filter(Boolean) as Date[];
+    const lastActiveAt = times.length ? new Date(Math.max(...times.map((t) => t.getTime()))) : null;
+    return NextResponse.json({ events, totalCount: count, lastLoginAt: lastLogin?.lastLoginAt ?? null, lastActiveAt });
   } catch (error) {
     console.error('Get login history error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

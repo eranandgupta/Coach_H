@@ -41,6 +41,25 @@ export interface CreateOrRenewParams {
 // Accepts the base PrismaClient or a transaction client.
 type Db = any;
 
+/**
+ * Thrown when a Razorpay payment already has a subscription. /payment/verify and the
+ * payment.captured webhook both process every payment and can run concurrently; without this
+ * the second one saw the first's row as "current" and QUEUED a duplicate plan after it
+ * (one payment -> active plan + phantom "upcoming" plan). The @unique on
+ * UserSubscription.razorpayPaymentId is the hard guarantee; this check makes the common case clean.
+ */
+export class DuplicatePaymentError extends Error {
+  code = 'DUPLICATE_PAYMENT';
+  constructor(paymentId: string) {
+    super(`Payment ${paymentId} already has a subscription`);
+  }
+}
+
+/** True for our pre-check or Prisma's unique-constraint violation (P2002) on the payment id. */
+export function isDuplicatePaymentError(e: any): boolean {
+  return e instanceof DuplicatePaymentError || e?.code === 'DUPLICATE_PAYMENT' || e?.code === 'P2002';
+}
+
 export async function createOrRenewSubscription(
   params: CreateOrRenewParams,
   db: Db = prisma
@@ -58,6 +77,11 @@ export async function createOrRenewSubscription(
     customerGoal = null,
     customerNotes = null,
   } = params;
+
+  if (razorpayPaymentId) {
+    const existing = await db.userSubscription.findFirst({ where: { razorpayPaymentId } });
+    if (existing) throw new DuplicatePaymentError(razorpayPaymentId);
+  }
 
   const now = new Date();
 

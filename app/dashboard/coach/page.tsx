@@ -78,6 +78,15 @@ function Pager({ page, pageCount, onPage }: { page: number; pageCount: number; o
   );
 }
 
+// Latest real activity: password login OR the in-app presence heartbeat (lastSeenAt).
+// lastLoginAt alone only moves on a fresh login — the token lasts 7 days, so an active
+// client could read "1d ago" for days.
+function lastActiveAt(client: { lastLoginAt?: string | null; lastSeenAt?: string | null }): string | null {
+  const times = [client.lastLoginAt, client.lastSeenAt].filter(Boolean) as string[];
+  if (!times.length) return null;
+  return times.reduce((a, b) => (new Date(a) > new Date(b) ? a : b));
+}
+
 // Short "last active" label for client cards (e.g. "2d ago").
 function lastActiveLabel(dateStr: string | null): string {
   if (!dateStr) return 'Never logged in';
@@ -183,7 +192,24 @@ export default function CoachDashboard() {
     fetchPlans();
     fetchUnreadChat();
     const chatInterval = setInterval(fetchUnreadChat, 30000);
-    return () => clearInterval(chatInterval);
+
+    // Refresh the client grid when the coach comes back to the tab, so "Active Xm ago"
+    // and subscription badges aren't stuck at whatever they were on first load.
+    const onVisible = () => {
+      if (document.hidden) return;
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      fetch('/api/clients', { headers: { Authorization: `Bearer ${token}` } })
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) setClients(data.clients); })
+        .catch(() => {});
+    };
+    document.addEventListener('visibilitychange', onVisible);
+
+    return () => {
+      clearInterval(chatInterval);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, []);
 
   const fetchDashboardData = async () => {
@@ -864,9 +890,9 @@ export default function CoachDashboard() {
                           {client.phone && (
                             <p className="text-gray-500 text-xs">{client.phone}</p>
                           )}
-                          <p className={`text-xs mt-1 flex items-center gap-1.5 ${client.lastLoginAt ? 'text-gray-500' : 'text-orange-400/90'}`}>
-                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${client.lastLoginAt ? 'bg-emerald-400' : 'bg-orange-400'}`} />
-                            {lastActiveLabel(client.lastLoginAt)}
+                          <p className={`text-xs mt-1 flex items-center gap-1.5 ${lastActiveAt(client) ? 'text-gray-500' : 'text-orange-400/90'}`}>
+                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${lastActiveAt(client) ? 'bg-emerald-400' : 'bg-orange-400'}`} />
+                            {lastActiveLabel(lastActiveAt(client))}
                           </p>
                         </div>
                       </div>

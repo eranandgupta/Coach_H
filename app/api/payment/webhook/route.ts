@@ -21,7 +21,7 @@ import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
-import { createOrRenewSubscription } from '@/lib/subscriptionService';
+import { createOrRenewSubscription, isDuplicatePaymentError } from '@/lib/subscriptionService';
 import { getSaleBonusDays } from '@/lib/sale';
 
 export const dynamic = 'force-dynamic';
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       console.log(`Webhook: subscription created for payment ${paymentId}, user ${emailToUse}`);
     } catch (txError: any) {
       // Check if duplicate (race condition between /verify and webhook)
-      if (txError?.code === 'P2002') {
+      if (isDuplicatePaymentError(txError)) {
         console.log(`Webhook: duplicate detected for ${paymentId} — already processed`);
         return NextResponse.json({ received: true });
       }

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
-import { createOrRenewSubscription } from '@/lib/subscriptionService';
+import { createOrRenewSubscription, isDuplicatePaymentError } from '@/lib/subscriptionService';
 
 // Couple plans collect Partner 2's details at checkout. Persist them into the
 // subscription notes (previously they were dropped) so the coach receives them; the
@@ -61,11 +61,14 @@ export async function POST(request: NextRequest) {
     }
 
     // --- 1. Idempotency: prevent duplicate processing ---
-    const alreadyProcessed = await prisma.userSubscription.findFirst({
-      where: { razorpayPaymentId: razorpay_payment_id },
-      include: { plan: true },
-    });
-    if (alreadyProcessed) {
+    // The payment.captured webhook processes the same payment, often concurrently. Whichever
+    // side loses the race returns this cached success instead of creating a second subscription.
+    const alreadyProcessedResponse = async () => {
+      const existing = await prisma.userSubscription.findFirst({
+        where: { razorpayPaymentId: razorpay_payment_id },
+        include: { plan: true },
+      });
+      if (!existing) return null;
       console.log(`Payment ${razorpay_payment_id} already processed — returning cached success`);
       return NextResponse.json({
         success: true,
@@ -73,16 +76,18 @@ export async function POST(request: NextRequest) {
         receipt: {
           paymentId: razorpay_payment_id,
           orderId: razorpay_order_id,
-          planName: alreadyProcessed.plan.name,
-          paidAmount: Number(alreadyProcessed.paidAmount ?? alreadyProcessed.plan.price),
+          planName: existing.plan.name,
+          paidAmount: Number(existing.paidAmount ?? existing.plan.price),
           customerName: name || email.split('@')[0],
           customerEmail: email,
-          goal: alreadyProcessed.customerGoal,
-          startDate: alreadyProcessed.startDate.toISOString(),
-          endDate: alreadyProcessed.endDate.toISOString(),
+          goal: existing.customerGoal,
+          startDate: existing.startDate.toISOString(),
+          endDate: existing.endDate.toISOString(),
         },
       });
-    }
+    };
+    const cached = await alreadyProcessedResponse();
+    if (cached) return cached;
 
     // --- 2. Verify Razorpay signature (timing-safe) ---
     const expectedSignature = crypto
@@ -145,51 +150,60 @@ export async function POST(request: NextRequest) {
     let isNewUser = false;
     let plainPassword: string | null = null;
 
-    const result = await prisma.$transaction(async (tx) => {
-      // Find or create user
-      let user = await tx.user.findUnique({ where: { email } });
+    let result;
+    try {
+      result = await prisma.$transaction(async (tx) => {
+        // Find or create user
+        let user = await tx.user.findUnique({ where: { email } });
 
-      if (!user) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        plainPassword = Array.from({ length: 10 }, () =>
-          chars.charAt(Math.floor(Math.random() * chars.length))
-        ).join('');
-        const hashedPass = await hashPassword(plainPassword);
-        user = await tx.user.create({
-          data: {
-            name: name || email.split('@')[0],
-            email,
-            phone: whatsapp || null,
-            password: hashedPass,
-            role: 'user',
+        if (!user) {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+          plainPassword = Array.from({ length: 10 }, () =>
+            chars.charAt(Math.floor(Math.random() * chars.length))
+          ).join('');
+          const hashedPass = await hashPassword(plainPassword);
+          user = await tx.user.create({
+            data: {
+              name: name || email.split('@')[0],
+              email,
+              phone: whatsapp || null,
+              password: hashedPass,
+              role: 'user',
+            },
+          });
+          isNewUser = true;
+        }
+
+        // Create/renew with the shared policy: calendar stacking (no paid time lost on early
+        // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
+        // Add any July-sale bonus days to the purchased plan length.
+        const bonusDays = getSaleBonusDays(plan.name, plan.duration);
+        const { subscription } = await createOrRenewSubscription(
+          {
+            userId: user.id,
+            plan,
+            duration: plan.duration + bonusDays,
+            paymentMode: 'razorpay',
+            transactionId: razorpay_payment_id,
+            razorpayOrderId: razorpay_order_id,
+            razorpayPaymentId: razorpay_payment_id,
+            razorpaySignature: razorpay_signature,
+            paidAmount,
+            customerGoal: goal || null,
+            customerNotes: buildNotesWithPartner2(notes, { partner2Name, partner2Whatsapp, partner2Email, partner2Goal }),
           },
-        });
-        isNewUser = true;
+          tx
+        );
+
+        return { user, subscription };
+      });
+    } catch (txError: any) {
+      if (isDuplicatePaymentError(txError)) {
+        const cachedAfterRace = await alreadyProcessedResponse();
+        if (cachedAfterRace) return cachedAfterRace;
       }
-
-      // Create/renew with the shared policy: calendar stacking (no paid time lost on early
-      // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
-      // Add any July-sale bonus days to the purchased plan length.
-      const bonusDays = getSaleBonusDays(plan.name, plan.duration);
-      const { subscription } = await createOrRenewSubscription(
-        {
-          userId: user.id,
-          plan,
-          duration: plan.duration + bonusDays,
-          paymentMode: 'razorpay',
-          transactionId: razorpay_payment_id,
-          razorpayOrderId: razorpay_order_id,
-          razorpayPaymentId: razorpay_payment_id,
-          razorpaySignature: razorpay_signature,
-          paidAmount,
-          customerGoal: goal || null,
-          customerNotes: buildNotesWithPartner2(notes, { partner2Name, partner2Whatsapp, partner2Email, partner2Goal }),
-        },
-        tx
-      );
-
-      return { user, subscription };
-    });
+      throw txError;
+    }
 
     const startDate = new Date(result.subscription.startDate);
     const endDate = new Date(result.subscription.endDate);
