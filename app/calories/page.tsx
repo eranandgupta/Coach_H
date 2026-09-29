@@ -6,6 +6,7 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import { FOODS, FOOD_CATEGORIES } from '@/lib/foods';
 import { caloriesFor } from '@/lib/nutrition';
 import { CALORIES_BASE, categoryAnchor, primaryServing } from '@/lib/foodPages';
+import { FOOD_LISTS } from '@/lib/foodLists';
 
 const title = 'Food Calorie Chart: Calories in Indian Food';
 const description = `Calories, protein, carbs and fat for ${FOODS.length}+ Indian and everyday foods: dal, roti, rice, paneer, chicken, sweets, street food, fruits and drinks. Per katori, roti, cup and 100 g.`;
@@ -88,7 +89,18 @@ export default function CaloriesIndexPage() {
             <Link href="/calorie-calculator" className="text-brand-blue hover:underline">calorie calculator</Link>.
           </p>
 
+          {/* Ranked lists — "high protein vegetarian foods" style queries */}
+          <h2 className="mt-8 text-lg font-bold text-white">Popular food lists</h2>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+            {FOOD_LISTS.map((l) => (
+              <Link key={l.slug} href={`/calories/lists/${l.slug}`} className="rounded-lg border border-brand-blue/20 bg-brand-blue/5 px-4 py-2.5 text-sm font-medium text-white hover:border-brand-blue/60">
+                {l.name}
+              </Link>
+            ))}
+          </div>
+
           {/* Category jump links */}
+          <h2 className="mt-8 text-lg font-bold text-white">Browse by category</h2>
           <div className="mt-6 flex flex-wrap gap-2">
             {groups.map((g) => (
               <a key={g.category} href={`#${categoryAnchor(g.category)}`} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-gray-300 hover:border-brand-blue/50 hover:text-white">

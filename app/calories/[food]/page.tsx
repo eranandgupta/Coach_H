@@ -22,6 +22,7 @@ import {
   primaryServing,
   similarFoods,
 } from '@/lib/foodPages';
+import { listsForFood } from '@/lib/foodLists';
 
 const WHATSAPP_CONSULT =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20a%20personalised%20diet%20plan.';
@@ -78,6 +79,7 @@ export default function FoodCaloriesPage({ params }: { params: { food: string } 
   const swaps = lighterSwaps(food);
   const burn = burnMinutes(serving.kcal);
   const answer = answerSentence(food);
+  const featuredIn = listsForFood(food.slug);
 
   const nutrientRows: { label: string; unit: string; key: keyof typeof n }[] = [
     { label: 'Calories', unit: 'kcal', key: 'kcal' },
@@ -157,6 +159,18 @@ export default function FoodCaloriesPage({ params }: { params: { food: string } 
           </h1>
 
           <p id="food-answer" className="mt-4 max-w-3xl text-gray-300 md:text-lg leading-relaxed">{answer}</p>
+
+          {featuredIn.length > 0 && (
+            <p className="mt-4 text-sm text-gray-400">
+              Featured in:{' '}
+              {featuredIn.map((l, i) => (
+                <span key={l.slug}>
+                  {i > 0 && ', '}
+                  <Link href={`/calories/lists/${l.slug}`} className="text-brand-blue hover:underline">{l.name}</Link>
+                </span>
+              ))}
+            </p>
+          )}
 
           {tags.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">

@@ -5,6 +5,7 @@ import { getAllCountrySlugs } from '@/lib/countries';
 import { getAllAudienceSlugs } from '@/lib/audiences';
 import { getAllGoalSlugs } from '@/lib/ptGoals';
 import { getAllFoodSlugs } from '@/lib/foodPages';
+import { getAllListSlugs } from '@/lib/foodLists';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -298,6 +299,12 @@ function getFoodCaloriePages(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
     { url: `${baseUrl}/calories`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    ...getAllListSlugs().map((slug) => ({
+      url: `${baseUrl}/calories/lists/${slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.75,
+    })),
     ...getAllFoodSlugs().map((slug) => ({
       url: `${baseUrl}/calories/${slug}`,
       lastModified: now,
