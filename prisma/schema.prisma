@@ -65,7 +65,7 @@ model UserSubscription {
   paymentMode       String?
   transactionId     String?
   razorpayOrderId   String?
-  razorpayPaymentId String?
+  razorpayPaymentId String?         @unique // one subscription per payment (verify + webhook race)
   customerGoal      String?
   customerNotes     String?           @db.Text
   paidAmount        Decimal?          @db.Decimal(10, 2)
