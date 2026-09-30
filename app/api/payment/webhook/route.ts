@@ -20,8 +20,8 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
-import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
-import { createOrRenewSubscription, isDuplicatePaymentError } from '@/lib/subscriptionService';
+import { sendCredentialsEmail, sendPaymentReceiptEmail, sendPaymentFulfilmentAlert } from '@/lib/email';
+import { createOrRenewSubscription, isDuplicatePaymentError, runPaymentTransaction } from '@/lib/subscriptionService';
 import { getSaleBonusDays } from '@/lib/sale';
 
 export const dynamic = 'force-dynamic';
@@ -113,8 +113,14 @@ export async function POST(request: NextRequest) {
     const plan = await prisma.subscriptionPlan.findUnique({
       where: { id: planId },
     });
-    if (!plan || !plan.isActive) {
-      console.error('Webhook: invalid plan', planId);
+    // The customer has ALREADY paid, and create-order rejects inactive plans — so honour the
+    // plan even if it was deactivated after checkout. Only a deleted plan is unrecoverable here.
+    if (!plan) {
+      console.error('Webhook: plan not found', planId);
+      await sendPaymentFulfilmentAlert({
+        source: 'webhook', paymentId, orderId, customerEmail: emailToUse, customerName,
+        planId, amount: paidAmountPaise / 100, error: `Plan ${planId} not found`,
+      });
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
@@ -127,16 +133,23 @@ export async function POST(request: NextRequest) {
     let plainPassword: string | null = null;
 
     // --- 7. Atomic: find/create user + subscription ---
+    // bcrypt is slow (~100ms+ on Vercel) — do it BEFORE the transaction so it doesn't eat
+    // into the interactive-transaction timeout (a 5s timeout here rolled back paid signups).
+    let hashedPass: string | null = null;
+    if (!(await prisma.user.findUnique({ where: { email: emailToUse }, select: { id: true } }))) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      plainPassword = Array.from({ length: 10 }, () =>
+        chars.charAt(Math.floor(Math.random() * chars.length))
+      ).join('');
+      hashedPass = await hashPassword(plainPassword);
+    }
+
     try {
-      await prisma.$transaction(async (tx) => {
+      await runPaymentTransaction(async (tx) => {
         let user = await tx.user.findUnique({ where: { email: emailToUse } });
 
         if (!user) {
-          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-          plainPassword = Array.from({ length: 10 }, () =>
-            chars.charAt(Math.floor(Math.random() * chars.length))
-          ).join('');
-          const hashedPass = await hashPassword(plainPassword);
+          if (!hashedPass) throw new Error('User created concurrently — retry');
           user = await tx.user.create({
             data: {
               name: customerName,
@@ -176,7 +189,13 @@ export async function POST(request: NextRequest) {
         console.log(`Webhook: duplicate detected for ${paymentId} — already processed`);
         return NextResponse.json({ received: true });
       }
-      throw txError;
+      console.error('Webhook: fulfilment failed after retries:', txError);
+      await sendPaymentFulfilmentAlert({
+        source: 'webhook', paymentId, orderId, customerEmail: emailToUse, customerName,
+        planId, amount: paidAmount, error: String(txError?.message || txError),
+      });
+      // 500 makes Razorpay retry the webhook later (it retries for ~24h).
+      return NextResponse.json({ error: 'Fulfilment failed' }, { status: 500 });
     }
 
     // --- 8. Send emails (non-fatal) ---

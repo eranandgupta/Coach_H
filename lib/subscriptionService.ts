@@ -160,3 +160,31 @@ export async function createOrRenewSubscription(
 
   return { subscription, previousSub, bonusSessions, startDate, endDate };
 }
+
+// Transient Prisma errors worth retrying: P2028 (interactive transaction timed out / closed),
+// P2034 (write conflict / deadlock), P1001/P1002/P1017 (DB unreachable / connection dropped).
+const RETRYABLE_TX_CODES = new Set(['P2028', 'P2034', 'P1001', 'P1002', 'P1017']);
+
+/**
+ * Runs a payment-fulfilment transaction with a generous timeout and retries transient
+ * failures. A paid customer must never be lost to a slow DB round trip — the transaction
+ * rolls back cleanly on failure, so re-running it is safe. Duplicate-payment errors are
+ * NOT retried (they mean the other route already fulfilled the payment).
+ */
+export async function runPaymentTransaction<T>(
+  fn: (tx: any) => Promise<T>,
+  attempts = 3
+): Promise<T> {
+  let lastError: any;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await prisma.$transaction(fn, { maxWait: 10000, timeout: 15000 });
+    } catch (e: any) {
+      lastError = e;
+      if (isDuplicatePaymentError(e) || !RETRYABLE_TX_CODES.has(e?.code) || i === attempts) throw e;
+      console.warn(`Payment transaction attempt ${i} failed (${e.code}) — retrying`);
+      await new Promise((r) => setTimeout(r, 500 * i));
+    }
+  }
+  throw lastError;
+}

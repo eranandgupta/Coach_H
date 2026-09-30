@@ -3,8 +3,8 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { razorpay } from '@/lib/razorpay';
 import { hashPassword } from '@/lib/auth';
-import { sendCredentialsEmail, sendPaymentReceiptEmail } from '@/lib/email';
-import { createOrRenewSubscription, isDuplicatePaymentError } from '@/lib/subscriptionService';
+import { sendCredentialsEmail, sendPaymentReceiptEmail, sendPaymentFulfilmentAlert } from '@/lib/email';
+import { createOrRenewSubscription, isDuplicatePaymentError, runPaymentTransaction } from '@/lib/subscriptionService';
 
 // Couple plans collect Partner 2's details at checkout. Persist them into the
 // subscription notes (previously they were dropped) so the coach receives them; the
@@ -134,8 +134,10 @@ export async function POST(request: NextRequest) {
       where: { id: Number(planId) },
     });
 
-    if (!plan || !plan.isActive) {
-      return NextResponse.json({ error: 'Invalid or inactive plan' }, { status: 400 });
+    // Signature + Razorpay API confirm the money is captured, and create-order only accepts active
+    // plans — so honour the plan even if it was deactivated after checkout.
+    if (!plan) {
+      return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
     // Warn if amount doesn't match (could be promo discount — log but don't block)
@@ -151,17 +153,24 @@ export async function POST(request: NextRequest) {
     let plainPassword: string | null = null;
 
     let result;
+    // bcrypt is slow (~100ms+ on Vercel) — do it BEFORE the transaction so it doesn't eat
+    // into the interactive-transaction timeout (a 5s timeout here rolled back paid signups).
+    let hashedPass: string | null = null;
+    if (!(await prisma.user.findUnique({ where: { email: email }, select: { id: true } }))) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      plainPassword = Array.from({ length: 10 }, () =>
+        chars.charAt(Math.floor(Math.random() * chars.length))
+      ).join('');
+      hashedPass = await hashPassword(plainPassword);
+    }
+
     try {
-      result = await prisma.$transaction(async (tx) => {
+      result = await runPaymentTransaction(async (tx) => {
         // Find or create user
         let user = await tx.user.findUnique({ where: { email } });
 
         if (!user) {
-          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-          plainPassword = Array.from({ length: 10 }, () =>
-            chars.charAt(Math.floor(Math.random() * chars.length))
-          ).join('');
-          const hashedPass = await hashPassword(plainPassword);
+          if (!hashedPass) throw new Error('User created concurrently — retry');
           user = await tx.user.create({
             data: {
               name: name || email.split('@')[0],
@@ -202,7 +211,17 @@ export async function POST(request: NextRequest) {
         const cachedAfterRace = await alreadyProcessedResponse();
         if (cachedAfterRace) return cachedAfterRace;
       }
-      throw txError;
+      // Payment is captured but we couldn't activate it. The webhook will retry; alert the coach too.
+      console.error('Payment verify: fulfilment failed after retries:', txError);
+      await sendPaymentFulfilmentAlert({
+        source: 'verify', paymentId: razorpay_payment_id, orderId: razorpay_order_id,
+        customerEmail: email, customerName: name, planId, amount: paidAmount,
+        error: String(txError?.message || txError),
+      });
+      return NextResponse.json(
+        { error: 'Your payment was received, but activation is delayed. You will get your login by email shortly — no need to pay again.' },
+        { status: 500 }
+      );
     }
 
     const startDate = new Date(result.subscription.startDate);

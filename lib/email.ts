@@ -361,3 +361,40 @@ export async function sendMembershipExpiryReminder(data: {
 
   await transporter.sendMail(mailOptions);
 }
+
+// Alert the coach when a CAPTURED payment could not be turned into an account/subscription,
+// so no paying client is silently left without access. Best-effort: never throws.
+export async function sendPaymentFulfilmentAlert(data: {
+  source: 'verify' | 'webhook';
+  paymentId: string;
+  orderId: string;
+  customerEmail: string;
+  customerName?: string | null;
+  planId?: number | string | null;
+  amount?: number | null;
+  error: string;
+}) {
+  try {
+    const to = process.env.ADMIN_ALERT_EMAIL || process.env.SMTP_USER || 'info@coachhimanshu.com';
+    await createTransporter().sendMail({
+      from: `"Coach Himanshu Website" <${process.env.SMTP_USER || 'info@coachhimanshu.com'}>`,
+      to,
+      subject: `⚠️ PAID but NOT activated — ${data.customerEmail}`,
+      text: [
+        'A Razorpay payment was captured but the account/subscription could not be created.',
+        'Razorpay will retry the webhook automatically; if the client still has no access,',
+        'add them manually from Admin → Clients.',
+        '',
+        `Source:     ${data.source}`,
+        `Payment ID: ${data.paymentId}`,
+        `Order ID:   ${data.orderId}`,
+        `Customer:   ${data.customerName || '-'} <${data.customerEmail}>`,
+        `Plan ID:    ${data.planId ?? '-'}`,
+        `Amount:     ${data.amount != null ? `₹${data.amount}` : '-'}`,
+        `Error:      ${data.error}`,
+      ].join('\n'),
+    });
+  } catch (err) {
+    console.error('Payment fulfilment alert email failed:', err);
+  }
+}
