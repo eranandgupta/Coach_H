@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/middleware';
+import { evaluatePromoCode } from '@/lib/promo';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,112 +24,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find promo code
-    const promoCode = await prisma.promoCode.findUnique({
-      where: { code: code.toUpperCase() },
+    const authUser = await getAuthUser(request);
+    const result = await evaluatePromoCode({
+      code,
+      cartTotal,
+      planName,
+      userId: authUser?.userId ?? null,
     });
 
-    if (!promoCode) {
-      return NextResponse.json(
-        { error: 'Invalid promo code' },
-        { status: 404 }
-      );
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: result.status });
     }
-
-    // Check if promo code is active
-    if (!promoCode.isActive) {
-      return NextResponse.json(
-        { error: 'This promo code is no longer active' },
-        { status: 400 }
-      );
-    }
-
-    // Check if promo code has expired
-    if (promoCode.expiryDate && new Date(promoCode.expiryDate) < new Date()) {
-      return NextResponse.json(
-        { error: 'This promo code has expired' },
-        { status: 400 }
-      );
-    }
-
-    // Check if promo code has reached max uses
-    if (promoCode.maxUses && promoCode.currentUses >= promoCode.maxUses) {
-      return NextResponse.json(
-        { error: 'This promo code has reached its usage limit' },
-        { status: 400 }
-      );
-    }
-
-    // Check minimum purchase amount
-    if (promoCode.minPurchaseAmount && cartTotal < Number(promoCode.minPurchaseAmount)) {
-      return NextResponse.json(
-        {
-          error: `Minimum purchase amount of ₹${promoCode.minPurchaseAmount} required`
-        },
-        { status: 400 }
-      );
-    }
-
-    // Check if promo code is targeted to a specific user
-    if (promoCode.targetUserId) {
-      const authUser = await getAuthUser(request);
-      if (!authUser || authUser.userId !== promoCode.targetUserId) {
-        return NextResponse.json(
-          { error: 'This promo code is not available for your account' },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Check if promo code is applicable to the selected plan
-    if (promoCode.applicablePlans && planName) {
-      try {
-        const applicablePlans = JSON.parse(promoCode.applicablePlans);
-        if (Array.isArray(applicablePlans) && applicablePlans.length > 0) {
-          const isApplicable = applicablePlans.some(
-            (plan: string) => plan.toLowerCase() === planName.toLowerCase()
-          );
-          if (!isApplicable) {
-            return NextResponse.json(
-              {
-                error: `This promo code is only valid for: ${applicablePlans.join(', ')}`
-              },
-              { status: 400 }
-            );
-          }
-        }
-      } catch (error) {
-        console.error('Error parsing applicablePlans:', error);
-        // If parsing fails, allow the promo code to be used
-      }
-    }
-
-    // Calculate discount
-    let discountAmount = 0;
-    const discountValue = Number(promoCode.discountValue);
-
-    if (promoCode.discountType === 'percentage') {
-      discountAmount = (cartTotal * discountValue) / 100;
-      // Cap discount at cart total
-      discountAmount = Math.min(discountAmount, cartTotal);
-    } else if (promoCode.discountType === 'fixed') {
-      discountAmount = discountValue;
-      // Cap discount at cart total
-      discountAmount = Math.min(discountAmount, cartTotal);
-    }
-
-    const finalAmount = cartTotal - discountAmount;
 
     return NextResponse.json({
       success: true,
-      promoCode: {
-        code: promoCode.code,
-        discountType: promoCode.discountType,
-        discountValue: discountValue,
-        description: promoCode.description,
-      },
-      discountAmount: Math.round(discountAmount * 100) / 100, // Round to 2 decimals
-      finalAmount: Math.round(finalAmount * 100) / 100,
+      promoCode: result.promoCode,
+      discountAmount: result.discountAmount,
+      finalAmount: result.finalAmount,
     }, { status: 200 });
 
   } catch (error) {

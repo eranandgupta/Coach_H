@@ -58,3 +58,32 @@ export function getSaleBonusDays(
   if (planDurationDays >= 150) return 5;  // ~6 months
   return 0;
 }
+
+/**
+ * Highest automatic "% OFF" any plan gets during a storefront sale (see getSalePercent in
+ * app/page.tsx — Elite 36/72 sessions at 20%). Used by /api/payment/create-order as the
+ * lowest price it will accept, so a tampered browser can't charge less than a real sale price.
+ * Raise this if a future sale offers a bigger discount.
+ */
+export const MAX_AUTO_SALE_PERCENT = 20;
+
+/**
+ * True when the storefront shows automatic strikethrough sale prices — mirrors the date
+ * windows in app/page.tsx's `activeSale` (June 1–7, June 21–30, July 10–31; the August
+ * Independence sale is coupon-only). The storefront uses the visitor's LOCAL date, so we
+ * accept a date that is inside a window anywhere from UTC-12 to UTC+14.
+ */
+export function isAutoSaleDiscountActive(now: Date = new Date()): boolean {
+  if (!SALES_ENABLED) return false;
+  const HOUR = 60 * 60 * 1000;
+  return [-12, 0, 14].some((offsetHours) => {
+    const local = new Date(now.getTime() + offsetHours * HOUR);
+    const month = local.getUTCMonth();
+    const day = local.getUTCDate();
+    return (
+      (month === 5 && day >= 1 && day <= 7) ||
+      (month === 5 && day >= 21 && day <= 30) ||
+      (month === 6 && day >= 10 && day <= 31)
+    );
+  });
+}

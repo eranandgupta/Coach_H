@@ -308,6 +308,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: getFinalTotal(),
+          promoCode: appliedPromo?.promoCode?.code || null,
           planId: plan.id,
           planName: plan.name,
           name: formData.name,
@@ -315,7 +316,10 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
         }),
       });
 
-      if (!orderRes.ok) throw new Error('Failed to create payment order');
+      if (!orderRes.ok) {
+        const errData = await orderRes.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to create payment order');
+      }
 
       const orderData = await orderRes.json();
 
@@ -391,9 +395,9 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
       });
       rzp.open();
       setIsProcessingPayment(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Payment error:', error);
-      alert('Failed to initiate payment. Please try again.');
+      alert(error?.message || 'Failed to initiate payment. Please try again.');
       setIsProcessingPayment(false);
     }
   };
