@@ -7,9 +7,19 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { getGoalBySlug, getAllGoalSlugs, PT_GOALS } from '@/lib/ptGoals';
 import { CITIES } from '@/lib/cities';
+import { getToolBySlug } from '@/lib/fitnessTools';
 
 const WHATSAPP_1ON1 =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20live%201-on-1%20personal%20training.%20Please%20help%20me%20pick%20a%20plan.';
+
+// The free calculator most useful for each goal (falls back to the /tools hub).
+const GOAL_TOOL: Record<string, string> = {
+  'weight-loss': 'calorie-deficit-calculator',
+  'muscle-gain': 'protein-calculator',
+  'weight-gain': 'tdee-calculator',
+  beginners: 'bmi-calculator',
+  toning: 'body-fat-calculator',
+};
 
 export function generateStaticParams() {
   return getAllGoalSlugs().map((goal) => ({ goal }));
@@ -40,6 +50,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
 
   const elitePlans = getElitePlans();
   const siblings = PT_GOALS.filter((g) => g.slug !== goal.slug);
+  const goalTool = getToolBySlug(GOAL_TOOL[goal.slug] ?? '');
   const url = `https://coachhimanshu.com/online-personal-trainer/for/${goal.slug}`;
   const { low, high, count } = getEliteOfferRange();
 
@@ -240,6 +251,12 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
             ))}
             <Link href="/online-personal-trainer" className="text-brand-gold hover:text-white transition-colors">All 1:1 Coaching →</Link>
           </div>
+          <p className="mt-4 text-sm text-gray-500">
+            Free tool:{' '}
+            <Link href={goalTool ? `/tools/${goalTool.slug}` : '/tools'} className="text-brand-blue hover:text-brand-gold transition-colors">
+              {goalTool ? goalTool.name : 'Fitness Calculators'}
+            </Link>
+          </p>
         </div>
       </section>
 

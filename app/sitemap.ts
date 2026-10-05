@@ -6,6 +6,7 @@ import { getAllAudienceSlugs } from '@/lib/audiences';
 import { getAllGoalSlugs } from '@/lib/ptGoals';
 import { getAllFoodSlugs } from '@/lib/foodPages';
 import { getAllListSlugs } from '@/lib/foodLists';
+import { getAllToolSlugs } from '@/lib/fitnessTools';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -17,7 +18,7 @@ const baseUrl = 'https://coachhimanshu.com';
 //   /sitemap/1.xml  → Blog content (listing + all 64+ articles)
 //   /sitemap/2.xml  → Location pages (15 city-specific SEO pages)
 //   /sitemap/3.xml  → Legal & policy pages
-//   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS, llms.txt)
+//   /sitemap/4.xml  → Resources & feeds (calculators, knowledge, FAQ, RSS)
 //   /sitemap/7.xml  → Food calorie pages (/calories + one page per food)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -220,6 +221,19 @@ function getResourcePages(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/tools`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    // Free fitness calculators (BMI, TDEE, protein, macros…) — one page per tool
+    ...getAllToolSlugs().map((slug) => ({
+      url: `${baseUrl}/tools/${slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
     {
       url: `${baseUrl}/knowledge`,
       lastModified: now,

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
+import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 
 // Dynamic /llms.txt — the short AI-discovery summary. Pricing and the blog
 // count are GENERATED from the same sources the site uses (lib/plans.ts and the
@@ -121,6 +122,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - [Calorie Calculator](https://coachhimanshu.com/calorie-calculator): Free Indian food calorie + macro calculator for single foods or full meals
 - [Food Calorie Chart](https://coachhimanshu.com/calories): Calories, protein, carbs, fat and micronutrients for 850+ Indian and everyday foods, with one page per food at /calories/{food} (for example [roti](https://coachhimanshu.com/calories/roti-chapati) and [dal tadka](https://coachhimanshu.com/calories/dal-tadka)). Data from INDB, IFCT 2017 (NIN-ICMR) and USDA
 - Ranked food lists: [High-protein vegetarian foods](https://coachhimanshu.com/calories/lists/high-protein-vegetarian-foods), [High-protein non-veg foods](https://coachhimanshu.com/calories/lists/high-protein-non-veg-foods), [High-fibre foods](https://coachhimanshu.com/calories/lists/high-fibre-foods), [Iron-rich foods](https://coachhimanshu.com/calories/lists/iron-rich-foods), [Calcium-rich foods](https://coachhimanshu.com/calories/lists/calcium-rich-foods), [Vitamin C-rich foods](https://coachhimanshu.com/calories/lists/vitamin-c-rich-foods), [Low-calorie Indian snacks](https://coachhimanshu.com/calories/lists/low-calorie-indian-snacks), [Low-calorie Indian sweets](https://coachhimanshu.com/calories/lists/low-calorie-indian-sweets), [Low-calorie drinks](https://coachhimanshu.com/calories/lists/low-calorie-drinks), [Low-calorie vegetables](https://coachhimanshu.com/calories/lists/low-calorie-vegetables), [Low-calorie fruits](https://coachhimanshu.com/calories/lists/low-calorie-fruits)
+- [Free Fitness Calculators](https://coachhimanshu.com/tools): ${FITNESS_TOOLS.map((t) => `[${t.name}](${TOOLS_BASE}/${t.slug})`).join(', ')}. Each shows its formula, a worked example and sources; BMI is read against Asian Indian cut-offs (overweight from 23, obese from 25) as well as WHO cut-offs
 - [FAQ](https://coachhimanshu.com/faq): Common questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Fitness education
 - [Fit Bharat Mission](https://coachhimanshu.com/fit-bharat-mission): Community initiative

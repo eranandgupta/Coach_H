@@ -149,7 +149,7 @@ Allow: /
 #   /sitemap/1.xml  → Blog content (64+ articles)
 #   /sitemap/2.xml  → Location pages (Indian cities)
 #   /sitemap/3.xml  → Legal & policy pages
-#   /sitemap/4.xml  → Resources & feeds (knowledge, FAQ, RSS)
+#   /sitemap/4.xml  → Resources & feeds (calculators at /tools, knowledge, FAQ, RSS)
 #   /sitemap/5.xml  → International pages (online coaching by country)
 #   /sitemap/6.xml  → Live 1:1 personal-trainer city pages
 #   /sitemap/7.xml  → Food calorie pages (/calories + one per food)
@@ -164,6 +164,7 @@ Sitemap: https://coachhimanshu.com/sitemap.xml
 # LLM full detail: https://coachhimanshu.com/llms-full.txt
 # RSS feed:        https://coachhimanshu.com/feed.xml
 # Knowledge base:  https://coachhimanshu.com/knowledge
+# Calculators:     https://coachhimanshu.com/tools
 # FAQ:             https://coachhimanshu.com/faq
 
 # Crawl-delay (polite crawling)

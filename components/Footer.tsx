@@ -116,6 +116,14 @@ export default function Footer() {
               </li>
               <li>
                 <a
+                  href="/tools"
+                  className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
+                >
+                  Fitness Calculators
+                </a>
+              </li>
+              <li>
+                <a
                   href="/calories"
                   className="text-gray-400 hover:text-brand-blue transition-colors text-xs md:text-sm"
                 >

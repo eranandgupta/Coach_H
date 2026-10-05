@@ -75,6 +75,9 @@ export default function CalorieCalculatorPage() {
           <p className="mt-2 text-sm text-gray-400">
             Quick reference for a standard serving. Use the calculator above for other quantities, or browse the{' '}
             <Link href="/calories" className="text-brand-blue hover:underline">full food calorie chart</Link> ({FOODS.length} foods).
+            Not sure how many calories you need in a day? Work it out with the{' '}
+            <Link href="/tools/tdee-calculator" className="text-brand-blue hover:underline">TDEE calculator</Link> or the{' '}
+            <Link href="/tools/calorie-deficit-calculator" className="text-brand-blue hover:underline">calorie deficit calculator</Link>.
           </p>
           <div className="mt-5 overflow-x-auto rounded-xl border border-white/10">
             <table className="w-full text-sm">

@@ -248,7 +248,9 @@ export default function FoodCaloriesPage({ params }: { params: { food: string } 
           <p className="mt-3 text-sm text-gray-400">
             Different quantity or a full meal?{' '}
             <Link href="/calorie-calculator" className="text-brand-blue hover:underline">Use the calorie calculator</Link>{' '}
-            to add {food.name} alongside other foods.
+            to add {food.name} alongside other foods. To see how it fits your day, find your{' '}
+            <Link href="/tools/tdee-calculator" className="text-brand-blue hover:underline">maintenance calories</Link> and{' '}
+            <Link href="/tools/protein-calculator" className="text-brand-blue hover:underline">protein target</Link>.
           </p>
         </div>
       </section>

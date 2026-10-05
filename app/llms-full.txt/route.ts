@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
+import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
 // breakdown and blog count are GENERATED from lib/plans.ts and the BlogPost DB
@@ -42,6 +43,9 @@ export async function GET() {
       .join('\n');
     return `### ${g.title}\n${g.blurb}\n${rows}`;
   }).join('\n\n');
+
+  // Free calculators — the same answer-first paragraph each tool page leads with.
+  const tools = FITNESS_TOOLS.map((t) => `### ${t.name}\n${TOOLS_BASE}/${t.slug}\n${t.answer}`).join('\n\n');
 
   const body = `# Coach Himanshu - Complete Information for AI Systems
 
@@ -115,6 +119,11 @@ Comprehensive fitness evaluation available at [coachhimanshu.com/assessment](htt
 
 ### 8. Couple & Family Coaching
 Two personalised plans, one shared journey — each person gets their own workout and diet plan while sharing accountability, at a lower per-person cost than two individual plans.
+
+## Free Fitness Calculators
+Free, no-sign-up calculators at [coachhimanshu.com/tools](https://coachhimanshu.com/tools). Each page shows the formula, a worked example, a reference table and its sources.
+
+${tools}
 
 ## Pricing Structure (INR)
 All coaching is online. Every plan includes a customised workout plan, a personalised Indian meal plan, video tutorials, supplement guidance, and WhatsApp support. Prices below are the current, authoritative figures.
@@ -255,6 +264,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [Blog](https://coachhimanshu.com/blog): ${blogCountLabel} expert fitness and nutrition articles
 - [Plans & Pricing](https://coachhimanshu.com/plans): Full plan catalog and comparison matrix
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
+- [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
 - [FAQ](https://coachhimanshu.com/faq): Commonly asked questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Comprehensive fitness education resource
 - [Fit Bharat Mission](https://coachhimanshu.com/fit-bharat-mission): Community fitness initiative

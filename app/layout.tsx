@@ -201,6 +201,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
+              "@id": "https://coachhimanshu.com/#website",
               "name": "Coach Himanshu",
               "alternateName": "Coach H Fitness",
               "url": "https://coachhimanshu.com",

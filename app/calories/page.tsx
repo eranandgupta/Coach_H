@@ -86,7 +86,9 @@ export default function CaloriesIndexPage() {
             Calories and macros for {FOODS.length} foods, measured per household serving (katori, roti, cup or glass) and
             per 100 g. Tap any food for its full nutrition facts, lighter swaps and a coach&apos;s take on weight loss and
             muscle gain. To total a whole meal, use the{' '}
-            <Link href="/calorie-calculator" className="text-brand-blue hover:underline">calorie calculator</Link>.
+            <Link href="/calorie-calculator" className="text-brand-blue hover:underline">calorie calculator</Link>. To find
+            your own daily calorie and protein targets, use the{' '}
+            <Link href="/tools" className="text-brand-blue hover:underline">free fitness calculators</Link>.
           </p>
 
           {/* Ranked lists — "high protein vegetarian foods" style queries */}
