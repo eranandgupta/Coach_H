@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getCountryBySlug, getAllCountrySlugs } from '@/lib/countries';
+import { getCountryBySlug, getAllCountrySlugs, countryHreflangs } from '@/lib/countries';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -14,11 +14,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const c = getCountryBySlug(params.country);
   if (!c) return { title: 'Country Not Found' };
 
-  const title = `Online Indian Fitness Coach in ${c.name} | Coach Himanshu`;
+  const pageTitle = `Online Indian Fitness Coach in ${c.name}`; // root template appends "| Coach Himanshu"
+  const title = `${pageTitle} | Coach Himanshu`; // used for OG/Twitter, which the template does not touch
   const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,299/month (≈ ${c.approxStart}), international cards accepted.`;
 
   return {
-    title,
+    title: pageTitle,
     description,
     keywords: [
       `online fitness coach ${c.country}`,
@@ -41,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     alternates: {
       canonical: `https://coachhimanshu.com/online-fitness-coach/${c.slug}`,
+      languages: countryHreflangs(),
     },
   };
 }

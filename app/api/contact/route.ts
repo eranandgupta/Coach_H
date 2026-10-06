@@ -5,7 +5,12 @@ import { sendContactFormEmail } from '@/lib/email';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, subject, message } = body;
+    const { name, email, phone, subject, message, website } = body;
+
+    // Honeypot: the landing-page form has a hidden "website" field that only bots fill in.
+    if (website) {
+      return NextResponse.json({ success: true });
+    }
 
     // Validate required fields
     if (!name || !email || !subject || !message) {

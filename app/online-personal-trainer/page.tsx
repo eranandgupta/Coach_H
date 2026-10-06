@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import ConsultationForm from '@/components/ConsultationForm';
 import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { PT_COMPARISON, PT_FAQS } from '@/lib/personalTraining';
 import { CITIES } from '@/lib/cities';
@@ -11,7 +12,7 @@ import { PT_GOALS } from '@/lib/ptGoals';
 const PAGE_URL = 'https://coachhimanshu.com/online-personal-trainer';
 
 export const metadata: Metadata = {
-  title: 'Online Personal Trainer — Live 1-on-1 Training | Coach Himanshu',
+  title: 'Online Personal Trainer — Live 1-on-1 Training',
   description:
     'Train live 1-on-1 with Coach Himanshu, a NASM-certified online personal trainer. Real-time form correction, personalised Indian diet plan, sessions on your schedule from anywhere. Packages from ₹7,999.',
   keywords: [
@@ -518,14 +519,7 @@ export default function OnlinePersonalTrainerPage() {
             Book a free consultation. Coach Himanshu will learn your goals and recommend the right
             1:1 package — no payment required to start.
           </p>
-          <a
-            href={WHATSAPP_1ON1}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
-          >
-            Book a Free Consultation
-          </a>
+          <ConsultationForm source="Live 1:1 online personal training" whatsappHref={WHATSAPP_1ON1} />
           <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-gray-400">
             <Link href="/plans" className="hover:text-brand-blue transition-colors">All Plans &amp; Pricing</Link>
             <Link href="/online-fitness-coach" className="hover:text-brand-blue transition-colors">Coaching for NRIs</Link>

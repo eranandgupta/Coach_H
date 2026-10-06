@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import ConsultationForm from '@/components/ConsultationForm';
 
 export async function generateStaticParams() {
   return getAllCountrySlugs().map(country => ({ country }));
@@ -260,7 +261,7 @@ export default function CountryPage({ params }: { params: { country: string } })
             <span className="text-brand-gold">{c.name}</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-8">
-            No bland "diet food" and no giving up home cooking. Your plan is built around dal, roti, sabzi,
+            No bland &ldquo;diet food&rdquo; and no giving up home cooking. Your plan is built around dal, roti, sabzi,
             paneer, curd, eggs, chicken and fish — with the right portions for fat loss or muscle gain, using
             ingredients from your local and Indian grocery stores.
           </p>
@@ -384,17 +385,24 @@ export default function CountryPage({ params }: { params: { country: string } })
           </h2>
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">
             Join 1000+ clients in India and abroad who reached their goals with Coach Himanshu.
-            Start with a free assessment — no payment required.
+            Request a free consultation below — no payment required.
           </p>
 
-          <Link
-            href="/assessment"
-            className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
-          >
-            Take Free Assessment Now
-          </Link>
+          <ConsultationForm
+            source={`Online fitness coach — ${c.country}`}
+            dialCode={c.dialCode}
+            placeName={c.name}
+            whatsappHref={`https://wa.me/917303484648?text=${encodeURIComponent(`Hi Coach Himanshu! I'm in ${c.country} and want a free consultation for online coaching.`)}`}
+          />
 
           <p className="text-gray-400 text-base mt-8">
+            Prefer to start on your own?{' '}
+            <Link href="/assessment" className="text-brand-gold hover:text-white font-semibold underline underline-offset-4 transition-colors">
+              Take the free fitness assessment →
+            </Link>
+          </p>
+
+          <p className="text-gray-400 text-base mt-4">
             Want live coaching on your timezone?{' '}
             <Link href="/online-personal-trainer" className="text-brand-gold hover:text-white font-semibold underline underline-offset-4 transition-colors">
               Explore live 1-on-1 online personal training →

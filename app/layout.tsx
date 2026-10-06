@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    alternateLocale: ['en_US', 'en_GB', 'en_CA', 'en_AU', 'en_AE', 'en_SG'],
+    alternateLocale: ['en_US', 'en_GB', 'en_CA', 'en_IE', 'en_AU', 'en_NZ', 'en_AE', 'en_SA', 'en_QA', 'en_KW', 'en_OM', 'en_BH', 'en_SG', 'en_MY', 'en_HK', 'en_JP', 'en_ZA', 'en_DE', 'en_NL', 'en_MU'],
     url: 'https://coachhimanshu.com',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach — India & Worldwide',
     description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, dedicated support, delivered online anywhere in the world. 1000+ success stories. Start from ₹1,299/month.',

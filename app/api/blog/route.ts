@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/middleware';
 import { sendPushToAllClients } from '@/lib/push';
+import { pingIndexNow } from '@/lib/indexnow';
 
 // GET - Fetch all blog posts (published for public, all for coach)
 export async function GET(request: NextRequest) {
@@ -109,6 +110,8 @@ export async function POST(request: NextRequest) {
 
     // Send push notification if blog is published
     if (published) {
+      // Tell Bing/Copilot/DuckDuckGo/Yandex about the new URL straight away.
+      pingIndexNow([`/blog/${slug}`, '/blog', '/sitemap/1.xml']);
       try {
         await sendPushToAllClients({
           title: '📰 New Blog Post',
@@ -229,6 +232,11 @@ export async function PUT(request: NextRequest) {
     });
 
     console.log(`Blog post updated: ${updatedPost.id} - ${updatedPost.slug}`);
+    if (updatedPost.published) {
+      const changed = [`/blog/${updatedPost.slug}`, '/blog', '/sitemap/1.xml'];
+      if (existingPost.slug !== updatedPost.slug) changed.push(`/blog/${existingPost.slug}`); // old URL → 404/redirect, let engines recrawl it
+      pingIndexNow(changed);
+    }
     return NextResponse.json({
       success: true,
       post: updatedPost,

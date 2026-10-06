@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: { goal: string } })
   if (!goal) return { title: 'Not Found' };
   const url = `https://coachhimanshu.com/online-personal-trainer/for/${goal.slug}`;
   return {
-    title: `${goal.metaTitle} | Coach Himanshu`,
+    title: goal.metaTitle,
     description: goal.metaDescription,
     keywords: [
       `online personal trainer for ${goal.name.toLowerCase()}`,

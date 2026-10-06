@@ -14,11 +14,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = getCityBySlug(params.city);
   if (!city) return { title: 'City Not Found' };
 
-  const title = `Best Online Fitness Coach in ${city.name} | Coach Himanshu`;
+  const pageTitle = `Best Online Fitness Coach in ${city.name}`; // root template appends "| Coach Himanshu"
+  const title = `${pageTitle} | Coach Himanshu`; // used for OG/Twitter, which the template does not touch
   const description = `Looking for a certified fitness coach in ${city.name}? Coach Himanshu provides NASM certified online personal training, custom ${city.name}-friendly meal plans, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,299/month.`;
 
   return {
-    title,
+    title: pageTitle,
     description,
     openGraph: {
       title,

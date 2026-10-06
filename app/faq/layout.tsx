@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Frequently Asked Questions | Coach Himanshu',
+  title: 'Frequently Asked Questions',
   description:
     'Find answers to common questions about online fitness coaching with Coach Himanshu. Learn about personalised workout and diet plans, pricing (recorded coaching from ₹1,299, live 1-on-1 from ₹7,999), certifications, and support.',
   openGraph: {

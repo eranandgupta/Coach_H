@@ -132,6 +132,25 @@ Allow: /
 User-agent: YouBot
 Allow: /
 
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+# IndexNow partners (Bing/Copilot, Yandex, Naver, Seznam) — key file at /12c6cce50e7201b55cdf965484ec48d2.txt
+User-agent: Yeti
+Allow: /
+
+User-agent: SeznamBot
+Allow: /
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Apple Crawlers
 # ─────────────────────────────────────────────────────────────────────────────

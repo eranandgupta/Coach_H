@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { COUNTRIES } from '@/lib/countries';
+import { COUNTRIES, countryHreflangs } from '@/lib/countries';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 
 export const metadata: Metadata = {
-  title: 'Online Indian Fitness Coach Worldwide | Coach Himanshu',
+  title: 'Online Indian Fitness Coach Worldwide',
   description: 'NASM certified online Indian fitness coach for NRIs worldwide — the USA, UK, Canada, UAE, Australia, Singapore and more. Custom Indian meal plans, timezone-friendly video coaching, 24/7 WhatsApp support. Plans from ₹1,299/month, international cards accepted.',
-  alternates: { canonical: 'https://coachhimanshu.com/online-fitness-coach' },
+  alternates: { canonical: 'https://coachhimanshu.com/online-fitness-coach', languages: countryHreflangs() },
   openGraph: {
     title: 'Online Indian Fitness Coach Worldwide | Coach Himanshu',
     description: 'NASM certified online Indian fitness coach serving NRIs across the world with custom Indian meal plans and timezone-friendly coaching.',
