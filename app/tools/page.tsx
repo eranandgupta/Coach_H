@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     'ideal weight calculator',
     'body fat calculator',
   ],
-  openGraph: { title: `${title} | Coach Himanshu`, description, url: TOOLS_BASE, type: 'website' },
+  openGraph: { title: `${title} | Coach Himanshu`, description, url: TOOLS_BASE, type: 'website', images: ['/opengraph-image'] },
   twitter: { card: 'summary_large_image', title: `${title} | Coach Himanshu`, description },
   alternates: { canonical: TOOLS_BASE },
 };

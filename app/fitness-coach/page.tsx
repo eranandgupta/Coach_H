@@ -20,6 +20,7 @@ export const metadata: Metadata = {
       'NASM certified online fitness coaching across major Indian cities. Personalized workout & meal plans, 24/7 support. 1000+ transformations.',
     url: `${baseUrl}/fitness-coach`,
     type: 'website',
+    images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',

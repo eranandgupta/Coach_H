@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
 import { BackToBlogButton, ExplorePlansButton, StickyCtaBanner } from '@/components/BlogPostCTA';
 import BlogViewTracker from '@/components/BlogViewTracker';
+import ConsultationForm from '@/components/ConsultationForm';
 
 // On-demand ISR: don't enumerate slugs at build time (that queried the DB during
 // the build and made deploys fail when the DB was unreachable / over its connection
@@ -397,6 +398,12 @@ export default async function BlogPostPage({ params }: Props) {
               Get personalized training and nutrition guidance from Coach Himanshu
             </p>
             <ExplorePlansButton />
+          </div>
+          <div className="mt-6">
+            <ConsultationForm
+              source={`Blog: ${post.title}`}
+              whatsappHref={`https://wa.me/917303484648?text=${encodeURIComponent(`Hi Coach Himanshu! I read "${post.title}" and want a free consultation.`)}`}
+            />
           </div>
         </div>
       </article>

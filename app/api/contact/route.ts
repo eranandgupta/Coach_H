@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendContactFormEmail } from '@/lib/email';
+import { sendPushToCoaches } from '@/lib/push';
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,6 +41,14 @@ export async function POST(request: NextRequest) {
         status: 'new',
       },
     });
+
+    // Push the coach's phone/desktop so enquiries get a reply within minutes, not hours.
+    void sendPushToCoaches({
+      title: `New enquiry: ${subject}`,
+      body: `${name}${phone ? ` · ${phone}` : ''} — ${String(message).split('\n')[0].slice(0, 120)}`,
+      tag: 'enquiry',
+      url: '/dashboard',
+    }).catch((err) => console.error('Enquiry push failed:', err));
 
     // Send email notification to info@coachhimanshu.com
     try {

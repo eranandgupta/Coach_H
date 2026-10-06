@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: { food: string } })
       `is ${lower} good for weight loss`,
       ...(food.aliases ?? []).slice(0, 3).map((a) => `${a} calories`),
     ],
-    openGraph: { title: `${title} | Coach Himanshu`, description, url, type: 'article' },
+    openGraph: { title: `${title} | Coach Himanshu`, description, url, type: 'article', images: ['/opengraph-image'] },
     twitter: { card: 'summary_large_image', title: `${title} | Coach Himanshu`, description },
     alternates: { canonical: url },
   };

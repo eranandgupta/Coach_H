@@ -311,3 +311,33 @@ export function countryHreflangs(): Record<string, string> {
   for (const c of COUNTRIES) map[c.hreflang] = `https://coachhimanshu.com/online-fitness-coach/${c.slug}`;
   return map;
 }
+
+export const NRI_HUB_URL = 'https://coachhimanshu.com/online-fitness-coach';
+
+/** FAQs for the /online-fitness-coach hub — rendered on the page AND emitted as FAQPage schema. */
+export const NRI_FAQS: { question: string; answer: string }[] = [
+  {
+    question: 'Can an Indian fitness coach train me online if I live abroad?',
+    answer: `Yes. Coach Himanshu coaches clients in ${COUNTRIES.length}+ countries entirely online: your workout and Indian meal plan are delivered through the app, live 1-on-1 sessions happen on video call, and day-to-day support is on WhatsApp. Nothing about the coaching needs you to be in India.`,
+  },
+  {
+    question: 'How do live sessions work across time zones?',
+    answer: 'Sessions are scheduled in your local time. Gulf countries are only 1.5–2.5 hours behind India, so evenings line up easily; for Europe, sessions are usually your evening; for North America, your early morning or evening maps to India\'s evening or morning. You pick the slots when you book.',
+  },
+  {
+    question: 'Will the diet plan use food I can actually buy where I live?',
+    answer: 'Yes. Plans are built around dal, roti, rice, sabzi, paneer, eggs, chicken and fish, with portions and swaps adjusted to what is in your local supermarket and Indian grocery store. Vegetarian, eggetarian, non-vegetarian and vegan versions are all available, and eating-out guidance covers the restaurants and food culture of your country.',
+  },
+  {
+    question: 'How much does online coaching cost for NRIs, and can I pay with an international card?',
+    answer: 'Prices are the same as for clients in India: recorded coaching plans start at ₹1,299 a month (roughly $15, £13 or 57 AED) and live 1-on-1 packages start at ₹7,999. International Visa, Mastercard and most debit and credit cards are accepted through Razorpay; there is no separate NRI pricing.',
+  },
+  {
+    question: 'Is online coaching as effective as a gym trainer in my city?',
+    answer: 'For most goals, yes, and often more consistent. You get a personalised plan, a coach who checks your form on video and adjusts the plan every week, and daily accountability on WhatsApp, at a fraction of what a personal trainer costs in the USA, UK, Gulf or Australia. Clients who travel or work shifts also keep the same coach wherever they are.',
+  },
+  {
+    question: 'Which countries does Coach Himanshu serve?',
+    answer: `Clients anywhere in the world can join. Dedicated pages exist for ${COUNTRIES.map((c) => c.country).join(', ')}, and the coaching works the same way in any other country.`,
+  },
+];

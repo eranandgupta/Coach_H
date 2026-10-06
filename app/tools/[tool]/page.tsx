@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: { tool: string } })
     title: tool.metaTitle,
     description: tool.metaDescription,
     keywords: tool.keywords,
-    openGraph: { title: `${tool.metaTitle} | Coach Himanshu`, description: tool.metaDescription, url, type: 'website' },
+    openGraph: { title: `${tool.metaTitle} | Coach Himanshu`, description: tool.metaDescription, url, type: 'website', images: ['/opengraph-image'] },
     twitter: { card: 'summary_large_image', title: `${tool.metaTitle} | Coach Himanshu`, description: tool.metaDescription },
     alternates: { canonical: url },
   };

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: { list: string } })
     title: list.metaTitle,
     description: list.metaDescription,
     keywords: [lower, `${lower} india`, `${lower} list`, `best ${lower}`, `indian ${lower}`],
-    openGraph: { title: `${list.metaTitle} | Coach Himanshu`, description: list.metaDescription, url, type: 'article' },
+    openGraph: { title: `${list.metaTitle} | Coach Himanshu`, description: list.metaDescription, url, type: 'article', images: ['/opengraph-image'] },
     twitter: { card: 'summary_large_image', title: `${list.metaTitle} | Coach Himanshu`, description: list.metaDescription },
     alternates: { canonical: url },
   };

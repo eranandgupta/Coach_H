@@ -197,3 +197,21 @@ export async function sendPushToAllClients(payload: PushNotificationPayload) {
     throw error;
   }
 }
+
+/** Notify every coach/admin device — used for new enquiries so the coach can reply fast. */
+export async function sendPushToCoaches(payload: PushNotificationPayload) {
+  try {
+    const coaches = await prisma.user.findMany({
+      where: { role: { in: ['coach', 'admin'] } },
+      select: { id: true },
+    });
+    const results = await Promise.all(coaches.map((c) => sendPushToUser(c.id, payload)));
+    return results.reduce(
+      (acc, r) => ({ sent: acc.sent + (r?.sent ?? 0), failed: acc.failed + (r?.failed ?? 0) }),
+      { sent: 0, failed: 0 }
+    );
+  } catch (error) {
+    console.error('Error sending push to coaches:', error);
+    return { sent: 0, failed: 0 };
+  }
+}

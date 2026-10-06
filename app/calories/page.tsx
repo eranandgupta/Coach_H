@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     'indian food nutrition chart',
     'protein in indian food',
   ],
-  openGraph: { title: `${title} | Coach Himanshu`, description, url: CALORIES_BASE, type: 'website' },
+  openGraph: { title: `${title} | Coach Himanshu`, description, url: CALORIES_BASE, type: 'website', images: ['/opengraph-image'] },
   twitter: { card: 'summary_large_image', title: `${title} | Coach Himanshu`, description },
   alternates: { canonical: CALORIES_BASE },
 };

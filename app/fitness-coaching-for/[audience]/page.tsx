@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import ConsultationForm from '@/components/ConsultationForm';
 
 // Direct WhatsApp chat for "Start Consultation" CTAs.
 const WHATSAPP_CONSULT =
@@ -287,14 +288,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
             {data.ctaText}
           </p>
 
-          <a
-            href={WHATSAPP_CONSULT}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40"
-          >
-            Start Consultation
-          </a>
+          <ConsultationForm source={`Audience page — ${data.audience}`} whatsappHref={WHATSAPP_CONSULT} />
 
           {/* Cross-links to sibling audience pages */}
           <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-gray-400">
