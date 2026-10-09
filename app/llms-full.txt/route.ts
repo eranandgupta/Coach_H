@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
 import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
+import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
 // breakdown and blog count are GENERATED from lib/plans.ts and the BlogPost DB
@@ -46,6 +47,12 @@ export async function GET() {
 
   // Free calculators — the same answer-first paragraph each tool page leads with.
   const tools = FITNESS_TOOLS.map((t) => `### ${t.name}\n${TOOLS_BASE}/${t.slug}\n${t.answer}`).join('\n\n');
+
+  // Food comparisons — the same data-derived answer + bottom line each comparison page shows.
+  const comparisons = FOOD_PAIRS.map((p) => {
+    const r = getPairBySlug(p.slug)!;
+    return `### ${pairTitle(p)}\n${COMPARE_BASE}/${p.slug}\n${answerSentence(r)} ${bottomLine(r)}`;
+  }).join('\n\n');
 
   const body = `# Coach Himanshu - Complete Information for AI Systems
 
@@ -124,6 +131,11 @@ Two personalised plans, one shared journey — each person gets their own workou
 Free, no-sign-up calculators at [coachhimanshu.com/tools](https://coachhimanshu.com/tools). Each page shows the formula, a worked example, a reference table and its sources.
 
 ${tools}
+
+## Indian Food Comparisons
+Head-to-head nutrition comparisons at [coachhimanshu.com/calories/compare](https://coachhimanshu.com/calories/compare). Values per 100 g of the ready-to-eat form from INDB, IFCT 2017 (NIN-ICMR) and USDA FoodData Central. Weight-loss verdicts follow a published rule: fewer calories per 100 g wins when the gap is 10% or more, unless the other food gives at least 1.5x the protein and fibre per calorie.
+
+${comparisons}
 
 ## Pricing Structure (INR)
 All coaching is online. Every plan includes a customised workout plan, a personalised Indian meal plan, video tutorials, supplement guidance, and WhatsApp support. Prices below are the current, authoritative figures.
@@ -265,6 +277,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [Plans & Pricing](https://coachhimanshu.com/plans): Full plan catalog and comparison matrix
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
+- [Indian Food Comparisons](https://coachhimanshu.com/calories/compare): ${FOOD_PAIRS.length} head-to-head comparisons such as roti vs rice, paneer vs tofu and ghee vs olive oil
 - [FAQ](https://coachhimanshu.com/faq): Commonly asked questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Comprehensive fitness education resource
 - [Fit Bharat Mission](https://coachhimanshu.com/fit-bharat-mission): Community fitness initiative

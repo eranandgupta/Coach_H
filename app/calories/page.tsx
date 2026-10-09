@@ -7,6 +7,7 @@ import { FOODS, FOOD_CATEGORIES } from '@/lib/foods';
 import { caloriesFor } from '@/lib/nutrition';
 import { CALORIES_BASE, categoryAnchor, primaryServing } from '@/lib/foodPages';
 import { FOOD_LISTS } from '@/lib/foodLists';
+import { FOOD_PAIRS, pairTitle } from '@/lib/foodCompare';
 
 const title = 'Food Calorie Chart: Calories in Indian Food';
 const description = `Calories, protein, carbs and fat for ${FOODS.length}+ Indian and everyday foods: dal, roti, rice, paneer, chicken, sweets, street food, fruits and drinks. Per katori, roti, cup and 100 g.`;
@@ -99,6 +100,19 @@ export default function CaloriesIndexPage() {
                 {l.name}
               </Link>
             ))}
+          </div>
+
+          {/* Head-to-head comparisons — "roti vs rice" style queries */}
+          <h2 className="mt-8 text-lg font-bold text-white">Popular comparisons</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {FOOD_PAIRS.slice(0, 12).map((p) => (
+              <Link key={p.slug} href={`/calories/compare/${p.slug}`} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-gray-300 hover:border-brand-blue/50 hover:text-white">
+                {pairTitle(p)}
+              </Link>
+            ))}
+            <Link href="/calories/compare" className="rounded-full border border-brand-blue/30 bg-brand-blue/10 px-3 py-1.5 text-xs font-semibold text-white hover:border-brand-blue/60">
+              All {FOOD_PAIRS.length} comparisons →
+            </Link>
           </div>
 
           {/* Category jump links */}

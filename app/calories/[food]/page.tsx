@@ -23,6 +23,7 @@ import {
   similarFoods,
 } from '@/lib/foodPages';
 import { listsForFood } from '@/lib/foodLists';
+import { pairTitle, pairsForFood } from '@/lib/foodCompare';
 
 const WHATSAPP_CONSULT =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20a%20personalised%20diet%20plan.';
@@ -80,6 +81,7 @@ export default function FoodCaloriesPage({ params }: { params: { food: string } 
   const burn = burnMinutes(serving.kcal);
   const answer = answerSentence(food);
   const featuredIn = listsForFood(food.slug);
+  const comparisons = pairsForFood(food.slug);
 
   const nutrientRows: { label: string; unit: string; key: keyof typeof n }[] = [
     { label: 'Calories', unit: 'kcal', key: 'kcal' },
@@ -167,6 +169,18 @@ export default function FoodCaloriesPage({ params }: { params: { food: string } 
                 <span key={l.slug}>
                   {i > 0 && ', '}
                   <Link href={`/calories/lists/${l.slug}`} className="text-brand-blue hover:underline">{l.name}</Link>
+                </span>
+              ))}
+            </p>
+          )}
+
+          {comparisons.length > 0 && (
+            <p className="mt-2 text-sm text-gray-400">
+              Compare:{' '}
+              {comparisons.map((c, i) => (
+                <span key={c.slug}>
+                  {i > 0 && ', '}
+                  <Link href={`/calories/compare/${c.slug}`} className="text-brand-blue hover:underline">{pairTitle(c)}</Link>
                 </span>
               ))}
             </p>

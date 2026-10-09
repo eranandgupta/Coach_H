@@ -46,7 +46,7 @@ const ALCOHOL = /\b(beer|wine|gin|rum|vodka|whisk(e)?y|tequila|brandy|cocktail|s
 export const isAlcohol = (food: FoodItem) => ALCOHOL.test(food.name);
 
 /** Most of the calories are sugar (cola, juice, sweets). Fruits are exempt — whole-fruit sugar comes with fibre. */
-const isSugary = (food: FoodItem) =>
+export const isSugary = (food: FoodItem) =>
   food.category !== 'Fruits' && food.per100g.kcal >= 20 &&
   (food.per100g.sugar >= 15 || (food.per100g.sugar * 4) / food.per100g.kcal >= 0.5);
 
