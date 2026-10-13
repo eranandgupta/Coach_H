@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { MessageCircle } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import ConversationList from './ConversationList';
 import ChatView from './ChatView';
@@ -230,7 +231,7 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
             <div className="flex items-center justify-center h-full text-center">
               <div>
                 <div className="w-20 h-20 rounded-full bg-brand-blue/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">💬</span>
+                  <MessageCircle className="w-9 h-9 text-brand-blue" aria-hidden />
                 </div>
                 <p className="text-white/50 text-base font-medium">Select a conversation</p>
                 <p className="text-white/30 text-sm mt-1">Choose a client to start chatting</p>

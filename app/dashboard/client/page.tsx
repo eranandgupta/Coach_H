@@ -12,6 +12,7 @@ import {
   Crown,
   ArrowRight,
   LogOut,
+  SunMoon,
   Bell,
   Key,
   MessageSquare,
@@ -19,6 +20,8 @@ import {
   FileText,
   Clock,
   ChevronRight,
+  ChevronLeft,
+  Calculator,
   Edit3,
   User,
   Mail,
@@ -26,7 +29,7 @@ import {
   Shield,
   ClipboardList,
   Pause,
-  PlayCircle,
+  PlayCircle, Hand
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -49,6 +52,14 @@ import { usePresenceHeartbeat } from '@/lib/usePresence';
 import { toast } from 'sonner';
 import { isElitePlan, getEffectiveTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import { loadSession, logout } from '@/lib/session';
+import ThemeToggle from '@/components/theme/ThemeToggle';
+import DashboardHero from '@/components/coach/DashboardHero';
+import dynamic from 'next/dynamic';
+const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator'), {
+  ssr: false,
+  loading: () => <div className="h-64 rounded-2xl bg-white/[0.03] border border-white/[0.06] animate-pulse" />,
+});
 import ChatContainer from '@/components/chat/ChatContainer';
 
 export default function ClientDashboard() {
@@ -65,7 +76,7 @@ export default function ClientDashboard() {
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat' | 'calories'>('dashboard');
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
@@ -122,8 +133,25 @@ export default function ClientDashboard() {
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
   usePresenceHeartbeat();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  // Video Library is an active-subscription perk; inactive clients get a renew prompt.
+  const openVideoLibrary = () => {
+    if (isSubscriptionActive) {
+      setIsVideoLibraryOpen(true);
+    } else {
+      toast.error('Renew your subscription to unlock the Video Library', {
+        description: 'The exercise video library is available to active members only.',
+        action: { label: 'Renew', onClick: () => setIsRenewOpen(true) },
+      });
+    }
+  };
+
+  const openCalories = () => {
+    setActiveView('calories');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogout = async () => {
+    await logout();
     router.push('/');
   };
 
@@ -229,13 +257,6 @@ export default function ClientDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // In production, get token from localStorage or cookies
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        window.location.href = '/';
-        return;
-      }
 
       // Essential: /api/auth/me determines the user and any redirect. Block the
       // loader on THIS request only. Previously all 5 calls below ran
@@ -243,10 +264,13 @@ export default function ClientDashboard() {
       // screen stayed up for the sum of every request's latency — 15-25s on a
       // cold start / slow connection (worst in Safari). Everything else now
       // loads in parallel in the background so the dashboard appears at once.
-      const userRes = await fetch('/api/auth/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const userData = await userRes.json();
+      // Restores from the session cookie if localStorage was wiped; only a real 401
+      // sends the user home — network/server hiccups retry instead of logging out.
+      const session = await loadSession();
+      if (session.status === 'unauthenticated') { window.location.href = '/'; return; }
+      if (session.status === 'error') { toast.error('Connection problem — retrying…'); setTimeout(fetchDashboardData, 4000); return; }
+      const token = session.token as string;
+      const userData = { user: session.user, subscription: session.subscription };
 
       // Check if client has completed assessment (coaches and admins skip this check)
       if (userData.user.role !== 'coach' && userData.user.role !== 'admin' && !userData.user.assessmentCompleted) {
@@ -446,73 +470,69 @@ export default function ClientDashboard() {
     <div className="min-h-screen bg-brand-navy">
       {/* Fixed Header */}
       <header className="fixed top-0 left-0 right-0 z-40 navbar-glass">
-        <div className="max-w-7xl mx-auto px-3 md:px-4 py-2 flex items-center justify-between gap-2 md:gap-4">
-          <Link href="/" className="flex items-center flex-shrink-0">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 py-2.5 flex items-center gap-2 md:gap-4">
+          <button
+            type="button"
+            onClick={() => { setActiveView('dashboard'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            className="flex items-center flex-shrink-0"
+            aria-label="Dashboard home"
+            title="Dashboard home"
+          >
             <Image
               src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto"
               alt="Coach Himanshu"
               width={90}
               height={90}
-              className="object-contain w-[60px] md:w-[90px]"
+              className="theme-logo object-contain w-[60px] md:w-[90px]"
             />
-          </Link>
+          </button>
 
-          <div className="flex-1 text-center hidden md:block">
-            <h1 className="text-xl lg:text-2xl font-bold text-white leading-tight">
-              Welcome, {user?.name || 'Champion'}! 💪
+          <span aria-hidden className="hidden md:block h-8 w-px bg-white/10" />
+          <div className="hidden md:block min-w-0">
+            <h1 className="text-base font-semibold text-white leading-tight truncate">
+              Welcome, {user?.name?.split(' ')[0] || 'Champion'}
             </h1>
-            <p className="text-gray-300 text-xs lg:text-sm">Let's crush your fitness goals today</p>
+            <p className="text-xs text-gray-500 truncate">Let&apos;s crush your fitness goals today</p>
           </div>
 
-          <div className="flex items-center gap-1.5 md:gap-3 relative">
+          <div className="ml-auto hdr-group relative">
             {/* Video Library is an active-subscription perk. Inactive clients see it
                disabled and get a "please renew" prompt with renewal plan options. */}
             {!isLiveSessionPlan && <button
-              onClick={() => {
-                if (isSubscriptionActive) {
-                  setIsVideoLibraryOpen(true);
-                } else {
-                  toast.error('Renew your subscription to unlock the Video Library', {
-                    description: 'The exercise video library is available to active members only.',
-                    action: { label: 'Renew', onClick: () => setIsRenewOpen(true) },
-                  });
-                }
-              }}
-              className={`flex items-center justify-center p-2 rounded-xl border transition-all ${
-                isSubscriptionActive ? 'border-white/[0.08] hover:border-white/[0.15]' : 'border-white/[0.05] opacity-50 cursor-not-allowed'
-              }`}
-              style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}
+              onClick={openVideoLibrary}
+              className="hdr-btn hidden sm:inline-flex"
+              aria-disabled={!isSubscriptionActive}
               title={isSubscriptionActive ? 'Video Library' : 'Video Library — renew to unlock'}
             >
-              <Play className={`w-4 h-4 md:w-5 md:h-5 ${isSubscriptionActive ? 'text-purple-400' : 'text-purple-400/50'}`} />
+              <Play />
             </button>}
             {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
-            <div ref={newIconsRef} className="relative flex items-center gap-1.5 md:gap-3">
+            <div ref={newIconsRef} className="relative hidden sm:flex items-center gap-0.5">
             <button
               onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
-              className={`relative flex items-center justify-center p-2 rounded-xl border transition-all ${showFeatureHint ? 'border-amber-400/60' : 'border-white/[0.08] hover:border-white/[0.15]'}`}
-              style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.03) 100%)' }}
+              className="hdr-btn"
               title="Habit Tracker"
+              aria-label="Habit Tracker"
             >
-              <ClipboardList className="w-4 h-4 md:w-5 md:h-5 text-emerald-400" />
+              <ClipboardList />
               {showFeatureHint && (
                 <>
-                  <span className="absolute -inset-0.5 rounded-xl ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
-                  <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-black text-[8px] md:text-[9px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
+                  <span className="absolute inset-0 rounded-[10px] ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
+                  <span className="absolute -top-1 -right-1 bg-amber-400 text-ink text-[8px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
                 </>
               )}
             </button>
             <button
               onClick={() => { dismissFeatureHint(); setIsLogbookOpen(true); }}
-              className={`relative flex items-center justify-center p-2 rounded-xl border transition-all ${showFeatureHint ? 'border-amber-400/60' : 'border-white/[0.08] hover:border-white/[0.15]'}`}
-              style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
+              className="hdr-btn"
               title="Transformation Logbook"
+              aria-label="Transformation Logbook"
             >
-              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-brand-blue" />
+              <TrendingUp />
               {showFeatureHint && (
                 <>
-                  <span className="absolute -inset-0.5 rounded-xl ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
-                  <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-black text-[8px] md:text-[9px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
+                  <span className="absolute inset-0 rounded-[10px] ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
+                  <span className="absolute -top-1 -right-1 bg-amber-400 text-ink text-[8px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
                 </>
               )}
             </button>
@@ -531,7 +551,7 @@ export default function ClientDashboard() {
                 <div className="absolute -top-1.5 right-6 w-3 h-3 rotate-45 bg-[#0b1224] border-l border-t border-amber-400/40 hidden sm:block" />
                 <div className="relative rounded-xl border border-amber-400/40 bg-[#0b1224] p-3.5 shadow-2xl">
                   <p className="text-sm font-bold text-white flex items-center gap-1.5">
-                    <span>👋</span> New here!
+                    <Hand className="w-4 h-4 text-amber-400" aria-hidden /> New here!
                   </p>
                   <p className="text-xs text-gray-300 mt-1 leading-relaxed">
                     Track your daily habits and log your 30-day transformation — tap the glowing icons above. You can also download & print them.
@@ -555,45 +575,49 @@ export default function ClientDashboard() {
             )}
             </div>
             <button
-              onClick={() => setIsNotificationPanelOpen(true)}
-              className="relative flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all"
-              style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
+              onClick={openCalories}
+              className="hdr-btn hidden sm:inline-flex"
+              title="Calorie Calculator"
+              aria-label="Calorie Calculator"
             >
-              <Bell className={`w-4 h-4 md:w-5 md:h-5 text-brand-blue ${notificationCount > 0 ? 'animate-pulse' : ''}`} />
-              {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center animate-pulse">
-                  {notificationCount > 9 ? '9+' : notificationCount}
-                </span>
-              )}
+              <Calculator />
+            </button>
+            <span aria-hidden className="hidden sm:block hdr-sep" />
+            <ThemeToggle size="sm" className="mx-1" />
+            <span aria-hidden className="hidden sm:block hdr-sep" />
+            <button
+              onClick={() => setIsNotificationPanelOpen(true)}
+              className="hdr-btn hidden sm:inline-flex"
+              aria-label="Notifications"
+              title="Notifications"
+            >
+              <Bell />
+              {notificationCount > 0 && <span className="hdr-badge">{notificationCount > 9 ? '9+' : notificationCount}</span>}
             </button>
             <button
               onClick={() => setIsChangePasswordOpen(true)}
-              className="flex items-center justify-center p-2 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all hidden sm:flex"
-              style={{ background: 'linear-gradient(135deg, rgba(234,179,8,0.1) 0%, rgba(234,179,8,0.03) 100%)' }}
+              className="hdr-btn hidden sm:inline-flex"
               title="Change Password"
+              aria-label="Change Password"
             >
-              <Key className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
+              <Key />
             </button>
             <button
               onClick={() => setActiveView('chat')}
-              className="relative flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-xl border border-white/[0.08] hover:border-brand-blue/30 transition-all flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.1) 0%, rgba(23,95,255,0.03) 100%)' }}
+              className="hdr-btn hidden sm:inline-flex"
+              aria-label="Chat"
             >
-              <MessageSquare className="w-4 h-4 md:w-5 md:h-5 text-brand-blue" />
-              <span className="hidden lg:inline text-brand-blue text-sm font-medium">Chat</span>
-              {unreadChatCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center px-1">
-                  <span className="text-[10px] font-bold text-white">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>
-                </span>
-              )}
+              <MessageSquare />
+              <span className="hidden lg:inline">Chat</span>
+              {unreadChatCount > 0 && <span className="hdr-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-xl border border-white/[0.08] hover:border-red-500/20 transition-all flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.03) 100%)' }}
+              className="hdr-btn is-danger hidden sm:inline-flex"
+              aria-label="Logout"
+              title="Logout"
             >
-              <LogOut className="w-4 h-4 md:w-5 md:h-5 text-red-400" />
-              <span className="hidden lg:inline text-red-400 text-sm font-medium">Logout</span>
+              <LogOut />
             </button>
           </div>
         </div>
@@ -604,11 +628,11 @@ export default function ClientDashboard() {
       <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Welcome (shown only on small screens) */}
-          <div className="md:hidden mb-5">
-            <h1 className="text-2xl font-bold text-white mb-1">
-              Hi {user?.name?.split(' ')[0] || 'Champion'},
+          <div className="md:hidden mb-4">
+            <h1 className="text-xl font-bold text-white leading-tight">
+              Hi {user?.name?.split(' ')[0] || 'Champion'}
             </h1>
-            <p className="text-gray-400 text-sm">Welcome back! Let's crush it today</p>
+            <p className="text-gray-500 text-xs mt-0.5">Welcome back! Let&apos;s crush it today</p>
           </div>
 
         {/* Subscription Status Card - Compact & Aesthetic */}
@@ -617,7 +641,7 @@ export default function ClientDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className={`mb-6 md:mb-8 p-4 md:p-5 rounded-2xl border overflow-hidden glass-card ${
+          className={`mb-5 md:mb-8 p-3.5 md:p-5 rounded-2xl border overflow-hidden glass-card ${
             isPaused
               ? 'border-yellow-500/15'
               : isSubscriptionActive
@@ -626,7 +650,7 @@ export default function ClientDashboard() {
           }`}
         >
           {/* Header Row */}
-          <div className="flex items-start justify-between gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
             <div className="flex items-start gap-3 flex-1 min-w-0">
               {isPaused ? (
                 <Pause className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 flex-shrink-0 mt-0.5" />
@@ -636,7 +660,7 @@ export default function ClientDashboard() {
                 <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-400 flex-shrink-0 mt-0.5" />
               )}
               <div className="flex-1 min-w-0">
-                <h3 className="text-base sm:text-lg font-bold text-white mb-1.5">
+                <h3 className="text-[15px] sm:text-lg font-bold text-white leading-snug mb-0.5 sm:mb-1.5">
                   {isPaused ? 'Subscription Paused' : isSubscriptionActive ? 'Active Subscription' : 'Subscription Expired'}
                 </h3>
                 <p className="text-xs text-gray-400 mb-2">
@@ -666,7 +690,7 @@ export default function ClientDashboard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0 pl-8 sm:pl-0">
               {/* Assessment Badge with Edit Button */}
               {user?.assessmentCompleted && (
                 <button
@@ -675,7 +699,7 @@ export default function ClientDashboard() {
                   title="Click to edit your assessment"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5 text-white flex-shrink-0" />
-                  <span className="text-white text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment ✓</span>
+                  <span className="text-white text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment</span>
                   <Edit3 className="w-3 h-3 text-white" />
                 </button>
               )}
@@ -887,7 +911,7 @@ export default function ClientDashboard() {
                     <FileText className="w-5 h-5 text-brand-blue" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">Latest Articles</h2>
+                    <h2 className="text-base md:text-xl font-bold text-white">Latest Articles</h2>
                     <p className="text-gray-500 text-xs">Fitness tips & insights</p>
                   </div>
                 </div>
@@ -985,61 +1009,37 @@ export default function ClientDashboard() {
         {/* Regular Plans — stats, workouts, diets (also shown for Elite 1:1) */}
         {(!isLiveSessionPlan || isEliteOneOnOnePlan) && (
         <>
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="glass-card p-3 md:p-6 hover:border-white/[0.12] transition-all"
-          >
-            <div className="flex items-center justify-between mb-2 md:mb-4">
-              <div className="p-2 md:p-3 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}>
-                <Dumbbell className="w-4 h-4 md:w-6 md:h-6 text-purple-400" />
-              </div>
-              <Crown className="w-4 h-4 md:w-5 md:h-5 text-yellow-400/60" />
-            </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">{workouts.length}</h3>
-            <p className="text-gray-500 text-[11px] md:text-sm">Active Workouts</p>
-          </motion.div>
+        {/* Stats band */}
+        <DashboardHero
+          id="section-stats"
+          stats={[
+            { label: 'Active Workouts', short: 'Workouts', value: workouts.length, icon: Dumbbell },
+            { label: 'Diet Plans', short: 'Diets', value: diets.length, icon: UtensilsCrossed },
+            isEliteOneOnOnePlan
+              ? { label: 'Sessions Done', short: 'Sessions', value: completedSessions.length, icon: Calendar }
+              : {
+                  label: 'Current Week',
+                  short: 'Week',
+                  value: `Week ${currentWorkout?.weekNumber || (subscription?.subscription?.startDate ? Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7))) : 1)}`,
+                  icon: Calendar,
+                },
+          ]}
+        />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="glass-card p-3 md:p-6 hover:border-white/[0.12] transition-all"
-          >
-            <div className="flex items-center justify-between mb-2 md:mb-4">
-              <div className="p-2 md:p-3 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.03) 100%)' }}>
-                <UtensilsCrossed className="w-4 h-4 md:w-6 md:h-6 text-green-400" />
-              </div>
-              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-green-400/60" />
-            </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">{diets.length}</h3>
-            <p className="text-gray-500 text-[11px] md:text-sm">Diet Plans</p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="glass-card p-3 md:p-6 hover:border-white/[0.12] transition-all"
-          >
-            <div className="flex items-center justify-between mb-2 md:mb-4">
-              <div className="p-2 md:p-3 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.1) 0%, rgba(249,115,22,0.03) 100%)' }}>
-                <Calendar className="w-4 h-4 md:w-6 md:h-6 text-orange-400" />
-              </div>
-            </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-0.5">
-              {isEliteOneOnOnePlan ? (
-                <><span className="hidden md:inline">Session </span><span className="md:hidden">S</span>{completedSessions.length}</>
-              ) : (
-                <><span className="hidden md:inline">Week </span><span className="md:hidden">W</span>{currentWorkout?.weekNumber || (subscription?.subscription?.startDate ? Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7))) : 1)}</>
-              )}
-            </h3>
-            <p className="text-gray-500 text-[11px] md:text-sm">{isEliteOneOnOnePlan ? 'Sessions Done' : 'Current Week'}</p>
-          </motion.div>
-        </div>
+        {/* Calorie Calculator shortcut — opens in-dashboard */}
+        <button
+          onClick={openCalories}
+          className="group w-full mb-5 md:mb-8 flex items-center gap-3 md:gap-4 p-3.5 md:p-4 rounded-2xl text-left bg-brand-navy-light/60 border border-white/[0.08] hover:border-amber-500/35 transition-colors"
+        >
+          <span className="shrink-0 w-11 h-11 rounded-xl bg-amber-500/10 ring-1 ring-amber-500/20 flex items-center justify-center group-hover:bg-amber-500 transition-colors">
+            <Calculator className="w-5 h-5 text-amber-400 group-hover:text-snow transition-colors" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-sm md:text-base font-semibold text-white">Calorie Calculator</span>
+            <span className="block text-xs text-gray-500 truncate">Count calories &amp; macros of your meals — 850+ Indian foods</span>
+          </span>
+          <ChevronRight className="w-4 h-4 shrink-0 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
+        </button>
 
         {/* Blog Posts Carousel */}
         <div id="section-blog" />
@@ -1057,7 +1057,7 @@ export default function ClientDashboard() {
                   <FileText className="w-5 h-5 text-brand-blue" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">Latest Articles</h2>
+                  <h2 className="text-base md:text-xl font-bold text-white">Latest Articles</h2>
                   <p className="text-gray-500 text-xs">Fitness tips & insights</p>
                 </div>
               </div>
@@ -1165,7 +1165,7 @@ export default function ClientDashboard() {
                 <div className="p-2 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}>
                   <Dumbbell className="w-6 h-6 text-purple-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Current Workout</h2>
+                <h2 className="text-lg font-bold text-white">Current Workout</h2>
               </div>
             </div>
 
@@ -1248,20 +1248,20 @@ export default function ClientDashboard() {
                 </button>
               </div>
             ) : (
-              <div className="text-center py-12">
-                <Dumbbell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 mb-4">No active workout plan</p>
-                <p className="text-gray-500 text-sm">
-                  Your coach will assign a workout plan soon
-                </p>
+              <div className="flex flex-col items-center text-center py-8">
+                <span className="w-12 h-12 rounded-2xl bg-violet-500/10 ring-1 ring-violet-500/20 flex items-center justify-center mb-3">
+                  <Dumbbell className="w-5 h-5 text-violet-400" />
+                </span>
+                <p className="text-white font-semibold">No active workout plan</p>
+                <p className="text-gray-500 text-sm mt-1">Your coach will assign one soon</p>
               </div>
             )}
           </motion.div>
           )}
 
-          {/* Current Diet */}
-          <div id="section-diet" />
+          {/* Current Diet (anchor lives on the card — a bare div here took a grid cell) */}
           <motion.div
+            id="section-diet"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
@@ -1272,7 +1272,7 @@ export default function ClientDashboard() {
                 <div className="p-2 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.03) 100%)' }}>
                   <UtensilsCrossed className="w-6 h-6 text-green-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Current Diet</h2>
+                <h2 className="text-lg font-bold text-white">Current Diet</h2>
               </div>
             </div>
 
@@ -1351,12 +1351,12 @@ export default function ClientDashboard() {
                 </button>
               </div>
             ) : (
-              <div className="text-center py-12">
-                <UtensilsCrossed className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 mb-4">No active diet plan</p>
-                <p className="text-gray-500 text-sm">
-                  Your coach will create a diet plan soon
-                </p>
+              <div className="flex flex-col items-center text-center py-8">
+                <span className="w-12 h-12 rounded-2xl bg-emerald-500/10 ring-1 ring-emerald-500/20 flex items-center justify-center mb-3">
+                  <UtensilsCrossed className="w-5 h-5 text-emerald-400" />
+                </span>
+                <p className="text-white font-semibold">No active diet plan</p>
+                <p className="text-gray-500 text-sm mt-1">Your coach will create one soon</p>
               </div>
             )}
           </motion.div>
@@ -1364,6 +1364,32 @@ export default function ClientDashboard() {
         </>
         )}
 
+        </div>
+      </div>
+      )}
+
+      {/* Calorie Calculator View — in-dashboard, no redirect to the public page */}
+      {activeView === 'calories' && (
+      <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
+        <div className="max-w-5xl mx-auto">
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4"
+          >
+            <ChevronLeft className="w-4 h-4" /> Back to dashboard
+          </button>
+          <div className="flex items-center gap-3 mb-1">
+            <span className="w-10 h-10 rounded-xl bg-amber-500/10 ring-1 ring-amber-500/20 flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-amber-400" />
+            </span>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">Calorie Calculator</h1>
+              <p className="text-xs md:text-sm text-gray-500">Search Indian foods, pick a serving, see calories &amp; macros instantly.</p>
+            </div>
+          </div>
+          <div className="mt-5">
+            <CalorieCalculator />
+          </div>
         </div>
       </div>
       )}
@@ -1481,6 +1507,19 @@ export default function ClientDashboard() {
                     <ChevronRight className="w-4 h-4 text-gray-500 ml-auto group-hover:text-brand-blue transition-colors" />
                   </button>
                 )}
+                <div
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08]"
+                  style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.06) 0%, rgba(23,95,255,0.02) 100%)' }}
+                >
+                  <div className="p-2 rounded-lg bg-brand-blue/15">
+                    <SunMoon className="w-4 h-4 text-brand-blue" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white text-sm font-medium">Appearance</p>
+                    <p className="text-gray-500 text-xs">Switch between dark and light</p>
+                  </div>
+                  <ThemeToggle size="sm" className="ml-auto" />
+                </div>
                 <button
                   onClick={() => setIsChangePasswordOpen(true)}
                   className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08] hover:border-yellow-500/30 transition-all group"
@@ -1595,7 +1634,7 @@ export default function ClientDashboard() {
         <div className="fixed inset-0 z-[55] bg-brand-navy flex flex-col">
           {/* Desktop close bar */}
           <div className="hidden lg:flex items-center justify-between px-6 py-3 border-b border-white/[0.06] flex-shrink-0"
-            style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(10,15,31,0.9) 100%)' }}>
+            style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy) / 0.98) 0%, rgb(var(--c-navy) / 0.9) 100%)' }}>
             <h2 className="text-white font-bold text-lg">Chat with Coach</h2>
             <button
               onClick={() => { setActiveView('dashboard'); fetchUnreadChat(); }}
@@ -1613,8 +1652,17 @@ export default function ClientDashboard() {
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav
         role="client"
-        activeTab={activeView === 'profile' ? 'profile' : activeView === 'chat' ? 'chat' : undefined}
+        activeTab={activeView === 'profile' || activeView === 'calories' ? 'more' : activeView === 'chat' ? 'chat' : undefined}
         badges={{ chat: unreadChatCount }}
+        moreItems={[
+          ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', icon: Play, onSelect: openVideoLibrary, disabled: !isSubscriptionActive }] : []),
+          { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showFeatureHint, onSelect: () => { dismissFeatureHint(); setIsHabitTrackerOpen(true); } },
+          { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showFeatureHint, onSelect: () => { dismissFeatureHint(); setIsLogbookOpen(true); } },
+          { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },
+          { id: 'alerts', label: 'Notifications', icon: Bell, badge: notificationCount, onSelect: () => setIsNotificationPanelOpen(true) },
+          { id: 'profile', label: 'Profile', icon: User, onSelect: () => { setActiveView('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
+          { id: 'logout', label: 'Logout', icon: LogOut, danger: true, onSelect: handleLogout },
+        ]}
         onTabChange={(tab) => {
           if (tab === 'chat') {
             setActiveView('chat');

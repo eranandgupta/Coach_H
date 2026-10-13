@@ -1,61 +1,61 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, ArrowLeft, Tag, Loader2, Heart, Users, CreditCard, ChevronDown, Search } from 'lucide-react';
+import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileText, MessageCircle, ArrowLeft, Tag, Loader2, Heart, Users, CreditCard, ChevronDown, Search , Dumbbell} from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 const COUNTRY_CODES = [
-  { code: '+91', flag: '🇮🇳', name: 'India', short: 'IN' },
-  { code: '+1', flag: '🇺🇸', name: 'United States', short: 'US' },
-  { code: '+44', flag: '🇬🇧', name: 'United Kingdom', short: 'GB' },
-  { code: '+61', flag: '🇦🇺', name: 'Australia', short: 'AU' },
-  { code: '+1', flag: '🇨🇦', name: 'Canada', short: 'CA' },
-  { code: '+971', flag: '🇦🇪', name: 'UAE', short: 'AE' },
-  { code: '+966', flag: '🇸🇦', name: 'Saudi Arabia', short: 'SA' },
-  { code: '+65', flag: '🇸🇬', name: 'Singapore', short: 'SG' },
-  { code: '+60', flag: '🇲🇾', name: 'Malaysia', short: 'MY' },
-  { code: '+974', flag: '🇶🇦', name: 'Qatar', short: 'QA' },
-  { code: '+968', flag: '🇴🇲', name: 'Oman', short: 'OM' },
-  { code: '+973', flag: '🇧🇭', name: 'Bahrain', short: 'BH' },
-  { code: '+965', flag: '🇰🇼', name: 'Kuwait', short: 'KW' },
-  { code: '+49', flag: '🇩🇪', name: 'Germany', short: 'DE' },
-  { code: '+33', flag: '🇫🇷', name: 'France', short: 'FR' },
-  { code: '+39', flag: '🇮🇹', name: 'Italy', short: 'IT' },
-  { code: '+81', flag: '🇯🇵', name: 'Japan', short: 'JP' },
-  { code: '+82', flag: '🇰🇷', name: 'South Korea', short: 'KR' },
-  { code: '+86', flag: '🇨🇳', name: 'China', short: 'CN' },
-  { code: '+64', flag: '🇳🇿', name: 'New Zealand', short: 'NZ' },
-  { code: '+27', flag: '🇿🇦', name: 'South Africa', short: 'ZA' },
-  { code: '+234', flag: '🇳🇬', name: 'Nigeria', short: 'NG' },
-  { code: '+254', flag: '🇰🇪', name: 'Kenya', short: 'KE' },
-  { code: '+977', flag: '🇳🇵', name: 'Nepal', short: 'NP' },
-  { code: '+94', flag: '🇱🇰', name: 'Sri Lanka', short: 'LK' },
-  { code: '+880', flag: '🇧🇩', name: 'Bangladesh', short: 'BD' },
-  { code: '+92', flag: '🇵🇰', name: 'Pakistan', short: 'PK' },
-  { code: '+63', flag: '🇵🇭', name: 'Philippines', short: 'PH' },
-  { code: '+66', flag: '🇹🇭', name: 'Thailand', short: 'TH' },
-  { code: '+62', flag: '🇮🇩', name: 'Indonesia', short: 'ID' },
-  { code: '+84', flag: '🇻🇳', name: 'Vietnam', short: 'VN' },
-  { code: '+353', flag: '🇮🇪', name: 'Ireland', short: 'IE' },
-  { code: '+31', flag: '🇳🇱', name: 'Netherlands', short: 'NL' },
-  { code: '+46', flag: '🇸🇪', name: 'Sweden', short: 'SE' },
-  { code: '+41', flag: '🇨🇭', name: 'Switzerland', short: 'CH' },
-  { code: '+34', flag: '🇪🇸', name: 'Spain', short: 'ES' },
-  { code: '+351', flag: '🇵🇹', name: 'Portugal', short: 'PT' },
-  { code: '+48', flag: '🇵🇱', name: 'Poland', short: 'PL' },
-  { code: '+7', flag: '🇷🇺', name: 'Russia', short: 'RU' },
-  { code: '+90', flag: '🇹🇷', name: 'Turkey', short: 'TR' },
-  { code: '+55', flag: '🇧🇷', name: 'Brazil', short: 'BR' },
-  { code: '+52', flag: '🇲🇽', name: 'Mexico', short: 'MX' },
-  { code: '+20', flag: '🇪🇬', name: 'Egypt', short: 'EG' },
-  { code: '+852', flag: '🇭🇰', name: 'Hong Kong', short: 'HK' },
-  { code: '+47', flag: '🇳🇴', name: 'Norway', short: 'NO' },
-  { code: '+45', flag: '🇩🇰', name: 'Denmark', short: 'DK' },
-  { code: '+358', flag: '🇫🇮', name: 'Finland', short: 'FI' },
-  { code: '+43', flag: '🇦🇹', name: 'Austria', short: 'AT' },
-  { code: '+32', flag: '🇧🇪', name: 'Belgium', short: 'BE' },
+  { code: '+91', name: 'India', short: 'IN' },
+  { code: '+1', name: 'United States', short: 'US' },
+  { code: '+44', name: 'United Kingdom', short: 'GB' },
+  { code: '+61', name: 'Australia', short: 'AU' },
+  { code: '+1', name: 'Canada', short: 'CA' },
+  { code: '+971', name: 'UAE', short: 'AE' },
+  { code: '+966', name: 'Saudi Arabia', short: 'SA' },
+  { code: '+65', name: 'Singapore', short: 'SG' },
+  { code: '+60', name: 'Malaysia', short: 'MY' },
+  { code: '+974', name: 'Qatar', short: 'QA' },
+  { code: '+968', name: 'Oman', short: 'OM' },
+  { code: '+973', name: 'Bahrain', short: 'BH' },
+  { code: '+965', name: 'Kuwait', short: 'KW' },
+  { code: '+49', name: 'Germany', short: 'DE' },
+  { code: '+33', name: 'France', short: 'FR' },
+  { code: '+39', name: 'Italy', short: 'IT' },
+  { code: '+81', name: 'Japan', short: 'JP' },
+  { code: '+82', name: 'South Korea', short: 'KR' },
+  { code: '+86', name: 'China', short: 'CN' },
+  { code: '+64', name: 'New Zealand', short: 'NZ' },
+  { code: '+27', name: 'South Africa', short: 'ZA' },
+  { code: '+234', name: 'Nigeria', short: 'NG' },
+  { code: '+254', name: 'Kenya', short: 'KE' },
+  { code: '+977', name: 'Nepal', short: 'NP' },
+  { code: '+94', name: 'Sri Lanka', short: 'LK' },
+  { code: '+880', name: 'Bangladesh', short: 'BD' },
+  { code: '+92', name: 'Pakistan', short: 'PK' },
+  { code: '+63', name: 'Philippines', short: 'PH' },
+  { code: '+66', name: 'Thailand', short: 'TH' },
+  { code: '+62', name: 'Indonesia', short: 'ID' },
+  { code: '+84', name: 'Vietnam', short: 'VN' },
+  { code: '+353', name: 'Ireland', short: 'IE' },
+  { code: '+31', name: 'Netherlands', short: 'NL' },
+  { code: '+46', name: 'Sweden', short: 'SE' },
+  { code: '+41', name: 'Switzerland', short: 'CH' },
+  { code: '+34', name: 'Spain', short: 'ES' },
+  { code: '+351', name: 'Portugal', short: 'PT' },
+  { code: '+48', name: 'Poland', short: 'PL' },
+  { code: '+7', name: 'Russia', short: 'RU' },
+  { code: '+90', name: 'Turkey', short: 'TR' },
+  { code: '+55', name: 'Brazil', short: 'BR' },
+  { code: '+52', name: 'Mexico', short: 'MX' },
+  { code: '+20', name: 'Egypt', short: 'EG' },
+  { code: '+852', name: 'Hong Kong', short: 'HK' },
+  { code: '+47', name: 'Norway', short: 'NO' },
+  { code: '+45', name: 'Denmark', short: 'DK' },
+  { code: '+358', name: 'Finland', short: 'FI' },
+  { code: '+43', name: 'Austria', short: 'AT' },
+  { code: '+32', name: 'Belgium', short: 'BE' },
 ];
 
 function CountryCodeSelector({ value, onChange, borderColor = 'brand-blue' }: { value: string; onChange: (code: string, short: string) => void; borderColor?: string }) {
@@ -93,7 +93,7 @@ function CountryCodeSelector({ value, onChange, borderColor = 'brand-blue' }: { 
         onClick={() => { setOpen(!open); setSearch(''); }}
         className={`flex items-center gap-1.5 px-2.5 py-3 bg-brand-navy/50 border border-white/10 rounded-l-lg hover:border-white/20 transition-all h-full focus:outline-none focus:border-${borderColor}`}
       >
-        <span className="text-lg leading-none">{selected.flag}</span>
+        <span className="inline-flex items-center justify-center min-w-[26px] h-[18px] px-1 rounded bg-white/[0.08] text-[10px] font-bold tracking-wide text-gray-300">{selected.short}</span>
         <span className="text-gray-300 text-sm">{selected.code}</span>
         <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -128,7 +128,7 @@ function CountryCodeSelector({ value, onChange, borderColor = 'brand-blue' }: { 
                   onClick={() => { onChange(country.code, country.short); setOpen(false); }}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/10 transition-colors text-left ${selected.short === country.short ? 'bg-brand-blue/15' : ''}`}
                 >
-                  <span className="text-lg leading-none">{country.flag}</span>
+                  <span className="inline-flex items-center justify-center min-w-[26px] h-[18px] px-1 rounded bg-white/[0.08] text-[10px] font-bold tracking-wide text-gray-300">{country.short}</span>
                   <span className="text-white text-sm flex-1">{country.name}</span>
                   <span className="text-gray-400 text-xs">{country.code}</span>
                 </button>
@@ -1002,7 +1002,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                       <li>• You'll get access to your dashboard</li>
                     </ul>
                   </div>
-                  <p className="text-center text-brand-blue font-semibold text-sm">All the best for your fitness journey! 💪</p>
+                  <p className="text-center text-brand-blue font-semibold text-sm inline-flex items-center justify-center gap-1.5 w-full"><Dumbbell className="w-4 h-4" aria-hidden /> All the best for your fitness journey!</p>
                   <button
                     onClick={() => {
                       clearCart();

@@ -24,7 +24,17 @@ import {
   Flame,
   Clock,
   Leaf,
+  Check,
+  FerrisWheel,
+  Tag,
+  PartyPopper,
+  Globe,
+  Sandwich,
+  Brain,
+  Flower2,
+  type LucideIcon,
 } from 'lucide-react';
+import IndiaFlag from '@/components/icons/IndiaFlag';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -113,7 +123,7 @@ export default function Home() {
       if (day >= 1 && day <= 7) {
         return {
           theme: 'environment' as const,
-          title: 'WORLD ENVIRONMENT DAY SALE 🌿',
+          title: 'WORLD ENVIRONMENT DAY SALE',
           subtitle: 'Valid June 1 - 7 Only',
           endDate: 'June 7, 2026',
           offers: commonOffers,
@@ -124,7 +134,7 @@ export default function Home() {
       if (day >= 21 && day <= 30) {
         return {
           theme: 'yoga' as const,
-          title: 'WORLD YOGA DAY & FATHER\'S DAY SALE 🧘',
+          title: 'WORLD YOGA DAY & FATHER\'S DAY SALE',
           subtitle: 'Valid June 21 - 30 Only',
           endDate: 'June 30, 2026',
           offers: commonOffers,
@@ -137,19 +147,19 @@ export default function Home() {
     // ── JULY SALE — Health Revolution (10-31 July) ──
     if (month === 6 && day >= 10 && day <= 31) {
       // Health awareness days that fall within the sale window
-      const healthDays: { date: number; name: string; emoji: string }[] = [
-        { date: 11, name: 'World Population Day', emoji: '🌍' },
-        { date: 21, name: 'National Junk Food Day', emoji: '🍔' },
-        { date: 22, name: 'World Brain Day', emoji: '🧠' },
-        { date: 24, name: 'International Self-Care Day', emoji: '🧘' },
-        { date: 28, name: 'World Hepatitis Day', emoji: '💛' },
+      const healthDays: { date: number; name: string; icon: LucideIcon }[] = [
+        { date: 11, name: 'World Population Day', icon: Globe },
+        { date: 21, name: 'National Junk Food Day', icon: Sandwich },
+        { date: 22, name: 'World Brain Day', icon: Brain },
+        { date: 24, name: 'International Self-Care Day', icon: Flower2 },
+        { date: 28, name: 'World Hepatitis Day', icon: HeartPulse },
       ];
 
       // Build specials for today if it's a health awareness day
       const todayEvent = healthDays.find(h => h.date === day);
       const specials: string[] | null = todayEvent
         ? [
-            `${todayEvent.emoji} Today is ${todayEvent.name}!`,
+            `Today is ${todayEvent.name}!`,
             'Extra motivation to prioritize your health — invest in yourself today.',
             'All plans include personalized diet + workout + WhatsApp support.',
           ]
@@ -160,7 +170,7 @@ export default function Home() {
 
       return {
         theme: 'health' as const,
-        title: 'HEALTH REVOLUTION SALE 💪',
+        title: 'HEALTH REVOLUTION SALE',
         subtitle: 'Valid July 10 - 31 Only',
         endDate: 'July 31, 2026',
         offers: commonOffers,
@@ -175,7 +185,7 @@ export default function Home() {
     if (month === 7 && day >= 9 && day <= 20) {
       return {
         theme: 'independence' as const,
-        title: 'AZAADI FITNESS SALE 🇮🇳',
+        title: 'AZAADI FITNESS SALE',
         subtitle: 'Independence Day Special · Aug 10 - 20',
         endDate: 'August 20, 2026',
         offers: [] as { label: string; off: string }[],
@@ -834,10 +844,10 @@ export default function Home() {
         '1:1 consultation weekly (4/month)',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
     },
     {
@@ -855,10 +865,10 @@ export default function Home() {
         '1:1 consultation weekly (4/month)',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       popular: true,
     },
@@ -877,12 +887,12 @@ export default function Home() {
         '1:1 consultation weekly (6/month)',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
         '⏸️ Pause option (7 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'FREE RhynoGrip Fitness Gear',
       ],
     },
     {
@@ -900,12 +910,12 @@ export default function Home() {
         '1:1 consultation weekly (6/month)',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
         '⏸️ Pause option (15 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'FREE RhynoGrip Fitness Gear',
       ],
     },
     {
@@ -922,10 +932,10 @@ export default function Home() {
         '1:1 consultation twice a month',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       rehabilitation: true,
     },
@@ -943,11 +953,11 @@ export default function Home() {
         '1:1 consultation twice a month',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '💑 Recover Together, Grow Together',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'Recover Together, Grow Together',
       ],
       rehabilitation: true,
       couple: true,
@@ -967,10 +977,10 @@ export default function Home() {
         '1:1 consultation twice a month',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       homeWorkout: true,
     },
@@ -989,11 +999,11 @@ export default function Home() {
         '1:1 consultation twice a month',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle guidance',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '💑 Train Together, Grow Together',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'Train Together, Grow Together',
       ],
       homeWorkout: true,
       couple: true,
@@ -1013,13 +1023,13 @@ export default function Home() {
         '1:1 consultation weekly (6/month)',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle coaching',
         '⏸️ Pause option (7 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '💑 Train Together, Grow Together',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'Train Together, Grow Together',
+        'FREE RhynoGrip Fitness Gear',
       ],
       couple: true,
     },
@@ -1038,13 +1048,13 @@ export default function Home() {
         '1:1 consultation weekly (6/month)',
         'Supplement guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Lifestyle coaching',
         '⏸️ Pause option (15 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '💑 Train Together, Grow Together',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'Train Together, Grow Together',
+        'FREE RhynoGrip Fitness Gear',
       ],
       couple: true,
     },
@@ -1062,16 +1072,16 @@ export default function Home() {
       description: '12 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
-        '💕 One shared slot — both attend the same session',
+        'One shared slot — both attend the same session',
         'Personalised diet plan for each partner',
         '60 min per session',
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1086,16 +1096,16 @@ export default function Home() {
       description: '24 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
-        '💕 One shared slot — both attend the same session',
+        'One shared slot — both attend the same session',
         'Personalised diet plan for each partner',
         '60 min per session',
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1110,18 +1120,18 @@ export default function Home() {
       description: '36 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
-        '💕 One shared slot — both attend the same session',
+        'One shared slot — both attend the same session',
         'Personalised diet plan for each partner',
         '60 min per session',
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
         '⏸️ Pause option (7 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1136,18 +1146,18 @@ export default function Home() {
       description: '72 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
-        '💕 One shared slot — both attend the same session',
+        'One shared slot — both attend the same session',
         'Personalised diet plan for each partner',
         '60 min per session',
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
         '⏸️ Pause option (7 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1167,10 +1177,10 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1190,10 +1200,10 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
+        'Habit Tracker',
+        'Transformation Log Book',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1213,12 +1223,12 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
         '⏸️ Pause option (7 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1238,12 +1248,12 @@ export default function Home() {
         'Supplement guidance',
         'Lifestyle guidance',
         'WhatsApp support',
-        '💬 In-App Chat Support',
+        'In-App Chat Support',
         'Full video library access',
         '⏸️ Pause option (7 days)',
-        '📋 Habit Tracker',
-        '📓 Transformation Log Book',
-        '🎁 FREE RhynoGrip Fitness Gear',
+        'Habit Tracker',
+        'Transformation Log Book',
+        'FREE RhynoGrip Fitness Gear',
       ],
       liveGroup: true,
       liveOneOnOne: true,
@@ -1624,7 +1634,7 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
               style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
+            <div className="hero-mobile-veil absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/50 to-brand-navy/90" />
             <div className="absolute inset-0 bg-brand-navy/30" />
           </div>
 
@@ -1682,7 +1692,7 @@ export default function Home() {
                 Transform Your
               </span>
               <span className="block text-4xl font-extrabold leading-[1.08] tracking-tight mt-1">
-                <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-brand-gold bg-clip-text text-transparent">
+                <span className="hero-accent bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">
                   Fitness
                 </span>
                 <span className="text-white"> Journey</span>
@@ -1692,7 +1702,7 @@ export default function Home() {
             {/* Subtitle */}
             <motion.p variants={itemVariants} className="text-sm text-gray-300/80 mb-5 leading-relaxed max-w-sm">
               Personalized training & nutrition — built for <span className="text-white font-semibold">real results</span>.
-              Start your transformation with <span className="text-brand-gold font-semibold">Coach Himanshu</span> today.
+              Start your transformation with <span className="text-blue-400 font-semibold">Coach Himanshu</span> today.
             </motion.p>
 
             {/* Independence Day sale — jumps to the spin wheel */}
@@ -1701,9 +1711,9 @@ export default function Home() {
                 variants={itemVariants}
                 href="#sale"
                 className="group mb-6 inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-white/[0.14] shadow-lg overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, rgba(255,153,51,0.18) 0%, rgba(255,255,255,0.06) 50%, rgba(19,136,8,0.18) 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgba(255,153,51,0.18) 0%, rgb(var(--c-white) / 0.06) 50%, rgba(19,136,8,0.18) 100%)' }}
               >
-                <span className="text-lg leading-none" aria-hidden>🇮🇳</span>
+                <IndiaFlag className="w-6 h-4" />
                 <span className="text-[13px] leading-tight text-white">
                   <span className="font-extrabold">Independence Day Sale</span>
                   <span className="block text-orange-200/90 text-[11px] font-semibold">Spin &amp; Win up to 50% OFF</span>
@@ -1745,7 +1755,7 @@ export default function Home() {
               <button
                 onClick={() => setIsLoginOpen(true)}
                 className="w-full inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-white/90 text-base border border-white/[0.12] transition-all duration-300"
-                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.07) 0%, rgb(var(--c-white) / 0.03) 100%)' }}
               >
                 View Dashboard
               </button>
@@ -1759,7 +1769,7 @@ export default function Home() {
             transition={{ delay: 0.5 }}
             className="mt-auto"
           >
-            <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.5) 0%, rgba(10,15,31,0.85) 100%)' }}>
+            <div className="grid grid-cols-3 divide-x divide-white/[0.06] border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy) / 0.5) 0%, rgb(var(--c-navy) / 0.85) 100%)' }}>
               {stats.map((stat, index) => (
                 <div key={index} className="flex flex-col items-center justify-center py-4 px-2">
                   <stat.icon size={16} className="text-brand-blue/70 mb-1.5" />
@@ -1795,7 +1805,7 @@ export default function Home() {
                 <motion.h1 variants={itemVariants} className="mb-5">
                   <span className="block text-6xl xl:text-7xl font-extrabold text-white leading-[1.02] tracking-tight">Transform Your</span>
                   <span className="block text-6xl xl:text-7xl font-extrabold leading-[1.02] tracking-tight">
-                    <span className="bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">Fitness</span>
+                    <span className="hero-accent bg-gradient-to-r from-brand-blue via-blue-400 to-cyan-300 bg-clip-text text-transparent">Fitness</span>
                     <span className="text-white"> Journey</span>
                   </span>
                 </motion.h1>
@@ -1811,9 +1821,9 @@ export default function Home() {
                     variants={itemVariants}
                     href="#sale"
                     className="group mb-8 inline-flex items-center gap-3 pl-4 pr-5 py-3 rounded-2xl border border-white/[0.14] shadow-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
-                    style={{ background: 'linear-gradient(135deg, rgba(255,153,51,0.2) 0%, rgba(255,255,255,0.07) 50%, rgba(19,136,8,0.2) 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, rgba(255,153,51,0.2) 0%, rgb(var(--c-white) / 0.07) 50%, rgba(19,136,8,0.2) 100%)' }}
                   >
-                    <span className="text-2xl leading-none" aria-hidden>🇮🇳</span>
+                    <IndiaFlag className="w-8 h-[22px]" />
                     <span className="text-sm leading-tight text-white">
                       <span className="font-extrabold text-base">Independence Day Sale</span>
                       <span className="block text-orange-200/90 text-xs font-semibold">Spin the wheel &amp; win up to 50% OFF — one-time coupon</span>
@@ -1835,7 +1845,7 @@ export default function Home() {
                   <button
                     onClick={() => setIsLoginOpen(true)}
                     className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-medium text-white/80 text-base border border-white/[0.1] transition-all duration-300 hover:border-white/[0.2] hover:text-white"
-                    style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.05) 0%, rgb(var(--c-white) / 0.02) 100%)' }}
                   >
                     View Dashboard
                   </button>
@@ -1844,7 +1854,7 @@ export default function Home() {
                 <motion.div
                   variants={itemVariants}
                   className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-white/[0.06]"
-                  style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
                 >
                   <div className="flex -space-x-2">
                     {[...Array(4)].map((_, i) => (
@@ -1869,7 +1879,7 @@ export default function Home() {
               <motion.div variants={itemVariants} className="w-[38%] flex-shrink-0">
                 <div className="relative">
                   <div className="absolute -inset-4 rounded-[2rem] blur-2xl opacity-40" style={{ background: 'radial-gradient(ellipse, rgba(23,95,255,0.15) 0%, transparent 70%)' }} />
-                  <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+                  <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.06) 0%, rgb(var(--c-white) / 0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgb(var(--c-white) / 0.06)' }}>
                     <div className="p-1.5">
                       <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
                         <LazyVideo
@@ -1879,7 +1889,7 @@ export default function Home() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent" />
                         <div className="absolute bottom-4 left-4 right-4">
-                          <div className="rounded-2xl border border-white/[0.1] px-5 py-4" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.7) 0%, rgba(10,15,31,0.5) 100%)' }}>
+                          <div className="rounded-2xl border border-white/[0.1] px-5 py-4" style={{ background: 'linear-gradient(135deg, rgb(var(--c-navy) / 0.7) 0%, rgb(var(--c-navy) / 0.5) 100%)' }}>
                             <div className="flex items-center justify-between">
                               <div>
                                 <p className="text-white/50 text-[10px] font-medium tracking-wider uppercase mb-1">Certified Coach</p>
@@ -1893,7 +1903,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="absolute top-4 right-4">
-                          <div className="rounded-xl border border-white/[0.1] px-3 py-2" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
+                          <div className="rounded-xl border border-white/[0.1] px-3 py-2" style={{ background: 'linear-gradient(135deg, rgb(var(--c-navy) / 0.6) 0%, rgb(var(--c-navy) / 0.4) 100%)' }}>
                             <div className="flex items-center gap-1.5">
                               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                               <span className="text-white/80 text-[10px] font-semibold tracking-wide uppercase">Live</span>
@@ -1912,7 +1922,7 @@ export default function Home() {
         {/* Desktop stats bar */}
         <div className="relative z-10 w-full hidden lg:block">
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
-            <div className="grid grid-cols-3 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+            <div className="grid grid-cols-3 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy) / 0.6) 0%, rgb(var(--c-navy) / 0.9) 100%)' }}>
               {stats.map((stat, index) => (
                 <motion.div
                   key={index}
@@ -1947,7 +1957,7 @@ export default function Home() {
         const themeIcon = activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'independence' ? <Sparkles size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
 
         return (
-        <section id="sale" className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden scroll-mt-20" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgba(10,15,31,1) 0%, rgba(15,20,40,1) 50%, rgba(10,15,31,1) 100%)' }}>
+        <section id="sale" className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden scroll-mt-20" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy) / 1) 0%, rgb(var(--c-navy) / 1) 50%, rgb(var(--c-navy) / 1) 100%)' }}>
           {/* Animated background effects */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full`} style={{ background: `radial-gradient(circle, var(--tw-gradient-from, rgba(23,95,255,0.04)) 0%, transparent 70%)` }} />
@@ -1969,7 +1979,7 @@ export default function Home() {
 
             {/* Carousel Container */}
             <div className="relative">
-              <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(26,37,64,0.5) 0%, rgba(10,15,31,0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
+              <div className="rounded-3xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(var(--c-navy-light) / 0.5) 0%, rgb(var(--c-navy) / 0.8) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgb(var(--c-white) / 0.05)' }}>
                 <div className={`relative ${activeSale.theme === 'independence' ? 'min-h-[600px] md:min-h-[560px]' : 'min-h-[420px] md:min-h-[400px]'}`}>
                   {/* Slide 0: Main Headline */}
                   <motion.div
@@ -1987,13 +1997,13 @@ export default function Home() {
                       {/* Health awareness days calendar (July only) */}
                       {'healthDays' in activeSale && activeSale.healthDays && (
                         <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-5">
-                          {(activeSale.healthDays as { date: number; name: string; emoji: string }[]).map((hd, i) => {
+                          {(activeSale.healthDays as { date: number; name: string; icon: LucideIcon }[]).map((hd, i) => {
                             const now = new Date();
                             const isPast = now.getDate() > hd.date;
                             const isToday = now.getDate() === hd.date;
                             return (
-                              <span key={i} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium border ${isToday ? `${tc.tagText} ${tc.tagBorder} ring-1 ring-rose-400/30` : isPast ? 'text-gray-500 border-white/5' : `${tc.tagText} ${tc.tagBorder}`}`} style={{ background: isToday ? tc.tagBg : isPast ? 'rgba(255,255,255,0.02)' : tc.tagBg }}>
-                                {hd.emoji} Jul {hd.date} — {hd.name}{isToday ? ' (TODAY!)' : ''}
+                              <span key={i} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium border ${isToday ? `${tc.tagText} ${tc.tagBorder} ring-1 ring-rose-400/30` : isPast ? 'text-gray-500 border-white/5' : `${tc.tagText} ${tc.tagBorder}`}`} style={{ background: isToday ? tc.tagBg : isPast ? 'rgb(var(--c-white) / 0.02)' : tc.tagBg }}>
+                                <hd.icon size={14} className="shrink-0" aria-hidden /> Jul {hd.date} — {hd.name}{isToday ? ' (TODAY!)' : ''}
                               </span>
                             );
                           })}
@@ -2003,7 +2013,7 @@ export default function Home() {
                         <div className="flex flex-wrap justify-center gap-2 md:gap-3">
                           {['Gym Workout Plans', 'Home Workout Plans', 'Rehabilitation Programs', '1:1 Elite Training', 'Diet & Nutrition', 'Beginner Friendly'].map((h, i) => (
                             <span key={i} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium ${tc.tagText} border ${tc.tagBorder}`} style={{ background: tc.tagBg }}>
-                              ✅ {h}
+                              <Check size={14} strokeWidth={2.5} className="shrink-0" aria-hidden /> {h}
                             </span>
                           ))}
                         </div>
@@ -2011,10 +2021,10 @@ export default function Home() {
                       {activeSale.theme === 'independence' && (
                         <button
                           onClick={() => setSaleSlide(1)}
-                          className={`mt-6 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${tc.ctaShadow}`}
+                          className={`on-accent mt-6 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-white text-base mx-auto overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${tc.ctaShadow}`}
                           style={{ background: tc.ctaBg }}
                         >
-                          🎡 Spin the Wheel — Win up to 50% OFF
+                          <FerrisWheel size={18} aria-hidden /> Spin the Wheel — Win up to 50% OFF
                           <ArrowRight size={16} />
                         </button>
                       )}
@@ -2032,10 +2042,10 @@ export default function Home() {
                       <AzaadiSpinWheel />
                     ) : (
                       <div className="h-full flex flex-col justify-center">
-                        <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6">📋 DISCOUNTS ON ALL PLANS</h3>
+                        <h3 className="text-xl md:text-3xl font-extrabold text-white text-center mb-6 inline-flex items-center justify-center gap-2.5 w-full"><Tag className="w-6 h-6 md:w-7 md:h-7 text-brand-gold" aria-hidden /> DISCOUNTS ON ALL PLANS</h3>
                         <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
                           {activeSale.offers.map((offer, i) => (
-                            <div key={i} className="relative rounded-2xl border border-white/[0.08] p-3 md:p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.6) 0%, rgba(10,15,31,0.9) 100%)' }}>
+                            <div key={i} className="relative rounded-2xl border border-white/[0.08] p-3 md:p-4 text-center transition-all duration-300 hover:border-brand-gold/30 hover:scale-[1.02]" style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy-light) / 0.6) 0%, rgb(var(--c-navy) / 0.9) 100%)' }}>
                               <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: tc.badgeBg }}>{offer.off}</span>
                               <p className="text-gray-400 text-xs font-medium mt-2">{offer.label}</p>
                             </div>
@@ -2055,14 +2065,14 @@ export default function Home() {
                     >
                       <div className="text-center h-full flex flex-col justify-center">
                         <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-2">
-                          {activeSale.theme === 'health' ? '🏥 TODAY\'S HEALTH AWARENESS' : '🎉 JUNE 21 SPECIALS'}
+                          <span className="inline-flex items-center justify-center gap-2.5">{activeSale.theme === 'health' ? <><HeartPulse className="w-7 h-7" aria-hidden /> TODAY&apos;S HEALTH AWARENESS</> : <><PartyPopper className="w-7 h-7" aria-hidden /> JUNE 21 SPECIALS</>}</span>
                         </h3>
                         <p className={`${tc.textAccent} font-bold text-base mb-6`}>
                           {activeSale.theme === 'health' ? 'Your health is your greatest wealth' : 'World Yoga Day + Father\u0027s Day'}
                         </p>
                         <div className="space-y-3 max-w-lg mx-auto mb-6">
                           {activeSale.specials?.map((special: string, i: number) => (
-                            <div key={i} className="rounded-xl border border-white/[0.08] p-4 text-left" style={{ background: 'rgba(26,37,64,0.4)' }}>
+                            <div key={i} className="rounded-xl border border-white/[0.08] p-4 text-left" style={{ background: 'rgb(var(--c-navy-light) / 0.4)' }}>
                               <p className="text-white font-medium text-sm md:text-base">{special}</p>
                             </div>
                           ))}
@@ -2110,7 +2120,7 @@ export default function Home() {
           className="max-w-6xl mx-auto relative z-10"
         >
           <div className="text-center mb-8 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] mb-4 md:mb-6" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] mb-4 md:mb-6" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}>
               <Award size={14} className="text-brand-blue" />
               <span className="text-blue-300/80 text-xs font-medium tracking-wider uppercase">Why Choose Us</span>
             </div>
@@ -2127,7 +2137,7 @@ export default function Home() {
               <div
                 key={index}
                 className="group relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all duration-500 cursor-pointer hover:-translate-y-1.5"
-                style={{ background: 'linear-gradient(180deg, rgba(26,37,64,0.4) 0%, rgba(10,15,31,0.8) 100%)' }}
+                style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy-light) / 0.4) 0%, rgb(var(--c-navy) / 0.8) 100%)' }}
               >
                 {/* Premium Image Background */}
                 <div className="relative h-56 md:h-72 overflow-hidden">
@@ -2166,7 +2176,7 @@ export default function Home() {
       </section>
 
       {/* Qualifications Marquee */}
-      <section className="py-5 border-y border-white/[0.04] overflow-hidden relative cv-auto" style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(26,37,64,0.15) 50%, rgba(10,15,31,0.95) 100%)' }}>
+      <section className="py-5 border-y border-white/[0.04] overflow-hidden relative cv-auto" style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy) / 0.95) 0%, rgb(var(--c-navy-light) / 0.15) 50%, rgb(var(--c-navy) / 0.95) 100%)' }}>
         <div className="relative">
           {/* Gradient overlays for fade effect */}
           <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-brand-navy to-transparent z-10"></div>
@@ -2184,7 +2194,7 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
               >
                 <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
@@ -2203,7 +2213,7 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={`dup-${index}`}
-                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                className="inline-flex items-center gap-2 mx-2 md:mx-3 px-3 md:px-4 py-2 md:py-2.5 border border-white/[0.06] rounded-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
               >
                 <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-brand-blue/80 to-brand-blue rounded-lg flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
@@ -2237,7 +2247,7 @@ export default function Home() {
 
           {/* Category Tabs */}
           <div className="flex justify-center mb-8 md:mb-10 px-4">
-            <div className="grid grid-cols-4 gap-1.5 sm:inline-flex sm:gap-2 w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
+            <div className="grid grid-cols-4 gap-1.5 sm:inline-flex sm:gap-2 w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}>
               {[
                 { key: 'gym' as const, label: 'Gym', labelFull: 'Gym Workout', icon: Dumbbell },
                 { key: 'home' as const, label: 'Home', labelFull: 'Home Workout', icon: HomeIcon },
@@ -2482,7 +2492,7 @@ export default function Home() {
               className="relative group hover:scale-[1.02] transition-transform duration-300"
             >
               <div className="absolute inset-0 rounded-3xl" style={{ background: 'radial-gradient(circle, rgba(23,95,255,0.06) 0%, transparent 70%)' }}></div>
-              <div className="relative p-5 rounded-2xl border border-white/[0.08] overflow-hidden h-full flex items-center" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }}>
+              <div className="relative p-5 rounded-2xl border border-white/[0.08] overflow-hidden h-full flex items-center" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.05) 0%, rgb(var(--c-white) / 0.02) 100%)' }}>
                 <LazyVideo
                   src="/RHYNOGRIP_VIDEO.mp4"
                   className="w-full h-auto rounded-2xl [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
@@ -2513,7 +2523,7 @@ export default function Home() {
                   {/* Coupon Code Box */}
                   <div className="rounded-xl p-4 mb-3 border border-brand-gold/20" style={{ background: 'linear-gradient(135deg, rgba(201,166,70,0.08) 0%, rgba(201,166,70,0.02) 100%)' }}>
                     <p className="text-xs text-gray-400 mb-2 font-medium tracking-wide uppercase">Use Coupon Code</p>
-                    <div className="flex items-center justify-between rounded-lg p-3 border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(10,15,31,0.6) 0%, rgba(10,15,31,0.4) 100%)' }}>
+                    <div className="flex items-center justify-between rounded-lg p-3 border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgb(var(--c-navy) / 0.6) 0%, rgb(var(--c-navy) / 0.4) 100%)' }}>
                       <code className="text-lg font-bold text-brand-gold tracking-wider">
                         COACHHIMANSHU
                       </code>
@@ -2692,7 +2702,7 @@ export default function Home() {
               <button
                 onClick={prevTestimonial}
                 className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group"
-                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
                 aria-label="Previous testimonial"
               >
                 <ChevronLeft className="text-gray-500 group-hover:text-white transition-colors" size={22} />
@@ -2700,7 +2710,7 @@ export default function Home() {
               <button
                 onClick={nextTestimonial}
                 className="w-12 h-12 rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group"
-                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.04) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
                 aria-label="Next testimonial"
               >
                 <ChevronRight className="text-gray-500 group-hover:text-white transition-colors" size={22} />

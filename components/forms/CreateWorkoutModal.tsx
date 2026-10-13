@@ -456,7 +456,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
       if (!res.ok) {
         setTemplateMsg(data.error || 'Failed to save template');
       } else {
-        setTemplateMsg('Saved as template ✓');
+        setTemplateMsg('Saved as template');
         setShowSaveTemplate(false);
         setSaveTemplateName('');
         setSaveTemplateShared(false);
@@ -950,7 +950,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, onSuccess, workout
                         </div>
                       </div>
                     )}
-                    {templateMsg && <p className="text-xs mt-2 text-purple-300">{templateMsg}</p>}
+                    {templateMsg && <p className="text-xs mt-2 text-purple-300 inline-flex items-center gap-1">{templateMsg === 'Saved as template' && <Check className="w-3.5 h-3.5" aria-hidden />}{templateMsg}</p>}
                   </div>
                 )}
 

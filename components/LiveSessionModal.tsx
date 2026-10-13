@@ -165,7 +165,7 @@ export default function LiveSessionModal({ isOpen, onClose }: LiveSessionModalPr
                       <div
                         key={client.id}
                         className="p-4 rounded-xl border border-white/[0.06]"
-                        style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)' }}
+                        style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.03) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">

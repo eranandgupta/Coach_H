@@ -56,7 +56,7 @@ export default function PlanCompare() {
         <section
           key={group.key}
           className={`py-16 md:py-24 ${gi % 2 === 1 ? 'border-y border-white/[0.06]' : ''}`}
-          style={gi % 2 === 1 ? { background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgba(10,15,31,1) 100%)' } : undefined}
+          style={gi % 2 === 1 ? { background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' } : undefined}
         >
           <div className="max-w-6xl mx-auto px-4">
             <div className="text-center mb-12">

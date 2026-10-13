@@ -3,7 +3,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, TriangleAlert } from 'lucide-react';
 
 export default function Disclaimer() {
   return (
@@ -28,7 +28,7 @@ export default function Disclaimer() {
 
           {/* Important Notice */}
           <div className="bg-red-500/10 border-2 border-red-500/30 rounded-2xl p-6 mb-8">
-            <p className="text-white font-semibold text-lg mb-2">⚠️ IMPORTANT HEALTH NOTICE</p>
+            <p className="text-white font-semibold text-lg mb-2 inline-flex items-center gap-2"><TriangleAlert className="w-5 h-5 text-amber-400 shrink-0" aria-hidden /> IMPORTANT HEALTH NOTICE</p>
             <p className="text-gray-300 leading-relaxed">
               Please read this disclaimer carefully before using our fitness coaching services. By using our services, you acknowledge that you have read, understood, and agree to this disclaimer.
             </p>
@@ -301,7 +301,7 @@ export default function Disclaimer() {
               </section>
 
               <div className="mt-8 p-6 bg-red-500/10 border-2 border-red-500/30 rounded-lg">
-                <p className="text-white font-semibold mb-2">⚠️ ACKNOWLEDGMENT</p>
+                <p className="text-white font-semibold mb-2 inline-flex items-center gap-2"><TriangleAlert className="w-5 h-5 text-amber-400 shrink-0" aria-hidden /> ACKNOWLEDGMENT</p>
                 <p className="text-gray-300 text-sm leading-relaxed">
                   By using Coach Himanshu's services, you acknowledge that you have read, understood, and agree to this disclaimer. You accept full responsibility for your health and safety, and you agree to hold Coach Himanshu harmless from any claims, damages, or losses arising from your use of our services.
                 </p>

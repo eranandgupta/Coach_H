@@ -3,7 +3,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
-import { XCircle } from 'lucide-react';
+import { XCircle, TriangleAlert } from 'lucide-react';
 
 export default function CancellationPolicy() {
   return (
@@ -242,7 +242,7 @@ export default function CancellationPolicy() {
               </section>
 
               <div className="mt-8 p-6 bg-red-500/10 border-2 border-red-500/30 rounded-lg">
-                <p className="text-white font-semibold mb-2">⚠️ IMPORTANT REMINDER</p>
+                <p className="text-white font-semibold mb-2 inline-flex items-center gap-2"><TriangleAlert className="w-5 h-5 text-amber-400 shrink-0" aria-hidden /> IMPORTANT REMINDER</p>
                 <p className="text-gray-300 text-sm leading-relaxed mb-3">
                   <strong className="text-white">You can cancel anytime, but NO REFUNDS will be issued.</strong> You will continue to have full access until the end of your paid period.
                 </p>

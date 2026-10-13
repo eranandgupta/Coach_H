@@ -6,6 +6,7 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './lib/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -60,17 +61,39 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        // Theme-aware palette. `white`, `gray-*` and the navy surfaces resolve to
+        // CSS variables (see globals.css) so the site's existing dark-first classes
+        // (text-white, bg-white/5, border-white/10, text-gray-300, bg-brand-navy…)
+        // flip automatically in light mode. `white` means "ink on the page", not
+        // literally #fff — on solid brand surfaces it is pinned back to real white.
+        white: 'rgb(var(--c-white) / <alpha-value>)',
+        gray: {
+          50: 'rgb(var(--c-gray-50) / <alpha-value>)',
+          100: 'rgb(var(--c-gray-100) / <alpha-value>)',
+          200: 'rgb(var(--c-gray-200) / <alpha-value>)',
+          300: 'rgb(var(--c-gray-300) / <alpha-value>)',
+          400: 'rgb(var(--c-gray-400) / <alpha-value>)',
+          500: 'rgb(var(--c-gray-500) / <alpha-value>)',
+          600: 'rgb(var(--c-gray-600) / <alpha-value>)',
+          700: 'rgb(var(--c-gray-700) / <alpha-value>)',
+          800: 'rgb(var(--c-gray-800) / <alpha-value>)',
+          900: 'rgb(var(--c-gray-900) / <alpha-value>)',
+          950: 'rgb(var(--c-gray-950) / <alpha-value>)',
+        },
+        // Always-white / always-ink escape hatches for spots that must not flip.
+        snow: '#FFFFFF',
+        ink: '#0A0F1F',
         brand: {
-          navy: '#0A0F1F',
+          navy: 'rgb(var(--c-navy) / <alpha-value>)',
           blue: '#175FFF',
           green: '#00C48C',
           red: '#FF5757',
-          gray: '#E8ECF3',
+          gray: 'rgb(var(--c-brand-gray) / <alpha-value>)',
           gold: '#C9A646',
-          'navy-light': '#1A2540',
-          'navy-dark': '#070A15',
+          'navy-light': 'rgb(var(--c-navy-light) / <alpha-value>)',
+          'navy-dark': 'rgb(var(--c-navy-dark) / <alpha-value>)',
           'blue-dark': '#1240CC',
-          'gray-dark': '#7A8291',
+          'gray-dark': 'rgb(var(--c-brand-gray-dark) / <alpha-value>)',
         },
       },
       keyframes: {

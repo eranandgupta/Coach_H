@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword, generateToken } from '@/lib/auth';
+import { setSessionCookie } from '@/lib/sessionCookie';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
     const token = generateToken(user.id, user.email, user.role);
 
     // Return user data (without password)
-    return NextResponse.json(
+    const res = NextResponse.json(
       {
         message: 'User registered successfully',
         token,
@@ -63,6 +64,8 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
+    setSessionCookie(res, token);
+    return res;
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(

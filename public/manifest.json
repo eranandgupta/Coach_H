@@ -2,7 +2,7 @@
   "name": "Coach Himanshu - Fitness & Nutrition",
   "short_name": "Coach Himanshu",
   "description": "Transform your fitness journey with personalized workout and nutrition plans from Coach Himanshu",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#0A0F1F",
   "theme_color": "#175FFF",

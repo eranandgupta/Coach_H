@@ -241,7 +241,7 @@ export default function FunFactModal({ isOpen, onClose }: FunFactModalProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
                       className="flex items-start gap-2 p-3 rounded-xl border border-white/[0.06]"
-                      style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)' }}
+                      style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.03) 0%, rgb(var(--c-white) / 0.01) 100%)' }}
                     >
                       {/* Position badge */}
                       <div className="flex flex-col items-center gap-0.5 flex-shrink-0 pt-0.5">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown, LayoutTemplate, Save } from 'lucide-react';
+import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown, LayoutTemplate, Save, Check } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
 import { toDateInputValue } from '@/lib/dateUtils';
 
@@ -353,7 +353,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet, mode
       if (!res.ok) {
         setTemplateMsg(data.error || 'Failed to save template');
       } else {
-        setTemplateMsg('Saved as template ✓');
+        setTemplateMsg('Saved as template');
         setShowSaveTemplate(false);
         setSaveTemplateName('');
         setSaveTemplateShared(false);
@@ -908,7 +908,7 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet, mode
                         </div>
                       </div>
                     )}
-                    {templateMsg && <p className="text-xs mt-2 text-green-300">{templateMsg}</p>}
+                    {templateMsg && <p className="text-xs mt-2 text-green-300 inline-flex items-center gap-1">{templateMsg === 'Saved as template' && <Check className="w-3.5 h-3.5" aria-hidden />}{templateMsg}</p>}
                   </div>
                 )}
 

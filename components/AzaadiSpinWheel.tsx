@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Copy, Check, Gift, Loader2 } from 'lucide-react';
+import { Copy, Check, Gift, Loader2, FerrisWheel, PartyPopper } from 'lucide-react';
 
 /**
  * Azaadi (Independence Day) "Spin & Win" wheel.
@@ -152,7 +152,7 @@ export default function AzaadiSpinWheel() {
     <div className="w-full h-full flex flex-col items-center justify-center gap-4 py-2">
       <div className="text-center">
         <h3 className="text-xl md:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
-          <span aria-hidden>🎡</span> Spin &amp; Win up to 50% OFF
+          <FerrisWheel className="w-6 h-6 md:w-8 md:h-8 text-orange-400" aria-hidden /> Spin &amp; Win up to 50% OFF
         </h3>
         <p className="text-orange-200/80 text-xs md:text-sm mt-1 font-medium">
           One free spin per device · One-time coupon
@@ -182,7 +182,7 @@ export default function AzaadiSpinWheel() {
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            boxShadow: '0 12px 40px rgba(0,0,0,0.45), 0 0 0 6px rgba(255,255,255,0.06)',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.45), 0 0 0 6px rgb(var(--c-white) / 0.06)',
             transform: `rotate(${rotation}deg)`,
             transition:
               phase === 'spinning'
@@ -258,8 +258,8 @@ export default function AzaadiSpinWheel() {
       {/* Result */}
       {phase === 'done' && result && (
         <div className="w-full max-w-xs flex flex-col items-center gap-2 text-center">
-          <p className="text-white text-lg font-extrabold">
-            🎉 You won <span className="text-orange-300">{result.prize}% OFF!</span>
+          <p className="text-white text-lg font-extrabold inline-flex items-center gap-2">
+            <PartyPopper className="w-5 h-5 text-orange-400" aria-hidden /> You won <span className="text-orange-300">{result.prize}% OFF!</span>
           </p>
           <button
             onClick={copyCode}

@@ -12,7 +12,7 @@ import {
   ChevronLeft,
   CheckCircle,
   Loader2,
-  X,
+  X, Salad, Egg, Drumstick, CalendarDays, Flame, Stethoscope, Trophy, BicepsFlexed
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -1153,10 +1153,10 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                 <label className="block text-gray-300 text-sm mb-3">What is your diet preference? <span className="text-red-400">*</span></label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { value: 'pure-veg', label: 'Pure Vegetarian', icon: '🥬', desc: 'No meat, fish, or eggs' },
-                    { value: 'eggetarian', label: 'Eggetarian', icon: '🥚', desc: 'Vegetarian + Eggs' },
-                    { value: 'non-veg', label: 'Non-Vegetarian', icon: '🍗', desc: 'All foods including meat' },
-                    { value: 'non-veg-restricted', label: 'Non-Veg (Restricted Days)', icon: '📅', desc: 'Non-veg but not on specific days' },
+                    { value: 'pure-veg', label: 'Pure Vegetarian', icon: Salad, desc: 'No meat, fish, or eggs' },
+                    { value: 'eggetarian', label: 'Eggetarian', icon: Egg, desc: 'Vegetarian + Eggs' },
+                    { value: 'non-veg', label: 'Non-Vegetarian', icon: Drumstick, desc: 'All foods including meat' },
+                    { value: 'non-veg-restricted', label: 'Non-Veg (Restricted Days)', icon: CalendarDays, desc: 'Non-veg but not on specific days' },
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -1168,7 +1168,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                           : 'bg-brand-navy border-2 border-white/10 hover:border-white/20'
                       }`}
                     >
-                      <span className="text-2xl">{option.icon}</span>
+                      <option.icon className="w-6 h-6 text-brand-blue shrink-0" aria-hidden />
                       <div>
                         <p className="text-white font-medium">{option.label}</p>
                         <p className="text-gray-400 text-xs mt-0.5">{option.desc}</p>
@@ -1208,10 +1208,10 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
 
               <div className="space-y-3">
                 {[
-                  { key: 'goalLoseFat', label: 'Lose Body Fat', icon: '🔥' },
-                  { key: 'goalRehabilitate', label: 'Rehabilitate an Injury', icon: '🏥' },
-                  { key: 'goalSportsTraining', label: 'Sports Specific Training', icon: '⚽' },
-                  { key: 'goalMuscleGain', label: 'Muscle Hypertrophy (Build Muscle)', icon: '💪' },
+                  { key: 'goalLoseFat', label: 'Lose Body Fat', icon: Flame },
+                  { key: 'goalRehabilitate', label: 'Rehabilitate an Injury', icon: Stethoscope },
+                  { key: 'goalSportsTraining', label: 'Sports Specific Training', icon: Trophy },
+                  { key: 'goalMuscleGain', label: 'Muscle Hypertrophy (Build Muscle)', icon: BicepsFlexed },
                 ].map((goal) => (
                   <button
                     key={goal.key}
@@ -1223,7 +1223,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                         : 'bg-brand-navy/50 border-2 border-white/10'
                     }`}
                   >
-                    <span className="text-2xl">{goal.icon}</span>
+                    <goal.icon className="w-6 h-6 text-brand-blue shrink-0" aria-hidden />
                     <span className="text-white font-medium">{goal.label}</span>
                     {formData[goal.key as keyof typeof formData] && (
                       <CheckCircle className="ml-auto text-white" size={24} />

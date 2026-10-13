@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check } from 'lucide-react';
 import { getAudienceBySlug, getAllAudienceSlugs, AUDIENCES } from '@/lib/audiences';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
@@ -72,7 +73,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
       </section>
 
       {/* Stats Bar */}
-      <section className="py-8 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.05) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-8 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.05) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
             <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">1000+</div>
@@ -94,7 +95,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
       </section>
 
       {/* Focus areas / goal chips */}
-      <section className="py-16 md:py-24 border-b border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-b border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             {data.goalChipsHeading}
@@ -109,8 +110,8 @@ export default function AudiencePage({ params }: { params: { audience: string } 
                 key={index}
                 className="flex items-center gap-3 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02]"
               >
-                <div className="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold text-sm font-bold flex-shrink-0">
-                  ✓
+                <div className="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold flex-shrink-0">
+                  <Check className="w-4 h-4" strokeWidth={2.75} aria-hidden />
                 </div>
                 <span className="text-white font-medium text-sm">{chip}</span>
               </div>
@@ -148,7 +149,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
       </section>
 
       {/* How It Works */}
-      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             How It Works
@@ -236,7 +237,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
       </section>
 
       {/* Related reading */}
-      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
             Helpful Reading
@@ -279,7 +280,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {data.ctaTitle}

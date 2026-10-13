@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp, Clock, FileText } from 'lucide-react';
+import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp, Clock, FileText, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
@@ -496,8 +496,8 @@ export default function ClientDetailModal({
                     >
                       <div className="flex items-start justify-between">
                         <div className="text-left">
-                          <p className="text-brand-blue font-semibold mb-2">
-                            {assessment.partner2 ? `${client.name || 'Partner 1'} (Partner 1) — Completed ✓` : 'Assessment Completed ✓'}
+                          <p className="text-brand-blue font-semibold mb-2 inline-flex items-center gap-1.5">
+                            {assessment.partner2 ? `${client.name || 'Partner 1'} (Partner 1) — Completed` : 'Assessment Completed'} <CheckCircle2 className="w-4 h-4" aria-hidden />
                           </p>
                           <p className="text-gray-400 text-sm">
                             Submitted: {new Date(assessment.createdAt).toLocaleDateString()}
@@ -531,7 +531,7 @@ export default function ClientDetailModal({
                       >
                         <div className="flex items-start justify-between">
                           <div className="text-left">
-                            <p className="text-pink-300 font-semibold mb-2">Partner 2 — Completed ✓</p>
+                            <p className="text-pink-300 font-semibold mb-2 inline-flex items-center gap-1.5">Partner 2 — Completed <CheckCircle2 className="w-4 h-4" aria-hidden /></p>
                             <div className="flex flex-wrap gap-2 mt-1">
                               {assessment.partner2.goalLoseFat && (
                                 <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Lose Fat</span>

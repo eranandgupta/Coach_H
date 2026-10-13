@@ -193,7 +193,7 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
                 <div className="w-16 h-16 mx-auto rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mb-4">
                   <Check size={30} className="text-green-400" />
                 </div>
-                <h4 className="text-xl font-bold text-white mb-2">You&apos;re active again! 🎉</h4>
+                <h4 className="text-xl font-bold text-white mb-2">You&apos;re active again!</h4>
                 <p className="text-gray-400 text-sm mb-6">
                   Your {selectedPlan?.name} is now active. Welcome back — let&apos;s get to work.
                 </p>

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Heart, Activity, Utensils, Target, CheckCircle, XCircle, Calendar } from 'lucide-react';
+import { X, User, Heart, Activity, Utensils, Target, CheckCircle, XCircle, Calendar, TriangleAlert } from 'lucide-react';
 
 interface AssessmentResultsModalProps {
   isOpen: boolean;
@@ -355,7 +355,7 @@ export default function AssessmentResultsModal({
                 {assessment.specialConditions && (
                   <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-5 mt-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-yellow-400 text-lg">⚠️</span>
+                      <TriangleAlert className="w-5 h-5 text-yellow-400" aria-hidden />
                       <h3 className="text-lg font-bold text-yellow-300">Special Conditions</h3>
                     </div>
                     <p className="text-yellow-200/80 text-sm whitespace-pre-wrap">{assessment.specialConditions}</p>

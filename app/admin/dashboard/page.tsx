@@ -51,6 +51,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import ThemeToggle from '@/components/theme/ThemeToggle';
+import { loadSession, logout } from '@/lib/session';
 import { isElitePlan, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from '@/lib/planUtils';
 import CreateClientModal from '@/components/admin/CreateClientModal';
 import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
@@ -200,12 +202,11 @@ export default function AdminDashboard() {
   }), []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/');
-      return;
-    }
-    fetchAllData();
+    // Restore/refresh the session first (cookie fallback, retries on network errors).
+    loadSession().then((session) => {
+      if (session.status === 'unauthenticated') { router.push('/'); return; }
+      fetchAllData();
+    });
   }, [router]);
 
   const fetchAllData = async () => {
@@ -218,7 +219,7 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/clients', { headers: authHeaders() });
       if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('token');
+        if (res.status === 401) await logout();
         router.push('/');
         return;
       }
@@ -291,9 +292,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await logout();
     router.push('/');
   };
 
@@ -562,16 +562,23 @@ export default function AdminDashboard() {
       {/* Fixed Header - matches coach dashboard */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center flex-shrink-0">
-            <Image src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto" alt="Coach Himanshu logo" width={90} height={90} className="object-contain" />
-          </Link>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center flex-shrink-0"
+            aria-label="Dashboard home"
+            title="Dashboard home"
+          >
+            <Image src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto" alt="Coach Himanshu logo" width={90} height={90} className="theme-logo object-contain" />
+          </button>
           <div className="flex-1 text-center hidden md:block">
             <h1 className="text-xl lg:text-2xl font-bold text-white leading-tight">Admin Panel</h1>
             <p className="text-gray-300 text-xs lg:text-sm">Manage clients, subscriptions & promo codes</p>
           </div>
+          <ThemeToggle size="sm" className="self-center" />
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all flex-shrink-0"
+            className="flex items-center gap-2 px-4 py-2 text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-lg hover:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/30 transition-all flex-shrink-0"
           >
             <LogOut className="w-5 h-5" />
             <span className="hidden lg:inline">Logout</span>
@@ -589,64 +596,75 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-2xl p-5">
-              <div className="p-2.5 bg-blue-500/30 rounded-xl w-fit mb-3">
-                <Users className="w-5 h-5 text-blue-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{totalClients}</h3>
-              <p className="text-gray-300 text-sm">Total Clients</p>
+              className="bg-brand-navy-light/60 border border-white/[0.08] rounded-xl px-3.5 py-3 shadow-sm hover:border-brand-blue/30 transition-colors flex items-center gap-3">
+              <div className="p-2 bg-brand-blue/10 rounded-lg shrink-0">
+              <Users className="w-4 h-4 text-brand-blue" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white leading-tight tabular-nums">{totalClients}</h3>
+              <p className="text-gray-400 text-xs truncate">Total Clients</p>
+            </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl p-5">
-              <div className="p-2.5 bg-green-500/30 rounded-xl w-fit mb-3">
-                <CheckCircle className="w-5 h-5 text-green-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{activeClients}</h3>
-              <p className="text-gray-300 text-sm">Active Clients</p>
+              className="bg-brand-navy-light/60 border border-white/[0.08] rounded-xl px-3.5 py-3 shadow-sm hover:border-brand-blue/30 transition-colors flex items-center gap-3">
+              <div className="p-2 bg-emerald-500/10 rounded-lg shrink-0">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white leading-tight tabular-nums">{activeClients}</h3>
+              <p className="text-gray-400 text-xs truncate">Active Clients</p>
+            </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-red-500/20 to-rose-500/20 border border-red-500/30 rounded-2xl p-5">
-              <div className="p-2.5 bg-red-500/30 rounded-xl w-fit mb-3">
-                <Users className="w-5 h-5 text-red-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{inactiveClients}</h3>
-              <p className="text-gray-300 text-sm">Inactive Clients</p>
+              className="bg-brand-navy-light/60 border border-white/[0.08] rounded-xl px-3.5 py-3 shadow-sm hover:border-brand-blue/30 transition-colors flex items-center gap-3">
+              <div className="p-2 bg-rose-500/10 rounded-lg shrink-0">
+              <Users className="w-4 h-4 text-rose-400" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white leading-tight tabular-nums">{inactiveClients}</h3>
+              <p className="text-gray-400 text-xs truncate">Inactive Clients</p>
+            </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-5">
-              <div className="p-2.5 bg-emerald-500/30 rounded-xl w-fit mb-3">
-                <CheckCircle className="w-5 h-5 text-emerald-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{activeSubscriptions}</h3>
-              <p className="text-gray-300 text-sm">Active Subs</p>
+              className="bg-brand-navy-light/60 border border-white/[0.08] rounded-xl px-3.5 py-3 shadow-sm hover:border-brand-blue/30 transition-colors flex items-center gap-3">
+              <div className="p-2 bg-emerald-500/10 rounded-lg shrink-0">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white leading-tight tabular-nums">{activeSubscriptions}</h3>
+              <p className="text-gray-400 text-xs truncate">Active Subs</p>
+            </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-5">
-              <div className="p-2.5 bg-orange-500/30 rounded-xl w-fit mb-3">
-                <Clock className="w-5 h-5 text-orange-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{expiringSoon}</h3>
-              <p className="text-gray-300 text-sm">Expiring (7d)</p>
+              className="bg-brand-navy-light/60 border border-white/[0.08] rounded-xl px-3.5 py-3 shadow-sm hover:border-brand-blue/30 transition-colors flex items-center gap-3">
+              <div className="p-2 bg-brand-blue/10 rounded-lg shrink-0">
+              <Clock className="w-4 h-4 text-brand-blue" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white leading-tight tabular-nums">{expiringSoon}</h3>
+              <p className="text-gray-400 text-xs truncate">Expiring (7d)</p>
+            </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-2xl p-5">
-              <div className="p-2.5 bg-purple-500/30 rounded-xl w-fit mb-3">
-                <Tag className="w-5 h-5 text-purple-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{totalPromoCodes}</h3>
-              <p className="text-gray-300 text-sm">Promo Codes</p>
+              className="bg-brand-navy-light/60 border border-white/[0.08] rounded-xl px-3.5 py-3 shadow-sm hover:border-brand-blue/30 transition-colors flex items-center gap-3">
+              <div className="p-2 bg-brand-blue/10 rounded-lg shrink-0">
+              <Tag className="w-4 h-4 text-brand-blue" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white leading-tight tabular-nums">{totalPromoCodes}</h3>
+              <p className="text-gray-400 text-xs truncate">Promo Codes</p>
+            </div>
             </motion.div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 mb-6">
             <motion.button
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
+                            whileTap={{ scale: 0.98 }}
               onClick={() => setIsVideoLibraryOpen(true)}
-              className="relative bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center gap-2"
+              className="action-btn !w-28"
             >
               <Play className="w-5 h-5" />
               <span className="text-sm">Video Library</span>
@@ -755,7 +773,7 @@ export default function AdminDashboard() {
                       <button onClick={fetchClients} className="p-2 bg-white/10 border border-white/20 rounded-lg text-gray-300 hover:bg-white/20 transition-all">
                         <RefreshCw className="h-4 w-4" />
                       </button>
-                      <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                      <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}
                         onClick={() => setCreateClientOpen(true)}
                         className="flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg font-semibold shadow-lg shadow-blue-500/30 text-sm">
                         <Plus className="h-4 w-4" /> Create Client
@@ -1027,7 +1045,7 @@ export default function AdminDashboard() {
                       <button onClick={fetchPromoCodes} className="p-2 bg-white/10 border border-white/20 rounded-lg text-gray-300 hover:bg-white/20 transition-all">
                         <RefreshCw className="h-4 w-4" />
                       </button>
-                      <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                      <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}
                         onClick={() => setCreatePromoOpen(true)}
                         className="flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg font-semibold shadow-lg shadow-purple-500/30 text-sm">
                         <Plus className="h-4 w-4" /> Generate Code
@@ -1092,7 +1110,7 @@ export default function AdminDashboard() {
                       <h2 className="text-xl font-bold text-white">Renewal Reminders</h2>
                       <p className="text-sm text-gray-400">Clients with subscriptions expiring in the next 14 days</p>
                     </div>
-                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}
                       onClick={handleSendAllReminders}
                       disabled={sendingAll || expiringSubscriptions.length === 0}
                       className="flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg font-semibold shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-all flex-shrink-0">

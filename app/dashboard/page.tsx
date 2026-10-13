@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { loadSession } from '@/lib/session';
 
 export default function DashboardRedirect() {
   const router = useRouter();
@@ -10,31 +11,19 @@ export default function DashboardRedirect() {
   useEffect(() => {
     const redirectUser = async () => {
       try {
-        console.log('Dashboard redirect: Checking for token...');
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-          console.log('No token found, redirecting to home');
+        // Restores from the session cookie if localStorage was wiped; only a real
+        // 401 means "not logged in". Transient errors retry instead of logging out.
+        const session = await loadSession();
+        if (session.status === 'unauthenticated') {
           router.push('/');
           return;
         }
-
-        console.log('Token found, fetching user data...');
-        // Fetch user data to determine role
-        const res = await fetch('/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        console.log('API response status:', res.status);
-
-        if (!res.ok) {
-          console.log('Invalid token, removing and redirecting');
-          localStorage.removeItem('token');
-          router.push('/');
+        if (session.status === 'error') {
+          setError('Connection problem. Retrying…');
+          setTimeout(redirectUser, 3000);
           return;
         }
-
-        const data = await res.json();
+        const data = session;
         const userRole = data.user?.role;
         const assessmentCompleted = data.user?.assessmentCompleted;
         console.log('User role:', userRole);
@@ -62,8 +51,8 @@ export default function DashboardRedirect() {
         }
       } catch (error) {
         console.error('Error redirecting user:', error);
-        setError('Failed to load dashboard. Please try again.');
-        setTimeout(() => router.push('/'), 2000);
+        setError('Failed to load dashboard. Retrying…');
+        setTimeout(redirectUser, 3000);
       }
     };
 

@@ -1,19 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAuthUser, checkSubscription } from '@/lib/middleware';
+import { checkSubscription } from '@/lib/middleware';
+import { verifyToken, generateToken, tokenNeedsRefresh } from '@/lib/auth';
+import { readSessionCookie, setSessionCookie, clearSessionCookie } from '@/lib/sessionCookie';
 
 
 export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
-    const authUser = await getAuthUser(request);
+    // Prefer the Authorization header; fall back to the httpOnly session cookie so a
+    // client whose localStorage was wiped (Safari ITP, cleared storage) stays logged in.
+    const header = request.headers.get('authorization');
+    const headerToken = header?.startsWith('Bearer ') ? header.substring(7) : null;
+    let decoded: any = headerToken ? verifyToken(headerToken) : null;
+    let fromCookie = false;
+    if (!decoded) {
+      const cookieToken = readSessionCookie(request);
+      decoded = cookieToken ? verifyToken(cookieToken) : null;
+      fromCookie = !!decoded;
+    }
 
-    if (!authUser) {
-      return NextResponse.json(
+    if (!decoded) {
+      const res = NextResponse.json(
         { error: 'Unauthorized. Please login.' },
         { status: 401 }
       );
+      clearSessionCookie(res);
+      return res;
     }
+    const authUser = { userId: decoded.userId, email: decoded.email, role: decoded.role };
 
     // Get full user data
     const user = await prisma.user.findUnique({
@@ -44,13 +59,22 @@ export async function GET(request: NextRequest) {
       subscriptionStatus = await checkSubscription(user.id);
     }
 
-    return NextResponse.json(
+    // Sliding session: hand back a fresh token (and re-arm the cookie) once the current
+    // one is a day old, or whenever we had to restore from the cookie.
+    const refreshed = fromCookie || tokenNeedsRefresh(decoded)
+      ? generateToken(user.id, user.email, user.role)
+      : null;
+
+    const res = NextResponse.json(
       {
         user,
         subscription: subscriptionStatus,
+        ...(refreshed ? { token: refreshed } : {}),
       },
       { status: 200 }
     );
+    setSessionCookie(res, refreshed || headerToken || readSessionCookie(request)!);
+    return res;
   } catch (error) {
     console.error('Get user error:', error);
     return NextResponse.json(

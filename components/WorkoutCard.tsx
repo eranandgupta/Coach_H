@@ -24,7 +24,7 @@ export default function WorkoutCard({
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className={`bg-[#1A1A1A] rounded-xl p-5 border ${
+      className={`theme-dark bg-[#1A1A1A] rounded-xl p-5 border ${
         completed ? 'border-[#E50914]' : 'border-[#2A2A2A]'
       }`}
     >
@@ -44,7 +44,7 @@ export default function WorkoutCard({
         {exercises.map((exercise, index) => (
           <div
             key={index}
-            className="bg-[#0D0D0D] rounded-lg p-3 border border-[#2A2A2A]"
+            className="theme-dark bg-[#0D0D0D] rounded-lg p-3 border border-[#2A2A2A]"
           >
             <p className="text-white font-semibold text-sm mb-1">
               {exercise.name}

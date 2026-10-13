@@ -14,6 +14,7 @@ import {
   Play,
   MessageSquare,
   LayoutTemplate,
+  ChevronRight,
 } from 'lucide-react';
 import VideoLibrary from '@/components/VideoLibrary';
 import LiveSessionModal from '@/components/LiveSessionModal';
@@ -28,6 +29,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import { loadSession, logout } from '@/lib/session';
+import ThemeToggle from '@/components/theme/ThemeToggle';
+import CoachInsightsRail from '@/components/coach/CoachInsightsRail';
+import DashboardHero from '@/components/coach/DashboardHero';
+import { avatarTone } from '@/lib/avatarTone';
+import { lastActiveAt, lastActiveLabel } from '@/lib/lastActive';
 import { usePresenceHeartbeat } from '@/lib/usePresence';
 
 export default function TrainerDashboard() {
@@ -39,6 +46,7 @@ export default function TrainerDashboard() {
   const [diets, setDiets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [clientTab, setClientTab] = useState<'active' | 'inactive'>('active');
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
   const [isDietModalOpen, setIsDietModalOpen] = useState(false);
   const [isClientDetailModalOpen, setIsClientDetailModalOpen] = useState(false);
@@ -51,8 +59,8 @@ export default function TrainerDashboard() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  const handleLogout = async () => {
+    await logout();
     router.push('/');
   };
 
@@ -77,18 +85,11 @@ export default function TrainerDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        window.location.href = '/';
-        return;
-      }
-
-      // Fetch user data
-      const userRes = await fetch('/api/auth/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const userData = await userRes.json();
+      const session = await loadSession();
+      if (session.status === 'unauthenticated') { window.location.href = '/'; return; }
+      if (session.status === 'error') { setTimeout(fetchDashboardData, 4000); return; }
+      const token = session.token as string;
+      const userData = { user: session.user };
 
       if (userData.user?.role !== 'trainer') {
         router.push('/dashboard');
@@ -141,11 +142,15 @@ export default function TrainerDashboard() {
     setIsDietModalOpen(true);
   };
 
+  const now = new Date();
+  const isClientActive = (c: any) =>
+    !!c.subscriptions?.some((s: any) => isSubscriptionCurrentlyActive(s, now));
+  // Assigned clients split into Active / Inactive tabs (default Active), like the coach view.
   const filteredClients = clients.filter((client) =>
-    client.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    client.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (clientTab === 'active' ? isClientActive(client) : !isClientActive(client))
   );
 
-  const now = new Date();
   // Window-aware & consistent with the admin/coach dashboards: active only if a
   // subscription actually covers today (a future "Upcoming" renewal does not count).
   const activeClientsCount = clients.filter((c) =>
@@ -172,46 +177,41 @@ export default function TrainerDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-navy">
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-navy/80 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center flex-shrink-0">
+      <header className="fixed top-0 left-0 right-0 z-40 navbar-glass">
+        <div className="max-w-[1680px] mx-auto px-4 py-2.5 flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center flex-shrink-0"
+            aria-label="Dashboard home"
+            title="Dashboard home"
+          >
             <Image
               src="https://ik.imagekit.io/oeagl0l4x/public/logo.png?tr=w-200,q-80,f-auto"
               alt="Coach Himanshu"
               width={90}
               height={90}
-              className="object-contain"
+              className="theme-logo object-contain"
             />
-          </Link>
+          </button>
 
-          <div className="flex-1 text-center hidden md:block">
-            <h1 className="text-xl lg:text-2xl font-bold text-white leading-tight">
-              Trainer Dashboard
-            </h1>
-            <p className="text-gray-300 text-xs lg:text-sm">Manage workouts, diets, and sessions</p>
+          <span aria-hidden className="hidden md:block h-8 w-px bg-white/10" />
+          <div className="hidden md:block min-w-0">
+            <h1 className="text-base font-semibold text-white leading-tight">Trainer Dashboard</h1>
+            <p className="text-xs text-gray-500 truncate">Manage workouts, diets, and sessions</p>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Chat Button */}
-            <button
-              onClick={() => setIsChatOpen(true)}
-              className="relative flex items-center gap-2 px-4 py-2 bg-brand-blue/20 text-brand-blue border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all"
-            >
-              <MessageSquare className="w-5 h-5" />
+          <div className="ml-auto hdr-group">
+            <button onClick={() => setIsChatOpen(true)} className="hdr-btn" aria-label="Chat">
+              <MessageSquare />
               <span className="hidden lg:inline">Chat</span>
-              {unreadChatCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center px-1">
-                  <span className="text-[9px] font-bold text-white">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>
-                </span>
-              )}
+              {unreadChatCount > 0 && <span className="hdr-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}
             </button>
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-all"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="hidden lg:inline">Logout</span>
+            <span aria-hidden className="hdr-sep" />
+            <ThemeToggle size="sm" className="mx-1" />
+            <span aria-hidden className="hdr-sep" />
+            <button onClick={handleLogout} className="hdr-btn is-danger" aria-label="Logout" title="Logout">
+              <LogOut />
             </button>
           </div>
         </div>
@@ -219,135 +219,77 @@ export default function TrainerDashboard() {
 
       {/* Main Content */}
       <div className="pt-28 pb-28 lg:pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1680px] mx-auto xl:grid xl:grid-cols-[minmax(0,1fr)_290px] 2xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-6 xl:items-start">
+        <div className="min-w-0">
           {/* Mobile Dashboard Header & Action Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            {/* Mobile Title */}
-            <div className="md:hidden mb-6">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                Trainer Dashboard
-              </h1>
-              <p className="text-gray-300">Manage workouts, diets, and sessions</p>
-            </div>
+            <DashboardHero
+              stats={[
+                { label: 'Assigned Clients', value: clients.length, icon: Users },
+                { label: 'Active Clients', value: activeClientsCount, icon: Award, progress: clients.length ? activeClientsCount / clients.length : 0 },
+                { label: 'Workout Plans', value: workouts.length, icon: Dumbbell },
+                { label: 'Diet Plans', value: diets.length, icon: UtensilsCrossed },
+              ]}
+            />
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
               <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setSelectedWorkout(null);
                   setIsWorkoutModalOpen(true);
                 }}
-                className="relative bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+                className="action-btn is-primary"
               >
                 <Dumbbell className="w-5 h-5" />
                 <span className="text-sm">Create Workout</span>
               </motion.button>
 
               <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setSelectedDiet(null);
                   setIsDietModalOpen(true);
                 }}
-                className="relative bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+                className="action-btn" data-tone="violet"
               >
                 <UtensilsCrossed className="w-5 h-5" />
                 <span className="text-sm">Create Diet</span>
               </motion.button>
 
               <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsLiveSessionModalOpen(true)}
-                className="relative bg-gradient-to-r from-violet-600 to-purple-500 hover:from-violet-500 hover:to-purple-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+                className="action-btn" data-tone="amber"
               >
                 <Play className="w-5 h-5" />
                 <span className="text-sm">Live Sessions</span>
               </motion.button>
 
               <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsVideoLibraryOpen(true)}
-                className="relative bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+                className="action-btn" data-tone="amber"
               >
                 <Play className="w-5 h-5" />
                 <span className="text-sm">Video Library</span>
               </motion.button>
 
               <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsTemplatesModalOpen(true)}
-                className="relative bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white px-4 py-3 rounded-xl font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+                className="action-btn" data-tone="violet"
               >
                 <LayoutTemplate className="w-5 h-5" />
                 <span className="text-sm">Templates</span>
               </motion.button>
             </div>
           </motion.div>
-
-          {/* Stats Grid */}
-          <div id="section-home" className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-2xl p-5"
-            >
-              <div className="p-2.5 bg-blue-500/30 rounded-xl w-fit mb-3">
-                <Users className="w-5 h-5 text-blue-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{clients.length}</h3>
-              <p className="text-gray-300 text-sm">Assigned Clients</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl p-5"
-            >
-              <div className="p-2.5 bg-green-500/30 rounded-xl w-fit mb-3">
-                <Award className="w-5 h-5 text-green-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{activeClientsCount}</h3>
-              <p className="text-gray-300 text-sm">Active Clients</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-2xl p-5"
-            >
-              <div className="p-2.5 bg-purple-500/30 rounded-xl w-fit mb-3">
-                <Dumbbell className="w-5 h-5 text-purple-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{workouts.length}</h3>
-              <p className="text-gray-300 text-sm">Workout Plans</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-5"
-            >
-              <div className="p-2.5 bg-emerald-500/30 rounded-xl w-fit mb-3">
-                <UtensilsCrossed className="w-5 h-5 text-emerald-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{diets.length}</h3>
-              <p className="text-gray-300 text-sm">Diet Plans</p>
-            </motion.div>
-          </div>
 
           {/* Clients Section */}
           <motion.div
@@ -357,16 +299,38 @@ export default function TrainerDashboard() {
             transition={{ delay: 0.5 }}
             className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8"
           >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3 mb-6">
               <h2 className="text-2xl font-bold text-white">My Assigned Clients</h2>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+              <div role="tablist" aria-label="Client status" className="inline-flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                {([['active', 'Active', activeClientsCount], ['inactive', 'Inactive', clients.length - activeClientsCount]] as const).map(([key, label, count]) => {
+                  const selected = clientTab === key;
+                  return (
+                    <button
+                      key={key}
+                      role="tab"
+                      aria-selected={selected}
+                      onClick={() => setClientTab(key)}
+                      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                        selected ? 'bg-brand-navy-light text-white shadow-sm ring-1 ring-white/[0.08]' : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${key === 'active' ? 'bg-emerald-400' : 'bg-rose-400'} ${selected ? '' : 'opacity-50'}`} />
+                      {label}
+                      <span className={`min-w-[22px] px-1.5 py-0.5 rounded-md text-[11px] leading-none tabular-nums ${selected ? 'bg-white/[0.08] text-gray-300' : 'bg-white/[0.04] text-gray-500'}`}>{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="relative w-full sm:w-64 sm:ml-auto">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search clients..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-blue w-full md:w-64"
+                  className="pl-9 pr-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/60 focus:ring-2 focus:ring-brand-blue/15 w-full transition-colors"
                 />
               </div>
             </div>
@@ -374,7 +338,7 @@ export default function TrainerDashboard() {
             {filteredClients.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 mb-2">No clients assigned</p>
+                <p className="text-gray-400 mb-2">{clients.length === 0 ? 'No clients assigned' : `No ${clientTab} clients`}</p>
                 <p className="text-gray-500 text-sm">
                   {searchTerm ? 'Try a different search term' : 'Ask your coach to assign clients to you'}
                 </p>
@@ -394,26 +358,30 @@ export default function TrainerDashboard() {
                   return (
                     <motion.div
                       key={client.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: idx * 0.05 }}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: Math.min(idx, 12) * 0.03 }}
                       onClick={() => handleViewClientDetail(client)}
-                      className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 hover:border-brand-blue/30 transition-all cursor-pointer group"
+                      className="group flex flex-col bg-brand-navy-light/60 border border-white/[0.08] rounded-2xl p-4 shadow-sm hover:border-brand-blue/35 hover:shadow-[0_12px_32px_-16px_rgba(23,95,255,0.45)] transition-all cursor-pointer"
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                            {client.name?.[0]?.toUpperCase() || 'C'}
-                          </div>
-                          <div>
-                            <h3 className="text-white font-semibold group-hover:text-brand-blue transition-colors">
-                              {client.name || 'Client'}
-                            </h3>
-                          </div>
+                      {/* Identity */}
+                      <div className="flex items-center gap-3">
+                        <div className={`w-11 h-11 shrink-0 rounded-full ring-1 flex items-center justify-center font-bold ${avatarTone(client.id)}`}>
+                          {client.name?.[0]?.toUpperCase() || 'C'}
                         </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-white font-semibold truncate group-hover:text-brand-blue transition-colors">
+                            {client.name || 'Client'}
+                          </h3>
+                          <p className={`text-[11px] mt-0.5 flex items-center gap-1.5 ${lastActiveAt(client) ? 'text-gray-500' : 'text-amber-400/90'}`}>
+                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${lastActiveAt(client) ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                            {lastActiveLabel(lastActiveAt(client))}
+                          </p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 shrink-0 text-gray-600 group-hover:text-brand-blue group-hover:translate-x-0.5 transition-all" />
                       </div>
 
-                      {/* Subscription Info */}
+                      {/* Subscription */}
                       {client.subscriptions && client.subscriptions.length > 0 && (() => {
                         const subs = client.subscriptions;
                         const sub =
@@ -421,66 +389,59 @@ export default function TrainerDashboard() {
                           subs.find((s: any) => subscriptionDisplayStatus(s, now) === 'upcoming') ||
                           subs[0];
                         const ds = subscriptionDisplayStatus(sub, now);
-                        const tone = ds === 'paused' ? 'yellow' : (ds === 'active' ? 'green' : ds === 'upcoming' ? 'blue' : 'red');
-                        const box: Record<string, string> = {
-                          yellow: 'bg-yellow-500/10 border-yellow-500/30',
-                          green: 'bg-green-500/10 border-green-500/30',
-                          blue: 'bg-blue-500/10 border-blue-500/30',
-                          red: 'bg-red-500/10 border-red-500/30',
+                        const isActive = ds === 'active' || ds === 'paused';
+                        const pill: Record<string, string> = {
+                          active: 'bg-emerald-500/10 text-emerald-400 ring-emerald-500/20',
+                          paused: 'bg-amber-500/10 text-amber-400 ring-amber-500/20',
+                          upcoming: 'bg-brand-blue/10 text-blue-400 ring-brand-blue/20',
                         };
-                        const txt: Record<string, string> = {
-                          yellow: 'text-yellow-400', green: 'text-green-400', blue: 'text-blue-400', red: 'text-red-400',
-                        };
+                        const pillCls = pill[ds] || 'bg-rose-500/10 text-rose-400 ring-rose-500/20';
+                        const dateLabel = ds === 'upcoming' ? 'Starts' : isActive ? 'Expires' : 'Expired';
+                        const date = new Date(ds === 'upcoming' ? sub.startDate : sub.endDate);
+                        const daysLeft = Math.ceil((new Date(sub.endDate).getTime() - now.getTime()) / 86400000);
                         return (
-                        <div className={`mb-3 p-2 rounded border ${box[tone]}`}>
-                          <p className={`text-xs font-medium ${txt[tone]}`}>
-                            {sub.plan.name} - {ds}
+                        <div className="mt-4 rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-sm font-medium text-white leading-snug line-clamp-2">{sub.plan.name}</p>
+                            <span className={`shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide ring-1 ${pillCls}`}>
+                              <span className="w-1 h-1 rounded-full bg-current" />
+                              {ds}
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs text-gray-400 flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                            {dateLabel} {date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            {isActive && daysLeft > 0 && (
+                              <span className={daysLeft <= 7 ? 'text-amber-400' : 'text-gray-500'}>· {daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
+                            )}
                           </p>
-                          <p className="text-gray-400 text-xs">
-                            {ds === 'upcoming' ? 'Starts' : 'Expires'}: {new Date(ds === 'upcoming' ? sub.startDate : sub.endDate).toLocaleDateString()}
-                          </p>
+                            {isActive && (() => {
+                              const start = new Date(sub.startDate).getTime();
+                              const end = new Date(sub.endDate).getTime();
+                              const pct = end > start ? Math.min(100, Math.max(0, ((now.getTime() - start) / (end - start)) * 100)) : 0;
+                              return (
+                                <div className="mt-2.5 h-1 rounded-full bg-white/[0.06] overflow-hidden" title={`${Math.round(pct)}% of plan completed`}>
+                                  <div className={`h-full rounded-full ${daysLeft <= 7 ? 'bg-amber-400' : 'bg-gradient-to-r from-brand-blue to-blue-400'}`} style={{ width: `${pct}%` }} />
+                                </div>
+                              );
+                            })()}
                         </div>
                         );
                       })()}
 
-                      {/* Plan Counts */}
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="flex items-center gap-2 text-sm">
-                          <div className="p-1.5 bg-purple-500/20 rounded">
-                            <Dumbbell className="w-4 h-4 text-purple-400" />
-                          </div>
-                          <span className="text-gray-300">{clientWorkouts.length} Workouts</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <div className="p-1.5 bg-green-500/20 rounded">
-                            <UtensilsCrossed className="w-4 h-4 text-green-400" />
-                          </div>
-                          <span className="text-gray-300">{clientDiets.length} Diets</span>
-                        </div>
-                      </div>
-
-                      {/* Active Status */}
-                      <div className="pt-3 border-t border-white/10">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-xs text-gray-400">
-                            {activeWorkout && (
-                              <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
-                                Active Workout
-                              </span>
-                            )}
-                            {activeDiet && (
-                              <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                                Active Diet
-                              </span>
-                            )}
-                            {!activeWorkout && !activeDiet && (
-                              <span className="text-gray-500">No active workout/diet</span>
-                            )}
-                          </div>
-                          <p className="text-xs text-brand-blue opacity-0 group-hover:opacity-100 transition-opacity">
-                            Click to view details
-                          </p>
-                        </div>
+                      {/* Plans footer */}
+                      <div className="mt-auto pt-3 flex items-center gap-4 text-xs text-gray-400">
+                        <span className="inline-flex items-center gap-1.5" title={activeWorkout ? 'Workout plan active' : 'No active workout'}>
+                          <Dumbbell className="w-3.5 h-3.5 text-gray-500" />
+                          {clientWorkouts.length} workout{clientWorkouts.length === 1 ? '' : 's'}
+                          <span className={`w-1.5 h-1.5 rounded-full ${activeWorkout ? 'bg-emerald-400' : 'bg-white/15'}`} />
+                        </span>
+                        <span className="inline-flex items-center gap-1.5" title={activeDiet ? 'Diet plan active' : 'No active diet'}>
+                          <UtensilsCrossed className="w-3.5 h-3.5 text-gray-500" />
+                          {clientDiets.length} diet{clientDiets.length === 1 ? '' : 's'}
+                          <span className={`w-1.5 h-1.5 rounded-full ${activeDiet ? 'bg-emerald-400' : 'bg-white/15'}`} />
+                        </span>
+                        <span className="ml-auto text-brand-blue opacity-0 group-hover:opacity-100 transition-opacity font-medium">View details</span>
                       </div>
                     </motion.div>
                   );
@@ -585,6 +546,19 @@ export default function TrainerDashboard() {
             </div>
           </motion.div>
         </div>
+
+        {/* Right rail — what needs attention today */}
+        <div className="mt-6 xl:mt-0">
+          <CoachInsightsRail
+            clients={clients}
+            workouts={workouts}
+            diets={diets}
+            unreadChatCount={unreadChatCount}
+            onOpenClient={handleViewClientDetail}
+            onOpenChat={() => setIsChatOpen(true)}
+          />
+        </div>
+        </div>
       </div>
 
       {/* Modals */}
@@ -652,14 +626,14 @@ export default function TrainerDashboard() {
           isChatOpen ? 'translate-x-0' : 'translate-x-full'
         } w-full sm:w-[420px] lg:w-[780px]`}
         style={{
-          background: 'linear-gradient(180deg, rgba(10,15,31,0.98) 0%, rgba(7,10,21,0.99) 100%)',
+          background: 'linear-gradient(180deg, rgb(var(--c-navy) / 0.98) 0%, rgb(var(--c-navy-dark) / 0.99) 100%)',
           boxShadow: isChatOpen ? '-8px 0 40px rgba(0,0,0,0.5), -1px 0 0 rgba(99,145,255,0.08)' : 'none',
         }}
       >
         <div
           className="flex items-center justify-between px-5 py-3.5 flex-shrink-0 border-b border-white/[0.06]"
           style={{
-            background: 'linear-gradient(135deg, rgba(99,145,255,0.06) 0%, rgba(139,92,246,0.04) 50%, rgba(10,15,31,0.95) 100%)',
+            background: 'linear-gradient(135deg, rgba(99,145,255,0.06) 0%, rgba(139,92,246,0.04) 50%, rgb(var(--c-navy) / 0.95) 100%)',
             backdropFilter: 'blur(20px)',
           }}
         >

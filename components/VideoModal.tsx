@@ -33,7 +33,7 @@ export default function VideoModal({
             exit={{ opacity: 0, scale: 0.9 }}
             className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl z-50"
           >
-            <div className="bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] overflow-hidden h-full md:h-auto">
+            <div className="theme-dark bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] overflow-hidden h-full md:h-auto">
               <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
                 <h3 className="text-white font-bold text-lg">{title}</h3>
                 <button
@@ -44,7 +44,7 @@ export default function VideoModal({
                 </button>
               </div>
 
-              <div className="aspect-video bg-[#0D0D0D] flex items-center justify-center">
+              <div className="aspect-video theme-dark bg-[#0D0D0D] flex items-center justify-center">
                 {videoUrl ? (
                   <iframe
                     src={videoUrl}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import IndiaFlag from '@/components/icons/IndiaFlag';
 
 // Indian flag colours.
 const SAFFRON = '#FF9933';
@@ -82,8 +83,8 @@ export default function IndependenceDayBanner() {
           <AshokaChakra size={78} />
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: SAFFRON }}>
-              🇮🇳 15 August · Happy Independence Day
+            <p className="text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2" style={{ color: SAFFRON }}>
+              <IndiaFlag className="w-5 h-[14px]" /> 15 August · Happy Independence Day
             </p>
 
             <h2 className="mt-1.5 text-2xl font-extrabold leading-tight md:text-3xl">
@@ -102,7 +103,7 @@ export default function IndependenceDayBanner() {
 
             <p className="mt-3 text-sm font-bold tracking-wide">
               <span style={{ color: SAFFRON }}>Jai</span> <span className="text-white">Hind</span>{' '}
-              <span style={{ color: GREEN }}>· #FitIndia</span> 🧡🤍💚
+              <span style={{ color: GREEN }}>· #FitIndia</span>
             </p>
           </div>
         </div>

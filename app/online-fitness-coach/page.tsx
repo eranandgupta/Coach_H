@@ -219,7 +219,7 @@ export default function OnlineFitnessCoachHub() {
       </section>
 
       {/* How it works */}
-      <section className="py-12 md:py-16 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.04) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-12 md:py-16 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.04) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-10">How online coaching works from abroad</h2>
           <ol className="grid md:grid-cols-4 gap-5">
@@ -253,7 +253,7 @@ export default function OnlineFitnessCoachHub() {
       </section>
 
       {/* Enquiry */}
-      <section id="enquiry" className="py-12 md:py-20 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section id="enquiry" className="py-12 md:py-20 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Start from wherever you are</h2>
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">

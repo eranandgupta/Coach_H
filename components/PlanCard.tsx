@@ -186,12 +186,13 @@ export default function PlanCard({
             ? 'bg-gradient-to-br from-[#251a2e]/90 via-brand-navy/80 to-[#170f1f]/90'
             : 'glass-card'
         } ${
-          popular || couple || homeWorkout || rehabilitation || liveGroup ? 'border-transparent' : ''
+          popular || couple || homeWorkout || rehabilitation || liveGroup ? 'border-transparent theme-tint-card' : ''
         }`}
+        data-tint={popular ? 'gold' : couple ? 'pink' : homeWorkout ? 'green' : rehabilitation ? 'cyan' : liveGroup ? 'violet' : undefined}
         style={!(popular || couple || homeWorkout || rehabilitation || liveGroup) ? {
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.05) 0%, rgb(var(--c-white) / 0.02) 50%, rgb(var(--c-white) / 0.04) 100%)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgb(var(--c-white) / 0.05)',
+          border: '1px solid rgb(var(--c-white) / 0.08)',
         } : undefined}
       >
         {/* Background decorative elements */}

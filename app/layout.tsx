@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import { CartProvider } from '@/contexts/CartContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import WhatsAppButton from '@/components/WhatsAppButton';
-import { Toaster } from 'sonner';
+import ThemeProvider from '@/components/theme/ThemeProvider';
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -112,10 +112,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="theme-color" content="#175FFF" />
+        <meta name="theme-color" content="#0A0F1F" />
         <link rel="dns-prefetch" href="https://ik.imagekit.io" />
         <link rel="preconnect" href="https://ik.imagekit.io" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -254,12 +254,13 @@ export default function RootLayout({
 
       </head>
       <body className={inter.className}>
-        <CartProvider>
-          {children}
-          <PWAInstallPrompt />
-          <WhatsAppButton />
-        </CartProvider>
-        <Toaster position="top-center" richColors theme="dark" />
+        <ThemeProvider>
+          <CartProvider>
+            {children}
+            <PWAInstallPrompt />
+            <WhatsAppButton />
+          </CartProvider>
+        </ThemeProvider>
 
         {/* Google Analytics 4 — loaded after page is fully interactive */}
         {process.env.NEXT_PUBLIC_GA4_ID && (

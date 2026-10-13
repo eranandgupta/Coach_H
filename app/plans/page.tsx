@@ -61,7 +61,7 @@ export default function PlansPage() {
       </section>
 
       {/* Trust bar */}
-      <section className="py-8 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.05) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-8 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.05) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
             <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">1000+</div>
@@ -111,7 +111,7 @@ export default function PlansPage() {
       <PlanCompare />
 
       {/* Who is it for — audience cross-links */}
-      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             Coaching for Every Goal
@@ -159,7 +159,7 @@ export default function PlansPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Still Deciding? Talk to Us First.

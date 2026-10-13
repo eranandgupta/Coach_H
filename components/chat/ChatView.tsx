@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
@@ -202,7 +202,7 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
       <div
         className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06] flex-shrink-0"
         style={{
-          background: 'linear-gradient(135deg, rgba(99,145,255,0.04) 0%, rgba(10,15,31,0.95) 100%)',
+          background: 'linear-gradient(135deg, rgba(99,145,255,0.04) 0%, rgb(var(--c-navy) / 0.95) 100%)',
           backdropFilter: 'blur(20px)',
         }}
       >
@@ -253,7 +253,7 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-16 h-16 rounded-full bg-brand-blue/10 flex items-center justify-center mb-3">
-              <span className="text-2xl">💬</span>
+              <MessageCircle className="w-7 h-7 text-brand-blue" aria-hidden />
             </div>
             <p className="text-white/50 text-sm">No messages yet</p>
             <p className="text-white/30 text-xs mt-1">Say hi to start the conversation!</p>

@@ -161,7 +161,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       alt="Coach Himanshu"
                       width={120}
                       height={120}
-                      className="object-contain"
+                      className="theme-logo object-contain"
                     />
                   </motion.div>
 

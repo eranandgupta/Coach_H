@@ -112,10 +112,18 @@ export default function FunFactWidget() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Lightbulb emoji
-    ctx.font = '56px Arial';
+    // Lightbulb icon (lucide path, drawn on a 24-unit grid scaled to 64px)
+    ctx.save();
+    ctx.translate(iconCx - 32, iconCy - 32);
+    ctx.scale(64 / 24, 64 / 24);
+    ctx.strokeStyle = 'rgba(250, 204, 21, 0.95)';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ['M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5', 'M9 18h6', 'M10 22h4']
+      .forEach((d) => ctx.stroke(new Path2D(d)));
+    ctx.restore();
     ctx.textAlign = 'center';
-    ctx.fillText('💡', iconCx, iconCy + 18);
 
     // "Did You Know?" label
     ctx.font = '600 24px -apple-system, BlinkMacSystemFont, sans-serif';
@@ -231,7 +239,7 @@ export default function FunFactWidget() {
   }, [showSharePanel, generatedImage, generating, generateShareImage]);
 
   const shareToWhatsApp = async () => {
-    const text = `💡 Did You Know?\n\n${fact?.content}\n\n🏋️ Get fit with Coach Himanshu\n👉 coachhimanshu.com\n📸 @coachhimanshusquad_`;
+    const text = `Did You Know?\n\n${fact?.content}\n\nGet fit with Coach Himanshu\ncoachhimanshu.com\nInstagram: @coachhimanshusquad_`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -242,7 +250,7 @@ export default function FunFactWidget() {
   };
 
   const shareToFacebook = () => {
-    const text = `💡 Did You Know?\n\n${fact?.content}\n\n🏋️ Get fit with Coach Himanshu → coachhimanshu.com`;
+    const text = `Did You Know?\n\n${fact?.content}\n\nGet fit with Coach Himanshu → coachhimanshu.com`;
     window.open(`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(text)}&u=${encodeURIComponent('https://coachhimanshu.com')}`, '_blank');
   };
 
@@ -266,7 +274,7 @@ export default function FunFactWidget() {
 
         await navigator.share({
           title: 'Fun Fitness Fact - Coach Himanshu',
-          text: `💡 Did You Know?\n\n${fact.content}\n\n🏋️ coachhimanshu.com`,
+          text: `Did You Know?\n\n${fact.content}\n\ncoachhimanshu.com`,
           files: [file],
         });
         return;
@@ -280,7 +288,7 @@ export default function FunFactWidget() {
       try {
         await navigator.share({
           title: 'Fun Fitness Fact - Coach Himanshu',
-          text: `💡 Did You Know?\n\n${fact.content}\n\n🏋️ Get fit with Coach Himanshu → coachhimanshu.com`,
+          text: `Did You Know?\n\n${fact.content}\n\nGet fit with Coach Himanshu → coachhimanshu.com`,
         });
       } catch {
         // User cancelled

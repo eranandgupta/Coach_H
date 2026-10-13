@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { comparePassword, generateToken } from '@/lib/auth';
 import { checkSubscription } from '@/lib/middleware';
+import { setSessionCookie } from '@/lib/sessionCookie';
 
 export const dynamic = 'force-dynamic';
 
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
 
     // Return user data (without password)
     console.log('Login successful, returning data');
-    return NextResponse.json(
+    const res = NextResponse.json(
       {
         message: 'Login successful',
         token,
@@ -98,6 +99,8 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
+    setSessionCookie(res, token);
+    return res;
   } catch (error) {
     console.error('Login error details:', error);
     console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');

@@ -39,7 +39,7 @@ export default function MessageInput({ onSend, disabled }: MessageInputProps) {
     <div
       className="flex items-end gap-2 p-3 border-t border-white/[0.08]"
       style={{
-        background: 'linear-gradient(180deg, rgba(10,15,31,0.95) 0%, rgba(7,10,21,1) 100%)',
+        background: 'linear-gradient(180deg, rgb(var(--c-navy) / 0.95) 0%, rgb(var(--c-navy-dark) / 1) 100%)',
         backdropFilter: 'blur(20px)',
       }}
     >

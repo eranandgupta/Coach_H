@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Check } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -226,7 +227,7 @@ export default function OnlinePersonalTrainerPage() {
       </section>
 
       {/* Trust bar */}
-      <section className="py-8 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.05) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-8 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.05) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
             <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">1000+</div>
@@ -269,7 +270,7 @@ export default function OnlinePersonalTrainerPage() {
       </section>
 
       {/* What's included */}
-      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             What&apos;s Included in Every 1:1 Plan
@@ -313,7 +314,7 @@ export default function OnlinePersonalTrainerPage() {
       </section>
 
       {/* Comparison table — GEO/AEO extractable */}
-      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             Live 1:1 vs App Coaching vs a Local Gym Trainer
@@ -416,7 +417,7 @@ export default function OnlinePersonalTrainerPage() {
       </section>
 
       {/* Who it's for */}
-      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             Who Live 1:1 Training Is For
@@ -434,7 +435,7 @@ export default function OnlinePersonalTrainerPage() {
               'Couples who want to train together, live',
             ].map((chip, i) => (
               <div key={i} className="flex items-center gap-3 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02]">
-                <div className="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold text-sm font-bold flex-shrink-0">✓</div>
+                <div className="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold flex-shrink-0"><Check className="w-4 h-4" strokeWidth={2.75} aria-hidden /></div>
                 <span className="text-white font-medium text-sm">{chip}</span>
               </div>
             ))}
@@ -510,7 +511,7 @@ export default function OnlinePersonalTrainerPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgba(10,15,31,1) 100%)' }}>
+      <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready for a Coach in Your Corner — Live?

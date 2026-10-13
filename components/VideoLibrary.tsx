@@ -401,7 +401,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className={`fixed z-50 bg-[#0a0a0f] border border-white/5 shadow-2xl overflow-hidden ${
+            className={`fixed z-50 theme-dark bg-[#0a0a0f] border border-white/5 shadow-2xl overflow-hidden ${
               isFullscreen
                 ? 'inset-0 rounded-none'
                 : 'inset-2 md:inset-6 lg:inset-10 rounded-2xl'
@@ -409,7 +409,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-[#0a0a0f]/95 border-b border-white/5 px-4 py-3 md:px-6 md:py-4 relative z-20">
+            <div className="theme-dark bg-[#0a0a0f]/95 border-b border-white/5 px-4 py-3 md:px-6 md:py-4 relative z-20">
               <div className="flex items-center justify-between gap-3">
                 {/* Left - Back & Title */}
                 <div className="flex items-center gap-3 flex-shrink-0">
@@ -487,7 +487,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -10, scale: 0.95 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute top-full left-0 right-0 mt-2 bg-[#12121a] border border-white/10 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-[100]"
+                          className="absolute top-full left-0 right-0 mt-2 theme-dark bg-[#12121a] border border-white/10 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-[100]"
                         >
                           {/* Recent Searches - shown when no query */}
                           {searchQuery === '' && recentSearches.length > 0 && (
@@ -921,7 +921,7 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.03 }}
                             onClick={() => handleVideoClick(video)}
-                            className="group relative bg-[#12121a] rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-brand-blue/5 border border-white/5 hover:border-brand-blue/30"
+                            className="group relative theme-dark bg-[#12121a] rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-brand-blue/5 border border-white/5 hover:border-brand-blue/30"
                           >
                             {/* Thumbnail with gradient overlay */}
                             <div className="relative aspect-video bg-gradient-to-br from-gray-800 to-gray-900">

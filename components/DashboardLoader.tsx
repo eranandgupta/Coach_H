@@ -76,7 +76,7 @@ export default function DashboardLoader() {
               alt="Coach Himanshu"
               width={80}
               height={80}
-              className="object-contain"
+              className="theme-logo object-contain"
               priority
             />
           </motion.div>
