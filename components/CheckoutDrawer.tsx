@@ -438,7 +438,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full md:w-[550px] bg-gradient-to-br from-brand-navy-light to-black border-l border-white/10 z-50 flex flex-col shadow-2xl"
+            className="fixed right-0 top-0 h-full w-full md:w-[550px] bg-gradient-to-br from-brand-navy-light to-brand-navy-dark border-l border-white/10 z-50 flex flex-col shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

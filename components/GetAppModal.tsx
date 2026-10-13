@@ -393,7 +393,7 @@ export default function GetAppModal({ isOpen, onClose }: GetAppModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-gradient-to-br from-brand-navy-light to-black border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+            className="w-full max-w-md bg-gradient-to-br from-brand-navy-light to-brand-navy-dark border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-white/10">

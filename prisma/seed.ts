@@ -23,7 +23,7 @@ async function main() {
 
   const coach = await prisma.user.create({
     data: {
-      email: 'coach@example.com',
+      email: 'coach@coachhimanshu.com',
       password: hashedPassword,
       name: 'Coach Himanshu',
       phone: '+91-9876543210',
@@ -535,7 +535,7 @@ async function main() {
   console.log('- Workout Plans: 1 (with 12 exercises)');
   console.log('- Diet Plans: 1 (with 12 meals)\n');
   console.log('🔑 Login Credentials:');
-  console.log('Coach: coach@example.com / password123');
+  console.log('Coach: coach@coachhimanshu.com / password123');
   console.log('Client: client@example.com / password123');
   console.log('Admin: admin@coachhimanshu.com / admin@123\n');
 }

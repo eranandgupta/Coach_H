@@ -1782,7 +1782,7 @@ export default function Home() {
         </div>
 
         {/* ========= DESKTOP HERO (hidden lg:flex) ========= */}
-        <div className="relative z-10 hidden lg:flex flex-1 flex-col justify-center pt-32 pb-6">
+        <div className="relative z-10 hidden lg:flex flex-1 flex-col justify-center pt-[9.5rem] pb-8">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -1876,7 +1876,7 @@ export default function Home() {
               </div>
 
               {/* RIGHT — Video card */}
-              <motion.div variants={itemVariants} className="w-[38%] flex-shrink-0">
+              <motion.div variants={itemVariants} className="w-[min(38%,calc((100dvh-22rem)*0.8))] flex-shrink-0">
                 <div className="relative">
                   <div className="absolute -inset-4 rounded-[2rem] blur-2xl opacity-40" style={{ background: 'radial-gradient(ellipse, rgba(23,95,255,0.15) 0%, transparent 70%)' }} />
                   <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.06) 0%, rgb(var(--c-white) / 0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgb(var(--c-white) / 0.06)' }}>

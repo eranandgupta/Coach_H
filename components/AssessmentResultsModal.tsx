@@ -59,7 +59,7 @@ export default function AssessmentResultsModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-5xl bg-gradient-to-br from-brand-navy-light to-black border border-white/10 rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden"
+            className="w-full max-w-5xl bg-gradient-to-br from-brand-navy-light to-brand-navy-dark border border-white/10 rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex-shrink-0 bg-brand-navy/90 border-b border-white/10 p-6">

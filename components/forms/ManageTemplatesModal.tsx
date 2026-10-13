@@ -95,7 +95,7 @@ export default function ManageTemplatesModal({ isOpen, onClose, currentUserId }:
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-gradient-to-br from-brand-navy-light to-black border border-brand-navy-light/30 rounded-2xl p-8 relative max-w-3xl w-full my-8 mt-4"
+                className="bg-gradient-to-br from-brand-navy-light to-brand-navy-dark border border-brand-navy-light/30 rounded-2xl p-8 relative max-w-3xl w-full my-8 mt-4"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button

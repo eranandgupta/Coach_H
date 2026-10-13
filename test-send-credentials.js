@@ -11,7 +11,7 @@ async function testSendCredentials() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      email: 'coach@example.com', // Replace with your coach email
+      email: 'coach@coachhimanshu.com', // Replace with your coach email
       password: 'your-coach-password', // Replace with your coach password
     }),
   });
