@@ -28,8 +28,10 @@ export function getEffectiveTotalSessions(
 // Rules:
 //  - cancelled / expired stored status is respected as-is.
 //  - active/paused with a FUTURE startDate  -> 'upcoming' (queued renewal).
-//  - active with a PAST endDate             -> 'expired' (window has passed),
-//    EXCEPT Elite (session-based) plans, which stay active while sessions remain.
+//  - active with a PAST endDate             -> 'expired' (window has passed). This applies
+//    to Elite 1:1 plans too: they end when the days run out OR the sessions run out,
+//    whichever comes first.
+//  - Elite 1:1 with every session completed -> 'expired' (when session data is supplied).
 //  - otherwise the plan currently covers `now` -> 'active' (or 'paused').
 export type SubDisplayStatus = 'active' | 'upcoming' | 'paused' | 'expired' | 'cancelled';
 
@@ -38,6 +40,16 @@ export interface SubscriptionWindow {
   startDate: string | Date;
   endDate: string | Date;
   plan?: { name?: string | null } | null;
+  bonusSessions?: number | null;
+  /** Optional: pass completed sessions so Elite plans read as expired once all are used. */
+  sessionTrackings?: unknown[] | null;
+}
+
+/** True when an Elite 1:1 subscription has used every session it was sold (incl. rolled-over bonus). */
+export function eliteSessionsExhausted(planName: string, bonusSessions: number | null | undefined, completed: number): boolean {
+  if (!isElitePlan(planName)) return false;
+  const total = getEffectiveTotalSessions(planName, bonusSessions || 0);
+  return !!total && completed >= total;
 }
 
 export function subscriptionDisplayStatus(
@@ -49,22 +61,25 @@ export function subscriptionDisplayStatus(
 
   const start = new Date(sub.startDate);
   const end = new Date(sub.endDate);
-  const isElite = isElitePlan(sub.plan?.name || '');
 
   // Queued renewal that has not started yet.
   if (start > now) return 'upcoming';
 
+  // Window has fully passed: expired even if the stored status is still 'active'
+  // (auto-expire may not have run yet). Applies to every plan, Elite included.
+  if (end < now) return 'expired';
+
+  // Elite 1:1: all sessions used up ends the plan even with days remaining.
+  if (Array.isArray(sub.sessionTrackings) && eliteSessionsExhausted(sub.plan?.name || '', sub.bonusSessions, sub.sessionTrackings.length)) {
+    return 'expired';
+  }
+
   if (sub.status === 'paused') return 'paused';
-
-  // Time-based plan whose window has fully passed reads as expired even if the
-  // stored status is still 'active' (auto-expire may not have run yet).
-  if (end < now && !isElite) return 'expired';
-
   return 'active';
 }
 
 // True only when the subscription actually covers `now` (started, not yet ended,
-// or an Elite plan with sessions remaining). Use this — never a raw endDate check —
+// and for Elite plans, sessions remaining when session data is supplied). Use this — never a raw endDate check —
 // to decide whether a client is currently entitled to a plan.
 export function isSubscriptionCurrentlyActive(
   sub: SubscriptionWindow,

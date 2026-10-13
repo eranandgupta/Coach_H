@@ -7,7 +7,7 @@ import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
 import TransformationLogModal from '@/components/TransformationLogModal';
 import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
-import { isElitePlan, getTotalSessions, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from '@/lib/planUtils';
+import { isElitePlan, getEffectiveTotalSessions, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from "@/lib/planUtils";
 
 // "2 days ago" style relative time; returns 'Never' for null.
 function timeSince(dateStr: string | null): string {
@@ -106,7 +106,9 @@ export default function ClientDetailModal({
 
   const clientPlanName = client?.subscriptions?.[0]?.plan?.name || '';
   const clientIsElite = isElitePlan(clientPlanName);
-  const totalSessions = getTotalSessions(clientPlanName) || 0;
+  const totalSessions = getEffectiveTotalSessions(clientPlanName, client?.subscriptions?.[0]?.bonusSessions) || 0;
+  const clientEndDate = client?.subscriptions?.[0]?.endDate;
+  const clientDaysLeft = clientEndDate ? Math.max(0, Math.ceil((new Date(clientEndDate).getTime() - Date.now()) / 86400000)) : null;
   const subscriptionId = client?.subscriptions?.[0]?.id;
 
   useEffect(() => {
@@ -193,7 +195,12 @@ export default function ClientDetailModal({
       });
 
       if (res.ok) {
+        const data = await res.json();
         fetchSessions();
+        if (data.subscriptionExpired) {
+          alert('That was the last session, so this 1:1 plan has now expired. Renew it to keep training.');
+          onRefreshClients?.();
+        }
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to confirm session');
@@ -623,6 +630,11 @@ export default function ClientDetailModal({
                       <span className="px-2 py-1 bg-violet-500/20 text-violet-300 rounded text-xs font-medium">
                         {completedSessions.length}/{totalSessions}
                       </span>
+                      {clientDaysLeft !== null && (
+                        <span className="px-2 py-1 bg-white/5 text-gray-300 rounded text-xs font-medium" title="The plan ends when sessions or days run out, whichever comes first">
+                          {clientDaysLeft} days left
+                        </span>
+                      )}
                     </div>
                   </div>
 

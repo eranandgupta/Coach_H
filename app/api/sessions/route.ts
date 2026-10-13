@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireCoach } from '@/lib/middleware';
-import { getTotalSessions } from '@/lib/planUtils';
+import { getEffectiveTotalSessions } from '@/lib/planUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,7 +47,8 @@ async function postHandler(request: NextRequest, context: any) {
       return NextResponse.json({ error: 'Subscription not found' }, { status: 404 });
     }
 
-    const totalSessions = getTotalSessions(subscription.plan.name);
+    // Include sessions rolled over from a previous plan, or the coach can't confirm them.
+    const totalSessions = getEffectiveTotalSessions(subscription.plan.name, subscription.bonusSessions);
     if (totalSessions && sessionNumber > totalSessions) {
       return NextResponse.json({ error: `Session number cannot exceed ${totalSessions}` }, { status: 400 });
     }
@@ -61,7 +62,20 @@ async function postHandler(request: NextRequest, context: any) {
       },
     });
 
-    return NextResponse.json({ session }, { status: 201 });
+    // 1:1 plans end when the last session is done, even if days remain.
+    let subscriptionExpired = false;
+    if (totalSessions) {
+      const completed = await prisma.sessionTracking.count({ where: { subscriptionId } });
+      if (completed >= totalSessions && subscription.status !== 'expired' && subscription.status !== 'cancelled') {
+        await prisma.userSubscription.update({
+          where: { id: subscriptionId },
+          data: { status: 'expired', pausedAt: null },
+        });
+        subscriptionExpired = true;
+      }
+    }
+
+    return NextResponse.json({ session, subscriptionExpired }, { status: 201 });
   } catch (error: any) {
     if (error.code === 'P2002') {
       return NextResponse.json({ error: 'This session is already confirmed' }, { status: 409 });
@@ -81,9 +95,22 @@ async function deleteHandler(request: NextRequest, context: any) {
       return NextResponse.json({ error: 'id is required' }, { status: 400 });
     }
 
-    await prisma.sessionTracking.delete({
+    const removed = await prisma.sessionTracking.delete({
       where: { id: parseInt(id) },
+      include: { subscription: { include: { plan: true } } },
     });
+
+    // Undoing a session on a plan that expired only because its sessions ran out brings it
+    // back, as long as its days haven't run out too.
+    const sub = removed.subscription;
+    const total = getEffectiveTotalSessions(sub.plan.name, sub.bonusSessions);
+    if (sub.status === 'expired' && total && new Date(sub.endDate) >= new Date()) {
+      const completed = await prisma.sessionTracking.count({ where: { subscriptionId: sub.id } });
+      // completed + 1 >= total: it was the session count that ended it, not a coach deactivation.
+      if (completed < total && completed + 1 >= total) {
+        await prisma.userSubscription.update({ where: { id: sub.id }, data: { status: 'active' } });
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

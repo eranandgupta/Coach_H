@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { verifyToken } from './auth';
 import { prisma } from './prisma';
-import { getMaxPauseDays, isElitePlan, getTotalSessions, getEffectiveTotalSessions } from './planUtils';
+import { getMaxPauseDays, eliteSessionsExhausted } from './planUtils';
 
 export interface AuthUser {
   userId: number;
@@ -41,88 +41,33 @@ export async function checkSubscription(userId: number): Promise<{
   try {
     const now = new Date();
 
-    // First, check if there's a newer active subscription (renewal/replacement) with future endDate
-    // If yes, skip the expired session plan logic — the user has moved to a new plan
-    const newerActiveSub = await prisma.userSubscription.findFirst({
-      where: {
-        userId: userId,
-        status: { in: ['active', 'paused'] },
-        endDate: { gte: now },
-      },
-      orderBy: { createdAt: 'desc' },
+    // Auto-expire subscriptions that are past their end date. Elite 1:1 plans follow the
+    // same rule: they end when the days run out OR when the sessions run out, whichever
+    // comes first (sessions are handled just below).
+    // A PAUSED plan is not expired just because its end date passed during the pause: the
+    // pause days get added back on resume, so allow up to the plan's max pause days on top.
+    const pastEnd = await prisma.userSubscription.findMany({
+      where: { userId: userId, status: { in: ['active', 'paused'] }, endDate: { lt: now } },
+      include: { plan: true },
     });
-
-    // Only check session-based plans if there's NO newer subscription.
-    // Self-heal: an Elite (session-based) plan with sessions remaining must stay active
-    // regardless of endDate or a status that was wrongly set to 'expired'. We deliberately
-    // exclude 'cancelled' so genuinely refunded/cancelled subs are NOT resurrected.
-    if (!newerActiveSub) {
-      const salvageableSessionPlan = await prisma.userSubscription.findFirst({
-        where: {
-          userId: userId,
-          status: { in: ['active', 'paused', 'expired'] },
-        },
-        include: {
-          plan: true,
-          sessionTrackings: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-
-      if (salvageableSessionPlan && isElitePlan(salvageableSessionPlan.plan.name)) {
-        const totalSessions = getEffectiveTotalSessions(
-          salvageableSessionPlan.plan.name,
-          salvageableSessionPlan.bonusSessions
-        );
-        const completedSessions = salvageableSessionPlan.sessionTrackings.length;
-
-        if (totalSessions && completedSessions < totalSessions) {
-          // Sessions remain — keep subscription active regardless of endDate / wrong status
-          if (salvageableSessionPlan.status !== 'active') {
-            await prisma.userSubscription.update({
-              where: { id: salvageableSessionPlan.id },
-              data: { status: 'active', pausedAt: null },
-            });
-            salvageableSessionPlan.status = 'active';
-          }
-          return {
-            isActive: true,
-            subscription: salvageableSessionPlan,
-          };
-        }
+    for (const sub of pastEnd) {
+      if (sub.status === 'paused') {
+        const graceMs = getMaxPauseDays(sub.plan.duration, sub.plan.name) * 24 * 60 * 60 * 1000;
+        if (new Date(sub.endDate).getTime() + graceMs >= now.getTime()) continue;
       }
+      await prisma.userSubscription.update({
+        where: { id: sub.id },
+        data: { status: 'expired', pausedAt: null },
+      });
     }
 
-    // Auto-expire subscriptions that are past their end date
-    // For session-based plans without a newer replacement, only expire if all sessions are completed
-    const expiredSubs = await prisma.userSubscription.findMany({
-      where: {
-        userId: userId,
-        status: { in: ['active', 'paused'] },
-        endDate: { lt: now },
-      },
-      include: {
-        plan: true,
-        sessionTrackings: true,
-      },
+    // Elite 1:1 plans whose sessions are all completed expire even with days remaining.
+    const runningSubs = await prisma.userSubscription.findMany({
+      where: { userId: userId, status: { in: ['active', 'paused'] } },
+      include: { plan: true, _count: { select: { sessionTrackings: true } } },
     });
-
-    for (const sub of expiredSubs) {
-      if (isElitePlan(sub.plan.name) && !newerActiveSub) {
-        const total = getEffectiveTotalSessions(sub.plan.name, sub.bonusSessions);
-        const completed = sub.sessionTrackings.length;
-        // Only expire session-based plans if all sessions are used (and no newer sub exists)
-        if (total && completed >= total) {
-          await prisma.userSubscription.update({
-            where: { id: sub.id },
-            data: { status: 'expired', pausedAt: null },
-          });
-        }
-        // Otherwise leave it active — sessions remain
-      } else {
-        // Time-based plan or has newer replacement — expire normally
+    for (const sub of runningSubs) {
+      if (eliteSessionsExhausted(sub.plan.name, sub.bonusSessions, sub._count.sessionTrackings)) {
         await prisma.userSubscription.update({
           where: { id: sub.id },
           data: { status: 'expired', pausedAt: null },
@@ -135,12 +80,14 @@ export async function checkSubscription(userId: number): Promise<{
     // essential for calendar stacking — a queued renewal that starts in the future must NOT be
     // treated as the current plan (otherwise it reads as "active" while the real current plan
     // shows expired). Expired/cancelled are excluded so manually-expired subs aren't re-activated.
-    let subscription = await prisma.userSubscription.findFirst({
+    const subscription = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
-        status: { in: ['active', 'paused'] },
         startDate: { lte: now },
-        endDate: { gte: now },
+        OR: [
+          { status: 'active', endDate: { gte: now } },
+          { status: 'paused' }, // past-end paused subs outside their grace were expired above
+        ],
       },
       include: {
         plan: true,
@@ -149,22 +96,6 @@ export async function checkSubscription(userId: number): Promise<{
         createdAt: 'desc',
       },
     });
-
-    // If no future-dated subscription, check for active session-based plans (sessions remaining)
-    if (!subscription) {
-      subscription = await prisma.userSubscription.findFirst({
-        where: {
-          userId: userId,
-          status: 'active',
-        },
-        include: {
-          plan: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-    }
 
     if (!subscription) {
       return {

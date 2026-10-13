@@ -651,7 +651,7 @@ export default function ClientDashboard() {
                       <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
                       <span className="text-xs text-gray-300 font-medium">
                         {isEliteOneOnOnePlan
-                          ? `${(getEffectiveTotalSessions(planName, subscription?.subscription?.bonusSessions) || 0) - completedSessions.length} sessions left`
+                          ? `${(getEffectiveTotalSessions(planName, subscription?.subscription?.bonusSessions) || 0) - completedSessions.length} sessions · ${getDaysRemaining(subscription.subscription.endDate)} days left`
                           : `${getDaysRemaining(subscription.subscription.endDate)} days left`}
                       </span>
                     </div>
@@ -1444,8 +1444,9 @@ export default function ClientDashboard() {
                   </div>
                   {isSubscriptionActive && (
                     <div className="col-span-2 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                      <p className="text-gray-500 text-xs mb-0.5">{isEliteOneOnOnePlan ? 'Sessions Remaining' : 'Days Remaining'}</p>
-                      <p className="text-white font-semibold">{isEliteOneOnOnePlan ? `${(getEffectiveTotalSessions(planName, subscription?.subscription?.bonusSessions) || 0) - completedSessions.length} sessions` : `${getDaysRemaining(subscription.subscription.endDate)} days`}</p>
+                      <p className="text-gray-500 text-xs mb-0.5">{isEliteOneOnOnePlan ? 'Sessions & Days Remaining' : 'Days Remaining'}</p>
+                      <p className="text-white font-semibold">{isEliteOneOnOnePlan ? `${(getEffectiveTotalSessions(planName, subscription?.subscription?.bonusSessions) || 0) - completedSessions.length} sessions · ${getDaysRemaining(subscription.subscription.endDate)} days` : `${getDaysRemaining(subscription.subscription.endDate)} days`}</p>
+                      {isEliteOneOnOnePlan && <p className="mt-1 text-xs text-gray-500">Your plan ends when either runs out, whichever comes first.</p>}
                     </div>
                   )}
                 </div>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireCoachOrAdmin } from '@/lib/middleware';
-import { isElitePlan, getEffectiveTotalSessions } from '@/lib/planUtils';
+import { eliteSessionsExhausted } from '@/lib/planUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,21 +51,13 @@ async function putHandler(request: NextRequest, context: any) {
       );
     }
 
-    // Determine if we should mark as expired when newEndDate is in the past
-    let shouldExpire = newEndDate < new Date();
-    if (shouldExpire && isElitePlan(subscription.plan.name)) {
-      const totalSessions = getEffectiveTotalSessions(
-        subscription.plan.name,
-        subscription.bonusSessions
-      );
-      if (totalSessions) {
-        const usedSessions = await prisma.sessionTracking.count({
-          where: { subscriptionId: parseInt(subscriptionId) },
-        });
-        if (usedSessions < totalSessions) {
-          shouldExpire = false; // Elite plan with remaining sessions stays active
-        }
-      }
+    // Every plan, Elite 1:1 included, expires when its days run out. Elite plans also end
+    // when every session is used, so extending days only revives one with sessions left.
+    const shouldExpire = newEndDate < new Date();
+    let shouldReactivate = false;
+    if (!shouldExpire && subscription.status === 'expired') {
+      const used = await prisma.sessionTracking.count({ where: { subscriptionId: subscription.id } });
+      shouldReactivate = !eliteSessionsExhausted(subscription.plan.name, subscription.bonusSessions, used);
     }
 
     // Update the subscription end date
@@ -74,7 +66,8 @@ async function putHandler(request: NextRequest, context: any) {
       data: {
         endDate: newEndDate,
         // If removing days pushed it into the past, mark as expired; otherwise preserve current status (active/paused)
-        ...(shouldExpire ? { status: 'expired' } : {}),
+        // Extending an expired plan back into the future reactivates it.
+        ...(shouldExpire ? { status: 'expired' } : shouldReactivate ? { status: 'active', pausedAt: null } : {}),
       },
       include: {
         plan: true,
