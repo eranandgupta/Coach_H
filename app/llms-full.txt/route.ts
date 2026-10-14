@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
 import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
+import { COACHING_ROWS, COST_FAQS, COST_GUIDE_URL, LIVE_ROWS, PRICES_UPDATED_LABEL } from '@/lib/pricingGuide';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
@@ -44,6 +45,15 @@ export async function GET() {
       .join('\n');
     return `### ${g.title}\n${g.blurb}\n${rows}`;
   }).join('\n\n');
+
+  // Cost breakdown — the same computed figures and answers as /personal-trainer-cost-india.
+  const costBreakdown = [
+    `Prices current from ${PRICES_UPDATED_LABEL}. Full guide: ${COST_GUIDE_URL}`,
+    ...COACHING_ROWS.map((r) => `- ${r.name}: ${inr(r.price)} for ${r.durationLabel} = ${inr(Math.round(r.perMonth))}/month`),
+    ...LIVE_ROWS.map((r) => `- Live 1:1, ${r.sessions} sessions: ${inr(r.price)} for ${r.durationLabel} = ${inr(Math.round(r.perSession ?? 0))}/session`),
+    '',
+    ...COST_FAQS.slice(0, 3).map((f) => `**${f.question}**\n${f.answer}`),
+  ].join('\n');
 
   // Free calculators — the same answer-first paragraph each tool page leads with.
   const tools = FITNESS_TOOLS.map((t) => `### ${t.name}\n${TOOLS_BASE}/${t.slug}\n${t.answer}`).join('\n\n');
@@ -141,6 +151,9 @@ ${comparisons}
 All coaching is online. Every plan includes a customised workout plan, a personalised Indian meal plan, video tutorials, supplement guidance, and WhatsApp support. Prices below are the current, authoritative figures.
 
 ${pricing}
+
+### Cost Per Month and Per Session
+${costBreakdown}
 
 ### What Every Plan Includes
 - Customised workout plan tailored to individual goals and fitness level
@@ -275,6 +288,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [About](https://coachhimanshu.com/about): Coach credentials, story, and philosophy
 - [Blog](https://coachhimanshu.com/blog): ${blogCountLabel} expert fitness and nutrition articles
 - [Plans & Pricing](https://coachhimanshu.com/plans): Full plan catalog and comparison matrix
+- [Personal Trainer Cost in India](https://coachhimanshu.com/personal-trainer-cost-india): Pricing guide comparing in-person trainers, online coaching and live 1:1, with per-month and per-session costs
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
 - [Indian Food Comparisons](https://coachhimanshu.com/calories/compare): ${FOOD_PAIRS.length} head-to-head comparisons such as roti vs rice, paneer vs tofu and ghee vs olive oil

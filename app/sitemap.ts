@@ -103,6 +103,13 @@ function getCorePages(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      // Pricing guide: high commercial-intent "personal trainer cost in India" query.
+      url: `${baseUrl}/personal-trainer-cost-india`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/assessment`,
       lastModified: now,
       changeFrequency: 'monthly',

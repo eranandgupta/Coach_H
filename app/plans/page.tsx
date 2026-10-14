@@ -147,6 +147,12 @@ export default function PlansPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
             Pricing FAQs
           </h2>
+          <p className="-mt-8 mb-10 text-center text-sm text-gray-400">
+            Comparing with a gym trainer?{' '}
+            <Link href="/personal-trainer-cost-india" className="text-brand-blue hover:underline">
+              See what a personal trainer costs in India, per month and per session →
+            </Link>
+          </p>
           <div className="space-y-4">
             {PLAN_FAQS.map((faq, index) => (
               <div key={index} className="p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02]">

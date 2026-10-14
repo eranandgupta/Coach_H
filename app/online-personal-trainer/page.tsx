@@ -344,6 +344,12 @@ export default function OnlinePersonalTrainerPage() {
               </tbody>
             </table>
           </div>
+          <p className="mt-6 text-center text-sm text-gray-400">
+            Want the full numbers?{' '}
+            <Link href="/personal-trainer-cost-india" className="text-brand-blue hover:underline">
+              Personal trainer cost in India: every option priced per month and per session →
+            </Link>
+          </p>
         </div>
       </section>
 

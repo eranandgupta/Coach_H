@@ -8,6 +8,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: '/plans', label: 'Plans & Pricing' },
       { href: '/online-personal-trainer', label: '1:1 Personal Training' },
+      { href: '/personal-trainer-cost-india', label: 'Personal Trainer Cost' },
       { href: '/fitness-coaching-for/women', label: 'Coaching for Women' },
       { href: '/fitness-coaching-for/men', label: 'Coaching for Men' },
       { href: '/fitness-coaching-for/family', label: 'Couple & Family' },
