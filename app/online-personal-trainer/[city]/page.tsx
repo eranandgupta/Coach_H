@@ -179,7 +179,7 @@ export default function CityPersonalTrainerPage({ params }: { params: { city: st
             <div className="text-sm text-gray-400">Per Live Session</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹7,999</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹8,999</div>
             <div className="text-sm text-gray-400">1:1 Starting From</div>
           </div>
           <div>

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const pageTitle = `Online Indian Fitness Coach in ${c.name}`; // root template appends "| Coach Himanshu"
   const title = `${pageTitle} | Coach Himanshu`; // used for OG/Twitter, which the template does not touch
-  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,299/month (≈ ${c.approxStart}), international cards accepted.`;
+  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,499/month (≈ ${c.approxStart}), international cards accepted.`;
 
   return {
     title: pageTitle,
@@ -69,7 +69,7 @@ export default function CountryLayout({ children, params }: { children: React.Re
       url: 'https://coachhimanshu.com/about',
     },
     serviceType: 'Online Personal Training',
-    priceRange: '₹1,299 - ₹31,999',
+    priceRange: '₹1,499 - ₹34,999',
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: 'https://coachhimanshu.com/assessment',

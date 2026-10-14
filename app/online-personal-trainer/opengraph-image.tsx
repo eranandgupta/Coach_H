@@ -96,7 +96,7 @@ export default async function Image() {
         {/* Stats */}
         <div style={{ display: 'flex', gap: '48px', marginTop: '40px' }}>
           {[
-            { value: '₹7,999', label: '1:1 Starting From' },
+            { value: '₹8,999', label: '1:1 Starting From' },
             { value: '60 min', label: 'Per Live Session' },
             { value: 'NASM', label: 'Certified Coach' },
           ].map((stat) => (

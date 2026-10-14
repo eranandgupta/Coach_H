@@ -10,7 +10,7 @@ const WHATSAPP_NRI =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20live%20outside%20India%20and%20want%20a%20free%20consultation%20for%20online%20coaching.';
 
 const description =
-  'NASM-certified online Indian fitness coach for NRIs in 20+ countries. Indian meal plans you can cook abroad, live sessions in your time zone, WhatsApp support. From ₹1,299/month, international cards accepted.';
+  'NASM-certified online Indian fitness coach for NRIs in 20+ countries. Indian meal plans you can cook abroad, live sessions in your time zone, WhatsApp support. From ₹1,499/month, international cards accepted.';
 
 export const metadata: Metadata = {
   title: 'Online Indian Fitness Coach Worldwide',
@@ -68,8 +68,8 @@ export default function OnlineFitnessCoachHub() {
     offers: {
       '@type': 'AggregateOffer',
       priceCurrency: 'INR',
-      lowPrice: '1299',
-      highPrice: '31999',
+      lowPrice: '1499',
+      highPrice: '34999',
       url: 'https://coachhimanshu.com/plans',
     },
   };
@@ -144,7 +144,7 @@ export default function OnlineFitnessCoachHub() {
           <p id="nri-intro" className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
             Coach Himanshu is a NASM-certified fitness coach who trains Indians and NRIs in {COUNTRIES.length}+ countries
             entirely online: a personalised workout plan, an Indian meal plan built around food you can buy where you live,
-            live video sessions in your own time zone, and daily WhatsApp support. Plans start at ₹1,299 a month and
+            live video sessions in your own time zone, and daily WhatsApp support. Plans start at ₹1,499 a month and
             international cards are accepted.
           </p>
           <div className="flex flex-wrap justify-center gap-3">

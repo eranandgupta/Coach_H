@@ -30,7 +30,7 @@ export const PT_GOALS: PTGoal[] = [
     name: 'Weight Loss',
     metaTitle: 'Online Personal Trainer for Weight Loss — Live 1-on-1',
     metaDescription:
-      'Lose weight with a live 1-on-1 online personal trainer. Coach Himanshu builds a fat-loss workout + Indian diet plan, corrects your form live, and keeps you accountable. From ₹7,999.',
+      'Lose weight with a live 1-on-1 online personal trainer. Coach Himanshu builds a fat-loss workout + Indian diet plan, corrects your form live, and keeps you accountable. From ₹8,999.',
     heroLead: 'Lose Weight',
     heroTail: 'with a Live 1-on-1 Coach',
     intro:
@@ -57,7 +57,7 @@ export const PT_GOALS: PTGoal[] = [
     name: 'Muscle Gain',
     metaTitle: 'Online Personal Trainer for Muscle Gain — Live 1-on-1',
     metaDescription:
-      'Build muscle with a live 1-on-1 online personal trainer. Coach Himanshu programs progressive training + a high-protein Indian diet and corrects your form live. From ₹7,999.',
+      'Build muscle with a live 1-on-1 online personal trainer. Coach Himanshu programs progressive training + a high-protein Indian diet and corrects your form live. From ₹8,999.',
     heroLead: 'Build Muscle',
     heroTail: 'with a Live 1-on-1 Coach',
     intro:
@@ -84,7 +84,7 @@ export const PT_GOALS: PTGoal[] = [
     name: 'Weight Gain',
     metaTitle: 'Online Personal Trainer for Weight Gain — Live 1-on-1',
     metaDescription:
-      'Gain healthy weight with a live 1-on-1 online personal trainer. For skinny/hardgainers — Coach Himanshu builds a calorie-surplus Indian diet + strength plan. From ₹7,999.',
+      'Gain healthy weight with a live 1-on-1 online personal trainer. For skinny/hardgainers — Coach Himanshu builds a calorie-surplus Indian diet + strength plan. From ₹8,999.',
     heroLead: 'Gain Weight',
     heroTail: 'the Healthy Way, 1-on-1',
     intro:
@@ -111,7 +111,7 @@ export const PT_GOALS: PTGoal[] = [
     name: 'Beginners',
     metaTitle: 'Online Personal Trainer for Beginners — Live 1-on-1',
     metaDescription:
-      'New to fitness? Start with a live 1-on-1 online personal trainer. Coach Himanshu teaches correct form from day one with a beginner-friendly plan + Indian diet. From ₹7,999.',
+      'New to fitness? Start with a live 1-on-1 online personal trainer. Coach Himanshu teaches correct form from day one with a beginner-friendly plan + Indian diet. From ₹8,999.',
     heroLead: 'Start Right',
     heroTail: 'as a Complete Beginner',
     intro:
@@ -138,7 +138,7 @@ export const PT_GOALS: PTGoal[] = [
     name: 'Toning',
     metaTitle: 'Online Personal Trainer for Toning — Live 1-on-1',
     metaDescription:
-      'Get toned and lean with a live 1-on-1 online personal trainer. Coach Himanshu combines strength training + an Indian diet for definition — coached live. From ₹7,999.',
+      'Get toned and lean with a live 1-on-1 online personal trainer. Coach Himanshu combines strength training + an Indian diet for definition — coached live. From ₹8,999.',
     heroLead: 'Get Toned',
     heroTail: '& Lean, 1-on-1',
     intro:

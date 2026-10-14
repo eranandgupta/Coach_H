@@ -15,7 +15,7 @@ const PAGE_URL = 'https://coachhimanshu.com/online-personal-trainer';
 export const metadata: Metadata = {
   title: 'Online Personal Trainer — Live 1-on-1 Training',
   description:
-    'Train live 1-on-1 with Coach Himanshu, a NASM-certified online personal trainer. Real-time form correction, personalised Indian diet plan, sessions on your schedule from anywhere. Packages from ₹7,999.',
+    'Train live 1-on-1 with Coach Himanshu, a NASM-certified online personal trainer. Real-time form correction, personalised Indian diet plan, sessions on your schedule from anywhere. Packages from ₹8,999.',
   keywords: [
     'online personal trainer',
     'live 1 on 1 personal training',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Online Personal Trainer — Live 1-on-1 Training | Coach Himanshu',
     description:
-      'Live one-on-one online personal training with real-time form correction, a personalised Indian diet plan, and flexible scheduling. Packages from ₹7,999.',
+      'Live one-on-one online personal training with real-time form correction, a personalised Indian diet plan, and flexible scheduling. Packages from ₹8,999.',
     url: PAGE_URL,
     type: 'website',
   },
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Online Personal Trainer — Live 1-on-1 Training | Coach Himanshu',
     description:
-      'Live one-on-one online personal training with a NASM-certified coach. Real-time form correction, personalised diet, flexible scheduling. From ₹7,999.',
+      'Live one-on-one online personal training with a NASM-certified coach. Real-time form correction, personalised diet, flexible scheduling. From ₹8,999.',
   },
   alternates: { canonical: PAGE_URL },
 };
@@ -238,7 +238,7 @@ export default function OnlinePersonalTrainerPage() {
             <div className="text-sm text-gray-400">Per Live Session</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹7,999</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹8,999</div>
             <div className="text-sm text-gray-400">1:1 Starting From</div>
           </div>
           <div>

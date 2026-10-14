@@ -117,7 +117,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - [About](https://coachhimanshu.com/about): Coach credentials and story
 - [Blog](https://coachhimanshu.com/blog): ${blogLabel}
 - [Plans & Pricing](https://coachhimanshu.com/plans): All plans with a comparison matrix
-- [Online Personal Trainer](https://coachhimanshu.com/online-personal-trainer): Live 1-on-1 personal training with real-time form correction, from ₹7,999
+- [Online Personal Trainer](https://coachhimanshu.com/online-personal-trainer): Live 1-on-1 personal training with real-time form correction, from ₹8,999
 - [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
 - [Online Fitness Coach Worldwide](https://coachhimanshu.com/online-fitness-coach): Coaching for NRIs by country
 - Coaching by audience: [Women](https://coachhimanshu.com/fitness-coaching-for/women), [Men](https://coachhimanshu.com/fitness-coaching-for/men), [Couples & Family](https://coachhimanshu.com/fitness-coaching-for/family), [Seniors & 50+](https://coachhimanshu.com/fitness-coaching-for/seniors), [Working Professionals](https://coachhimanshu.com/fitness-coaching-for/working-professionals)

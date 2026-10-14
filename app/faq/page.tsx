@@ -34,11 +34,11 @@ const categories = [
     questions: [
       {
         q: 'What is the cost of online fitness coaching in India?',
-        a: 'The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ₹1,299 for recorded coaching, while live 1-on-1 personal training plans start from ₹7,999. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.',
+        a: 'The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ₹1,499 for recorded coaching, while live 1-on-1 personal training plans start from ₹8,999. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.',
       },
       {
         q: 'How much does online personal training cost in India?',
-        a: "Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ₹7,999 and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.",
+        a: "Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ₹8,999 and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.",
       },
       {
         q: 'Does Coach Himanshu offer a refund policy?',
@@ -52,7 +52,7 @@ const categories = [
     questions: [
       {
         q: 'What is live 1-on-1 online personal training?',
-        a: 'Live 1-on-1 online personal training is a real-time video session where Coach Himanshu trains only you — watching every rep, correcting your form on the spot, and adjusting the workout as you go, exactly like an in-person personal trainer standing beside you. Each Elite 1:1 session is 60 minutes, fully one-on-one, and you can train from your home or gym anywhere in the world. Packages start from ₹7,999 and include a personalised Indian diet plan and WhatsApp support. Full details are on the online personal trainer page.',
+        a: 'Live 1-on-1 online personal training is a real-time video session where Coach Himanshu trains only you — watching every rep, correcting your form on the spot, and adjusting the workout as you go, exactly like an in-person personal trainer standing beside you. Each Elite 1:1 session is 60 minutes, fully one-on-one, and you can train from your home or gym anywhere in the world. Packages start from ₹8,999 and include a personalised Indian diet plan and WhatsApp support. Full details are on the online personal trainer page.',
       },
       {
         q: 'Is a live 1-on-1 online personal trainer as effective as an in-person gym trainer?',

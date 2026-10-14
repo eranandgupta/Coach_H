@@ -61,8 +61,8 @@ export const PT_COMPARISON: CompareRow[] = [
   },
   {
     dimension: 'Cost',
-    live: 'From ₹7,999 — a fraction of in-person 1:1 rates',
-    recorded: 'From ₹1,299',
+    live: 'From ₹8,999 — a fraction of in-person 1:1 rates',
+    recorded: 'From ₹1,499',
     gym: '₹15,000–₹40,000+ / month in metros',
   },
   {
@@ -93,7 +93,7 @@ export const PT_FAQS: PTFaq[] = [
   {
     question: 'How much does a 1-on-1 online personal trainer cost in India?',
     answer:
-      "Coach Himanshu's live 1-on-1 (Elite) personal training starts at ₹7,999 for 12 sessions of 60 minutes each. Larger packages — 24, 36, and 72 sessions — bring the per-session price down further. Every package also includes a personalised Indian diet plan, supplement guidance, full video-library access, and WhatsApp support. That is a fraction of the ₹15,000–₹40,000+ a month that in-person personal training typically costs in Indian metros.",
+      "Coach Himanshu's live 1-on-1 (Elite) personal training starts at ₹8,999 for 12 sessions of 60 minutes each. Larger packages — 24, 36, and 72 sessions — bring the per-session price down further. Every package also includes a personalised Indian diet plan, supplement guidance, full video-library access, and WhatsApp support. That is a fraction of the ₹15,000–₹40,000+ a month that in-person personal training typically costs in Indian metros.",
   },
   {
     question: 'Who is the best online personal trainer in India?',
@@ -149,7 +149,7 @@ export const PT_FAQS: PTFaq[] = [
 export function ptCityMeta(city: CityData): { title: string; description: string } {
   return {
     title: `Online Personal Trainer in ${city.name} — Live 1-on-1 Training`,
-    description: `Get a live 1-on-1 online personal trainer in ${city.name}. Real-time form correction over video, a personalised Indian diet plan around ${city.name} foods, and flexible sessions — no commute, no ${city.name} gym premium. Packages from ₹7,999.`,
+    description: `Get a live 1-on-1 online personal trainer in ${city.name}. Real-time form correction over video, a personalised Indian diet plan around ${city.name} foods, and flexible sessions — no commute, no ${city.name} gym premium. Packages from ₹8,999.`,
   };
 }
 
@@ -159,7 +159,7 @@ export function ptCityAngle(city: CityData): { commute: string; diet: string; co
   return {
     commute: `Skip the ${city.name} traffic and the trek to a gym near ${city.landmarks[0]}. Your coach trains you live over video from home, your society gym, or wherever you are in ${city.name} — every minute goes into training, not commuting.`,
     diet: `Your Indian diet plan is built around what you actually eat in ${city.name} — ${foods} and more — with the right portions for your goal, using ingredients from your local ${city.state} market.`,
-    cost: `In-person personal training in ${city.name} can run ₹15,000–₹40,000+ a month. Live online 1:1 gives you the same real-time coaching and form correction from ₹7,999 — a fraction of the ${city.name} in-person rate.`,
+    cost: `In-person personal training in ${city.name} can run ₹15,000–₹40,000+ a month. Live online 1:1 gives you the same real-time coaching and form correction from ₹8,999 — a fraction of the ${city.name} in-person rate.`,
   };
 }
 
@@ -172,7 +172,7 @@ export function ptCityFaqs(city: CityData): PTFaq[] {
     },
     {
       question: `How much does a personal trainer cost in ${city.name}?`,
-      answer: `In-person personal training in ${city.name} typically costs ₹15,000 to ₹40,000+ per month. Coach Himanshu's live 1-on-1 online personal training starts at ₹7,999 for 12 sixty-minute sessions — the same real-time coaching and form correction at a fraction of the ${city.name} in-person price, with a personalised diet plan included.`,
+      answer: `In-person personal training in ${city.name} typically costs ₹15,000 to ₹40,000+ per month. Coach Himanshu's live 1-on-1 online personal training starts at ₹8,999 for 12 sixty-minute sessions — the same real-time coaching and form correction at a fraction of the ${city.name} in-person price, with a personalised diet plan included.`,
     },
     {
       question: `Is online personal training as effective as a gym trainer in ${city.name}?`,

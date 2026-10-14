@@ -15,7 +15,7 @@ export function generateStaticParams() {
 export default async function Image({ params }: { params: { country: string } }) {
   const c = getCountryBySlug(params.country);
   const place = c?.name ?? 'Your Country';
-  const approx = c?.approxStart ?? '$15';
+  const approx = c?.approxStart ?? '$17';
 
   return new ImageResponse(
     (

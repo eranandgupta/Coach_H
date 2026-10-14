@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     // The price comes from the DB. The storefront may knock off a sale % (only inside sale
     // windows) and then a promo code (validated here, server-side). We accept the browser's
     // amount only if it is between the lowest legitimate price and the full DB price;
-    // otherwise someone edited the request (e.g. to pay ₹1 for a ₹9,999 plan).
+    // otherwise someone edited the request (e.g. to pay ₹1 for a ₹11,999 plan).
     const requested = Number(amount);
     const fullPrice = Number(plan.price);
     const salePercent = isAutoSaleDiscountActive() ? MAX_AUTO_SALE_PERCENT : 0;

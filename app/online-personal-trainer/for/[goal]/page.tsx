@@ -146,7 +146,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">1000+</div><div className="text-sm text-gray-400">Transformations</div></div>
           <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">60 min</div><div className="text-sm text-gray-400">Per Live Session</div></div>
-          <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹7,999</div><div className="text-sm text-gray-400">1:1 Starting From</div></div>
+          <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹8,999</div><div className="text-sm text-gray-400">1:1 Starting From</div></div>
           <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">NASM</div><div className="text-sm text-gray-400">Certified Coach</div></div>
         </div>
       </section>

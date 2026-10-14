@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const pageTitle = `Best Online Fitness Coach in ${city.name}`; // root template appends "| Coach Himanshu"
   const title = `${pageTitle} | Coach Himanshu`; // used for OG/Twitter, which the template does not touch
-  const description = `Looking for a certified fitness coach in ${city.name}? Coach Himanshu provides NASM certified online personal training, custom ${city.name}-friendly meal plans, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,299/month.`;
+  const description = `Looking for a certified fitness coach in ${city.name}? Coach Himanshu provides NASM certified online personal training, custom ${city.name}-friendly meal plans, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,499/month.`;
 
   return {
     title: pageTitle,
@@ -62,7 +62,7 @@ export default function CityLayout({ children, params }: { children: React.React
       url: 'https://coachhimanshu.com/about',
     },
     serviceType: 'Online Personal Training',
-    priceRange: '₹1,299 - ₹31,999',
+    priceRange: '₹1,499 - ₹34,999',
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: 'https://coachhimanshu.com/assessment',

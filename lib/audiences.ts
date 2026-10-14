@@ -43,7 +43,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Women',
     metaTitle: 'Online Fitness Coach for Women in India',
     metaDescription:
-      'Personalised online fitness coaching for women in India — fat loss, toning, PCOS & thyroid-friendly diets, and postpartum plans. Train from home. Plans from ₹1,299/month.',
+      'Personalised online fitness coaching for women in India — fat loss, toning, PCOS & thyroid-friendly diets, and postpartum plans. Train from home. Plans from ₹1,499/month.',
     heroLead: 'Fitness Coaching',
     heroTail: 'Built for Women',
     intro:
@@ -123,8 +123,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Home Workout Plan',
         duration: '3 Months',
-        price: '₹2,499',
-        perMonth: '₹833/month',
+        price: '₹2,999',
+        perMonth: '₹1,000/month',
         features: [
           'Home workout plan (minimal equipment)',
           'Personalised diet plan',
@@ -136,8 +136,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Consistency Plan',
         duration: '3 Months',
-        price: '₹2,899',
-        perMonth: '₹966/month',
+        price: '₹3,499',
+        perMonth: '₹1,166/month',
         popular: true,
         features: [
           'Customised workout plan (home or gym)',
@@ -152,8 +152,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Strength Plan',
         duration: '6 Months',
-        price: '₹4,999',
-        perMonth: '₹833/month',
+        price: '₹5,999',
+        perMonth: '₹1,000/month',
         features: [
           'Fully customised workout plan',
           'Personalised diet plan',
@@ -167,7 +167,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Elite 1:1 Coaching',
         duration: '1 Month',
-        price: '₹7,999',
+        price: '₹8,999',
         perMonth: '12 live sessions',
         features: [
           'Live 1-on-1 online personal training',
@@ -220,7 +220,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Men',
     metaTitle: 'Online Fitness Coach for Men in India',
     metaDescription:
-      'Online fitness coaching for men in India — build muscle, lose belly fat, gain strength and stamina. Custom workout + Indian diet plans. NASM certified. From ₹1,299/month.',
+      'Online fitness coaching for men in India — build muscle, lose belly fat, gain strength and stamina. Custom workout + Indian diet plans. NASM certified. From ₹1,499/month.',
     heroLead: 'Fitness Coaching',
     heroTail: 'Built for Men',
     intro:
@@ -299,8 +299,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Kickstart Plan',
         duration: '1 Month',
-        price: '₹1,299',
-        perMonth: '₹1,299/month',
+        price: '₹1,499',
+        perMonth: '₹1,499/month',
         features: [
           'Customised workout plan',
           'Personalised diet plan',
@@ -313,8 +313,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Consistency Plan',
         duration: '3 Months',
-        price: '₹2,899',
-        perMonth: '₹966/month',
+        price: '₹3,499',
+        perMonth: '₹1,166/month',
         popular: true,
         features: [
           'Customised workout plan',
@@ -329,8 +329,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Mastery Plan',
         duration: '12 Months',
-        price: '₹9,999',
-        perMonth: '₹833/month',
+        price: '₹11,999',
+        perMonth: '₹1,000/month',
         features: [
           'Fully customised workout plan',
           'Personalised diet plan',
@@ -345,7 +345,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Elite 1:1 Coaching',
         duration: '1 Month',
-        price: '₹7,999',
+        price: '₹8,999',
         perMonth: '12 live sessions',
         features: [
           'Live 1-on-1 online personal training',
@@ -398,7 +398,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Families & Couples',
     metaTitle: 'Couple & Family Fitness Coaching Online',
     metaDescription:
-      'Get fit together with online couple & family fitness coaching in India. Shared goals, paired workout + diet plans, and built-in accountability. Couple plans from ₹4,299.',
+      'Get fit together with online couple & family fitness coaching in India. Shared goals, paired workout + diet plans, and built-in accountability. Couple plans from ₹4,999.',
     heroLead: 'Get Fit',
     heroTail: 'Together',
     intro:
@@ -477,7 +477,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Couple Home Workout',
         duration: '3 Months',
-        price: '₹4,299',
+        price: '₹4,999',
         perMonth: 'for two people',
         features: [
           'Individual home workout plan for each',
@@ -490,7 +490,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Couple Strength',
         duration: '6 Months',
-        price: '₹8,999',
+        price: '₹9,999',
         perMonth: 'for two people',
         popular: true,
         features: [
@@ -505,7 +505,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Couple Mastery',
         duration: '12 Months',
-        price: '₹17,999',
+        price: '₹19,999',
         perMonth: 'for two people',
         features: [
           'Individual workout & diet plans',
@@ -520,7 +520,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Elite 1:1 Couple',
         duration: '1 Month',
-        price: '₹12,999',
+        price: '₹14,999',
         perMonth: '12 live sessions',
         features: [
           'Live 1-on-1 sessions for the couple',
@@ -545,7 +545,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         question: 'Is a couple plan cheaper than two individual plans?',
         answer:
-          'Yes. Couple plans are priced lower per person than buying two separate individual plans, so training together costs less while keeping you both far more consistent. Couple plans start at ₹4,299 for two people.',
+          'Yes. Couple plans are priced lower per person than buying two separate individual plans, so training together costs less while keeping you both far more consistent. Couple plans start at ₹4,999 for two people.',
       },
       {
         question: 'What if we have different fitness levels or goals?',
@@ -573,7 +573,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Seniors',
     metaTitle: 'Online Fitness Coach for Seniors & 50+ in India',
     metaDescription:
-      'Online fitness coaching for seniors & adults 50+ in India. Joint-friendly strength, balance & mobility, and BP/sugar-aware Indian diets. Train from home. From ₹1,299/mo.',
+      'Online fitness coaching for seniors & adults 50+ in India. Joint-friendly strength, balance & mobility, and BP/sugar-aware Indian diets. Train from home. From ₹1,499/mo.',
     heroLead: 'Fitness Coaching',
     heroTail: 'for Seniors & Adults 50+',
     intro:
@@ -653,8 +653,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Home Workout Plan',
         duration: '3 Months',
-        price: '₹2,499',
-        perMonth: '₹833/month',
+        price: '₹2,999',
+        perMonth: '₹1,000/month',
         features: [
           'Joint-friendly home workout plan',
           'Personalised Indian diet plan',
@@ -666,8 +666,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Consistency Plan',
         duration: '3 Months',
-        price: '₹2,899',
-        perMonth: '₹966/month',
+        price: '₹3,499',
+        perMonth: '₹1,166/month',
         popular: true,
         features: [
           'Customised workout plan (home or gym)',
@@ -682,8 +682,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Strength Plan',
         duration: '6 Months',
-        price: '₹4,999',
-        perMonth: '₹833/month',
+        price: '₹5,999',
+        perMonth: '₹1,000/month',
         features: [
           'Fully customised, progressive plan',
           'Personalised Indian diet plan',
@@ -697,7 +697,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Elite 1:1 Coaching',
         duration: '1 Month',
-        price: '₹7,999',
+        price: '₹8,999',
         perMonth: '12 live sessions',
         features: [
           'Live 1-on-1 online personal training',
@@ -750,7 +750,7 @@ export const AUDIENCES: AudienceData[] = [
     audience: 'Working Professionals',
     metaTitle: 'Online Fitness Coach for Working Professionals',
     metaDescription:
-      'Online fitness coaching for busy professionals in India. Time-efficient 30–45 min workouts, desk-posture fixes & eat-out-friendly Indian diets. From ₹1,299/mo.',
+      'Online fitness coaching for busy professionals in India. Time-efficient 30–45 min workouts, desk-posture fixes & eat-out-friendly Indian diets. From ₹1,499/mo.',
     heroLead: 'Fitness Coaching',
     heroTail: 'for Busy Professionals',
     intro:
@@ -830,8 +830,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Home Workout Plan',
         duration: '3 Months',
-        price: '₹2,499',
-        perMonth: '₹833/month',
+        price: '₹2,999',
+        perMonth: '₹1,000/month',
         features: [
           'Time-efficient home workout plan',
           'Flexible, eat-out-friendly diet plan',
@@ -843,8 +843,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Consistency Plan',
         duration: '3 Months',
-        price: '₹2,899',
-        perMonth: '₹966/month',
+        price: '₹3,499',
+        perMonth: '₹1,166/month',
         popular: true,
         features: [
           'Customised workout plan (home or gym)',
@@ -859,8 +859,8 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Strength Plan',
         duration: '6 Months',
-        price: '₹4,999',
-        perMonth: '₹833/month',
+        price: '₹5,999',
+        perMonth: '₹1,000/month',
         features: [
           'Fully customised, progressive plan',
           'Personalised Indian diet plan',
@@ -874,7 +874,7 @@ export const AUDIENCES: AudienceData[] = [
       {
         name: 'Elite 1:1 Coaching',
         duration: '1 Month',
-        price: '₹7,999',
+        price: '₹8,999',
         perMonth: '12 live sessions',
         features: [
           'Live 1-on-1 online personal training',

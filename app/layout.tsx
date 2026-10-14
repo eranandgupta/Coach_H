@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: 'Coach Himanshu | NASM Certified Online Fitness Coach & Personal Trainer India',
     template: '%s | Coach Himanshu',
   },
-  description: 'Transform your body with NASM Certified Fitness Coach Himanshu. Get personalized online workout plans, custom meal plans, WhatsApp support & expert nutrition guidance — delivered online to clients in India and worldwide. 1000+ transformations. Affordable coaching starting at ₹1,299/month.',
+  description: 'Transform your body with NASM Certified Fitness Coach Himanshu. Get personalized online workout plans, custom meal plans, WhatsApp support & expert nutrition guidance — delivered online to clients in India and worldwide. 1000+ transformations. Affordable coaching starting at ₹1,499/month.',
   applicationName: 'Coach Himanshu',
   keywords: [
     'online fitness coach India',
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     alternateLocale: ['en_US', 'en_GB', 'en_CA', 'en_IE', 'en_AU', 'en_NZ', 'en_AE', 'en_SA', 'en_QA', 'en_KW', 'en_OM', 'en_BH', 'en_SG', 'en_MY', 'en_HK', 'en_JP', 'en_ZA', 'en_DE', 'en_NL', 'en_MU'],
     url: 'https://coachhimanshu.com',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach — India & Worldwide',
-    description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, dedicated support, delivered online anywhere in the world. 1000+ success stories. Start from ₹1,299/month.',
+    description: 'Transform your fitness journey with NASM Certified Coach. Personalized workout & meal plans, dedicated support, delivered online anywhere in the world. 1000+ success stories. Start from ₹1,499/month.',
     siteName: 'Coach Himanshu',
     images: [
       {
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Coach Himanshu | NASM Certified Online Fitness Coach',
-    description: 'Transform your fitness with personalized coaching. 1000+ transformations. Start at ₹1,299/month.',
+    description: 'Transform your fitness with personalized coaching. 1000+ transformations. Start at ₹1,499/month.',
     images: ['/opengraph-image'],
     creator: '@coach_himanshu_',
   },
