@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
 import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
+import { DIET_PLANS, DIET_PLANS_BASE, planTitle } from '@/lib/dietPlans';
 import { COACHING_ROWS, COST_FAQS, COST_GUIDE_URL, LIVE_ROWS, PRICES_UPDATED_LABEL } from '@/lib/pricingGuide';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
 
@@ -54,6 +55,15 @@ export async function GET() {
     '',
     ...COST_FAQS.slice(0, 3).map((f) => `**${f.question}**\n${f.answer}`),
   ].join('\n');
+
+  // Diet plans — the same computed totals and meals each /diet-plans page shows.
+  const dietPlans = DIET_PLANS.map((p) => {
+    const t = p.totals;
+    const meals = p.meals
+      .map((m) => `- ${m.meal}: ${m.items.map((it) => `${it.food.name} ${it.label}`).join(', ')}`)
+      .join('\n');
+    return `### ${planTitle(p)}\n${DIET_PLANS_BASE}/${p.slug}\nTotal ${Math.round(t.kcal)} kcal, ${Math.round(t.protein)} g protein, ${Math.round(t.carbs)} g carbs, ${Math.round(t.fat)} g fat, ${Math.round(t.fiber)} g fibre. Best for: ${p.goal.toLowerCase()}.\n${meals}`;
+  }).join('\n\n');
 
   // Free calculators — the same answer-first paragraph each tool page leads with.
   const tools = FITNESS_TOOLS.map((t) => `### ${t.name}\n${TOOLS_BASE}/${t.slug}\n${t.answer}`).join('\n\n');
@@ -141,6 +151,11 @@ Two personalised plans, one shared journey — each person gets their own workou
 Free, no-sign-up calculators at [coachhimanshu.com/tools](https://coachhimanshu.com/tools). Each page shows the formula, a worked example, a reference table and its sources.
 
 ${tools}
+
+## Indian Diet Plans by Calorie
+Full-day Indian diet charts. Every total is computed from the Indian food database (cooked dishes include typical home cooking oil).
+
+${dietPlans}
 
 ## Indian Food Comparisons
 Head-to-head nutrition comparisons at [coachhimanshu.com/calories/compare](https://coachhimanshu.com/calories/compare). Values per 100 g of the ready-to-eat form from INDB, IFCT 2017 (NIN-ICMR) and USDA FoodData Central. Weight-loss verdicts follow a published rule: fewer calories per 100 g wins when the gap is 10% or more, unless the other food gives at least 1.5x the protein and fibre per calorie.
@@ -291,6 +306,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [Personal Trainer Cost in India](https://coachhimanshu.com/personal-trainer-cost-india): Pricing guide comparing in-person trainers, online coaching and live 1:1, with per-month and per-session costs
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
+- [Indian Diet Plans by Calorie](https://coachhimanshu.com/diet-plans): Vegetarian and non-veg full-day diet charts from 1200 to 2500 kcal
 - [Indian Food Comparisons](https://coachhimanshu.com/calories/compare): ${FOOD_PAIRS.length} head-to-head comparisons such as roti vs rice, paneer vs tofu and ghee vs olive oil
 - [FAQ](https://coachhimanshu.com/faq): Commonly asked questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Comprehensive fitness education resource

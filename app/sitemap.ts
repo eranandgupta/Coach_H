@@ -8,6 +8,7 @@ import { getAllFoodSlugs } from '@/lib/foodPages';
 import { getAllListSlugs } from '@/lib/foodLists';
 import { getAllPairSlugs } from '@/lib/foodCompare';
 import { getAllToolSlugs } from '@/lib/fitnessTools';
+import { DIET_PLANS } from '@/lib/dietPlans';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -238,6 +239,19 @@ function getResourcePages(): MetadataRoute.Sitemap {
     // Free fitness calculators (BMI, TDEE, protein, macros…) — one page per tool
     ...getAllToolSlugs().map((slug) => ({
       url: `${baseUrl}/tools/${slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
+    // Indian diet plans by calorie target — hub + one page per plan
+    {
+      url: `${baseUrl}/diet-plans`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    ...DIET_PLANS.map((p) => ({
+      url: `${baseUrl}/diet-plans/${p.slug}`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.8,

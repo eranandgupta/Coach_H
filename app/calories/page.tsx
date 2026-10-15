@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { DIET_PLANS } from '@/lib/dietPlans';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
@@ -113,6 +114,16 @@ export default function CaloriesIndexPage() {
             <Link href="/calories/compare" className="rounded-full border border-brand-blue/30 bg-brand-blue/10 px-3 py-1.5 text-xs font-semibold text-white hover:border-brand-blue/60">
               All {FOOD_PAIRS.length} comparisons →
             </Link>
+          </div>
+
+          {/* Full-day meal plans built from these foods */}
+          <h2 className="mt-8 text-lg font-bold text-white">Indian diet plans by calorie</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {DIET_PLANS.map((p) => (
+              <Link key={p.slug} href={`/diet-plans/${p.slug}`} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-gray-300 hover:border-brand-blue/50 hover:text-white">
+                {p.kcal} kcal {p.diet === 'veg' ? 'veg' : 'non-veg'}
+              </Link>
+            ))}
           </div>
 
           {/* Category jump links */}
