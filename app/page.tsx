@@ -545,58 +545,6 @@ export default function Home() {
     ],
   };
 
-  // Review Schema for testimonials (AEO - rich review snippets)
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    name: 'Coach Himanshu Fitness Coaching',
-    url: 'https://coachhimanshu.com',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '1000',
-      bestRating: '5',
-      worstRating: '1',
-    },
-    review: [
-      {
-        '@type': 'Review',
-        author: { '@type': 'Person', name: 'Priya Sharma' },
-        datePublished: '2025-01-15',
-        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-        reviewBody: 'Lost 22kg in 6 months with Coach Himanshu\'s personalised plan! The WhatsApp support and weekly consultations kept me motivated throughout. Best investment in my health ever!',
-      },
-      {
-        '@type': 'Review',
-        author: { '@type': 'Person', name: 'Amit Kumar' },
-        datePublished: '2025-02-20',
-        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-        reviewBody: 'As a software engineer with a sedentary lifestyle, Coach Himanshu designed a perfect plan that fits my schedule. Gained 8kg lean muscle in 4 months. Highly recommend!',
-      },
-      {
-        '@type': 'Review',
-        author: { '@type': 'Person', name: 'Kavita Patel' },
-        datePublished: '2025-03-10',
-        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-        reviewBody: 'Being a Gujarati foodie, I thought I could never lose weight. Coach Himanshu incorporated my favorite foods into the plan. Lost 14kg without feeling deprived. Amazing!',
-      },
-      {
-        '@type': 'Review',
-        author: { '@type': 'Person', name: 'Rohan Deshmukh' },
-        datePublished: '2025-04-05',
-        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-        reviewBody: 'Online coaching done right! Despite being in different cities, Coach Himanshu\'s guidance felt personal. Video calls and constant support made all the difference. Lost 16kg in 5 months!',
-      },
-      {
-        '@type': 'Review',
-        author: { '@type': 'Person', name: 'Divya Sharma' },
-        datePublished: '2025-05-12',
-        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-        reviewBody: 'Lost 15kg and my PCOS symptoms improved significantly. The weekly consultations are so valuable! He adjusts my plan based on progress. Thank you Coach for changing my life!',
-      },
-    ],
-  };
-
   // HowTo Schema - How online coaching works (AEO - step-by-step rich snippets)
   const howToSchema = {
     '@context': 'https://schema.org',
@@ -1588,10 +1536,6 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }}
       />
       <script
         type="application/ld+json"
