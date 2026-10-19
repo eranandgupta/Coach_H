@@ -298,8 +298,23 @@
     }
   }
 
+  /* Diwali diya flame (components/diwali/Diya.tsx) — transform/opacity only */
+  @keyframes diya-flicker {
+    0%, 100% { transform: scale(1, 1); opacity: 1; }
+    25% { transform: scale(0.94, 1.06); opacity: 0.92; }
+    50% { transform: scale(1.04, 0.95); opacity: 1; }
+    75% { transform: scale(0.97, 1.03); opacity: 0.88; }
+  }
+
+  .diya-flame {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: diya-flicker 1.6s ease-in-out infinite;
+  }
+
   /* Respect user preference for reduced motion */
   @media (prefers-reduced-motion: reduce) {
+    .diya-flame,
     .animate-marquee,
     .animate-marquee-slow,
     .animate-shimmer,

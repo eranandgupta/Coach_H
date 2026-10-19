@@ -41,6 +41,8 @@ import Footer from '@/components/Footer';
 import Button from '@/components/Button';
 import PlanCard from '@/components/PlanCard';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import Fireworks from '@/components/diwali/Fireworks';
+import Diya from '@/components/diwali/Diya';
 import LazyVideo from '@/components/LazyVideo';
 import { useCart } from '@/contexts/CartContext';
 import { SALES_ENABLED } from '@/lib/sale';
@@ -1605,6 +1607,8 @@ export default function Home() {
       <main className="min-h-screen bg-brand-navy">
         <AnnouncementBar />
         <Navbar />
+        {/* Diwali: one celebratory volley per session while the festive sale runs */}
+        {activeSale?.theme === 'festive' && <Fireworks mode="burst" />}
 
       <section className="relative pb-0 overflow-hidden h-dvh flex flex-col" aria-label="Hero section">
         {/* Background */}
@@ -1937,12 +1941,13 @@ export default function Home() {
           independence: { bg: 'bg-orange-500', bgLight: 'bg-green-600', border: 'border-orange-400/25', text: 'text-orange-200', textAccent: 'text-orange-300', gradientBg: 'linear-gradient(135deg, rgba(255,153,51,0.14) 0%, rgba(19,136,8,0.10) 100%)', badgeBg: 'linear-gradient(135deg, #FF9933, #138808)', tagBg: 'rgba(255,153,51,0.08)', tagText: 'text-orange-200', tagBorder: 'border-orange-400/25', dotActive: 'bg-gradient-to-r from-orange-400 via-white to-green-500', timerBg: 'rgba(255,153,51,0.08)', ctaBg: 'linear-gradient(135deg, #FF9933, #138808)', ctaShadow: 'hover:shadow-orange-500/20' },
         };
         const tc = themeColors[activeSale.theme] || themeColors.yoga;
-        const themeIcon = activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'independence' ? <Sparkles size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
+        const themeIcon = activeSale.theme === 'festive' ? <Diya size={22} /> : activeSale.theme === 'environment' ? <Leaf size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'health' ? <HeartPulse size={14} className={`${tc.textAccent} animate-pulse`} /> : activeSale.theme === 'independence' ? <Sparkles size={14} className={`${tc.textAccent} animate-pulse`} /> : <Flame size={14} className={`${tc.textAccent} animate-pulse`} />;
 
         return (
         <section id="sale" className="relative py-10 md:py-16 px-4 md:px-6 overflow-hidden scroll-mt-20" aria-label={activeSale.title} style={{ background: 'linear-gradient(180deg, rgb(var(--c-navy) / 1) 0%, rgb(var(--c-navy) / 1) 50%, rgb(var(--c-navy) / 1) 100%)' }}>
           {/* Animated background effects */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {activeSale.theme === 'festive' && <Fireworks mode="ambient" />}
             <div className={`absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full`} style={{ background: `radial-gradient(circle, var(--tw-gradient-from, rgba(23,95,255,0.04)) 0%, transparent 70%)` }} />
             <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full`} style={{ background: `radial-gradient(circle, var(--tw-gradient-from, rgba(23,95,255,0.05)) 0%, transparent 70%)` }} />
           </div>
@@ -2088,6 +2093,15 @@ export default function Home() {
                   <span className={`${tc.text} text-xs font-medium`}>Sale ends {activeSale.endDate}</span>
                 </div>
               </div>
+
+              {/* Row of diyas under the Diwali sale */}
+              {activeSale.theme === 'festive' && (
+                <div className="flex items-end justify-center gap-5 md:gap-8 mt-6" aria-hidden>
+                  {[0, 0.4, 0.15, 0.55, 0.25].map((delay, i) => (
+                    <Diya key={i} size={i === 2 ? 52 : 40} delay={delay} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </section>
