@@ -19,6 +19,11 @@ const withPWA = require('next-pwa')({
     '!favicon.png',
     '!manifest.json',
     '!offline.html',
+    // Never precache video. Workbox's precache route answers every request with
+    // the full 200 body, but Safari/WebKit only plays <video> from 206 byte-range
+    // responses — precached MP4s stall or never start in Safari. The runtime
+    // `.mp4` route below (RangeRequestsPlugin) handles them correctly instead.
+    '!*.mp4',
   ],
   fallbacks: {
     document: '/offline.html',
@@ -115,6 +120,20 @@ const withPWA = require('next-pwa')({
       }
     },
     {
+      // Build output is content-hashed and served `immutable`, so a cached copy can
+      // never be stale. NetworkFirst here only added a network round trip plus a
+      // Cache Storage write for every chunk on every page load.
+      urlPattern: /\/_next\/static\/.+\.(?:js|css)$/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'next-static',
+        expiration: {
+          maxEntries: 128,
+          maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+        }
+      }
+    },
+    {
       urlPattern: /\.(?:js)$/i,
       handler: 'NetworkFirst',
       options: {
@@ -151,20 +170,19 @@ const withPWA = require('next-pwa')({
       }
     },
     {
+      // Authenticated, per-user data: never answer from the SW cache. A slow
+      // network (>10s) used to fall back to a cached copy — stale subscriptions,
+      // and data that outlived logout on a shared device.
       urlPattern: /\/api\/.*$/i,
-      handler: 'NetworkFirst',
+      handler: 'NetworkOnly',
       method: 'GET',
-      options: {
-        cacheName: 'apis',
-        expiration: {
-          maxEntries: 16,
-          maxAgeSeconds: 60 // 1 minute - API data should always be fresh
-        },
-        networkTimeoutSeconds: 10
-      }
+      options: {}, // next-pwa reads options.* on every entry when fallbacks are on
     },
     {
-      urlPattern: /.*/i,
+      // Same-origin only. A bare /.*/ also captured every third-party request
+      // (Razorpay checkout, analytics, video host), adding a 5s-timeout hop and
+      // filling Cache Storage with padded opaque responses.
+      urlPattern: ({ sameOrigin }) => sameOrigin,
       handler: 'NetworkFirst',
       options: {
         cacheName: 'others',

@@ -280,16 +280,26 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Service Worker Registration with Auto-Update */}
+        {/* Service Worker Registration with Auto-Update (production only) */}
         <Script id="register-sw" strategy="afterInteractive">
-          {`
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
+          {process.env.NODE_ENV === 'production' ? `
+            (function() {
+              if (!('serviceWorker' in navigator)) return;
+              // clientsClaim() also fires controllerchange on a first visit, when
+              // there's nothing new to load — only reload once a SW was in control.
+              var hadController = !!navigator.serviceWorker.controller;
+              var refreshing = false;
+              navigator.serviceWorker.addEventListener('controllerchange', function() {
+                if (!hadController) { hadController = true; return; }
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+              });
+
+              var registerSW = function() {
                 navigator.serviceWorker.register('/sw.js').then(
                   function(registration) {
-                    console.log('SW registered, scope:', registration.scope);
-
-                    // Check for updates immediately and every 5 minutes (not 60s to save resources)
+                    // Check for updates immediately and every 15 minutes
                     registration.update();
                     var swInterval = setInterval(function() { registration.update(); }, 15 * 60 * 1000);
 
@@ -302,35 +312,29 @@ export default function RootLayout({
                         swInterval = setInterval(function() { registration.update(); }, 15 * 60 * 1000);
                       }
                     });
-
-                    // When a new SW is found and installed, reload to get fresh content
-                    registration.addEventListener('updatefound', function() {
-                      var newWorker = registration.installing;
-                      if (newWorker) {
-                        newWorker.addEventListener('statechange', function() {
-                          if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
-                            console.log('New SW activated, reloading for fresh content');
-                            window.location.reload();
-                          }
-                        });
-                      }
-                    });
                   },
                   function(err) {
                     console.log('SW registration failed:', err);
                   }
                 );
+              };
 
-                // Also reload if a new SW takes control (skipWaiting + clientsClaim)
-                var refreshing = false;
-                navigator.serviceWorker.addEventListener('controllerchange', function() {
-                  if (!refreshing) {
-                    refreshing = true;
-                    console.log('New SW controller, reloading');
-                    window.location.reload();
-                  }
-                });
+              // afterInteractive can run after 'load' has already fired (fast or
+              // cached loads); a load listener alone would then never register.
+              if (document.readyState === 'complete') registerSW();
+              else window.addEventListener('load', registerSW);
+            })();
+          ` : `
+            // next-pwa is disabled in dev, but a public/sw.js left over from a local
+            // production build would still register here and serve cached bundles,
+            // so code edits never show up. Remove any such worker and its caches.
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(regs) {
+                regs.forEach(function(r) { r.unregister(); });
               });
+              if (window.caches) {
+                caches.keys().then(function(keys) { keys.forEach(function(k) { caches.delete(k); }); });
+              }
             }
           `}
         </Script>
