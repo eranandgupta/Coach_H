@@ -119,14 +119,44 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Could not verify payment with Razorpay' }, { status: 502 });
     }
 
-    if (rzpPayment.status !== 'captured' && rzpPayment.status !== 'authorized') {
-      console.error('Payment not captured:', rzpPayment.status, razorpay_payment_id);
-      return NextResponse.json({ error: `Payment not completed (status: ${rzpPayment.status})` }, { status: 400 });
-    }
-
     if (rzpPayment.order_id !== razorpay_order_id) {
       console.error('Order ID mismatch', { expected: razorpay_order_id, actual: rzpPayment.order_id });
       return NextResponse.json({ error: 'Payment order mismatch' }, { status: 400 });
+    }
+
+    // Only a CAPTURED payment is money received. An `authorized` payment is just a hold: if it
+    // is never captured Razorpay releases it back to the customer after a few days, and a plan
+    // granted on it would be free. Capture it here (the customer authorised exactly this order's
+    // amount); if auto-capture already did it, the refetch below sees `captured`.
+    if (rzpPayment.status === 'authorized') {
+      try {
+        rzpPayment = await razorpay.payments.capture(razorpay_payment_id, rzpPayment.amount, rzpPayment.currency || 'INR');
+      } catch (err) {
+        console.warn('Capture call failed, re-checking payment status:', razorpay_payment_id, err);
+        try {
+          rzpPayment = await razorpay.payments.fetch(razorpay_payment_id);
+        } catch (refetchErr) {
+          console.error('Failed to re-fetch payment after capture error:', refetchErr);
+        }
+      }
+    }
+
+    if (rzpPayment.status !== 'captured') {
+      console.error('Payment not captured:', rzpPayment.status, razorpay_payment_id);
+      if (rzpPayment.status === 'authorized') {
+        // Money is on hold but not captured yet. The payment.captured webhook activates the plan
+        // as soon as it is; alert the coach in case it never is.
+        await sendPaymentFulfilmentAlert({
+          source: 'verify', paymentId: razorpay_payment_id, orderId: razorpay_order_id,
+          customerEmail: email, customerName: name, planId, amount: Number(rzpPayment.amount) / 100,
+          error: 'Payment authorized but could not be captured — plan not activated yet',
+        });
+        return NextResponse.json(
+          { pending: true, error: 'Your payment is still being confirmed by the bank. Your plan will be activated and your login emailed as soon as it completes — no need to pay again.' },
+          { status: 409 }
+        );
+      }
+      return NextResponse.json({ error: `Payment not completed (status: ${rzpPayment.status})` }, { status: 400 });
     }
 
     // --- 4. Get plan ---

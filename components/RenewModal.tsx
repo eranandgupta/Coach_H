@@ -123,6 +123,12 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
             });
             if (!verifyRes.ok) {
               const errData = await verifyRes.json().catch(() => ({}));
+              if (errData.pending) {
+                // Bank hasn't released the funds yet; the webhook activates the plan once it does.
+                setProcessing(false);
+                setError(errData.error);
+                return;
+              }
               throw new Error(errData.error || 'Verification failed');
             }
             setDone(true);

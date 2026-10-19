@@ -362,6 +362,12 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
             if (!verifyRes.ok) {
               const errData = await verifyRes.json();
+              if (errData.pending) {
+                // Bank hasn't released the funds yet; the webhook activates the plan once it does.
+                setIsGeneratingReceipt(false);
+                alert(`${errData.error}\n\nPayment ID: ${response.razorpay_payment_id}`);
+                return;
+              }
               throw new Error(errData.error || 'Verification failed');
             }
 
