@@ -349,6 +349,11 @@ export default function OnlinePersonalTrainerPage() {
             <Link href="/personal-trainer-cost-india" className="text-brand-blue hover:underline">
               Personal trainer cost in India: every option priced per month and per session →
             </Link>
+            <br />
+            Getting married?{' '}
+            <Link href="/wedding-fitness-plan" className="text-brand-blue hover:underline">
+              Plan your wedding fitness countdown →
+            </Link>
           </p>
         </div>
       </section>

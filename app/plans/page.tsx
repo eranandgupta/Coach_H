@@ -152,6 +152,11 @@ export default function PlansPage() {
             <Link href="/personal-trainer-cost-india" className="text-brand-blue hover:underline">
               See what a personal trainer costs in India, per month and per session →
             </Link>
+            <br />
+            Planning for a wedding?{' '}
+            <Link href="/wedding-fitness-plan" className="text-brand-blue hover:underline">
+              Which plan fits your wedding date →
+            </Link>
           </p>
           <div className="space-y-4">
             {PLAN_FAQS.map((faq, index) => (

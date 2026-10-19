@@ -118,6 +118,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - [Blog](https://coachhimanshu.com/blog): ${blogLabel}
 - [Plans & Pricing](https://coachhimanshu.com/plans): All plans with a comparison matrix
 - [Personal Trainer Cost in India](https://coachhimanshu.com/personal-trainer-cost-india): In-person vs online coaching vs live 1:1, every plan priced per month and per session, couple savings
+- [Wedding Fitness Plan](https://coachhimanshu.com/wedding-fitness-plan): Week-by-week wedding countdown (realistic 0.5–1 kg/week fat loss, final 2 weeks at maintenance) with an Indian diet, for the [bride](https://coachhimanshu.com/wedding-fitness-plan/bride), [groom](https://coachhimanshu.com/wedding-fitness-plan/groom) and [couple](https://coachhimanshu.com/wedding-fitness-plan/couple), including NRIs flying home for the wedding
 - [Online Personal Trainer](https://coachhimanshu.com/online-personal-trainer): Live 1-on-1 personal training with real-time form correction, from ₹8,999
 - [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
 - [Online Fitness Coach Worldwide](https://coachhimanshu.com/online-fitness-coach): Coaching for NRIs by country

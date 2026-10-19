@@ -9,6 +9,7 @@ import { getAllListSlugs } from '@/lib/foodLists';
 import { getAllPairSlugs } from '@/lib/foodCompare';
 import { getAllToolSlugs } from '@/lib/fitnessTools';
 import { DIET_PLANS } from '@/lib/dietPlans';
+import { WEDDING_AUDIENCES } from '@/lib/weddingFitness';
 
 const baseUrl = 'https://coachhimanshu.com';
 
@@ -110,6 +111,19 @@ function getCorePages(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    // Wedding-season landing pages (hub + bride / groom / couple).
+    {
+      url: `${baseUrl}/wedding-fitness-plan`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    ...WEDDING_AUDIENCES.map((a) => ({
+      url: `${baseUrl}/wedding-fitness-plan/${a.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.85,
+    })),
     {
       url: `${baseUrl}/assessment`,
       lastModified: now,

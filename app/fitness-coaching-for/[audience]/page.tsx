@@ -7,6 +7,13 @@ import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ConsultationForm from '@/components/ConsultationForm';
 
+// Audience pages that funnel into a wedding countdown plan.
+const WEDDING_LINK: Record<string, { href: string; label: string }> = {
+  women: { href: '/wedding-fitness-plan/bride', label: 'See the bridal fitness plan' },
+  men: { href: '/wedding-fitness-plan/groom', label: 'See the groom fitness plan' },
+  family: { href: '/wedding-fitness-plan/couple', label: 'See the couple wedding fitness plan' },
+};
+
 // Direct WhatsApp chat for "Start Consultation" CTAs.
 const WHATSAPP_CONSULT =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20to%20start%20a%20free%20consultation.';
@@ -233,6 +240,14 @@ export default function AudiencePage({ params }: { params: { audience: string } 
               full plans &amp; pricing page
             </Link>.
           </p>
+          {WEDDING_LINK[data.slug] && (
+            <p className="text-center text-gray-500 text-sm mt-3">
+              Getting married?{' '}
+              <Link href={WEDDING_LINK[data.slug].href} className="text-brand-blue hover:text-brand-gold transition-colors underline">
+                {WEDDING_LINK[data.slug].label}
+              </Link>
+            </p>
+          )}
         </div>
       </section>
 

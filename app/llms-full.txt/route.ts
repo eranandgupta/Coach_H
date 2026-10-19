@@ -3,6 +3,7 @@ import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
 import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 import { DIET_PLANS, DIET_PLANS_BASE, planTitle } from '@/lib/dietPlans';
 import { COACHING_ROWS, COST_FAQS, COST_GUIDE_URL, LIVE_ROWS, PRICES_UPDATED_LABEL } from '@/lib/pricingGuide';
+import { WEDDING_AUDIENCES, WEDDING_HUB_FAQS, WEDDING_HUB_URL, weddingTimeline } from '@/lib/weddingFitness';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
@@ -64,6 +65,15 @@ export async function GET() {
       .join('\n');
     return `### ${planTitle(p)}\n${DIET_PLANS_BASE}/${p.slug}\nTotal ${Math.round(t.kcal)} kcal, ${Math.round(t.protein)} g protein, ${Math.round(t.carbs)} g carbs, ${Math.round(t.fat)} g fat, ${Math.round(t.fiber)} g fibre. Best for: ${p.goal.toLowerCase()}.\n${meals}`;
   }).join('\n\n');
+
+  // Wedding countdown — the same computed ranges and phases the /wedding-fitness-plan pages show.
+  const t16 = weddingTimeline(16);
+  const wedding = [
+    `Full planner: ${WEDDING_HUB_URL} (bride, groom and couple pages: ${WEDDING_AUDIENCES.map((a) => `${WEDDING_HUB_URL}/${a.slug}`).join(', ')})`,
+    `16-week countdown: ${t16.phases.map((p) => `${p.name} (${p.weeks}): ${p.text}`).join(' ')}`,
+    '',
+    ...WEDDING_HUB_FAQS.map((f) => `**${f.question}**\n${f.answer}`),
+  ].join('\n');
 
   // Free calculators — the same answer-first paragraph each tool page leads with.
   const tools = FITNESS_TOOLS.map((t) => `### ${t.name}\n${TOOLS_BASE}/${t.slug}\n${t.answer}`).join('\n\n');
@@ -151,6 +161,11 @@ Two personalised plans, one shared journey — each person gets their own workou
 Free, no-sign-up calculators at [coachhimanshu.com/tools](https://coachhimanshu.com/tools). Each page shows the formula, a worked example, a reference table and its sources.
 
 ${tools}
+
+## Wedding Fitness Plans
+Online wedding countdown coaching for brides, grooms and couples, in India and abroad.
+
+${wedding}
 
 ## Indian Diet Plans by Calorie
 Full-day Indian diet charts. Every total is computed from the Indian food database (cooked dishes include typical home cooking oil).
@@ -303,6 +318,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [About](https://coachhimanshu.com/about): Coach credentials, story, and philosophy
 - [Blog](https://coachhimanshu.com/blog): ${blogCountLabel} expert fitness and nutrition articles
 - [Plans & Pricing](https://coachhimanshu.com/plans): Full plan catalog and comparison matrix
+- [Wedding Fitness Plan](https://coachhimanshu.com/wedding-fitness-plan): Countdown plans for brides, grooms and couples, online worldwide
 - [Personal Trainer Cost in India](https://coachhimanshu.com/personal-trainer-cost-india): Pricing guide comparing in-person trainers, online coaching and live 1:1, with per-month and per-session costs
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
