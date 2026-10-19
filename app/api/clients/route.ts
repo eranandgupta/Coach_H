@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { createOrRenewSubscription } from '@/lib/subscriptionService';
 import { requireCoach, requireCoachOrTrainer } from '@/lib/middleware';
 import bcrypt from 'bcryptjs';
 
@@ -117,19 +118,11 @@ async function postHandler(request: NextRequest, context: any) {
       });
 
       if (plan) {
-        const startDate = new Date();
-        const endDate = new Date(startDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
-
-        await prisma.userSubscription.create({
-          data: {
-            userId: client.id,
-            planId: plan.id,
-            status: 'active',
-            startDate,
-            endDate,
-            transactionId: transactionId || null,
-            paymentMode: paymentMode || null,
-          },
+        await createOrRenewSubscription({
+          userId: client.id,
+          plan,
+          transactionId: transactionId || null,
+          paymentMode: paymentMode || null,
         });
       }
     }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/middleware';
 import { sendMembershipExpiryReminder } from '@/lib/email';
+import { findCurrentSubscription } from '@/lib/subscriptionService';
 
 // POST - Send subscription expiry reminder to a client
 export async function POST(request: NextRequest) {
@@ -24,37 +25,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Client ID is required' }, { status: 400 });
     }
 
-    // Fetch client with active subscription
     const client = await prisma.user.findUnique({
       where: { id: clientId },
-      include: {
-        subscriptions: {
-          where: {
-            OR: [
-              { endDate: { gte: new Date() } },
-              { status: 'active' },
-            ],
-          },
-          include: {
-            plan: true,
-          },
-          orderBy: {
-            createdAt: 'desc',
-          },
-          take: 1,
-        },
-      },
     });
 
     if (!client) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
-    if (!client.subscriptions || client.subscriptions.length === 0) {
+    // The plan running today, not a queued renewal that starts later.
+    const subscription = await findCurrentSubscription(prisma, client.id);
+    if (!subscription) {
       return NextResponse.json({ error: 'Client has no active subscription' }, { status: 400 });
     }
 
-    const subscription = client.subscriptions[0];
     const endDate = new Date(subscription.endDate);
     const today = new Date();
     const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));

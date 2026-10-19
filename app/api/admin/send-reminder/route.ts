@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/middleware';
 import { sendMembershipExpiryReminder } from '@/lib/email';
+import { findCurrentSubscription, hasRenewalAfter } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,25 +22,14 @@ async function postHandler(request: NextRequest, context: any) {
 
     if (clientId) {
       // Send reminder to a specific client
-      const subscription = await prisma.userSubscription.findFirst({
-        where: {
-          userId: parseInt(clientId),
-          status: { in: ['active', 'paused'] },
-        },
-        include: {
-          plan: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
+      // The plan running today, not a queued renewal that starts later.
+      const current = await findCurrentSubscription(prisma, parseInt(clientId));
+      const subscription = current
+        ? await prisma.userSubscription.findUnique({
+            where: { id: current.id },
+            include: { plan: true, user: { select: { id: true, name: true, email: true } } },
+          })
+        : null;
 
       if (!subscription) {
         return NextResponse.json(
@@ -88,6 +78,7 @@ async function postHandler(request: NextRequest, context: any) {
       const expiringSubscriptions = await prisma.userSubscription.findMany({
         where: {
           status: { in: ['active', 'paused'] },
+          startDate: { lte: now },
           endDate: {
             gte: now,
             lte: fourteenDaysFromNow,
@@ -106,6 +97,8 @@ async function postHandler(request: NextRequest, context: any) {
       });
 
       for (const subscription of expiringSubscriptions) {
+        // Already renewed (a paid plan continues after this one) — don't nag.
+        if (await hasRenewalAfter(prisma, subscription)) continue;
         const daysRemaining = Math.ceil(
           (subscription.endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
         );

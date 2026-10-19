@@ -1,47 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendMembershipExpiryReminder } from '@/lib/email';
+import { cronAuthError } from '@/lib/cronAuth';
+import { hasRenewalAfter } from '@/lib/subscriptionService';
 
-// This endpoint should be called daily by a cron job
-// You can use services like:
-// 1. Vercel Cron Jobs (if deployed on Vercel)
-// 2. cron-job.org (external service)
-// 3. GitHub Actions scheduled workflows
-// 4. Your own server cron job
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
+// Run daily by the Vercel cron in vercel.json. Emails every client whose running plan ends on
+// the IST calendar day 7 days from today — one reminder per plan, since each day is a fresh
+// window. Clients who have already paid for a plan that continues after it are skipped.
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Midnight IST of the day containing `d`, plus `days`, as a UTC instant. */
+function istDayStart(d: Date, days = 0): Date {
+  const ist = new Date(d.getTime() + IST_OFFSET_MS);
+  const midnightIstAsUtc = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate());
+  return new Date(midnightIstAsUtc - IST_OFFSET_MS + days * DAY_MS);
+}
 
 export async function GET(request: NextRequest) {
+  const denied = cronAuthError(request);
+  if (denied) return denied;
+
   try {
-    // Simple auth check - you should use a secret token in production
-    const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET || 'your-secret-key-here';
+    const now = new Date();
+    const today = istDayStart(now);
+    const windowStart = istDayStart(now, 7);
+    const windowEnd = istDayStart(now, 8);
 
-    if (authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized - Invalid cron secret' },
-        { status: 401 }
-      );
-    }
-
-    // Calculate date range: 7 days from now
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const sevenDaysFromNow = new Date(today);
-    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-    sevenDaysFromNow.setHours(23, 59, 59, 999);
-
-    const eightDaysFromNow = new Date(today);
-    eightDaysFromNow.setDate(eightDaysFromNow.getDate() + 8);
-    eightDaysFromNow.setHours(0, 0, 0, 0);
-
-    // Find all active/paused subscriptions expiring in exactly 7 days
-    const expiringSubscriptions = await prisma.userSubscription.findMany({
+    const candidates = await prisma.userSubscription.findMany({
       where: {
         status: { in: ['active', 'paused'] },
-        endDate: {
-          gte: sevenDaysFromNow,
-          lt: eightDaysFromNow,
-        },
+        startDate: { lte: now },
+        endDate: { gte: windowStart, lt: windowEnd },
       },
       include: {
         user: true,
@@ -49,7 +42,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    console.log(`Found ${expiringSubscriptions.length} subscriptions expiring in 7 days`);
+    const expiringSubscriptions = [];
+    for (const sub of candidates) {
+      if (!(await hasRenewalAfter(prisma, sub))) expiringSubscriptions.push(sub);
+    }
+
+    console.log(`Found ${expiringSubscriptions.length} subscriptions expiring in 7 days (${candidates.length - expiringSubscriptions.length} already renewed)`);
 
     let sentCount = 0;
     let errorCount = 0;
@@ -58,9 +56,8 @@ export async function GET(request: NextRequest) {
     // Send reminder emails
     for (const subscription of expiringSubscriptions) {
       try {
-        const daysRemaining = Math.ceil(
-          (subscription.endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-        );
+        // Calendar days in IST (always 7 here), not a rounded-up fraction of hours.
+        const daysRemaining = Math.round((istDayStart(subscription.endDate).getTime() - today.getTime()) / DAY_MS);
 
         await sendMembershipExpiryReminder({
           clientName: subscription.user.name || 'Client',

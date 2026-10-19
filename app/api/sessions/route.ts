@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireCoach } from '@/lib/middleware';
-import { getEffectiveTotalSessions } from '@/lib/planUtils';
+import { getEffectiveTotalSessions, subscriptionDisplayStatus } from '@/lib/planUtils';
+import { findCurrentSubscription } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +48,19 @@ async function postHandler(request: NextRequest, context: any) {
       return NextResponse.json({ error: 'Subscription not found' }, { status: 404 });
     }
 
+    // Sessions can only be logged against a plan that is running now — not a queued renewal
+    // that hasn't started, and not one that has expired or been cancelled.
+    const state = subscriptionDisplayStatus(subscription);
+    if (state === 'upcoming') {
+      return NextResponse.json(
+        { error: `This plan starts on ${new Date(subscription.startDate).toDateString()} — sessions can't be logged against it yet` },
+        { status: 400 }
+      );
+    }
+    if (state === 'expired' || state === 'cancelled') {
+      return NextResponse.json({ error: `This plan is ${state} — sessions can't be logged against it` }, { status: 400 });
+    }
+
     // Include sessions rolled over from a previous plan, or the coach can't confirm them.
     const totalSessions = getEffectiveTotalSessions(subscription.plan.name, subscription.bonusSessions);
     if (totalSessions && sessionNumber > totalSessions) {
@@ -66,12 +80,12 @@ async function postHandler(request: NextRequest, context: any) {
     let subscriptionExpired = false;
     if (totalSessions) {
       const completed = await prisma.sessionTracking.count({ where: { subscriptionId } });
-      if (completed >= totalSessions && subscription.status !== 'expired' && subscription.status !== 'cancelled') {
-        await prisma.userSubscription.update({
-          where: { id: subscriptionId },
+      if (completed >= totalSessions) {
+        const { count } = await prisma.userSubscription.updateMany({
+          where: { id: subscriptionId, status: { in: ['active', 'paused'] } },
           data: { status: 'expired', pausedAt: null },
         });
-        subscriptionExpired = true;
+        subscriptionExpired = count > 0;
       }
     }
 
@@ -104,11 +118,16 @@ async function deleteHandler(request: NextRequest, context: any) {
     // back, as long as its days haven't run out too.
     const sub = removed.subscription;
     const total = getEffectiveTotalSessions(sub.plan.name, sub.bonusSessions);
-    if (sub.status === 'expired' && total && new Date(sub.endDate) >= new Date()) {
+    // Never revive a plan that a newer one has taken over (e.g. an Elite renewal that rolled
+    // its sessions forward) — that would give the client two running plans.
+    if (sub.status === 'expired' && total && new Date(sub.endDate) >= new Date() && new Date(sub.startDate) <= new Date()) {
       const completed = await prisma.sessionTracking.count({ where: { subscriptionId: sub.id } });
       // completed + 1 >= total: it was the session count that ended it, not a coach deactivation.
       if (completed < total && completed + 1 >= total) {
-        await prisma.userSubscription.update({ where: { id: sub.id }, data: { status: 'active' } });
+        const other = await findCurrentSubscription(prisma, sub.userId);
+        if (!other) {
+          await prisma.userSubscription.updateMany({ where: { id: sub.id, status: 'expired' }, data: { status: 'active' } });
+        }
       }
     }
 

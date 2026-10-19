@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { isElitePlan, subscriptionDisplayStatus } from '@/lib/planUtils';
 import { requireCoach, requireCoachOrTrainer } from '@/lib/middleware';
 
 export const dynamic = 'force-dynamic';
@@ -69,19 +70,17 @@ async function postHandler(request: NextRequest, context: any) {
     }
 
     // Verify client has an active Elite 1:1 subscription
-    const subscription = await prisma.userSubscription.findFirst({
-      where: {
-        userId: parseInt(clientId),
-        OR: [
-          { endDate: { gte: new Date() } },
-          { status: 'active' },
-        ],
-      },
+    // Elite plan the client is on now or has paid for and queued (started-or-upcoming, not ended).
+    const now = new Date();
+    const eliteSubs = await prisma.userSubscription.findMany({
+      where: { userId: parseInt(clientId), status: { in: ['active', 'paused'] } },
       include: { plan: true },
-      orderBy: { createdAt: 'desc' },
     });
+    const subscription = eliteSubs.find(
+      (s) => isElitePlan(s.plan.name) && subscriptionDisplayStatus(s, now) !== 'expired'
+    );
 
-    if (!subscription || !subscription.plan.name.startsWith('Elite 1:1')) {
+    if (!subscription) {
       return NextResponse.json({ error: 'Only Elite 1:1 clients can be assigned to a trainer' }, { status: 400 });
     }
 

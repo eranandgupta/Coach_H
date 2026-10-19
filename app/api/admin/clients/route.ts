@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { createOrRenewSubscription } from '@/lib/subscriptionService';
 import { requireAdmin } from '@/lib/middleware';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail } from '@/lib/email';
@@ -108,19 +109,11 @@ async function postHandler(request: NextRequest, context: any) {
       });
 
       if (plan) {
-        const startDate = new Date();
-        const endDate = new Date(startDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
-
-        await prisma.userSubscription.create({
-          data: {
-            userId: user.id,
-            planId: plan.id,
-            status: 'active',
-            startDate,
-            endDate,
-            transactionId: transactionId || null,
-            paymentMode: paymentMode || null,
-          },
+        await createOrRenewSubscription({
+          userId: user.id,
+          plan,
+          transactionId: transactionId || null,
+          paymentMode: paymentMode || null,
         });
       }
     }

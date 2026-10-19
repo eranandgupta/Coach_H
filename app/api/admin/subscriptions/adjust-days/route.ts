@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireCoachOrAdmin } from '@/lib/middleware';
 import { eliteSessionsExhausted } from '@/lib/planUtils';
+import { findCurrentSubscription, pushQueuedAfter } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,18 @@ async function putHandler(request: NextRequest, context: any) {
     if (!shouldExpire && subscription.status === 'expired') {
       const used = await prisma.sessionTracking.count({ where: { subscriptionId: subscription.id } });
       shouldReactivate = !eliteSessionsExhausted(subscription.plan.name, subscription.bonusSessions, used);
+
+      // A plan that a newer one has replaced (an Elite renewal rolled its sessions and days
+      // forward, or the client renewed after it lapsed) must not come back alongside it.
+      if (shouldReactivate) {
+        const other = await findCurrentSubscription(prisma, subscription.userId);
+        if (other && other.id !== subscription.id) {
+          return NextResponse.json(
+            { error: `This plan has been superseded by "${other.plan.name}". Adjust the client's current plan instead.` },
+            { status: 409 }
+          );
+        }
+      }
     }
 
     // Update the subscription end date
@@ -74,6 +87,11 @@ async function putHandler(request: NextRequest, context: any) {
         user: { select: { id: true, name: true, email: true } },
       },
     });
+
+    // Extending a plan can make it overlap a renewal queued at its old end date — push that back.
+    if (days > 0 && !shouldExpire) {
+      await pushQueuedAfter(prisma, updatedSubscription);
+    }
 
     return NextResponse.json({
       subscription: updatedSubscription,

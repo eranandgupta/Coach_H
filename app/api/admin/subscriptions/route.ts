@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireCoachOrAdmin } from '@/lib/middleware';
-import { createOrRenewSubscription } from '@/lib/subscriptionService';
+import { createOrRenewSubscription, pushQueuedAfter } from '@/lib/subscriptionService';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,6 +102,11 @@ async function putHandler(request: NextRequest, context: any) {
         },
       },
     });
+
+    // A later endDate can overlap a renewal queued at the old end date — push that back.
+    if (endDate && new Date(endDate) > existingSubscription.endDate) {
+      await pushQueuedAfter(prisma, updatedSubscription);
+    }
 
     return NextResponse.json({ subscription: updatedSubscription }, { status: 200 });
   } catch (error) {
