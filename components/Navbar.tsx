@@ -32,7 +32,7 @@ export default function Navbar() {
     <>
       <nav className="fixed top-[24px] left-0 right-0 z-50 navbar-glass">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-1 md:py-0">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-4">
           <div className="flex items-center gap-4 lg:gap-5">
             <Link
               href="/"
@@ -49,12 +49,12 @@ export default function Navbar() {
             <ThemeToggle className="hidden lg:inline-flex" />
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-300 hover:text-white transition-colors text-sm font-medium uppercase"
+                className="text-gray-300 hover:text-white transition-colors text-sm font-medium uppercase whitespace-nowrap"
               >
                 {link.label}
               </Link>
@@ -63,7 +63,7 @@ export default function Navbar() {
             {/* Fit Bharat Mission - Direct Link */}
             <Link
               href="/fit-bharat-mission"
-              className="text-sm font-bold uppercase transition-all"
+              className="text-sm font-bold uppercase transition-all whitespace-nowrap"
             >
               <span className="bg-gradient-to-r from-orange-500 via-white to-green-500 bg-clip-text text-transparent">
                 Fit Bharat
@@ -71,21 +71,23 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center gap-5">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-5">
             <ThemeToggle size="sm" className="lg:hidden" />
             <button
               onClick={() => setIsGetAppOpen(true)}
-              className="px-4 py-2 bg-gradient-to-r from-brand-blue to-blue-500 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-brand-blue/25 transition-all duration-300"
+              className="px-4 py-2 bg-gradient-to-r from-brand-blue to-blue-500 text-white rounded-xl font-semibold text-sm whitespace-nowrap hover:shadow-lg hover:shadow-brand-blue/25 transition-all duration-300"
             >
               Get App
             </button>
             {loggedIn ? (
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-white bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1] transition-colors"
+                aria-label="Dashboard"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-white bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1] transition-colors whitespace-nowrap"
               >
                 <LayoutDashboard size={16} />
-                Dashboard
+                {/* Icon-only until xl: the full label crowds the nav links at laptop widths */}
+                <span className="hidden xl:inline">Dashboard</span>
               </Link>
             ) : (
               <button
@@ -105,7 +107,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="md:hidden flex items-center gap-3">
+          <div className="lg:hidden flex items-center gap-3">
           <ThemeToggle size="sm" />
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -125,7 +127,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-brand-navy/90 border-t border-white/[0.06]"
+            className="lg:hidden bg-brand-navy/90 border-t border-white/[0.06]"
           >
             <div className="px-5 py-4 space-y-1">
               {navLinks.map((link) => (
