@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/middleware';
+import { requireAuth, trainerPermissionError } from '@/lib/middleware';
 
 async function getHandler(request: NextRequest, context: any) {
   const user = context.user;
+  const denied = await trainerPermissionError(user, 'chat');
+  if (denied) return denied;
 
   try {
     const isCoach = user.role === 'coach' || user.role === 'admin';
@@ -133,6 +135,8 @@ async function getHandler(request: NextRequest, context: any) {
 
 async function postHandler(request: NextRequest, context: any) {
   const user = context.user;
+  const denied = await trainerPermissionError(user, 'chat');
+  if (denied) return denied;
 
   try {
     const { coachId, trainerId, clientId } = await request.json();

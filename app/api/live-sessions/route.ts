@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAuthUser } from '@/lib/middleware';
+import { getAuthUser, trainerPermissionError } from '@/lib/middleware';
 
 // GET — fetch active live session link for a plan
 export async function GET(request: NextRequest) {
@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
     const planName = searchParams.get('planName');
 
     if (authUser.role === 'coach' || authUser.role === 'trainer') {
+      const denied = await trainerPermissionError(authUser, 'liveSessions');
+      if (denied) return denied;
       // Coach gets all live session links
       const links = await prisma.liveSessionLink.findMany({
         where: { isActive: true },
@@ -56,6 +58,8 @@ export async function POST(request: NextRequest) {
     if (!authUser || (authUser.role !== 'coach' && authUser.role !== 'trainer')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
+    const denied = await trainerPermissionError(authUser, 'liveSessions');
+    if (denied) return denied;
 
     const { link, title, planName, clientId } = await request.json();
 
@@ -99,6 +103,8 @@ export async function DELETE(request: NextRequest) {
     if (!authUser || (authUser.role !== 'coach' && authUser.role !== 'trainer')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
+    const denied = await trainerPermissionError(authUser, 'liveSessions');
+    if (denied) return denied;
 
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get('id') || '');

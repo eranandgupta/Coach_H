@@ -24,6 +24,7 @@ import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import ChatContainer from '@/components/chat/ChatContainer';
+import { ALL_TRAINER_PERMISSIONS, resolveTrainerPermissions, type TrainerPermissions } from '@/lib/trainerPermissions';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -58,6 +59,8 @@ export default function TrainerDashboard() {
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  // What the coach has given this trainer access to (Manage Trainer). The server enforces it too.
+  const [perms, setPerms] = useState<TrainerPermissions>(ALL_TRAINER_PERMISSIONS);
 
   const handleLogout = async () => {
     await logout();
@@ -96,6 +99,8 @@ export default function TrainerDashboard() {
         return;
       }
 
+      const access = resolveTrainerPermissions(userData.user.trainerPermissions);
+      setPerms(access);
       setUser(userData.user);
       setLoading(false); // dashboard shell can render now; rest streams in
 
@@ -109,15 +114,19 @@ export default function TrainerDashboard() {
         .then(data => { if (data) setClients(data.clients); })
         .catch(() => {});
 
-      fetch('/api/workouts', authHeader)
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => { if (data) setWorkouts(data.workouts); })
-        .catch(() => {});
+      if (access.workouts) {
+        fetch('/api/workouts', authHeader)
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => { if (data) setWorkouts(data.workouts); })
+          .catch(() => {});
+      }
 
-      fetch('/api/diets', authHeader)
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => { if (data) setDiets(data.diets); })
-        .catch(() => {});
+      if (access.diets) {
+        fetch('/api/diets', authHeader)
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => { if (data) setDiets(data.diets); })
+          .catch(() => {});
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -202,12 +211,16 @@ export default function TrainerDashboard() {
           </div>
 
           <div className="ml-auto hdr-group">
-            <button onClick={() => setIsChatOpen(true)} className="hdr-btn" aria-label="Chat">
-              <MessageSquare />
-              <span className="hidden lg:inline">Chat</span>
-              {unreadChatCount > 0 && <span className="hdr-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}
-            </button>
-            <span aria-hidden className="hdr-sep" />
+            {perms.chat && (
+              <>
+                <button onClick={() => setIsChatOpen(true)} className="hdr-btn" aria-label="Chat">
+                  <MessageSquare />
+                  <span className="hidden lg:inline">Chat</span>
+                  {unreadChatCount > 0 && <span className="hdr-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}
+                </button>
+                <span aria-hidden className="hdr-sep" />
+              </>
+            )}
             <ThemeToggle size="sm" className="mx-1" />
             <span aria-hidden className="hdr-sep" />
             <button onClick={handleLogout} className="hdr-btn is-danger" aria-label="Logout" title="Logout">
@@ -238,6 +251,7 @@ export default function TrainerDashboard() {
 
             {/* Action Buttons */}
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+              {perms.workouts && (
               <motion.button
                                 whileTap={{ scale: 0.98 }}
                 onClick={() => {
@@ -249,7 +263,9 @@ export default function TrainerDashboard() {
                 <Dumbbell className="w-5 h-5" />
                 <span className="text-sm">Create Workout</span>
               </motion.button>
+              )}
 
+              {perms.diets && (
               <motion.button
                                 whileTap={{ scale: 0.98 }}
                 onClick={() => {
@@ -261,7 +277,9 @@ export default function TrainerDashboard() {
                 <UtensilsCrossed className="w-5 h-5" />
                 <span className="text-sm">Create Diet</span>
               </motion.button>
+              )}
 
+              {perms.liveSessions && (
               <motion.button
                                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsLiveSessionModalOpen(true)}
@@ -270,6 +288,7 @@ export default function TrainerDashboard() {
                 <Play className="w-5 h-5" />
                 <span className="text-sm">Live Sessions</span>
               </motion.button>
+              )}
 
               <motion.button
                                 whileTap={{ scale: 0.98 }}
@@ -280,6 +299,7 @@ export default function TrainerDashboard() {
                 <span className="text-sm">Video Library</span>
               </motion.button>
 
+              {(perms.workouts || perms.diets) && (
               <motion.button
                                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsTemplatesModalOpen(true)}
@@ -288,6 +308,7 @@ export default function TrainerDashboard() {
                 <LayoutTemplate className="w-5 h-5" />
                 <span className="text-sm">Templates</span>
               </motion.button>
+              )}
             </div>
           </motion.div>
 
@@ -458,6 +479,7 @@ export default function TrainerDashboard() {
             className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
             {/* Recent Workouts */}
+            {perms.workouts && (
             <div id="section-workouts" className="bg-white/5 border border-white/10 rounded-2xl p-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <Dumbbell className="w-6 h-6 text-purple-400" />
@@ -498,8 +520,10 @@ export default function TrainerDashboard() {
                 )}
               </div>
             </div>
+            )}
 
             {/* Recent Diets */}
+            {perms.diets && (
             <div id="section-diets" className="bg-white/5 border border-white/10 rounded-2xl p-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <UtensilsCrossed className="w-6 h-6 text-green-400" />
@@ -544,6 +568,7 @@ export default function TrainerDashboard() {
                 )}
               </div>
             </div>
+            )}
           </motion.div>
         </div>
 
@@ -555,7 +580,7 @@ export default function TrainerDashboard() {
             diets={diets}
             unreadChatCount={unreadChatCount}
             onOpenClient={handleViewClientDetail}
-            onOpenChat={() => setIsChatOpen(true)}
+            onOpenChat={() => { if (perms.chat) setIsChatOpen(true); }}
           />
         </div>
         </div>

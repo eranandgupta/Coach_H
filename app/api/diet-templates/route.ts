@@ -171,7 +171,7 @@ async function deleteHandler(request: NextRequest, context: any) {
   }
 }
 
-export const GET = requireCoachOrTrainer(getHandler);
-export const POST = requireCoachOrTrainer(postHandler);
-export const PUT = requireCoachOrTrainer(putHandler);
-export const DELETE = requireCoachOrTrainer(deleteHandler);
+export const GET = requireCoachOrTrainer(getHandler, 'diets');
+export const POST = requireCoachOrTrainer(postHandler, 'diets');
+export const PUT = requireCoachOrTrainer(putHandler, 'diets');
+export const DELETE = requireCoachOrTrainer(deleteHandler, 'diets');

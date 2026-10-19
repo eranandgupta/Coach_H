@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { verifyToken } from './auth';
 import { prisma } from './prisma';
 import { findCurrentSubscription, reconcileSubscriptions } from './subscriptionService';
+import { resolveTrainerPermissions, trainerPermissionLabel, type TrainerPermission } from './trainerPermissions';
 
 export interface AuthUser {
   userId: number;
@@ -132,7 +133,21 @@ export function requireCoachOrAdmin(handler: Function) {
   };
 }
 
-export function requireCoachOrTrainer(handler: Function) {
+/**
+ * For a trainer, a 403 response when their account lacks `permission`; null otherwise (and for
+ * every non-trainer role). Read from the DB on each call so the coach's changes apply at once.
+ */
+export async function trainerPermissionError(user: AuthUser, permission: TrainerPermission): Promise<Response | null> {
+  if (user.role !== 'trainer') return null;
+  const row = await prisma.user.findUnique({ where: { id: user.userId }, select: { trainerPermissions: true } });
+  if (resolveTrainerPermissions(row?.trainerPermissions)[permission]) return null;
+  return Response.json(
+    { error: `Your trainer account doesn't have access to ${trainerPermissionLabel(permission).toLowerCase()}. Ask the coach to turn it on.` },
+    { status: 403 }
+  );
+}
+
+export function requireCoachOrTrainer(handler: Function, permission?: TrainerPermission) {
   return async (request: NextRequest, context?: any) => {
     const user = await getAuthUser(request);
 
@@ -148,6 +163,11 @@ export function requireCoachOrTrainer(handler: Function) {
         { error: 'Forbidden. Coach or trainer access required.' },
         { status: 403 }
       );
+    }
+
+    if (permission) {
+      const denied = await trainerPermissionError(user, permission);
+      if (denied) return denied;
     }
 
     return handler(request, { ...context, user });

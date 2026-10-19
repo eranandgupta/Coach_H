@@ -60,6 +60,7 @@ import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
 import ActivateSubscriptionModal from '@/components/admin/ActivateSubscriptionModal';
 import CreatePromoCodeModal from '@/components/admin/CreatePromoCodeModal';
 import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
+import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
 
 interface Client {
@@ -174,6 +175,7 @@ export default function AdminDashboard() {
   const [deletingSubId, setDeletingSubId] = useState<number | null>(null);
 
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
+  const [isTrainerManagementOpen, setIsTrainerManagementOpen] = useState(false);
   const [sendingReminder, setSendingReminder] = useState<number | null>(null);
   const [sendingAll, setSendingAll] = useState(false);
 
@@ -668,6 +670,14 @@ export default function AdminDashboard() {
             >
               <Play className="w-5 h-5" />
               <span className="text-sm">Video Library</span>
+            </motion.button>
+            <motion.button
+                            whileTap={{ scale: 0.98 }}
+              onClick={() => setIsTrainerManagementOpen(true)}
+              className="action-btn !w-28"
+            >
+              <Settings className="w-5 h-5" />
+              <span className="text-sm">Manage Trainer</span>
             </motion.button>
           </div>
 
@@ -1395,6 +1405,11 @@ export default function AdminDashboard() {
         isOpen={isVideoLibraryOpen}
         onClose={() => setIsVideoLibraryOpen(false)}
         userRole="admin"
+      />
+
+      <TrainerManagementModal
+        isOpen={isTrainerManagementOpen}
+        onClose={() => setIsTrainerManagementOpen(false)}
       />
 
       {/* Modals */}

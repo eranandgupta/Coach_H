@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/middleware';
+import { requireAuth, trainerPermissionError } from '@/lib/middleware';
 
 async function getHandler(request: NextRequest, context: any) {
   const user = context.user;
+  const denied = await trainerPermissionError(user, 'chat');
+  if (denied) return denied;
   const id = parseInt(context.params.id);
 
   if (isNaN(id)) {
@@ -73,6 +75,8 @@ async function getHandler(request: NextRequest, context: any) {
 
 async function postHandler(request: NextRequest, context: any) {
   const user = context.user;
+  const denied = await trainerPermissionError(user, 'chat');
+  if (denied) return denied;
   const id = parseInt(context.params.id);
 
   if (isNaN(id)) {

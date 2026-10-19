@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/middleware';
+import { requireAuth, trainerPermissionError } from '@/lib/middleware';
 
 async function getHandler(request: NextRequest, context: any) {
   const user = context.user;
+  // A trainer without chat access has nothing to read (polled every 30s, so no error).
+  if (await trainerPermissionError(user, 'chat')) return Response.json({ unreadCount: 0 });
 
   try {
     const isCoach = user.role === 'coach' || user.role === 'admin';

@@ -49,4 +49,4 @@ async function getHandler(request: NextRequest, context: any) {
   }
 }
 
-export const GET = requireCoachOrTrainer(getHandler);
+export const GET = requireCoachOrTrainer(getHandler, 'clientActivity');

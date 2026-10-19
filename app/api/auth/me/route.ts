@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { resolveTrainerPermissions } from '@/lib/trainerPermissions';
 import { checkSubscription } from '@/lib/middleware';
 import { verifyToken, generateToken, tokenNeedsRefresh } from '@/lib/auth';
 import { readSessionCookie, setSessionCookie, clearSessionCookie } from '@/lib/sessionCookie';
@@ -43,6 +44,7 @@ export async function GET(request: NextRequest) {
         assessmentCompleted: true,
         createdAt: true,
         updatedAt: true,
+        trainerPermissions: true,
       },
     });
 
@@ -65,9 +67,14 @@ export async function GET(request: NextRequest) {
       ? generateToken(user.id, user.email, user.role)
       : null;
 
+    // Trainers get their resolved access options so the dashboard shows only what they can use.
+    const userOut = user.role === 'trainer'
+      ? { ...user, trainerPermissions: resolveTrainerPermissions(user.trainerPermissions) }
+      : { ...user, trainerPermissions: undefined };
+
     const res = NextResponse.json(
       {
-        user,
+        user: userOut,
         subscription: subscriptionStatus,
         ...(refreshed ? { token: refreshed } : {}),
       },

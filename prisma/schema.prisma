@@ -37,6 +37,7 @@ model User {
   transformationLogs   TransformationLog[] @relation("ClientTransformationLogs")
   lastLoginAt          DateTime?          // denormalized latest login for quick "last active" display
   lastSeenAt           DateTime?          // presence heartbeat — updated while the app is open
+  trainerPermissions   Json?              // trainer accounts only: what they may do (lib/trainerPermissions.ts); null = everything
   loginEvents          LoginEvent[]
 }
 
