@@ -61,11 +61,11 @@ export function getSaleBonusDays(
 
 /**
  * Highest automatic "% OFF" any plan gets during a storefront sale (see getSalePercent in
- * app/page.tsx — Victory to Light: Elite 36/72 sessions at 30%). Used by /api/payment/create-order as the
+ * app/page.tsx — Victory to Light: 12-month gym plans at 25%). Used by /api/payment/create-order as the
  * lowest price it will accept, so a tampered browser can't charge less than a real sale price.
  * Raise this if a future sale offers a bigger discount.
  */
-export const MAX_AUTO_SALE_PERCENT = 30;
+export const MAX_AUTO_SALE_PERCENT = 25;
 
 /**
  * True when the storefront shows automatic strikethrough sale prices — mirrors the date

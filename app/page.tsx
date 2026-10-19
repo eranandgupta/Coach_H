@@ -205,15 +205,15 @@ export default function Home() {
         subtitle: 'Valid Oct 20 - Nov 10 Only',
         endDate: 'November 10, 2026',
         offers: [
-          { label: '1M Gym Plan', off: '10% OFF' },
-          { label: '3M Gym Plan', off: '10% OFF' },
+          { label: '1M & 3M Gym', off: '10% OFF' },
           { label: '6M Gym Plan', off: '20% OFF' },
-          { label: '12M Gym Plan', off: '25% OFF' },
+          { label: '12M Gym & Couple', off: '25% OFF' },
           { label: '3M Home & Rehab', off: '10% OFF' },
           { label: 'Couple Home & Rehab', off: '20% OFF' },
-          { label: 'Couple 12M Gym', off: '25% OFF' },
-          { label: '12 & 24 Sessions', off: '20% OFF' },
-          { label: '36 & 72 Sessions', off: '30% OFF' },
+          { label: '12 Sessions', off: '5% OFF' },
+          { label: '24 Sessions', off: '10% OFF' },
+          { label: '36 Sessions', off: '15% OFF' },
+          { label: '72 Sessions', off: '20% OFF' },
         ],
         specials: null as string[] | null,
         description: 'This Dussehra, defeat the excuses. This Diwali, light up your health.',
@@ -234,8 +234,10 @@ export default function Home() {
     // in lib/sale.ts, or checkout rejects the sale price.
     if (activeSale.theme === 'festive') {
       if (plan.liveOneOnOne || name.includes('elite')) {
-        if (name.includes('36 sessions') || name.includes('72 sessions')) return 30;
-        if (name.includes('12 sessions') || name.includes('24 sessions')) return 20;
+        if (name.includes('12 sessions')) return 5;
+        if (name.includes('24 sessions')) return 10;
+        if (name.includes('36 sessions')) return 15;
+        if (name.includes('72 sessions')) return 20;
         return 0;
       }
       if (d === '12 months') return 25; // incl. couple
