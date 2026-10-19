@@ -195,6 +195,29 @@ export default function Home() {
       };
     }
 
+    // ── DUSSEHRA–DIWALI SALE — Victory to Light (Oct 20 - Nov 10) ──
+    if ((month === 9 && day >= 20) || (month === 10 && day <= 10)) {
+      return {
+        theme: 'festive' as const,
+        title: 'VICTORY TO LIGHT SALE',
+        subtitle: 'Valid Oct 20 - Nov 10 Only',
+        endDate: 'November 10, 2026',
+        offers: [
+          { label: '1M Gym Plan', off: '10% OFF' },
+          { label: '3M Gym Plan', off: '10% OFF' },
+          { label: '6M Gym Plan', off: '20% OFF' },
+          { label: '12M Gym Plan', off: '25% OFF' },
+          { label: '3M Home & Rehab', off: '10% OFF' },
+          { label: 'Couple Home & Rehab', off: '20% OFF' },
+          { label: 'Couple 12M Gym', off: '25% OFF' },
+          { label: '12 & 24 Sessions', off: '20% OFF' },
+          { label: '36 & 72 Sessions', off: '30% OFF' },
+        ],
+        specials: null as string[] | null,
+        description: 'This Dussehra, defeat the excuses. This Diwali, light up your health.',
+      };
+    }
+
     return null;
   }, []);
 
@@ -205,6 +228,20 @@ export default function Home() {
     if (!activeSale || activeSale.theme === 'independence') return 0;
     const d = plan.duration.toLowerCase();
     const name = plan.dbName.toLowerCase();
+    // Victory to Light (Oct 20 - Nov 10). Highest % here must stay <= MAX_AUTO_SALE_PERCENT
+    // in lib/sale.ts, or checkout rejects the sale price.
+    if (activeSale.theme === 'festive') {
+      if (plan.liveOneOnOne || name.includes('elite')) {
+        if (name.includes('36 sessions') || name.includes('72 sessions')) return 30;
+        if (name.includes('12 sessions') || name.includes('24 sessions')) return 20;
+        return 0;
+      }
+      if (d === '12 months') return 25; // incl. couple
+      if (d === '6 months') return 20;  // incl. couple
+      if (d === '3 months') return name.includes('couple') ? 20 : 10; // couple home & rehab get 20
+      if (d === 'month' || d === '1 month') return 10;
+      return 0;
+    }
     // Elite 1:1 sessions
     if (plan.liveOneOnOne || name.includes('elite')) {
       if (name.includes('12 sessions')) return 10;
@@ -227,7 +264,8 @@ export default function Home() {
   // Returns the bonus (free) days a plan gets during the sale, or 0. These are also
   // applied to the actual subscription length at checkout (see lib/sale.ts on the server).
   const getSaleBonusDays = (plan: { duration: string; dbName: string; liveOneOnOne?: boolean }) => {
-    if (!activeSale || activeSale.theme === 'independence') return 0;
+    // Only the July sale grants bonus days at checkout (isJulySaleActive) — never badge them otherwise.
+    if (!activeSale || activeSale.theme !== 'health') return 0;
     const d = plan.duration.toLowerCase();
     const name = plan.dbName.toLowerCase();
     if (plan.liveOneOnOne || name.includes('elite')) {
@@ -1895,6 +1933,7 @@ export default function Home() {
           environment: { bg: 'bg-green-500', bgLight: 'bg-emerald-500', border: 'border-green-500/20', text: 'text-green-300', textAccent: 'text-green-400', gradientBg: 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(16,185,129,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #10b981, #059669)', tagBg: 'rgba(34,197,94,0.08)', tagText: 'text-green-300', tagBorder: 'border-green-500/20', dotActive: 'bg-gradient-to-r from-green-500 to-emerald-400', timerBg: 'rgba(34,197,94,0.08)', ctaBg: 'linear-gradient(135deg, #10b981, #059669)', ctaShadow: 'hover:shadow-green-500/20' },
           health: { bg: 'bg-rose-500', bgLight: 'bg-red-500', border: 'border-rose-500/20', text: 'text-rose-300', textAccent: 'text-rose-400', gradientBg: 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, rgba(225,29,72,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #f43f5e, #e11d48)', tagBg: 'rgba(244,63,94,0.08)', tagText: 'text-rose-300', tagBorder: 'border-rose-500/20', dotActive: 'bg-gradient-to-r from-rose-500 to-red-400', timerBg: 'rgba(244,63,94,0.08)', ctaBg: 'linear-gradient(135deg, #f43f5e, #e11d48)', ctaShadow: 'hover:shadow-rose-500/20' },
           yoga: { bg: 'bg-purple-500', bgLight: 'bg-violet-500', border: 'border-purple-500/20', text: 'text-purple-300', textAccent: 'text-purple-400', gradientBg: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', tagBg: 'rgba(139,92,246,0.08)', tagText: 'text-purple-300', tagBorder: 'border-purple-500/20', dotActive: 'bg-gradient-to-r from-purple-500 to-violet-400', timerBg: 'rgba(139,92,246,0.08)', ctaBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', ctaShadow: 'hover:shadow-purple-500/20' },
+          festive: { bg: 'bg-amber-500', bgLight: 'bg-orange-500', border: 'border-amber-400/25', text: 'text-amber-200', textAccent: 'text-amber-300', gradientBg: 'linear-gradient(135deg, rgba(245,158,11,0.14) 0%, rgba(234,88,12,0.08) 100%)', badgeBg: 'linear-gradient(135deg, #f59e0b, #ea580c)', tagBg: 'rgba(245,158,11,0.08)', tagText: 'text-amber-200', tagBorder: 'border-amber-400/25', dotActive: 'bg-gradient-to-r from-amber-400 to-orange-500', timerBg: 'rgba(245,158,11,0.08)', ctaBg: 'linear-gradient(135deg, #f59e0b, #ea580c)', ctaShadow: 'hover:shadow-amber-500/20' },
           independence: { bg: 'bg-orange-500', bgLight: 'bg-green-600', border: 'border-orange-400/25', text: 'text-orange-200', textAccent: 'text-orange-300', gradientBg: 'linear-gradient(135deg, rgba(255,153,51,0.14) 0%, rgba(19,136,8,0.10) 100%)', badgeBg: 'linear-gradient(135deg, #FF9933, #138808)', tagBg: 'rgba(255,153,51,0.08)', tagText: 'text-orange-200', tagBorder: 'border-orange-400/25', dotActive: 'bg-gradient-to-r from-orange-400 via-white to-green-500', timerBg: 'rgba(255,153,51,0.08)', ctaBg: 'linear-gradient(135deg, #FF9933, #138808)', ctaShadow: 'hover:shadow-orange-500/20' },
         };
         const tc = themeColors[activeSale.theme] || themeColors.yoga;
