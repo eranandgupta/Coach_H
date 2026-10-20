@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import PreAssessmentForm from '@/components/PreAssessmentForm';
 import CoupleAssessmentFlow from '@/components/CoupleAssessmentFlow';
 import { Loader2 } from 'lucide-react';
+import { isStaffRole } from '@/lib/trainerPermissions';
 
 export default function AssessmentPage() {
   const router = useRouter();
@@ -22,8 +23,8 @@ export default function AssessmentPage() {
 
     const user = JSON.parse(userStr);
 
-    // If user is a coach or admin, redirect to dashboard (no assessment needed)
-    if (user.role === 'coach' || user.role === 'admin') {
+    // Staff (coach, admin, trainer) never take the assessment
+    if (isStaffRole(user.role)) {
       router.push('/dashboard');
       return;
     }

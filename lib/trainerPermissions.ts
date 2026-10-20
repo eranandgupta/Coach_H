@@ -41,3 +41,8 @@ export function sanitizeTrainerPermissions(input: unknown): TrainerPermissions {
 export function trainerPermissionLabel(key: TrainerPermission): string {
   return TRAINER_PERMISSIONS.find((p) => p.key === key)?.label ?? key;
 }
+
+/** Staff accounts (coach, admin, trainer) never fill in the client pre-assessment. */
+export function isStaffRole(role: string | null | undefined): boolean {
+  return role === 'coach' || role === 'admin' || role === 'trainer';
+}

@@ -48,6 +48,7 @@ import RenewModal from '@/components/RenewModal';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
 import { usePushNotifications } from '@/lib/usePushNotifications';
+import { isStaffRole } from '@/lib/trainerPermissions';
 import { usePresenceHeartbeat } from '@/lib/usePresence';
 import { toast } from 'sonner';
 import { isElitePlan, getEffectiveTotalSessions, getMaxPauseDays } from '@/lib/planUtils';
@@ -273,7 +274,7 @@ export default function ClientDashboard() {
       const userData = { user: session.user, subscription: session.subscription };
 
       // Check if client has completed assessment (coaches and admins skip this check)
-      if (userData.user.role !== 'coach' && userData.user.role !== 'admin' && !userData.user.assessmentCompleted) {
+      if (!isStaffRole(userData.user.role) && !userData.user.assessmentCompleted) {
         router.push('/assessment');
         return;
       }

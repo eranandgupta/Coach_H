@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { X, Mail, Lock, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { isStaffRole } from '@/lib/trainerPermissions';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -91,9 +92,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         onClose();
         router.push('/#plans');
       } else {
-        // For login, check if user is a coach
-        if (data.user.role === 'coach' || data.user.role === 'admin') {
-          // Coaches and admins go directly to dashboard (no assessment needed)
+        // Staff (coach, admin, trainer) go straight to their dashboard — no assessment
+        if (isStaffRole(data.user.role)) {
           console.log(`${data.user.role} login - Redirecting to dashboard...`);
           onClose();
           router.push('/dashboard');
