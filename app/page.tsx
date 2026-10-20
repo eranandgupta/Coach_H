@@ -1619,6 +1619,7 @@ export default function Home() {
           <div className="absolute inset-0 lg:hidden overflow-hidden">
             <LazyVideo
               src="/intro2.mp4"
+              poster="/intro2-poster.jpg"
               className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
               style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
             />
@@ -1863,8 +1864,9 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              {/* RIGHT — Video card */}
-              <motion.div variants={itemVariants} className="w-[min(38%,calc((100dvh-22rem)*0.8))] flex-shrink-0">
+              {/* RIGHT — Video card. Fixed share of the row: sizing it by viewport height
+                  shrank it to ~200px on short laptop windows. */}
+              <motion.div variants={itemVariants} className="w-[38%] flex-shrink-0">
                 <div className="relative">
                   <div className="absolute -inset-4 rounded-[2rem] blur-2xl opacity-40" style={{ background: 'radial-gradient(ellipse, rgba(23,95,255,0.15) 0%, transparent 70%)' }} />
                   <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]" style={{ background: 'linear-gradient(135deg, rgb(var(--c-white) / 0.06) 0%, rgb(var(--c-white) / 0.02) 100%)', boxShadow: '0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgb(var(--c-white) / 0.06)' }}>
@@ -1872,6 +1874,7 @@ export default function Home() {
                       <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/5]">
                         <LazyVideo
                           src="/intro2.mp4"
+                          poster="/intro2-poster.jpg"
                           className="absolute inset-0 w-full h-full object-cover object-center [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
                           style={{ pointerEvents: 'none', minWidth: '100%', minHeight: '100%' }}
                         />

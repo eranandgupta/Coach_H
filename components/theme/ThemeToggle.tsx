@@ -86,7 +86,7 @@ export default function ThemeToggle({ size = 'md', className = '' }: Props) {
       <Sun
         aria-hidden
         size={s.side}
-        className="absolute right-[8px] text-amber-300/60 transition-opacity duration-300 [html.light_&]:opacity-0"
+        className="absolute right-[8px] text-white/60 transition-opacity duration-300 [html.light_&]:opacity-0"
       />
       <Moon
         aria-hidden

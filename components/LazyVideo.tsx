@@ -8,9 +8,11 @@ interface LazyVideoProps {
   style?: React.CSSProperties;
   ariaLabel?: string;
   title?: string;
+  /** Still frame shown until the video can play — keeps the slot from looking empty on slow networks. */
+  poster?: string;
 }
 
-export default function LazyVideo({ src, className, style, ariaLabel, title }: LazyVideoProps) {
+export default function LazyVideo({ src, className, style, ariaLabel, title, poster }: LazyVideoProps) {
   const ref = useRef<HTMLVideoElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -61,6 +63,7 @@ export default function LazyVideo({ src, className, style, ariaLabel, title }: L
       muted
       playsInline
       preload="none"
+      poster={poster}
       disablePictureInPicture
       disableRemotePlayback
       aria-label={ariaLabel}
