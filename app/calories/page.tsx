@@ -116,6 +116,15 @@ export default function CaloriesIndexPage() {
             </Link>
           </div>
 
+          {/* Seasonal guide */}
+          <Link href="/diwali-sweets-calories" className="mt-8 flex items-center justify-between gap-3 rounded-xl border border-amber-400/25 bg-amber-500/[0.05] p-4 hover:border-amber-400/50">
+            <span>
+              <span className="block font-semibold text-white">Diwali sweets &amp; snacks: calories per piece</span>
+              <span className="block text-xs text-gray-400">Kaju katli, gulab jamun, laddoo, namkeen and more, with lighter swaps</span>
+            </span>
+            <span className="text-amber-300" aria-hidden>→</span>
+          </Link>
+
           {/* Full-day meal plans built from these foods */}
           <h2 className="mt-8 text-lg font-bold text-white">Indian diet plans by calorie</h2>
           <div className="mt-3 flex flex-wrap gap-2">

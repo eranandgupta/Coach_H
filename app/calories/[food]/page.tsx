@@ -23,6 +23,7 @@ import {
   similarFoods,
 } from '@/lib/foodPages';
 import { listsForFood } from '@/lib/foodLists';
+import { isDiwaliFood } from '@/lib/diwaliGuide';
 import { pairTitle, pairsForFood } from '@/lib/foodCompare';
 
 const WHATSAPP_CONSULT =
@@ -171,6 +172,13 @@ export default function FoodCaloriesPage({ params }: { params: { food: string } 
                   <Link href={`/calories/lists/${l.slug}`} className="text-brand-blue hover:underline">{l.name}</Link>
                 </span>
               ))}
+            </p>
+          )}
+
+          {isDiwaliFood(food.slug) && (
+            <p className="mt-2 text-sm text-gray-400">
+              Festive guide:{' '}
+              <Link href="/diwali-sweets-calories" className="text-brand-blue hover:underline">Calories in Diwali sweets &amp; snacks</Link>
             </p>
           )}
 

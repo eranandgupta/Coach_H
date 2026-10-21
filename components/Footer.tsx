@@ -23,6 +23,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: '/blog', label: 'Blog' },
       { href: '/tools', label: 'Fitness Calculators' },
       { href: '/calories', label: 'Food Calorie Chart' },
+      { href: '/diwali-sweets-calories', label: 'Diwali Sweets Calories' },
       { href: '/diet-plans', label: 'Indian Diet Plans' },
       { href: '/assessment', label: 'Free Assessment' },
       { href: '/about', label: 'About Coach Himanshu' },
