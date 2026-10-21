@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getAllCitySlugs } from '@/lib/cities';
 import { getAllCountrySlugs } from '@/lib/countries';
+import { GLOBAL_CITIES, globalCityUrl } from '@/lib/globalCities';
 import { getAllAudienceSlugs } from '@/lib/audiences';
 import { getAllGoalSlugs } from '@/lib/ptGoals';
 import { getAllFoodSlugs } from '@/lib/foodPages';
@@ -270,6 +271,13 @@ function getResourcePages(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
+    // Seasonal: Diwali sweets & snacks calorie guide
+    {
+      url: `${baseUrl}/diwali-sweets-calories`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
     {
       url: `${baseUrl}/knowledge`,
       lastModified: now,
@@ -315,7 +323,15 @@ function getInternationalPages(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...hubPage, ...countryPages];
+  // City pages under each country ("Indian fitness coach in Dubai").
+  const cityPages: MetadataRoute.Sitemap = GLOBAL_CITIES.map((city) => ({
+    url: globalCityUrl(city),
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.75,
+  }));
+
+  return [...hubPage, ...countryPages, ...cityPages];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

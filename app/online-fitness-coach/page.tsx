@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { COUNTRIES, NRI_FAQS, NRI_HUB_URL, countryHreflangs } from '@/lib/countries';
+import { COUNTRIES, NRI_FAQS, NRI_HUB_URL, countryHreflangs, approxStart } from '@/lib/countries';
+import { citiesByCountry, plainName } from '@/lib/globalCities';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
@@ -200,7 +201,7 @@ export default function OnlineFitnessCoachHub() {
                   >
                     <span>
                       <span className="block text-white font-medium">Fitness Coach in {c.name}</span>
-                      <span className="block text-xs text-gray-500 mt-0.5">from ≈ {c.approxStart}/month</span>
+                      <span className="block text-xs text-gray-500 mt-0.5">from ≈ {approxStart(c)}/month</span>
                     </span>
                     <span className="text-brand-blue">→</span>
                   </Link>
@@ -215,6 +216,32 @@ export default function OnlineFitnessCoachHub() {
               See city pages →
             </Link>
           </p>
+        </div>
+      </section>
+
+      {/* City grid */}
+      <section className="py-12 md:py-16 border-t border-white/[0.06]">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-3">Coaching by city</h2>
+          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-10">
+            Session times converted to India time, prices in your currency, and the neighbourhoods with large Indian communities.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {citiesByCountry().map(({ country, cities }) => (
+              <div key={country.slug}>
+                <h3 className="text-sm font-semibold text-brand-gold uppercase tracking-wider mb-2">{country.country}</h3>
+                <ul className="space-y-1">
+                  {cities.map((city) => (
+                    <li key={city.slug}>
+                      <Link href={`/online-fitness-coach/${country.slug}/${city.slug}`} className="text-gray-300 hover:text-brand-blue transition-colors">
+                        {plainName(city)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

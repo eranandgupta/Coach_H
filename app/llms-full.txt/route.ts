@@ -4,6 +4,9 @@ import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 import { DIET_PLANS, DIET_PLANS_BASE, planTitle } from '@/lib/dietPlans';
 import { COACHING_ROWS, COST_FAQS, COST_GUIDE_URL, LIVE_ROWS, PRICES_UPDATED_LABEL } from '@/lib/pricingGuide';
 import { WEDDING_AUDIENCES, WEDDING_HUB_FAQS, WEDDING_HUB_URL, weddingTimeline } from '@/lib/weddingFitness';
+import { BOX, BOX_GRAMS, DIWALI_FAQS, DIWALI_URL, SNACKS, SWAPS, SWEETS, WALK_KG } from '@/lib/diwaliGuide';
+import { getCountryBySlug, approxStart } from '@/lib/countries';
+import { GLOBAL_CITIES, globalCityUrl, plainName, timeGap, lowestPerSession } from '@/lib/globalCities';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
@@ -57,6 +60,19 @@ export async function GET() {
     ...COST_FAQS.slice(0, 3).map((f) => `**${f.question}**\n${f.answer}`),
   ].join('\n');
 
+  // Diwali guide — the same computed figures, swaps and answers /diwali-sweets-calories shows.
+  const diwali = [
+    `Source page: ${DIWALI_URL}. Brisk-walk minutes assume a ${WALK_KG} kg adult (about 4.3 kcal/min).`,
+    '',
+    ...[...SWEETS, ...SNACKS].map((r) => `- ${r.name}, ${r.serving}: ${r.kcal} kcal, ${r.sugar} g sugar (${r.per100} kcal per 100 g), ~${r.walkMin} min brisk walk`),
+    `- A ${BOX_GRAMS} g box of mixed mithai: about ${BOX.kcal} kcal and ${BOX.sugar} g sugar`,
+    '',
+    'Lighter swaps:',
+    ...SWAPS.map((s) => `- ${s.from.name} (${s.from.kcal} kcal) → ${s.to.name} (${s.to.kcal} kcal), saves ${s.savesPct}%`),
+    '',
+    ...DIWALI_FAQS.map((f) => `**${f.question}**\n${f.answer}`),
+  ].join('\n');
+
   // Diet plans — the same computed totals and meals each /diet-plans page shows.
   const dietPlans = DIET_PLANS.map((p) => {
     const t = p.totals;
@@ -82,6 +98,12 @@ export async function GET() {
   const comparisons = FOOD_PAIRS.map((p) => {
     const r = getPairBySlug(p.slug)!;
     return `### ${pairTitle(p)}\n${COMPARE_BASE}/${p.slug}\n${answerSentence(r)} ${bottomLine(r)}`;
+  }).join('\n\n');
+
+  // International city pages — the same computed time gap and local prices each page shows.
+  const globalCities = GLOBAL_CITIES.map((city) => {
+    const c = getCountryBySlug(city.country)!;
+    return `### Indian fitness coach in ${plainName(city)}, ${c.country}\n${globalCityUrl(city)}\n${timeGap(city).sentence} Live 1-on-1 sessions from about ${lowestPerSession(c)} each; coaching plans from about ${approxStart(c)} a month (charged in INR).`;
   }).join('\n\n');
 
   const body = `# Coach Himanshu - Complete Information for AI Systems
@@ -167,6 +189,11 @@ Online wedding countdown coaching for brides, grooms and couples, in India and a
 
 ${wedding}
 
+## Diwali Sweets & Snacks Calories
+Per-serving calories for festive Indian sweets and snacks, from the same Indian food database.
+
+${diwali}
+
 ## Indian Diet Plans by Calorie
 Full-day Indian diet charts. Every total is computed from the Indian food database (cooked dishes include typical home cooking oil).
 
@@ -176,6 +203,11 @@ ${dietPlans}
 Head-to-head nutrition comparisons at [coachhimanshu.com/calories/compare](https://coachhimanshu.com/calories/compare). Values per 100 g of the ready-to-eat form from INDB, IFCT 2017 (NIN-ICMR) and USDA FoodData Central. Weight-loss verdicts follow a published rule: fewer calories per 100 g wins when the gap is 10% or more, unless the other food gives at least 1.5x the protein and fibre per calorie.
 
 ${comparisons}
+
+## Coaching by City (Outside India)
+Online coaching and live 1-on-1 training for Indians and NRIs abroad. Local prices are approximate conversions from INR.
+
+${globalCities}
 
 ## Pricing Structure (INR)
 All coaching is online. Every plan includes a customised workout plan, a personalised Indian meal plan, video tutorials, supplement guidance, and WhatsApp support. Prices below are the current, authoritative figures.

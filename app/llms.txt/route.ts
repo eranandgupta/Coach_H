@@ -3,6 +3,7 @@ import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
 import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 import { COMPARE_BASE, FOOD_PAIRS, pairTitle } from '@/lib/foodCompare';
 import { COUNTRIES } from '@/lib/countries';
+import { GLOBAL_CITIES, globalCityUrl, plainName } from '@/lib/globalCities';
 
 // Dynamic /llms.txt — the short AI-discovery summary. Pricing and the blog
 // count are GENERATED from the same sources the site uses (lib/plans.ts and the
@@ -101,6 +102,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Meal plans adapted to ingredients available in the client's country (Indian cuisine a specialty, not a requirement)
 - International debit/credit cards accepted
 - Dedicated country pages: ${COUNTRIES.map((c) => `[${c.country}](https://coachhimanshu.com/online-fitness-coach/${c.slug})`).join(', ')}
+- Dedicated city pages (session times converted to IST, prices in local currency): ${GLOBAL_CITIES.map((c) => `[${plainName(c)}](${globalCityUrl(c)})`).join(', ')}
 
 ## Target Audience
 - Beginners starting their fitness journey
@@ -128,6 +130,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Ranked food lists: [High-protein vegetarian foods](https://coachhimanshu.com/calories/lists/high-protein-vegetarian-foods), [High-protein non-veg foods](https://coachhimanshu.com/calories/lists/high-protein-non-veg-foods), [High-fibre foods](https://coachhimanshu.com/calories/lists/high-fibre-foods), [Iron-rich foods](https://coachhimanshu.com/calories/lists/iron-rich-foods), [Calcium-rich foods](https://coachhimanshu.com/calories/lists/calcium-rich-foods), [Vitamin C-rich foods](https://coachhimanshu.com/calories/lists/vitamin-c-rich-foods), [Low-calorie Indian snacks](https://coachhimanshu.com/calories/lists/low-calorie-indian-snacks), [Low-calorie Indian sweets](https://coachhimanshu.com/calories/lists/low-calorie-indian-sweets), [Low-calorie drinks](https://coachhimanshu.com/calories/lists/low-calorie-drinks), [Low-calorie vegetables](https://coachhimanshu.com/calories/lists/low-calorie-vegetables), [Low-calorie fruits](https://coachhimanshu.com/calories/lists/low-calorie-fruits)
 - [Indian Food Comparisons](https://coachhimanshu.com/calories/compare): ${FOOD_PAIRS.length} head-to-head nutrition comparisons with a data-backed weight-loss verdict, for example ${FOOD_PAIRS.slice(0, 8).map((p) => `[${pairTitle(p)}](${COMPARE_BASE}/${p.slug})`).join(', ')}
 - [Indian Diet Plans by Calorie](https://coachhimanshu.com/diet-plans): Full-day vegetarian and non-veg Indian diet charts at 1200, 1500, 1800, 2000 and 2500 kcal, with portions, calories and protein computed from Indian food data
+- [Diwali Sweets & Snacks Calories](https://coachhimanshu.com/diwali-sweets-calories): Calories, sugar and brisk-walk minutes per piece for kaju katli, gulab jamun, soan papdi, laddoo, namkeen and more, plus lighter swaps and how to avoid weight gain during Diwali
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): ${FITNESS_TOOLS.map((t) => `[${t.name}](${TOOLS_BASE}/${t.slug})`).join(', ')}. Each shows its formula, a worked example and sources; BMI is read against Asian Indian cut-offs (overweight from 23, obese from 25) as well as WHO cut-offs
 - [FAQ](https://coachhimanshu.com/faq): Common questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Fitness education

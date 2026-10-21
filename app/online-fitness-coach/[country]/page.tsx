@@ -1,79 +1,104 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getCountryBySlug, getAllCountrySlugs } from '@/lib/countries';
+import { getCountryBySlug, getAllCountrySlugs, countryHreflangs, approxStart, localPrice, FX_AS_OF } from '@/lib/countries';
+import { PLAN_GROUPS, type PlanItem } from '@/lib/plans';
+import { getElitePlans } from '@/lib/personalTraining';
+import { citiesInCountry, plainName } from '@/lib/globalCities';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ConsultationForm from '@/components/ConsultationForm';
 
+interface Props {
+  params: { country: string };
+}
+
 export async function generateStaticParams() {
   return getAllCountrySlugs().map(country => ({ country }));
 }
 
-export default function CountryPage({ params }: { params: { country: string } }) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const c = getCountryBySlug(params.country);
+  if (!c) return { title: 'Country Not Found' };
+
+  const pageTitle = `Online Indian Fitness Coach in ${c.name}`; // root template appends "| Coach Himanshu"
+  const title = `${pageTitle} | Coach Himanshu`; // used for OG/Twitter, which the template does not touch
+  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,499/month (≈ ${approxStart(c)}), international cards accepted.`;
+
+  return {
+    title: pageTitle,
+    description,
+    keywords: [
+      `online fitness coach ${c.country}`,
+      `Indian fitness coach ${c.country}`,
+      `NRI personal trainer ${c.country}`,
+      `Indian diet plan ${c.country}`,
+      `online personal trainer ${c.country}`,
+      'NASM certified online coach',
+    ],
+    openGraph: {
+      title,
+      description,
+      url: `https://coachhimanshu.com/online-fitness-coach/${c.slug}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `https://coachhimanshu.com/online-fitness-coach/${c.slug}`,
+      languages: countryHreflangs(),
+    },
+  };
+}
+
+function planByName(group: string, name: string): PlanItem {
+  const p = PLAN_GROUPS.find((g) => g.key === group)?.plans.find((x) => x.name === name);
+  if (!p) throw new Error(`Country page: plan "${name}" not found in lib/plans.ts`);
+  return p;
+}
+
+export default function CountryPage({ params }: Props) {
   const c = getCountryBySlug(params.country);
   if (!c) notFound();
 
+  const cities = citiesInCountry(c.slug);
+  const elite = getElitePlans();
+  const eliteFrom = elite[0];
+  const allPrices = PLAN_GROUPS.flatMap((g) => g.plans.map((p) => p.price));
+  const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`;
+
+  // Prices come from lib/plans.ts (the catalog that mirrors the DB), so these
+  // cards can't drift from checkout.
   const plans = [
-    {
-      name: 'Kickstart Plan',
-      duration: '1 Month',
-      price: '₹1,499',
-      perMonth: `≈ ${c.approxStart}/month`,
-      features: [
-        'Customised workout plan',
-        'Personalised Indian diet plan',
-        'Exercise video tutorials',
-        'Weekly one-on-one video consultation',
-        'WhatsApp support across your timezone',
-      ],
-    },
-    {
-      name: 'Consistency Plan',
-      duration: '3 Months',
-      price: '₹3,499',
-      perMonth: '₹1,166/month',
-      popular: true,
-      features: [
-        'Customised workout plan',
-        'Personalised Indian diet plan',
-        'Full video tutorials',
-        'Weekly one-on-one video consultation',
-        'Supplement guidance',
-        'WhatsApp support',
-        'Lifestyle coaching',
-      ],
-    },
-    {
-      name: 'Transformation Plan',
-      duration: '6 Months',
-      price: '₹5,999',
-      perMonth: '₹1,000/month',
-      features: [
-        'Customised workout plan',
-        'Personalised Indian diet plan',
-        'Full video library access',
-        'Weekly one-on-one video consultation',
-        'Supplement guidance',
-        'WhatsApp support',
-        'Lifestyle coaching',
-        'Pause option (7 days)',
-      ],
-    },
-    {
-      name: 'Elite 1:1 Coaching',
-      duration: 'Premium',
-      price: '₹11,999+',
-      perMonth: 'Live video sessions',
-      features: [
-        'Real-time 1-on-1 video training',
-        'Fully customised workout + diet',
-        'Priority WhatsApp access',
-        'Advanced progress tracking',
-        'Timezone-matched scheduling',
-      ],
-    },
-  ];
+    { plan: planByName('recorded', 'Kickstart Plan'), perMonth: `≈ ${approxStart(c)}/month` },
+    { plan: planByName('recorded', 'Consistency Plan'), popular: true },
+    { plan: planByName('recorded', 'Strength Plan') },
+  ].map(({ plan, perMonth, popular }) => ({
+    name: plan.name,
+    duration: plan.durationLabel,
+    price: plan.priceLabel,
+    perMonth: perMonth ?? `≈ ${localPrice(plan.price, c)} in total`,
+    popular,
+    features: plan.features.slice(0, 7),
+  }));
+  plans.push({
+    name: 'Elite Live 1:1',
+    duration: `${elite.length} packages`,
+    price: `${eliteFrom.priceLabel}+`,
+    perMonth: `≈ ${localPrice(eliteFrom.price, c)} for ${eliteFrom.specs.liveSessions}`,
+    popular: undefined,
+    features: [
+      'Real-time 1-on-1 video training (60 min)',
+      'Live form correction on every rep',
+      'Personalised Indian diet plan',
+      'WhatsApp support',
+      'Sessions booked in your local time',
+    ],
+  });
 
   const steps = [
     {
@@ -109,7 +134,7 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
     {
       title: 'Exceptional Value',
-      description: `Plans start at just ₹1,499/month (≈ ${c.approxStart}) — a fraction of what personal training costs in ${c.name}. World-class, certified coaching without the local price tag. International cards accepted.`,
+      description: `Plans start at just ₹1,499/month (≈ ${approxStart(c)}) — a fraction of what personal training costs in ${c.name}. World-class, certified coaching without the local price tag. International cards accepted.`,
     },
     {
       title: 'NASM Certified Expertise',
@@ -132,7 +157,7 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
     {
       question: `How do I pay from ${c.name}, and how much does it cost?`,
-      answer: `Plans start at ₹1,499/month, which is roughly ${c.approxStart}, going up to Elite 1:1 packages. Payment is handled through a secure checkout that accepts international debit and credit cards, so you can pay easily from ${c.name}. You get premium, NASM-certified coaching at a fraction of local personal-training prices.`,
+      answer: `Plans start at ₹1,499/month, which is roughly ${approxStart(c)}, and live 1-on-1 packages start at ${eliteFrom.priceLabel} (≈ ${localPrice(eliteFrom.price, c)}). Payment is handled through a secure checkout that accepts international debit and credit cards, so you can pay easily from ${c.name}. You get premium, NASM-certified coaching at a fraction of local personal-training prices.`,
     },
     {
       question: `Will the diet plan work with the food available in ${c.name}?`,
@@ -140,7 +165,7 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
     {
       question: 'Do I need a gym, or can I train at home?',
-      answer: `You can do either. There are home workout plans that need minimal equipment and gym-based plans if you have access to one, with plans starting from ₹1,499/month (≈ ${c.approxStart}). Many NRI clients start with home workouts and add gym training later — your coach adapts the plan to whatever equipment you have.`,
+      answer: `You can do either. There are home workout plans that need minimal equipment and gym-based plans if you have access to one, with plans starting from ₹1,499/month (≈ ${approxStart(c)}). Many NRI clients start with home workouts and add gym training later — your coach adapts the plan to whatever equipment you have.`,
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
@@ -148,8 +173,46 @@ export default function CountryPage({ params }: { params: { country: string } })
     },
   ];
 
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: `Coach Himanshu - Online Indian Fitness Coach for ${c.country}`,
+    description: `NASM Certified online fitness coach serving Indians and NRIs in ${c.country}. Personalized workout plans, custom Indian meal plans, timezone-friendly video coaching, and 24/7 WhatsApp support.`,
+    url: `https://coachhimanshu.com/online-fitness-coach/${c.slug}`,
+    areaServed: {
+      '@type': 'Country',
+      name: c.country,
+    },
+    provider: {
+      '@type': 'Person',
+      '@id': 'https://coachhimanshu.com/#coach',
+      name: 'Coach Himanshu',
+      jobTitle: 'NASM Certified Fitness Coach',
+      url: 'https://coachhimanshu.com/about',
+    },
+    serviceType: 'Online Personal Training',
+    priceRange: `${inr(Math.min(...allPrices))} - ${inr(Math.max(...allPrices))}`,
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      serviceUrl: 'https://coachhimanshu.com/assessment',
+      availableLanguage: ['English', 'Hindi'],
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://coachhimanshu.com' },
+      { '@type': 'ListItem', position: 2, name: 'Online Fitness Coach', item: 'https://coachhimanshu.com/online-fitness-coach' },
+      { '@type': 'ListItem', position: 3, name: c.country, item: `https://coachhimanshu.com/online-fitness-coach/${c.slug}` },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-brand-navy">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <AnnouncementBar />
       <Navbar />
 
@@ -197,7 +260,7 @@ export default function CountryPage({ params }: { params: { country: string } })
             </Link>
           </div>
           <p className="text-sm text-gray-500">
-            Plans from ₹1,499/month (≈ {c.approxStart}) · International cards accepted · English &amp; Hindi
+            Plans from ₹1,499/month (≈ {approxStart(c)}) · International cards accepted · English &amp; Hindi
           </p>
         </div>
       </section>
@@ -214,7 +277,7 @@ export default function CountryPage({ params }: { params: { country: string } })
             <div className="text-sm text-gray-400">Client Rating</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">{c.approxStart}</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">{approxStart(c)}</div>
             <div className="text-sm text-gray-400">Plans Starting (≈)</div>
           </div>
           <div>
@@ -303,7 +366,7 @@ export default function CountryPage({ params }: { params: { country: string } })
           </h2>
           <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">
             Priced in Indian Rupees for exceptional value — international debit and credit cards accepted at a
-            secure checkout. Approximate {c.currencyCode} shown for reference.
+            secure checkout. Approximate {c.currencyCode} shown for reference (rates as of {FX_AS_OF}; your bank converts at its own rate).
           </p>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -357,6 +420,31 @@ export default function CountryPage({ params }: { params: { country: string } })
           </p>
         </div>
       </section>
+
+      {cities.length > 0 && (
+        <section className="py-16 md:py-20">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+              Coaching by city in <span className="text-brand-gold">{c.name}</span>
+            </h2>
+            <p className="text-gray-400 text-center max-w-2xl mx-auto mb-10">
+              Local time-zone slots, prices in {c.currencyCode} and the Indian neighbourhoods we coach in.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {cities.map((city) => (
+                <Link
+                  key={city.slug}
+                  href={`/online-fitness-coach/${c.slug}/${city.slug}`}
+                  className="flex items-center justify-between p-4 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all"
+                >
+                  <span className="text-white font-medium">Indian Fitness Coach in {plainName(city)}</span>
+                  <span className="text-brand-blue">→</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* FAQ Section */}
       <section className="py-16 md:py-24">

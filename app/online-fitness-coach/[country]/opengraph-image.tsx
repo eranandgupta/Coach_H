@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/server';
-import { getCountryBySlug, getAllCountrySlugs } from '@/lib/countries';
+import { getCountryBySlug, getAllCountrySlugs, approxStart } from '@/lib/countries';
 
 // Per-country share image (WhatsApp groups, LinkedIn, X) — same look as the
 // root and 1:1 OG images.
@@ -15,7 +15,7 @@ export function generateStaticParams() {
 export default async function Image({ params }: { params: { country: string } }) {
   const c = getCountryBySlug(params.country);
   const place = c?.name ?? 'Your Country';
-  const approx = c?.approxStart ?? '$17';
+  const approx = c ? approxStart(c) : '$16';
 
   return new ImageResponse(
     (
