@@ -23,6 +23,7 @@ import {
   Mail,
   RefreshCw,
   Play,
+  Video,
   Power,
   CalendarCog,
   Lightbulb,
@@ -661,7 +662,7 @@ export default function CoachDashboard() {
                 onClick={() => setIsLiveSessionModalOpen(true)}
                 className="action-btn" data-tone="amber"
               >
-                <Play className="w-5 h-5" />
+                <Video className="w-5 h-5" />
                 <span className="text-sm">Live Sessions</span>
               </motion.button>
 
