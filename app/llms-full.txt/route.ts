@@ -371,7 +371,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 ## Technical Details
 - Platform: Next.js web application
 - Hosting: Vercel
-- Payment: Razorpay (UPI, cards, net banking, wallets)
+- Payment: Cashfree Payments (UPI, cards, net banking, wallets)
 - [Sitemap](https://coachhimanshu.com/sitemap.xml)
 - [RSS Feed](https://coachhimanshu.com/feed.xml)
 - [AI Summary](https://coachhimanshu.com/llms.txt)

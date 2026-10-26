@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
+import { loadCashfreeSdk, openCashfreeCheckout } from '@/lib/cashfreeCheckout';
 
 interface RenewUser {
   name?: string;
@@ -32,14 +33,9 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
 
-  // Load the Razorpay checkout script once.
+  // Preload Cashfree checkout so the popup opens instantly.
   useEffect(() => {
-    if (document.getElementById('razorpay-checkout-js')) return;
-    const script = document.createElement('script');
-    script.id = 'razorpay-checkout-js';
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
+    loadCashfreeSdk().catch(() => {});
   }, []);
 
   // Fetch active plans when the modal opens; reset transient state.
@@ -89,67 +85,52 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
           planName: selectedPlan.name,
           name: user.name || '',
           email: user.email,
+          phone: user.phone || '',
         }),
       });
       if (!orderRes.ok) throw new Error('Failed to start payment. Please try again.');
       const orderData = await orderRes.json();
 
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: 'Coach H',
-        description: `Renew — ${selectedPlan.name}`,
-        order_id: orderData.orderId,
-        prefill: {
-          name: user.name || '',
-          email: user.email,
-          contact: (user.phone || '').replace(/[^0-9]/g, ''),
-        },
-        theme: { color: '#175FFF' },
-        handler: async (response: any) => {
-          try {
-            const verifyRes = await fetch('/api/payment/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                planId: selectedPlan.id,
-                name: user.name || '',
-                email: user.email,
-              }),
-            });
-            if (!verifyRes.ok) {
-              const errData = await verifyRes.json().catch(() => ({}));
-              if (errData.pending) {
-                // Bank hasn't released the funds yet; the webhook activates the plan once it does.
-                setProcessing(false);
-                setError(errData.error);
-                return;
-              }
-              throw new Error(errData.error || 'Verification failed');
-            }
-            setDone(true);
-            setProcessing(false);
-            onRenewed();
-          } catch (err: any) {
-            setProcessing(false);
-            setError(
-              `Payment received but activation failed. Please contact support with Payment ID: ${response.razorpay_payment_id}`
-            );
-          }
-        },
-        modal: { ondismiss: () => setProcessing(false) },
-      };
+      const result = await openCashfreeCheckout(orderData.paymentSessionId, orderData.mode);
+      // In-app browsers can't show the popup; Cashfree sends them to /payment/return instead.
+      if (result.redirect) return;
 
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', () => {
-        setError('Payment failed. Please try again.');
+      // The popup closed — paid, failed or dismissed. Only the server knows which.
+      try {
+        const verifyRes = await fetch('/api/payment/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: orderData.orderId,
+            planId: selectedPlan.id,
+            name: user.name || '',
+            email: user.email,
+          }),
+        });
+        if (!verifyRes.ok) {
+          const errData = await verifyRes.json().catch(() => ({}));
+          if (errData.notPaid) {
+            setProcessing(false);
+            if (result.paymentDetails) setError(errData.error);
+            return;
+          }
+          if (errData.pending) {
+            // Bank hasn't confirmed yet; the webhook activates the plan once it does.
+            setProcessing(false);
+            setError(errData.error);
+            return;
+          }
+          throw new Error(errData.error || 'Verification failed');
+        }
+        setDone(true);
         setProcessing(false);
-      });
-      rzp.open();
+        onRenewed();
+      } catch (err: any) {
+        setProcessing(false);
+        setError(
+          `Payment received but activation failed. Please contact support with Order ID: ${orderData.orderId}`
+        );
+      }
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
       setProcessing(false);
@@ -282,7 +263,7 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
                 </button>
 
                 <p className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-3">
-                  <ShieldCheck size={13} /> Secure payment via Razorpay
+                  <ShieldCheck size={13} /> Secure payment via Cashfree
                 </p>
               </div>
             )}

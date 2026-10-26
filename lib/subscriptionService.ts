@@ -10,7 +10,7 @@ import {
 } from './planUtils';
 
 /**
- * Shared subscription create/renew logic. Every path that creates a plan — Razorpay verify, the
+ * Shared subscription create/renew logic. Every path that creates a plan — payment verify, the
  * payment.captured webhook, and the admin/coach routes — goes through createOrRenewSubscription.
  * Plans never auto-renew: a new row is only created after a verified payment or an admin action.
  *
@@ -53,7 +53,7 @@ export interface CreateOrRenewParams {
 type Db = any;
 
 /**
- * Thrown when a Razorpay payment already has a subscription. /payment/verify and the
+ * Thrown when a gateway payment already has a subscription. /payment/verify and the
  * payment.captured webhook both process every payment and can run concurrently; without this
  * the second one saw the first's row as "current" and QUEUED a duplicate plan after it
  * (one payment -> active plan + phantom "upcoming" plan). The @unique on

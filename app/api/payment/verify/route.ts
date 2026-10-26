@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
-import { razorpay } from '@/lib/razorpay';
+import { getCashfreeOrder, getCashfreeOrderPayments } from '@/lib/cashfree';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail, sendPaymentFulfilmentAlert } from '@/lib/email';
 import { createOrRenewSubscription, isDuplicatePaymentError, runPaymentTransaction } from '@/lib/subscriptionService';
@@ -33,49 +32,68 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      planId,
-      name,
-      email,
-      whatsapp,
-      goal,
-      notes,
-      partner2Name,
-      partner2Email,
-      partner2Whatsapp,
-      partner2Goal,
-    } = body;
+    const { orderId, notes, partner2Name, partner2Email, partner2Whatsapp, partner2Goal } = body;
 
     // --- Basic validation ---
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !planId || !email) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!orderId || typeof orderId !== 'string') {
+      return NextResponse.json({ error: 'Missing order ID' }, { status: 400 });
     }
 
-    const secret = process.env.RAZORPAY_KEY_SECRET;
-    if (!secret) {
-      console.error('RAZORPAY_KEY_SECRET not configured');
-      return NextResponse.json({ error: 'Payment configuration error' }, { status: 500 });
+    // --- 1. Ask Cashfree (server-to-server) what happened to this order ---
+    // Nothing from the browser is trusted for money: the paid amount, plan and email all come
+    // from the order we created in create-order.
+    let cfOrder;
+    let cfPayments;
+    try {
+      [cfOrder, cfPayments] = await Promise.all([getCashfreeOrder(orderId), getCashfreeOrderPayments(orderId)]);
+    } catch (err: any) {
+      console.error('Failed to fetch order from Cashfree:', orderId, err?.body || err);
+      return NextResponse.json({ error: 'Could not verify payment with Cashfree' }, { status: 502 });
     }
 
-    // --- 1. Idempotency: prevent duplicate processing ---
-    // The payment.captured webhook processes the same payment, often concurrently. Whichever
+    const tags = cfOrder.order_tags || {};
+    const planId = Number(tags.planId || body.planId);
+    const email: string = tags.customerEmail || cfOrder.customer_details?.customer_email || body.email || '';
+    const name: string = body.name || tags.customerName || '';
+    const whatsapp: string = body.whatsapp || tags.customerPhone || '';
+    const goal: string = body.goal || tags.goal || '';
+    if (!planId || !email) {
+      console.error('Verify: order has no planId/email', orderId, tags);
+      return NextResponse.json({ error: 'Order details missing' }, { status: 400 });
+    }
+
+    const successful = cfPayments.find((p) => p.payment_status === 'SUCCESS');
+    if (cfOrder.order_status !== 'PAID' || !successful) {
+      if (cfPayments.some((p) => p.payment_status === 'PENDING')) {
+        // Bank hasn't confirmed yet. The PAYMENT_SUCCESS webhook activates the plan once it does.
+        return NextResponse.json(
+          { pending: true, error: 'Your payment is still being confirmed by the bank. Your plan will be activated and your login emailed as soon as it completes — no need to pay again.' },
+          { status: 409 }
+        );
+      }
+      return NextResponse.json(
+        { notPaid: true, error: 'Payment was not completed. No money has been taken — please try again.' },
+        { status: 400 }
+      );
+    }
+    const paymentId = String(successful.cf_payment_id);
+
+    // --- 2. Idempotency: prevent duplicate processing ---
+    // The PAYMENT_SUCCESS webhook processes the same payment, often concurrently. Whichever
     // side loses the race returns this cached success instead of creating a second subscription.
     const alreadyProcessedResponse = async () => {
       const existing = await prisma.userSubscription.findFirst({
-        where: { razorpayPaymentId: razorpay_payment_id },
+        where: { razorpayPaymentId: paymentId },
         include: { plan: true },
       });
       if (!existing) return null;
-      console.log(`Payment ${razorpay_payment_id} already processed — returning cached success`);
+      console.log(`Payment ${paymentId} already processed — returning cached success`);
       return NextResponse.json({
         success: true,
         message: 'Payment already processed. Your subscription is active.',
         receipt: {
-          paymentId: razorpay_payment_id,
-          orderId: razorpay_order_id,
+          paymentId,
+          orderId,
           planName: existing.plan.name,
           paidAmount: Number(existing.paidAmount ?? existing.plan.price),
           customerName: name || email.split('@')[0],
@@ -89,94 +107,22 @@ export async function POST(request: NextRequest) {
     const cached = await alreadyProcessedResponse();
     if (cached) return cached;
 
-    // --- 2. Verify Razorpay signature (timing-safe) ---
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest('hex');
-
-    let signatureValid = false;
-    try {
-      signatureValid = crypto.timingSafeEqual(
-        Buffer.from(expectedSignature, 'hex'),
-        Buffer.from(razorpay_signature, 'hex')
-      );
-    } catch {
-      signatureValid = false;
-    }
-
-    if (!signatureValid) {
-      console.error('Signature mismatch for payment', razorpay_payment_id);
-      return NextResponse.json({ error: 'Invalid payment signature' }, { status: 400 });
-    }
-
-    // --- 3. Verify payment with Razorpay API (server-to-server) ---
-    let rzpPayment: any;
-    try {
-      rzpPayment = await razorpay.payments.fetch(razorpay_payment_id);
-    } catch (err) {
-      console.error('Failed to fetch payment from Razorpay:', err);
-      return NextResponse.json({ error: 'Could not verify payment with Razorpay' }, { status: 502 });
-    }
-
-    if (rzpPayment.order_id !== razorpay_order_id) {
-      console.error('Order ID mismatch', { expected: razorpay_order_id, actual: rzpPayment.order_id });
-      return NextResponse.json({ error: 'Payment order mismatch' }, { status: 400 });
-    }
-
-    // Only a CAPTURED payment is money received. An `authorized` payment is just a hold: if it
-    // is never captured Razorpay releases it back to the customer after a few days, and a plan
-    // granted on it would be free. Capture it here (the customer authorised exactly this order's
-    // amount); if auto-capture already did it, the refetch below sees `captured`.
-    if (rzpPayment.status === 'authorized') {
-      try {
-        rzpPayment = await razorpay.payments.capture(razorpay_payment_id, rzpPayment.amount, rzpPayment.currency || 'INR');
-      } catch (err) {
-        console.warn('Capture call failed, re-checking payment status:', razorpay_payment_id, err);
-        try {
-          rzpPayment = await razorpay.payments.fetch(razorpay_payment_id);
-        } catch (refetchErr) {
-          console.error('Failed to re-fetch payment after capture error:', refetchErr);
-        }
-      }
-    }
-
-    if (rzpPayment.status !== 'captured') {
-      console.error('Payment not captured:', rzpPayment.status, razorpay_payment_id);
-      if (rzpPayment.status === 'authorized') {
-        // Money is on hold but not captured yet. The payment.captured webhook activates the plan
-        // as soon as it is; alert the coach in case it never is.
-        await sendPaymentFulfilmentAlert({
-          source: 'verify', paymentId: razorpay_payment_id, orderId: razorpay_order_id,
-          customerEmail: email, customerName: name, planId, amount: Number(rzpPayment.amount) / 100,
-          error: 'Payment authorized but could not be captured — plan not activated yet',
-        });
-        return NextResponse.json(
-          { pending: true, error: 'Your payment is still being confirmed by the bank. Your plan will be activated and your login emailed as soon as it completes — no need to pay again.' },
-          { status: 409 }
-        );
-      }
-      return NextResponse.json({ error: `Payment not completed (status: ${rzpPayment.status})` }, { status: 400 });
-    }
-
     // --- 4. Get plan ---
     const plan = await prisma.subscriptionPlan.findUnique({
       where: { id: Number(planId) },
     });
 
-    // Signature + Razorpay API confirm the money is captured, and create-order only accepts active
+    // The Cashfree API confirms the money is received, and create-order only accepts active
     // plans — so honour the plan even if it was deactivated after checkout.
     if (!plan) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
     // Warn if amount doesn't match (could be promo discount — log but don't block)
-    const expectedPaise = Math.round(Number(plan.price) * 100);
-    const paidPaise = Number(rzpPayment.amount);
-    if (paidPaise > expectedPaise) {
-      console.warn('Paid amount exceeds plan price', { paidPaise, expectedPaise, paymentId: razorpay_payment_id });
+    const paidAmount = Number(successful.payment_amount);
+    if (paidAmount > Number(plan.price)) {
+      console.warn('Paid amount exceeds plan price', { paidAmount, planPrice: Number(plan.price), paymentId });
     }
-    const paidAmount = paidPaise / 100;
 
     // --- 5. Atomic: find/create user + subscription ---
     let isNewUser = false;
@@ -222,11 +168,11 @@ export async function POST(request: NextRequest) {
             userId: user.id,
             plan,
             duration: plan.duration + bonusDays,
-            paymentMode: 'razorpay',
-            transactionId: razorpay_payment_id,
-            razorpayOrderId: razorpay_order_id,
-            razorpayPaymentId: razorpay_payment_id,
-            razorpaySignature: razorpay_signature,
+            paymentMode: 'cashfree',
+            transactionId: paymentId,
+            // Legacy column names — they now hold Cashfree's order/payment IDs.
+            razorpayOrderId: orderId,
+            razorpayPaymentId: paymentId,
             paidAmount,
             customerGoal: goal || null,
             customerNotes: buildNotesWithPartner2(notes, { partner2Name, partner2Whatsapp, partner2Email, partner2Goal }),
@@ -244,8 +190,8 @@ export async function POST(request: NextRequest) {
       // Payment is captured but we couldn't activate it. The webhook will retry; alert the coach too.
       console.error('Payment verify: fulfilment failed after retries:', txError);
       await sendPaymentFulfilmentAlert({
-        source: 'verify', paymentId: razorpay_payment_id, orderId: razorpay_order_id,
-        customerEmail: email, customerName: name, planId, amount: paidAmount,
+        source: 'verify', paymentId: paymentId, orderId: orderId,
+        customerEmail: email, customerName: name, planId: String(planId), amount: paidAmount,
         error: String(txError?.message || txError),
       });
       return NextResponse.json(
@@ -275,8 +221,8 @@ export async function POST(request: NextRequest) {
       await sendPaymentReceiptEmail({
         clientName: name || email.split('@')[0],
         clientEmail: email,
-        paymentId: razorpay_payment_id,
-        orderId: razorpay_order_id,
+        paymentId: paymentId,
+        orderId: orderId,
         planName: plan.name,
         paidAmount,
         startDate: startDate.toISOString(),
@@ -287,7 +233,7 @@ export async function POST(request: NextRequest) {
       console.error('Receipt email failed (non-fatal):', receiptEmailError);
     }
 
-    console.log(`Payment verified & subscription created: ${razorpay_payment_id} → user ${result.user.id}`);
+    console.log(`Payment verified & subscription created: ${paymentId} → user ${result.user.id}`);
 
     return NextResponse.json({
       success: true,
@@ -296,8 +242,8 @@ export async function POST(request: NextRequest) {
         ? 'Payment successful! Check your email for login credentials.'
         : 'Payment successful! Your subscription is now active.',
       receipt: {
-        paymentId: razorpay_payment_id,
-        orderId: razorpay_order_id,
+        paymentId: paymentId,
+        orderId: orderId,
         planName: plan.name,
         paidAmount,
         customerName: name || email.split('@')[0],

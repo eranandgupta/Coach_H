@@ -110,7 +110,7 @@ export default function TermsOfService() {
                 <ul className="list-disc list-inside text-gray-300 space-y-2 mb-4">
                   <li>All prices are in Indian Rupees (INR)</li>
                   <li>Payment must be made in full before accessing services</li>
-                  <li>We accept payments through Razorpay and other approved methods</li>
+                  <li>We accept payments through Cashfree Payments and other approved methods</li>
                   <li>Prices are subject to change with 30 days' notice</li>
                   <li>Taxes and fees may apply as per Indian law</li>
                 </ul>

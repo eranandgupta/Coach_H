@@ -5,6 +5,7 @@ import { X, ShoppingCart, Trash2, CheckCircle, User, Phone, Mail, Target, FileTe
 import { useCart } from '@/contexts/CartContext';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { loadCashfreeSdk, openCashfreeCheckout } from '@/lib/cashfreeCheckout';
 
 const COUNTRY_CODES = [
   { code: '+91', name: 'India', short: 'IN' },
@@ -285,22 +286,17 @@ const handleApplyPromo = async () => {
 
 const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  // Load Razorpay checkout script
+  // Preload Cashfree checkout so the popup opens instantly
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      if (document.body.contains(script)) document.body.removeChild(script);
-    };
+    loadCashfreeSdk().catch(() => {});
   }, []);
 
-  const handleRazorpayPayment = async () => {
+  const handlePayment = async () => {
     const plan = cartItems[0];
     if (!plan) return;
 
     setIsProcessingPayment(true);
+    const dialCode = COUNTRY_CODES.find(c => c.short === formData.countryCode)?.code || '+91';
 
     try {
       const orderRes = await fetch('/api/payment/create-order', {
@@ -313,6 +309,8 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
           planName: plan.name,
           name: formData.name,
           email: formData.email,
+          phone: `${dialCode}${formData.whatsapp.replace(/[\s-]/g, '')}`,
+          goal: formData.goal,
         }),
       });
 
@@ -322,84 +320,68 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
       }
 
       const orderData = await orderRes.json();
+      const result = await openCashfreeCheckout(orderData.paymentSessionId, orderData.mode);
+      // In-app browsers can't show the popup; Cashfree sends them to /payment/return instead.
+      if (result.redirect) return;
 
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: 'Coach H',
-        description: plan.name,
-        order_id: orderData.orderId,
-        prefill: {
-          name: formData.name,
-          email: formData.email,
-          contact: `${(COUNTRY_CODES.find(c => c.short === formData.countryCode)?.code || '+91').replace('+', '')}${formData.whatsapp.replace(/[\s-]/g, '')}`,
-        },
-        theme: { color: '#175FFF' },
-        handler: async (response: any) => {
+      // The popup closed — paid, failed or dismissed. Only the server knows which.
+      try {
+        setIsGeneratingReceipt(true);
+        setCurrentStep('success');
+        const verifyRes = await fetch('/api/payment/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: orderData.orderId,
+            planId: plan.id,
+            name: formData.name,
+            email: formData.email,
+            whatsapp: `${dialCode} ${formData.whatsapp}`,
+            goal: formData.goal,
+            notes: formData.notes,
+            partner2Name: formData.partner2Name,
+            partner2Email: formData.partner2Email,
+            partner2Whatsapp: formData.partner2Whatsapp ? `${COUNTRY_CODES.find(c => c.short === formData.partner2CountryCode)?.code || '+91'} ${formData.partner2Whatsapp}` : '',
+            partner2Goal: formData.partner2Goal,
+          }),
+        });
+
+        if (!verifyRes.ok) {
+          const errData = await verifyRes.json().catch(() => ({}));
+          if (errData.notPaid) {
+            // Closed the popup or the payment failed — let them try again.
+            setIsGeneratingReceipt(false);
+            setCurrentStep('payment');
+            setIsProcessingPayment(false);
+            if (result.paymentDetails) alert(errData.error);
+            return;
+          }
+          if (errData.pending) {
+            // Bank hasn't confirmed yet; the webhook activates the plan once it does.
+            setIsGeneratingReceipt(false);
+            alert(`${errData.error}\n\nOrder ID: ${orderData.orderId}`);
+            return;
+          }
+          throw new Error(errData.error || 'Verification failed');
+        }
+
+        const verifyData = await verifyRes.json();
+        setPaymentReceipt(verifyData.receipt || null);
+        setIsGeneratingReceipt(false);
+
+        if (appliedPromo) {
           try {
-            setIsGeneratingReceipt(true);
-            setCurrentStep('success');
-            const verifyRes = await fetch('/api/payment/verify', {
+            await fetch('/api/promo-codes/apply', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                planId: plan.id,
-                name: formData.name,
-                email: formData.email,
-                whatsapp: `${COUNTRY_CODES.find(c => c.short === formData.countryCode)?.code || '+91'} ${formData.whatsapp}`,
-                goal: formData.goal,
-                notes: formData.notes,
-                partner2Name: formData.partner2Name,
-                partner2Email: formData.partner2Email,
-                partner2Whatsapp: formData.partner2Whatsapp ? `${COUNTRY_CODES.find(c => c.short === formData.partner2CountryCode)?.code || '+91'} ${formData.partner2Whatsapp}` : '',
-                partner2Goal: formData.partner2Goal,
-              }),
+              body: JSON.stringify({ code: appliedPromo.promoCode.code }),
             });
-
-            if (!verifyRes.ok) {
-              const errData = await verifyRes.json();
-              if (errData.pending) {
-                // Bank hasn't released the funds yet; the webhook activates the plan once it does.
-                setIsGeneratingReceipt(false);
-                alert(`${errData.error}\n\nPayment ID: ${response.razorpay_payment_id}`);
-                return;
-              }
-              throw new Error(errData.error || 'Verification failed');
-            }
-
-            const verifyData = await verifyRes.json();
-            setPaymentReceipt(verifyData.receipt || null);
-            setIsGeneratingReceipt(false);
-
-            if (appliedPromo) {
-              try {
-                await fetch('/api/promo-codes/apply', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ code: appliedPromo.promoCode.code }),
-                });
-              } catch (_) {}
-            }
-          } catch (error: any) {
-            setIsGeneratingReceipt(false);
-            alert(`Payment verification failed: ${error.message}\n\nPlease contact support with Payment ID: ${response.razorpay_payment_id}`);
-          }
-        },
-        modal: {
-          ondismiss: () => setIsProcessingPayment(false),
-        },
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', () => {
-        alert('Payment failed. Please try again.');
-        setIsProcessingPayment(false);
-      });
-      rzp.open();
+          } catch (_) {}
+        }
+      } catch (error: any) {
+        setIsGeneratingReceipt(false);
+        alert(`Payment verification failed: ${error.message}\n\nPlease contact support with Order ID: ${orderData.orderId}`);
+      }
       setIsProcessingPayment(false);
     } catch (error: any) {
       console.error('Payment error:', error);
@@ -885,7 +867,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
                   {/* Payment Methods Info */}
                   <div className="bg-brand-blue/10 border border-brand-blue/30 rounded-xl p-5">
-                    <h4 className="text-white font-semibold mb-3">Secure Payment via Razorpay</h4>
+                    <h4 className="text-white font-semibold mb-3">Secure Payment via Cashfree</h4>
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       {['UPI / QR Code', 'Credit / Debit Card', 'Net Banking', 'Wallets'].map((method) => (
                         <div key={method} className="bg-white/5 rounded-lg px-3 py-2 text-center">
@@ -894,7 +876,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                       ))}
                     </div>
                     <p className="text-gray-400 text-xs">
-                      Your payment is secured by Razorpay with 256-bit SSL encryption. Your account will be activated instantly after payment.
+                      Your payment is secured by Cashfree Payments with 256-bit SSL encryption. Your account will be activated instantly after payment.
                     </p>
                   </div>
 
@@ -993,7 +975,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-400">Payment Method</span>
-                          <span className="text-white">Razorpay</span>
+                          <span className="text-white">Cashfree</span>
                         </div>
                       </div>
                     </div>
@@ -1072,7 +1054,7 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
                 {currentStep === 'payment' && (
                   <button
-                    onClick={handleRazorpayPayment}
+                    onClick={handlePayment}
                     disabled={isProcessingPayment}
                     className="w-full bg-gradient-to-r from-brand-blue to-brand-blue-dark text-white font-bold py-4 rounded-xl hover:shadow-[0_0_30px_rgba(23,95,255,0.4)] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >

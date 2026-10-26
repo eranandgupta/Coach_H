@@ -4,7 +4,7 @@
  * The sale is India-time; Vercel runs in UTC, so we evaluate the date in IST
  * (UTC+5:30) so the sale flips exactly at IST midnight, matching the storefront.
  *
- * Discounts are applied to the Razorpay order amount on the client. This module
+ * Discounts are applied to the payment order amount on the client. This module
  * only handles the BONUS DAYS, which must be added to the actual subscription
  * length at checkout — so it lives on the server.
  */

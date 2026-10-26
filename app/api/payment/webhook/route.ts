@@ -1,24 +1,23 @@
 /**
- * Razorpay Webhook Handler
+ * Cashfree Webhook Handler
  *
  * This is the SAFETY NET for payments.
  * If a client pays but their browser closes / network drops before
  * /api/payment/verify is called, this webhook creates the subscription anyway.
  *
  * Events handled:
- *   - payment.captured  → payment confirmed, create subscription if not already done
- *   - payment.failed    → log for debugging
+ *   - PAYMENT_SUCCESS_WEBHOOK  → payment confirmed, create subscription if not already done
+ *   - PAYMENT_FAILED_WEBHOOK   → log for debugging
  *
- * Setup: In Razorpay Dashboard → Settings → Webhooks
- *   URL:    https://yourdomain.com/api/payment/webhook
- *   Secret: same as RAZORPAY_WEBHOOK_SECRET in .env
- *   Events: payment.captured, payment.failed
+ * Setup: Cashfree Dashboard → Developers → Webhooks → Payment Gateway
+ *   URL:    https://coachhimanshu.com/api/payment/webhook
+ *   Events: Payment Success, Payment Failed
+ *   Signed with CASHFREE_SECRET_KEY (no separate webhook secret).
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
-import { razorpay } from '@/lib/razorpay';
+import { getCashfreeOrder, verifyCashfreeWebhook } from '@/lib/cashfree';
 import { hashPassword } from '@/lib/auth';
 import { sendCredentialsEmail, sendPaymentReceiptEmail, sendPaymentFulfilmentAlert } from '@/lib/email';
 import { createOrRenewSubscription, isDuplicatePaymentError, runPaymentTransaction } from '@/lib/subscriptionService';
@@ -26,34 +25,18 @@ import { getSaleBonusDays } from '@/lib/sale';
 
 export const dynamic = 'force-dynamic';
 
-// Razorpay sends raw body — do NOT use bodyParser
+// Signature is computed over the raw body — read it as text, never re-serialise.
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
-  const signature = request.headers.get('x-razorpay-signature') || '';
+  const signature = request.headers.get('x-webhook-signature') || '';
+  const timestamp = request.headers.get('x-webhook-timestamp') || '';
 
   // --- 1. Verify webhook signature ---
-  const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    console.error('RAZORPAY_WEBHOOK_SECRET not configured');
+  if (!process.env.CASHFREE_SECRET_KEY) {
+    console.error('CASHFREE_SECRET_KEY not configured');
     return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 });
   }
-
-  const expectedSig = crypto
-    .createHmac('sha256', webhookSecret)
-    .update(rawBody)
-    .digest('hex');
-
-  let sigValid = false;
-  try {
-    sigValid = crypto.timingSafeEqual(
-      Buffer.from(expectedSig, 'hex'),
-      Buffer.from(signature, 'hex')
-    );
-  } catch {
-    sigValid = false;
-  }
-
-  if (!sigValid) {
+  if (!verifyCashfreeWebhook(rawBody, timestamp, signature)) {
     console.error('Invalid webhook signature');
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
@@ -66,20 +49,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const eventType: string = event.event;
-  console.log(`Razorpay webhook received: ${eventType}`);
+  const eventType: string = event.type;
+  console.log(`Cashfree webhook received: ${eventType}`);
 
-  // --- 3. Handle payment.captured ---
-  if (eventType === 'payment.captured') {
-    const payment = event.payload?.payment?.entity;
-    if (!payment) {
-      return NextResponse.json({ error: 'Missing payment entity' }, { status: 400 });
+  // --- 3. Handle PAYMENT_SUCCESS_WEBHOOK ---
+  if (eventType === 'PAYMENT_SUCCESS_WEBHOOK') {
+    const payment = event.data?.payment;
+    const orderId: string = event.data?.order?.order_id;
+    if (!payment || !orderId || payment.payment_status !== 'SUCCESS') {
+      return NextResponse.json({ error: 'Missing payment details' }, { status: 400 });
     }
 
-    const paymentId: string = payment.id;
-    const orderId: string = payment.order_id;
-    const paidAmountPaise: number = Number(payment.amount);
-    const customerEmail: string = payment.email || '';
+    const paymentId = String(payment.cf_payment_id);
+    const paidAmount = Number(payment.payment_amount);
+    const customerEmail: string = event.data?.customer_details?.customer_email || '';
 
     // --- 4. Idempotency: already processed by /verify? ---
     const existing = await prisma.userSubscription.findFirst({
@@ -90,22 +73,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-    // --- 5. Get order notes to find planId and customer info ---
-    let orderNotes: any = {};
+    // --- 5. Get order tags to find planId and customer info ---
+    // Fetched from the API rather than the payload: older webhook versions omit order_tags.
+    let orderTags: Record<string, string> = {};
     try {
-      const order = await razorpay.orders.fetch(orderId) as any;
-      orderNotes = order.notes || {};
-    } catch (err) {
-      console.error('Webhook: failed to fetch order', orderId, err);
+      const order = await getCashfreeOrder(orderId);
+      if (order.order_status !== 'PAID') {
+        console.error('Webhook: order not PAID', orderId, order.order_status);
+        return NextResponse.json({ error: 'Order not paid' }, { status: 409 });
+      }
+      orderTags = order.order_tags || {};
+    } catch (err: any) {
+      console.error('Webhook: failed to fetch order', orderId, err?.body || err);
       return NextResponse.json({ error: 'Could not fetch order' }, { status: 502 });
     }
 
-    const planId = orderNotes.planId ? Number(orderNotes.planId) : null;
-    const customerName: string = orderNotes.customerName || customerEmail.split('@')[0];
-    const emailToUse: string = orderNotes.customerEmail || customerEmail;
+    const planId = orderTags.planId ? Number(orderTags.planId) : null;
+    const emailToUse: string = orderTags.customerEmail || customerEmail;
+    const customerName: string = orderTags.customerName || emailToUse.split('@')[0];
 
     if (!planId || !emailToUse) {
-      console.error('Webhook: missing planId or email in order notes', orderNotes);
+      console.error('Webhook: missing planId or email in order tags', orderTags);
       return NextResponse.json({ error: 'Insufficient order metadata' }, { status: 400 });
     }
 
@@ -119,7 +107,7 @@ export async function POST(request: NextRequest) {
       console.error('Webhook: plan not found', planId);
       await sendPaymentFulfilmentAlert({
         source: 'webhook', paymentId, orderId, customerEmail: emailToUse, customerName,
-        planId, amount: paidAmountPaise / 100, error: `Plan ${planId} not found`,
+        planId, amount: paidAmount, error: `Plan ${planId} not found`,
       });
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
@@ -127,7 +115,6 @@ export async function POST(request: NextRequest) {
     // Set from the created subscription (calendar stacking may push the start into the future).
     let startDate = new Date();
     let endDate = new Date();
-    const paidAmount = paidAmountPaise / 100;
 
     let isNewUser = false;
     let plainPassword: string | null = null;
@@ -154,6 +141,7 @@ export async function POST(request: NextRequest) {
             data: {
               name: customerName,
               email: emailToUse,
+              phone: orderTags.customerPhone || null,
               password: hashedPass,
               role: 'user',
             },
@@ -170,11 +158,13 @@ export async function POST(request: NextRequest) {
             userId: user.id,
             plan,
             duration: plan.duration + bonusDays,
-            paymentMode: 'razorpay',
+            paymentMode: 'cashfree',
             transactionId: paymentId,
+            // Legacy column names — they now hold Cashfree's order/payment IDs.
             razorpayOrderId: orderId,
             razorpayPaymentId: paymentId,
             paidAmount,
+            customerGoal: orderTags.goal || null,
           },
           tx
         );
@@ -194,7 +184,7 @@ export async function POST(request: NextRequest) {
         source: 'webhook', paymentId, orderId, customerEmail: emailToUse, customerName,
         planId, amount: paidAmount, error: String(txError?.message || txError),
       });
-      // 500 makes Razorpay retry the webhook later (it retries for ~24h).
+      // 500 makes Cashfree retry the webhook later.
       return NextResponse.json({ error: 'Fulfilment failed' }, { status: 500 });
     }
 
@@ -226,17 +216,16 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // --- payment.failed: just log ---
-  if (eventType === 'payment.failed') {
-    const payment = event.payload?.payment?.entity;
+  // --- PAYMENT_FAILED_WEBHOOK: just log ---
+  if (eventType === 'PAYMENT_FAILED_WEBHOOK') {
     console.warn('Payment failed:', {
-      id: payment?.id,
-      order_id: payment?.order_id,
-      email: payment?.email,
-      error: payment?.error_description,
+      id: event.data?.payment?.cf_payment_id,
+      order_id: event.data?.order?.order_id,
+      email: event.data?.customer_details?.customer_email,
+      error: event.data?.payment?.payment_message,
     });
   }
 
-  // Always return 200 to Razorpay to acknowledge receipt
+  // Always return 200 to Cashfree to acknowledge receipt
   return NextResponse.json({ received: true });
 }

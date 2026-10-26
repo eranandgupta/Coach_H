@@ -99,7 +99,7 @@ export default function PrivacyPolicy() {
                   We share information with third-party service providers who assist us in:
                 </p>
                 <ul className="list-disc list-inside text-gray-300 space-y-2 mb-4">
-                  <li>Payment processing (Razorpay, Stripe)</li>
+                  <li>Payment processing (Cashfree Payments)</li>
                   <li>Email and SMS communications</li>
                   <li>Cloud hosting and data storage</li>
                   <li>Analytics and performance monitoring</li>

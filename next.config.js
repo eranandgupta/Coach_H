@@ -180,7 +180,7 @@ const withPWA = require('next-pwa')({
     },
     {
       // Same-origin only. A bare /.*/ also captured every third-party request
-      // (Razorpay checkout, analytics, video host), adding a 5s-timeout hop and
+      // (Cashfree checkout, analytics, video host), adding a 5s-timeout hop and
       // filling Cache Storage with padded opaque responses.
       urlPattern: ({ sameOrigin }) => sameOrigin,
       handler: 'NetworkFirst',

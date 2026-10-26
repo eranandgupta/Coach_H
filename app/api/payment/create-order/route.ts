@@ -1,25 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Razorpay from 'razorpay';
+import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/middleware';
 import { evaluatePromoCode, promoDiscount } from '@/lib/promo';
 import { isAutoSaleDiscountActive, MAX_AUTO_SALE_PERCENT } from '@/lib/sale';
+import { cashfreeMode, cashfreePhone, createCashfreeOrder } from '@/lib/cashfree';
 
 export const dynamic = 'force-dynamic';
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { amount, planId, planName, name, email, promoCode } = body;
+    const { amount, planId, planName, name, email, phone, goal, promoCode } = body;
 
-    if (!amount || !planId) {
+    if (!amount || !planId || !email) {
       return NextResponse.json(
-        { error: 'Amount and planId are required' },
+        { error: 'Amount, planId and email are required' },
         { status: 400 }
       );
     }
@@ -72,29 +68,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Razorpay expects amount in paise (₹1 = 100 paise)
-    const amountInPaise = Math.round(requested * 100);
+    // Order tags carry what the webhook needs to activate the plan if the browser never comes
+    // back. Cashfree rejects empty tag values and caps each at 255 chars.
+    const tags: Record<string, string> = {
+      planId: String(plan.id),
+      planName: String(planName || plan.name),
+      customerName: String(name || ''),
+      customerEmail: String(email),
+      customerPhone: String(phone || ''),
+      goal: String(goal || ''),
+      promoCode: promoCodeUsed,
+    };
+    const orderTags = Object.fromEntries(
+      Object.entries(tags).filter(([, v]) => v.trim()).map(([k, v]) => [k, v.slice(0, 255)])
+    );
 
-    const order = await razorpay.orders.create({
-      amount: amountInPaise,
-      currency: 'INR',
-      notes: {
-        planId: String(planId),
-        planName: planName || '',
-        customerName: name || '',
-        customerEmail: email || '',
-        promoCode: promoCodeUsed,
+    const orderId = `CH_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+    const order = await createCashfreeOrder({
+      order_id: orderId,
+      order_amount: Math.round(requested * 100) / 100,
+      order_currency: 'INR',
+      customer_details: {
+        // Stable per email so Cashfree groups a client's payments together.
+        customer_id: `c${crypto.createHash('sha256').update(String(email).toLowerCase()).digest('hex').slice(0, 24)}`,
+        customer_name: name && String(name).trim().length >= 3 ? String(name).trim().slice(0, 100) : undefined,
+        customer_email: String(email),
+        customer_phone: cashfreePhone(phone),
       },
+      // Used only when the popup can't open (e.g. Instagram's in-app browser). Cashfree needs https.
+      order_meta: request.nextUrl.origin.startsWith('https://')
+        ? { return_url: `${request.nextUrl.origin}/payment/return?order_id={order_id}` }
+        : undefined,
+      order_note: String(planName || plan.name).slice(0, 200).padEnd(3, ' '),
+      order_tags: orderTags,
     });
 
     return NextResponse.json({
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      keyId: process.env.RAZORPAY_KEY_ID,
+      orderId: order.order_id,
+      paymentSessionId: order.payment_session_id,
+      amount: order.order_amount,
+      currency: order.order_currency,
+      mode: cashfreeMode,
     });
   } catch (error: any) {
-    console.error('Razorpay create order error:', error);
+    console.error('Cashfree create order error:', error?.body || error);
     return NextResponse.json(
       { error: 'Failed to create payment order' },
       { status: 500 }

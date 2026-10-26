@@ -154,7 +154,7 @@ export default function Footer() {
           <p className="text-xs text-gray-500">&copy; {new Date().getFullYear()} Coach Himanshu. All rights reserved.</p>
           <p className="inline-flex items-center gap-1.5 text-xs text-gray-500">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            NASM certified · Secure payments via Razorpay
+            NASM certified · Secure payments via Cashfree
           </p>
         </div>
       </div>

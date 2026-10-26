@@ -230,7 +230,7 @@ export async function sendPaymentReceiptEmail(data: {
               </tr>
               <tr>
                 <td style="padding: 8px 0; color: #6b7280;">Payment Via</td>
-                <td style="padding: 8px 0; color: #111827;">Razorpay (Online)</td>
+                <td style="padding: 8px 0; color: #111827;">Cashfree (Online)</td>
               </tr>
               <tr style="border-top: 2px solid #e5e7eb;">
                 <td style="padding: 14px 0 8px 0; color: #1e3a8a; font-weight: bold; font-size: 16px;">Amount Paid</td>
@@ -381,8 +381,8 @@ export async function sendPaymentFulfilmentAlert(data: {
       to,
       subject: `⚠️ PAID but NOT activated — ${data.customerEmail}`,
       text: [
-        'A Razorpay payment was captured but the account/subscription could not be created.',
-        'Razorpay will retry the webhook automatically; if the client still has no access,',
+        'A Cashfree payment was received but the account/subscription could not be created.',
+        'Cashfree will retry the webhook automatically; if the client still has no access,',
         'add them manually from Admin → Clients.',
         '',
         `Source:     ${data.source}`,

@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 async function getHandler(_request: NextRequest) {
   try {
-    // Fetch all subscriptions created via Razorpay (online payments), newest first
+    // Fetch all subscriptions paid online (razorpayPaymentId holds Razorpay or Cashfree IDs), newest first
     const enrollments = await prisma.userSubscription.findMany({
       where: {
         razorpayPaymentId: { not: null },
