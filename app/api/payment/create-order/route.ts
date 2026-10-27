@@ -5,13 +5,14 @@ import { getAuthUser } from '@/lib/middleware';
 import { evaluatePromoCode, promoDiscount } from '@/lib/promo';
 import { isAutoSaleDiscountActive, MAX_AUTO_SALE_PERCENT } from '@/lib/sale';
 import { cashfreeMode, cashfreePhone, createCashfreeOrder } from '@/lib/cashfree';
+import { TERMS_VERSION } from '@/lib/legal';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { amount, planId, planName, name, email, phone, goal, promoCode } = body;
+    const { amount, planId, planName, name, email, phone, goal, promoCode, termsAccepted, termsVersion } = body;
 
     if (!amount || !planId || !email) {
       return NextResponse.json(
@@ -68,8 +69,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Proof of policy acceptance, stored on the gateway's own order record (and echoed in the
+    // receipt email) so it can be produced if the payment is ever disputed.
+    const checkoutIp =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || '';
+    const acceptance = termsAccepted
+      ? { termsVersion: String(termsVersion || TERMS_VERSION), termsAcceptedAt: new Date().toISOString(), checkoutIp }
+      : { termsVersion: 'not-recorded', termsAcceptedAt: '', checkoutIp };
+
     // Order tags carry what the webhook needs to activate the plan if the browser never comes
-    // back. Cashfree rejects empty tag values and caps each at 255 chars.
+    // back. Cashfree rejects empty tag values, caps each at 255 chars and allows at most 10.
     const tags: Record<string, string> = {
       planId: String(plan.id),
       planName: String(planName || plan.name),
@@ -78,6 +87,7 @@ export async function POST(request: NextRequest) {
       customerPhone: String(phone || ''),
       goal: String(goal || ''),
       promoCode: promoCodeUsed,
+      ...acceptance,
     };
     const orderTags = Object.fromEntries(
       Object.entries(tags).filter(([, v]) => v.trim()).map(([k, v]) => [k, v.slice(0, 255)])

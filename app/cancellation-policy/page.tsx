@@ -1,261 +1,102 @@
-'use client';
-
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import AnnouncementBar from '@/components/AnnouncementBar';
-import { XCircle, TriangleAlert } from 'lucide-react';
+import { XCircle } from 'lucide-react';
+import LegalPage, { A, Callout, ContactBlock, List, P, Section, Sub } from '@/components/LegalPage';
+import { PAUSE_RULES } from '@/lib/legal';
 
 export default function CancellationPolicy() {
   return (
-    <div className="min-h-screen bg-brand-navy">
-      <AnnouncementBar />
-      <Navbar />
+    <LegalPage
+      icon={<XCircle className="w-8 h-8 text-brand-blue" />}
+      title="Cancellation Policy"
+      intro="How plans end, how to stop or pause your coaching, and the rules for Elite 1:1 live sessions."
+    >
+      <Callout>
+        <strong className="text-white">No automatic renewals.</strong> Every plan is a one-time payment for a fixed
+        period. We never charge you again unless you choose to buy or renew a plan yourself.
+      </Callout>
 
-      <div className="pt-32 pb-16 px-4 md:px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-blue/10 rounded-2xl mb-6">
-              <XCircle className="w-8 h-8 text-brand-blue" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Cancellation Policy
-            </h1>
-            <p className="text-gray-400">
-              Last Updated: January 2025
-            </p>
-          </div>
+      <Section n={1} title="How a plan ends">
+        <List items={[
+          'Each plan runs for the period shown at checkout, starting on the activation date (or, for an early renewal, the day after your current plan ends).',
+          'Elite 1:1 plans end when the validity period ends or when all sessions are used — whichever comes first.',
+          'Your start and end dates are shown in your payment receipt and on your dashboard.',
+          'When a plan ends, coaching support and plan updates stop. You can still log in and view your history.',
+        ]} />
+      </Section>
 
-          {/* Content */}
-          <div className="bg-brand-navy-light/30 rounded-2xl p-8 md:p-12 border border-brand-navy-light/20">
-            <div className="prose prose-invert max-w-none">
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">1. Overview</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  <strong className="text-white">You can cancel your subscription at any time, but ALL subscriptions are NON-REFUNDABLE.</strong>
-                </p>
-                <p className="text-gray-300 leading-relaxed">
-                  This Cancellation Policy outlines how to cancel your subscription with Coach Himanshu. While you have the freedom to cancel at any time, please note that no refunds will be issued for any remaining subscription period. See our <a href="/refund-policy" className="text-brand-blue hover:underline">Refund Policy</a> for details.
-                </p>
-              </section>
+      <Section n={2} title="Cancelling">
+        <P>
+          You can ask us to stop your coaching at any time by emailing <A href="mailto:info@coachhimanshu.com">info@coachhimanshu.com</A> or
+          messaging us on WhatsApp at <A href="tel:+917303484648">+91 7303484648</A> from your registered number. We confirm in writing within 48 hours.
+        </P>
+        <P>
+          Because plans are one-time payments that start immediately, cancelling does not create a refund for the remaining
+          period. You keep access until the plan&apos;s end date unless you ask us to close the account sooner. Refunds are only
+          given in the cases listed in our <A href="/refund-policy">Refund Policy</A>.
+        </P>
+      </Section>
 
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">2. Cancellation Rights</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">2.1 Your Right to Cancel</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  You have the right to cancel your subscription at any time during your subscription period. However, <strong className="text-white">cancellation does NOT entitle you to a refund</strong>.
-                </p>
-
-                <h3 className="text-xl font-semibold text-white mb-3">2.2 What Happens When You Cancel</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  When you cancel your subscription:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2 mt-4">
-                  <li>You will continue to have full access until the end of your current paid period</li>
-                  <li><strong className="text-white">NO refund will be issued for the remaining time</strong></li>
-                  <li>No further charges will be made after the current period expires</li>
-                  <li>You will not be automatically renewed for the next period</li>
-                  <li>Access to coaching services ends when the paid period expires</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">3. No Refund on Cancellation</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">3.1 All Plans Are Non-Refundable</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  <strong className="text-white">Important:</strong> Regardless of when you cancel, you will NOT receive a refund for:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Monthly Plans (Kickstart - ₹1,499/month) - No refund for current month</li>
-                  <li>3-Month Plans (Consistency - ₹3,499 / Rehabilitation - ₹4,499 / Home Workout - ₹2,999) - No refund for remaining months</li>
-                  <li>6-Month Plans (Strength - ₹5,999 / Couple Strength - ₹9,999) - No refund for remaining months</li>
-                  <li>12-Month Plans (Mastery - ₹11,999 / Couple Mastery - ₹19,999) - No refund for remaining months</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold text-white mb-3">3.2 Example Scenarios</h3>
-                <div className="bg-brand-navy-light/50 rounded-lg p-4 mb-4">
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    <strong className="text-white">Example 1:</strong> You purchase a 6-month plan for ₹5,999 and cancel after 2 months. You will continue to have access for the remaining 4 months, but you will NOT receive a refund of any amount.
-                  </p>
-                </div>
-                <div className="bg-brand-navy-light/50 rounded-lg p-4">
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    <strong className="text-white">Example 2:</strong> You purchase a monthly plan for ₹1,499 and cancel after 2 weeks. You will continue to have access for the remaining 2 weeks of the month, but you will NOT receive a refund.
-                  </p>
-                </div>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">4. How to Cancel Your Subscription</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">4.1 Method 1: Email Cancellation</h3>
-                <ol className="list-decimal list-inside text-gray-300 space-y-2 mb-4">
-                  <li>Send an email to <a href="mailto:info@coachhimanshu.com" className="text-brand-blue hover:underline">info@coachhimanshu.com</a></li>
-                  <li>Use subject line: "Cancel Subscription - [Your Name]"</li>
-                  <li>Include your registered email address and reason for cancellation (optional)</li>
-                  <li>You'll receive a confirmation email within 24-48 hours</li>
-                </ol>
-
-                <h3 className="text-xl font-semibold text-white mb-3">4.2 Method 2: Dashboard Cancellation</h3>
-                <ol className="list-decimal list-inside text-gray-300 space-y-2 mb-4">
-                  <li>Log in to your account dashboard</li>
-                  <li>Navigate to "Subscription Settings"</li>
-                  <li>Click "Cancel Subscription"</li>
-                  <li>Follow the on-screen instructions</li>
-                  <li>You'll receive an immediate confirmation</li>
-                </ol>
-
-                <h3 className="text-xl font-semibold text-white mb-3">4.3 Method 3: WhatsApp Request</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Message us on WhatsApp at <a href="tel:+917303484648" className="text-brand-blue hover:underline">+91 7303484648</a> with your cancellation request. Our team will guide you through the process.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">5. Subscription Pause Option (Alternative to Cancellation)</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">5.1 Alternative to Cancellation</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Before canceling, consider pausing your subscription if you're facing temporary circumstances:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Injury or medical recovery</li>
-                  <li>Travel or work commitments</li>
-                  <li>Personal reasons requiring a break</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold text-white mb-3">5.2 Pause Terms</h3>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Maximum pause duration: 30 days per subscription period</li>
-                  <li>Your subscription will be extended by the pause duration</li>
-                  <li>No additional charges during pause</li>
-                  <li>No refund - your paid time is preserved and extended</li>
-                  <li>Request via email at <a href="mailto:info@coachhimanshu.com" className="text-brand-blue hover:underline">info@coachhimanshu.com</a> or WhatsApp</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">6. What Happens After Cancellation</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">6.1 Immediate Effects</h3>
-                <ul className="list-disc list-inside text-gray-300 space-y-2 mb-4">
-                  <li>You receive a cancellation confirmation email</li>
-                  <li>Access to coaching services continues until period end</li>
-                  <li>Billing is stopped (no future charges)</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold text-white mb-3">6.2 End of Billing Period</h3>
-                <ul className="list-disc list-inside text-gray-300 space-y-2 mb-4">
-                  <li>Access to personalized plans is discontinued</li>
-                  <li>WhatsApp support is terminated</li>
-                  <li>Dashboard access becomes read-only (view past progress)</li>
-                  <li>Your data is retained according to our Privacy Policy</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold text-white mb-3">6.3 Data Retention</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  After cancellation, we retain your data for 90 days in case you decide to reactivate. After 90 days, your data may be anonymized or deleted (except as required by law).
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">7. Reactivation</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">7.1 Within 90 Days</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  If you reactivate within 90 days of cancellation:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2 mb-4">
-                  <li>Your previous data and progress will be restored</li>
-                  <li>You can choose any available subscription plan</li>
-                  <li>Welcome back bonus may be offered (at our discretion)</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold text-white mb-3">7.2 After 90 Days</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Reactivation after 90 days is treated as a new subscription. Previous data may not be available, and you'll start fresh with a new onboarding process.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">8. Cancellation by Coach Himanshu</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">8.1 Our Right to Cancel</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  We reserve the right to cancel your subscription immediately if:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>You violate our Terms of Service</li>
-                  <li>You engage in abusive or harassing behavior</li>
-                  <li>Payment fraud is detected</li>
-                  <li>You provide false health information that endangers safety</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold text-white mb-3">8.2 No Refund Policy Applies</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Even if we cancel your subscription due to Terms violations, no refund will be issued for any remaining subscription period.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">9. Special Circumstances</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  <strong className="text-white">Important:</strong> The non-refundable policy applies to ALL circumstances, including:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Medical conditions or injuries</li>
-                  <li>Relocation or travel</li>
-                  <li>Financial difficulties</li>
-                  <li>Personal emergencies</li>
-                  <li>Dissatisfaction with results</li>
-                </ul>
-                <p className="text-gray-300 leading-relaxed mt-4">
-                  While we understand that unexpected situations arise, our non-refundable policy remains in effect. We recommend using the subscription pause option (up to 30 days) if you need temporary time off.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">10. No-Show and Inactivity Policy</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  If you remain inactive (no login or communication) for 30+ consecutive days:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>We'll send reminder emails to check on your progress</li>
-                  <li>Your subscription continues and charges apply</li>
-                  <li>No refund for inactive periods (subscription remains active)</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">11. Promotional and Discounted Subscriptions</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  All promotional and discounted subscriptions are <strong className="text-white">100% non-refundable</strong> upon cancellation, just like regular-priced subscriptions.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-white mb-4">12. Contact for Cancellation Support</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Need help with cancellation or have questions?
-                </p>
-                <div className="bg-brand-navy-light/50 rounded-lg p-6 border border-brand-blue/20">
-                  <p className="text-white font-semibold mb-2">Coach Himanshu - Cancellation Support</p>
-                  <p className="text-gray-300">Email: <a href="mailto:info@coachhimanshu.com" className="text-brand-blue hover:underline">info@coachhimanshu.com</a></p>
-                  <p className="text-gray-300">Phone/WhatsApp: <a href="tel:+917303484648" className="text-brand-blue hover:underline">+91 7303484648</a></p>
-                  <p className="text-gray-300 mt-3 text-sm">We're here to help! Response within 24-48 hours.</p>
-                </div>
-              </section>
-
-              <div className="mt-8 p-6 bg-red-500/10 border-2 border-red-500/30 rounded-lg">
-                <p className="text-white font-semibold mb-2 inline-flex items-center gap-2"><TriangleAlert className="w-5 h-5 text-amber-400 shrink-0" aria-hidden /> IMPORTANT REMINDER</p>
-                <p className="text-gray-300 text-sm leading-relaxed mb-3">
-                  <strong className="text-white">You can cancel anytime, but NO REFUNDS will be issued.</strong> You will continue to have full access until the end of your paid period.
-                </p>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Before you cancel, consider pausing your subscription or reaching out to us. We may be able to help with schedule adjustments or other solutions. Your fitness journey matters to us!
-                </p>
-              </div>
-            </div>
-          </div>
+      <Section n={3} title="Pausing a plan">
+        <P>Longer plans can be paused once for travel, illness or injury. The end date moves forward by the days paused.</P>
+        <div className="overflow-x-auto mb-4">
+          <table className="w-full text-left text-gray-300 text-sm border border-white/10 rounded-lg">
+            <thead>
+              <tr className="bg-white/5 text-white">
+                <th className="p-3">Plan</th>
+                <th className="p-3">Pause allowed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PAUSE_RULES.map((r) => (
+                <tr key={r.plan} className="border-t border-white/10">
+                  <td className="p-3">{r.plan}</td>
+                  <td className="p-3">{r.days}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
+        <List items={[
+          'Request a pause in advance by email or WhatsApp. Pauses cannot be applied to dates that have already passed.',
+          'When the allowed pause days are used up, the plan resumes automatically.',
+          'Days not paused are not refundable and cannot be transferred to another person.',
+        ]} />
+      </Section>
 
-      <Footer />
-    </div>
+      <Section n={4} title="Elite 1:1 live session rules">
+        <List items={[
+          'Each session is 60 minutes, held online at the fixed time agreed with your trainer.',
+          'All sessions must be used within the plan validity: 30 days for the 12- and 24-session plans, 3 months for the 36- and 72-session plans. Unused sessions expire.',
+          'Renewing an Elite 1:1 plan while it is still running carries your unused sessions into the new plan.',
+          'To reschedule, tell your trainer at least 24 hours in advance. A session missed or cancelled with less than 24 hours’ notice counts as completed.',
+          'If you join late, the session still ends at the scheduled time.',
+          'Sessions missed because the trainer was unavailable, or because of a problem on our side, are rescheduled or credited one-for-one.',
+          'Each completed session is recorded and confirmed by your trainer in our system.',
+          'Couple plans share one account and one session slot for both partners.',
+        ]} />
+      </Section>
+
+      <Section n={5} title="Cancellation by us">
+        <Sub title="5.1 For breach of terms">
+          <P>
+            We may suspend or end a plan without refund if you share your account, copy or resell our content, give false
+            information, abuse or harass our staff, or raise a dispute for a plan that was delivered as described.
+          </P>
+        </Sub>
+        <Sub title="5.2 For reasons not your fault">
+          <P>If we have to stop providing your plan for any other reason, you receive a pro-rata refund for the unused period or sessions.</P>
+        </Sub>
+      </Section>
+
+      <Section n={6} title="Data after your plan ends">
+        <P>
+          Your account and history stay available so you can return. You can ask us to delete your data at any time —
+          see the <A href="/privacy-policy">Privacy Policy</A> for what we must keep by law.
+        </P>
+      </Section>
+
+      <Section n={7} title="Contact and grievances">
+        <ContactBlock />
+      </Section>
+    </LegalPage>
   );
 }

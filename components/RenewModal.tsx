@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
 import { loadCashfreeSdk, openCashfreeCheckout } from '@/lib/cashfreeCheckout';
+import { TERMS_VERSION } from '@/lib/legal';
 
 interface RenewUser {
   name?: string;
@@ -86,6 +87,8 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
           name: user.name || '',
           email: user.email,
           phone: user.phone || '',
+          termsAccepted: true, // accepted by clicking Pay — see the notice above the button
+          termsVersion: TERMS_VERSION,
         }),
       });
       if (!orderRes.ok) throw new Error('Failed to start payment. Please try again.');
@@ -240,6 +243,14 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
                 {error && (
                   <p className="text-red-400 text-xs mb-3 leading-relaxed">{error}</p>
                 )}
+
+                <p className="text-[11px] text-gray-500 mb-3 leading-relaxed">
+                  By paying you agree to our{' '}
+                  <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Terms</a>,{' '}
+                  <a href="/refund-policy" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Refund</a> and{' '}
+                  <a href="/cancellation-policy" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Cancellation</a> policies.
+                  The plan is non-refundable once activated.
+                </p>
 
                 <button
                   type="button"

@@ -202,6 +202,9 @@ export async function POST(request: NextRequest) {
     }
     try {
       await sendPaymentReceiptEmail({
+        termsVersion: orderTags.termsVersion || null,
+        termsAcceptedAt: orderTags.termsAcceptedAt || null,
+        checkoutIp: orderTags.checkoutIp || null,
         clientName: customerName,
         clientEmail: emailToUse,
         paymentId,

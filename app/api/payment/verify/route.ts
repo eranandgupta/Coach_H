@@ -219,6 +219,9 @@ export async function POST(request: NextRequest) {
     // Send payment receipt to all users
     try {
       await sendPaymentReceiptEmail({
+        termsVersion: tags.termsVersion || null,
+        termsAcceptedAt: tags.termsAcceptedAt || null,
+        checkoutIp: tags.checkoutIp || null,
         clientName: name || email.split('@')[0],
         clientEmail: email,
         paymentId: paymentId,

@@ -2413,13 +2413,12 @@ export default function Home() {
                       <svg className="w-3 h-3 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                     </summary>
                     <div className="mt-3 p-4 rounded-xl border border-amber-500/10 bg-amber-500/5 text-gray-400 text-xs space-y-1.5">
-                      <p>• A total of 24 sessions are scheduled per month (30 days). All sessions must be completed within 30 days of enrollment — sessions do not carry forward and will expire after 30 days, no exceptions.</p>
-                      <p>• It is the sole responsibility of the client to complete all sessions within the given timeframe. No extensions will be granted under any circumstance.</p>
-                      <p>• Extensions will only be provided if a session is missed due to trainer unavailability or any issue caused by Coach Himanshu Platform — strictly equal to sessions missed from our side only.</p>
-                      <p>• Any change in your fixed session time must be communicated at least 24 hours in advance. Last-minute reschedule requests will not be entertained.</p>
-                      <p>• If a client joins the session late, the session will end at the originally scheduled time. No extra time will be given.</p>
-                      <p>• Each session is of 60 minutes duration.</p>
-                      <p>• Once purchased, the 1:1 training plan is completely non-refundable under any circumstance — no exceptions.</p>
+                      <p>• Each session is 60 minutes, held online at a fixed time agreed with your trainer.</p>
+                      <p>• All sessions must be used within the plan validity — 30 days for 12 and 24 sessions, 3 months for 36 and 72 sessions. Unused sessions expire; renewing while your plan is still running carries them into the new plan.</p>
+                      <p>• Reschedule at least 24 hours in advance. A session missed or cancelled with less notice counts as completed.</p>
+                      <p>• If you join late, the session still ends at the scheduled time.</p>
+                      <p>• Sessions missed because of trainer unavailability or any issue on our side are rescheduled or credited one-for-one.</p>
+                      <p>• Plans start on payment and are non-refundable once activated, except as set out in our <a href="/refund-policy" className="underline hover:text-gray-200">Refund Policy</a>. Full rules: <a href="/cancellation-policy" className="underline hover:text-gray-200">Cancellation Policy</a>.</p>
                     </div>
                   </details>
                 </div>

@@ -6,6 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { loadCashfreeSdk, openCashfreeCheckout } from '@/lib/cashfreeCheckout';
+import { TERMS_VERSION } from '@/lib/legal';
 
 const COUNTRY_CODES = [
   { code: '+91', name: 'India', short: 'IN' },
@@ -311,6 +312,8 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
           email: formData.email,
           phone: `${dialCode}${formData.whatsapp.replace(/[\s-]/g, '')}`,
           goal: formData.goal,
+          termsAccepted: formData.acceptTerms,
+          termsVersion: TERMS_VERSION,
         }),
       });
 
@@ -791,13 +794,12 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                           <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                         </summary>
                         <div className="mt-3 p-4 rounded-xl border border-violet-500/20 bg-violet-500/5 text-gray-300 text-xs space-y-2.5 leading-relaxed">
-                          <p>• All sessions must be completed within 30 days of enrollment. Sessions do not carry forward and will expire after 30 days — no exceptions.</p>
-                          <p>• It is the sole responsibility of the client to complete all sessions within the given timeframe. No extensions will be granted under any circumstance.</p>
-                          <p>• Extensions will only be provided if a session is missed due to trainer unavailability or any issue caused by Coach Himanshu Platform — strictly equal to sessions missed from our side only.</p>
-                          <p>• Any change in your fixed session time must be communicated at least 24 hours in advance. Last-minute reschedule requests will not be entertained.</p>
-                          <p>• If a client joins the session late, the session will end at the originally scheduled time. No extra time will be given.</p>
-                          <p>• Each session is of 60 minutes duration.</p>
-                          <p>• Once purchased, the 1:1 training plan is completely non-refundable under any circumstance — no exceptions.</p>
+                          <p>• Each session is 60 minutes, held online at a fixed time agreed with your trainer.</p>
+                          <p>• All sessions must be used within the plan validity — 30 days for 12 and 24 sessions, 3 months for 36 and 72 sessions. Unused sessions expire; renewing while your plan is still running carries them into the new plan.</p>
+                          <p>• Reschedule at least 24 hours in advance. A session missed or cancelled with less notice counts as completed.</p>
+                          <p>• If you join late, the session still ends at the scheduled time.</p>
+                          <p>• Sessions missed because of trainer unavailability or any issue on our side are rescheduled or credited one-for-one.</p>
+                          <p>• The plan starts on payment and is non-refundable once activated, except as set out in our <a href="/refund-policy" target="_blank" rel="noopener noreferrer" className="underline">Refund Policy</a>.</p>
                         </div>
                       </details>
                     </div>
@@ -813,13 +815,12 @@ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
                         className="mt-1 w-4 h-4 rounded border-white/20 bg-brand-navy/50 text-brand-blue focus:ring-brand-blue focus:ring-offset-0 cursor-pointer accent-brand-blue"
                       />
                       <span className="text-gray-300 text-sm leading-relaxed">
-                        I accept the{' '}
-                        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">
-                          Terms &amp; Conditions
-                        </a>
-                        {isOneOnOnePlan && (
-                          <span className="text-gray-400"> including the 1:1 training session policy, non-refundable policy, and all applicable guidelines</span>
-                        )}
+                        I agree to the{' '}
+                        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Terms of Service</a>,{' '}
+                        <a href="/refund-policy" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Refund Policy</a> and{' '}
+                        <a href="/cancellation-policy" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Cancellation Policy</a>.
+                        {' '}I understand my plan starts as soon as payment is confirmed and is non-refundable once activated
+                        {isOneOnOnePlan ? ', and that unused 1:1 sessions expire at the end of the plan validity' : ''}.
                       </span>
                     </label>
                     {errors.acceptTerms && <p className="text-red-400 text-xs mt-1 ml-7">{errors.acceptTerms}</p>}

@@ -168,9 +168,15 @@ export async function sendPaymentReceiptEmail(data: {
   startDate: string;
   endDate: string;
   goal?: string | null;
+  termsVersion?: string | null;
+  termsAcceptedAt?: string | null;
+  checkoutIp?: string | null;
 }) {
   const transporter = createTransporter();
 
+  const acceptedAt = data.termsAcceptedAt
+    ? new Intl.DateTimeFormat('en-IN', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' }).format(new Date(data.termsAcceptedAt))
+    : null;
   const formattedStart = new Intl.DateTimeFormat('en-IN', { dateStyle: 'long', timeZone: 'Asia/Kolkata' }).format(new Date(data.startDate));
   const formattedEnd = new Intl.DateTimeFormat('en-IN', { dateStyle: 'long', timeZone: 'Asia/Kolkata' }).format(new Date(data.endDate));
 
@@ -238,6 +244,13 @@ export async function sendPaymentReceiptEmail(data: {
               </tr>
             </table>
           </div>
+        </div>
+
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; margin-top: 20px; font-size: 13px; color: #4b5563; line-height: 1.6;">
+          <p style="margin: 0 0 8px 0; color: #111827; font-weight: bold;">Your agreement</p>
+          <p style="margin: 0 0 8px 0;">Your plan was activated on payment. As agreed at checkout, plans are non-refundable once activated, except for duplicate charges, unauthorised payments or if we fail to deliver — see our <a href="https://coachhimanshu.com/refund-policy" style="color: #175FFF;">Refund Policy</a>, <a href="https://coachhimanshu.com/cancellation-policy" style="color: #175FFF;">Cancellation Policy</a> and <a href="https://coachhimanshu.com/terms-of-service" style="color: #175FFF;">Terms of Service</a>.</p>
+          ${data.termsVersion && data.termsVersion !== 'not-recorded' ? `<p style="margin: 0 0 8px 0;">Terms version ${data.termsVersion} accepted${acceptedAt ? ` on ${acceptedAt} IST` : ''}${data.checkoutIp ? ` from IP ${data.checkoutIp}` : ''}.</p>` : ''}
+          <p style="margin: 0;">Questions or a problem with your plan? Reply to this email or WhatsApp +91 7303484648 — please contact us before contacting your bank.</p>
         </div>
 
         <div style="text-align: center; margin: 30px 0;">

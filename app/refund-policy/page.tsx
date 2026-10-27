@@ -1,218 +1,112 @@
-'use client';
-
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { RefreshCcw, TriangleAlert } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
+import LegalPage, { A, Callout, ContactBlock, List, P, Section, Sub } from '@/components/LegalPage';
 
 export default function RefundPolicy() {
   return (
-    <div className="min-h-screen bg-brand-navy">
-      <Navbar />
+    <LegalPage
+      icon={<RefreshCcw className="w-8 h-8 text-brand-blue" />}
+      title="Refund Policy"
+      intro="Our coaching is a personalised digital service that starts the moment your payment is confirmed. Please read this policy before you buy — you accept it at checkout."
+    >
+      <Callout>
+        <strong className="text-white">Summary:</strong> plans are non-refundable once activated. You get a refund only if
+        you were charged twice, the payment was not made by you, or we fail to deliver the service as described below.
+        If something is wrong, write to us first — we resolve most issues within 48 hours.
+      </Callout>
 
-      <div className="pt-24 pb-16 px-4 md:px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-blue/10 rounded-2xl mb-6">
-              <RefreshCcw className="w-8 h-8 text-brand-blue" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Refund Policy
-            </h1>
-            <p className="text-gray-400">
-              Last Updated: January 2025
-            </p>
-          </div>
+      <Section n={1} title="When your plan is activated">
+        <P>Your plan is <strong className="text-white">activated</strong> as soon as your payment is confirmed. At that moment:</P>
+        <List items={[
+          'your client account is created and login details are emailed to the address you entered at checkout;',
+          'you get immediate access to your dashboard, the video exercise library and coach support;',
+          'our coaching team starts preparing your personalised plan (workout and nutrition plans are delivered within 24 hours of receiving your completed assessment form);',
+          'for Elite 1:1 plans, a trainer is assigned and your session slot is reserved.',
+        ]} />
+        <P>
+          By completing payment you expressly ask us to start the service immediately, and you acknowledge that a
+          personalised digital service that has started cannot be returned.
+        </P>
+      </Section>
 
-          {/* Content */}
-          <div className="bg-brand-navy-light/30 rounded-2xl p-8 md:p-12 border border-brand-navy-light/20">
-            <div className="prose prose-invert max-w-none">
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">1. Overview</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  <strong className="text-white">ALL SUBSCRIPTIONS ARE NON-REFUNDABLE.</strong> At Coach Himanshu, all payments made for our fitness coaching subscription plans are final and non-refundable.
-                </p>
-                <p className="text-gray-300 leading-relaxed">
-                  By purchasing a subscription, you acknowledge and agree that you will not be entitled to a refund under any circumstances, except as explicitly stated in this policy for duplicate or erroneous charges.
-                </p>
-              </section>
+      <Section n={2} title="Non-refundable after activation">
+        <P>Once activated, a plan is <strong className="text-white">non-refundable</strong>, including — but not limited to — when:</P>
+        <List items={[
+          'you change your mind, lose motivation, or do not use the service (logging in, following the plan or attending sessions is your choice — the plan runs either way);',
+          'you are dissatisfied with results (fitness results depend on your own effort, health and consistency and are never guaranteed);',
+          'you relocate, travel, change jobs or face personal or financial difficulties;',
+          'you are injured or unwell (use the pause option where your plan allows it — see the Cancellation Policy);',
+          'you bought the plan at a sale price or with a promo code;',
+          'unused Elite 1:1 sessions expire at the end of the plan validity.',
+        ]} />
+      </Section>
 
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">2. Non-Refundable Policy</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">2.1 All Sales Are Final</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Once you purchase a subscription plan (Kickstart, Consistency, Strength, or Mastery), the payment is considered final and <strong className="text-white">non-refundable</strong>, regardless of:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Duration of subscription (1 month, 3 months, 6 months, or 12 months)</li>
-                  <li>Whether you use the services or not</li>
-                  <li>Change of mind or personal circumstances</li>
-                  <li>Lack of motivation or commitment</li>
-                  <li>Not achieving desired fitness results</li>
-                  <li>Moving to a different location</li>
-                  <li>Financial difficulties</li>
-                </ul>
+      <Section n={3} title="When you WILL get a refund">
+        <Sub title="3.1 Duplicate or erroneous charge">
+          <P>If you were charged more than once for the same order, or charged an amount different from the price shown at checkout, the extra amount is refunded in full.</P>
+        </Sub>
+        <Sub title="3.2 Unauthorised payment">
+          <P>If a payment was made without your knowledge (for example a stolen card), tell us immediately. After verification, the payment is refunded in full and the account is closed.</P>
+        </Sub>
+        <Sub title="3.3 We fail to deliver">
+          <List items={[
+            'If we do not deliver your personalised plan within 7 days of receiving your completed assessment form, despite you reminding us in writing, you may choose a full refund instead.',
+            'If your login does not work and we cannot fix it within 72 hours of you reporting it, you may choose a full refund.',
+            'If we discontinue the service or terminate your plan for reasons that are not your fault, you get a pro-rata refund for the unused period (or unused sessions for Elite 1:1).',
+            'Elite 1:1 sessions missed because of trainer unavailability are first rescheduled or credited one-for-one; if we cannot do so within the plan validity, the missed sessions are refunded pro-rata.',
+          ]} />
+        </Sub>
+      </Section>
 
-                <h3 className="text-xl font-semibold text-white mb-3">2.2 Think Before You Buy</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  We encourage you to carefully review the subscription plan details, terms, and pricing before making a purchase. Once payment is processed, <strong className="text-white">no refunds will be issued</strong>.
-                </p>
-              </section>
+      <Section n={4} title="How to request a refund">
+        <List items={[
+          <>Email <A href="mailto:info@coachhimanshu.com">info@coachhimanshu.com</A> or WhatsApp <A href="tel:+917303484648">+91 7303484648</A> with your registered email, order ID / payment ID and the reason.</>,
+          'We acknowledge every request within 48 hours and give a decision within 7 working days.',
+          'Approved refunds are sent to the original payment method within 5–7 working days. Bank or card network processing time may add a few days.',
+          'Refunds are only made to the original payment method — never in cash or to a different account.',
+        ]} />
+      </Section>
 
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">3. Exceptions - Duplicate or Erroneous Charges Only</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">3.1 Technical Errors</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Refunds will ONLY be issued for:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Duplicate charges (charged twice for the same subscription)</li>
-                  <li>Erroneous charges due to technical/payment gateway errors</li>
-                  <li>Unauthorized charges (with proper verification)</li>
-                </ul>
+      <Section n={5} title="Chargebacks and payment disputes">
+        <P>
+          Please contact us before raising a dispute with your bank, card issuer or UPI app. A refund we issue directly
+          is faster than any dispute, and every genuine problem listed in Section 3 is refunded without one.
+        </P>
+        <P>If a dispute is raised for a plan that was activated and delivered, we will respond to the payment gateway and bank with evidence, which may include:</P>
+        <List items={[
+          'the order and payment record (amount, time, payment method, customer email and phone);',
+          'your acceptance of these policies at checkout — the policy version, date, time and IP address are recorded with every payment;',
+          'the payment receipt and login-details emails sent to you;',
+          'your account activity — login history with dates, times, IP addresses and devices;',
+          'the plans, workouts and diet charts delivered to you, and Elite 1:1 session records confirmed by your trainer;',
+          'our communication with you on WhatsApp, email and in-app chat.',
+        ]} />
+        <P>
+          You agree that we may share these records with the payment gateway, bank and card network for the sole purpose
+          of resolving the dispute. While a dispute is open, account access may be suspended. A dispute raised for a plan
+          that was delivered as described is a breach of these terms; we may permanently close the account and recover
+          the amount and any dispute fees through lawful means.
+        </P>
+      </Section>
 
-                <h3 className="text-xl font-semibold text-white mb-3">3.2 Verification Process</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  If you believe you were charged in error, contact us immediately at <a href="mailto:info@coachhimanshu.com" className="text-brand-blue hover:underline">info@coachhimanshu.com</a> with:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2 mt-4">
-                  <li>Transaction ID and payment proof</li>
-                  <li>Detailed description of the error</li>
-                  <li>Account details</li>
-                </ul>
-                <p className="text-gray-300 leading-relaxed mt-4">
-                  We will investigate and process verified erroneous charge refunds within 7-14 business days.
-                </p>
-              </section>
+      <Section n={6} title="Payments made outside the official checkout">
+        <P>
+          We are only responsible for payments made through the checkout on coachhimanshu.com (processed by Cashfree
+          Payments) or to official accounts confirmed in writing by us. Money paid directly to an individual trainer or
+          any other person is at your own risk and is not covered by this policy.
+        </P>
+      </Section>
 
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">4. Why Subscriptions Are Non-Refundable</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Our coaching services involve:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Personalized plan creation tailored to your specific needs</li>
-                  <li>Coach time and expertise dedicated to your programs</li>
-                  <li>Immediate access to proprietary content and resources</li>
-                  <li>WhatsApp support (9am-7pm IST)</li>
-                  <li>Digital content that cannot be "returned"</li>
-                </ul>
-                <p className="text-gray-300 leading-relaxed mt-4">
-                  Once these services and resources are provided, they cannot be recovered, which is why all subscriptions are non-refundable.
-                </p>
-              </section>
+      <Section n={7} title="Your statutory rights">
+        <P>
+          Nothing in this policy limits any right you have under the Consumer Protection Act, 2019 that cannot be
+          excluded by contract. This policy is part of our <A href="/terms-of-service">Terms of Service</A>; see also
+          the <A href="/cancellation-policy">Cancellation Policy</A>.
+        </P>
+      </Section>
 
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">5. Cancellation Without Refund</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  You CAN cancel your subscription at any time, but <strong className="text-white">NO refund will be issued</strong> for the remaining subscription period.
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>You will continue to have access until the end of your paid period</li>
-                  <li>No refund for unused time</li>
-                  <li>No further charges after current period ends</li>
-                  <li>See our <a href="/cancellation-policy" className="text-brand-blue hover:underline">Cancellation Policy</a> for details</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">6. Subscription Pause Option</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  If you're facing temporary circumstances (injury, travel, work commitments), you can pause your subscription instead of canceling:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>Pause duration: Up to 30 days per subscription period</li>
-                  <li>Your subscription will be extended by the pause duration</li>
-                  <li>No refund, but time is preserved</li>
-                  <li>Contact us at <a href="mailto:info@coachhimanshu.com" className="text-brand-blue hover:underline">info@coachhimanshu.com</a> to arrange</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">7. Promotional Offers and Discounts</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  All subscriptions purchased during promotional periods or with discount codes are <strong className="text-white">strictly non-refundable</strong> under any circumstances.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">8. Chargebacks</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  <strong className="text-white">Important:</strong> Initiating a chargeback for a legitimate subscription purchase is considered fraudulent activity.
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2">
-                  <li>All subscriptions are clearly marked as non-refundable at purchase</li>
-                  <li>Unauthorized chargebacks will result in immediate account termination</li>
-                  <li>We reserve the right to pursue recovery of chargeback fees and legal costs</li>
-                  <li>Future subscription access will be permanently denied</li>
-                  <li>Only initiate chargebacks for truly unauthorized transactions</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">9. Payment Method Issues</h2>
-                <h3 className="text-xl font-semibold text-white mb-3">9.1 Failed Payments</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  If a payment fails due to insufficient funds or card issues, you are responsible for updating your payment information. No refund will be issued for service interruptions due to failed payments.
-                </p>
-
-                <h3 className="text-xl font-semibold text-white mb-3">9.2 Duplicate Charges</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  If you are charged multiple times for the same subscription due to a technical error, we will refund the duplicate charges immediately upon verification. This is the ONLY situation where refunds are issued.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">10. Acknowledgment and Acceptance</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  By purchasing a subscription, you acknowledge that:
-                </p>
-                <ul className="list-disc list-inside text-gray-300 space-y-2 mt-4">
-                  <li>You have read and understood this Non-Refundable Policy</li>
-                  <li>You accept that all subscriptions are final and non-refundable</li>
-                  <li>You will not dispute legitimate charges or request chargebacks</li>
-                  <li>You are making an informed purchase decision</li>
-                </ul>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">11. Modifications to Policy</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  We reserve the right to modify this Refund Policy at any time. Changes will be effective immediately upon posting on our website. Your continued use of our services after changes constitutes acceptance of the updated policy.
-                </p>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-4">12. Governing Law</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  This Refund Policy is governed by the laws of India. Any disputes will be subject to the exclusive jurisdiction of courts in India.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-white mb-4">13. Contact Us</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  For questions about this non-refundable policy or to report duplicate charges:
-                </p>
-                <div className="bg-brand-navy-light/50 rounded-lg p-6 border border-brand-blue/20">
-                  <p className="text-white font-semibold mb-2">Coach Himanshu - Support</p>
-                  <p className="text-gray-300">Email: <a href="mailto:info@coachhimanshu.com" className="text-brand-blue hover:underline">info@coachhimanshu.com</a></p>
-                  <p className="text-gray-300">Phone: <a href="tel:+917303484648" className="text-brand-blue hover:underline">+91 7303484648</a></p>
-                </div>
-              </section>
-
-              <div className="mt-8 p-6 bg-red-500/10 border-2 border-red-500/30 rounded-lg">
-                <p className="text-white font-semibold mb-2 inline-flex items-center gap-2"><TriangleAlert className="w-5 h-5 text-amber-400 shrink-0" aria-hidden /> IMPORTANT REMINDER</p>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  <strong className="text-white">ALL SUBSCRIPTIONS ARE 100% NON-REFUNDABLE.</strong> Please carefully consider your purchase decision before subscribing. If you have questions or concerns, contact us BEFORE purchasing. Once payment is processed, it cannot be refunded under any circumstances except for duplicate/erroneous charges.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Footer />
-    </div>
+      <Section n={8} title="Contact and grievances">
+        <ContactBlock />
+      </Section>
+    </LegalPage>
   );
 }
