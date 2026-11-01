@@ -1,15 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SALES_ENABLED } from '@/lib/sale';
+import { getActiveSale, maxSalePercent, SALES } from '@/lib/pricing';
 import Diya from './Diya';
 
-// Same window as the homepage `activeSale` festive branch (Oct 20 – Nov 10, visitor's local date).
+// Shown while the festive sale in lib/pricing.ts runs (visitor's local date).
 // Client-side so the note disappears on its own after the sale, without a rebuild.
 function isVictoryToLightSale(d: Date): boolean {
-  const m = d.getMonth();
-  const day = d.getDate();
-  return SALES_ENABLED && ((m === 9 && day >= 20) || (m === 10 && day <= 10));
+  return getActiveSale(d)?.theme === 'festive';
 }
 
 export default function DiwaliSaleNote() {
@@ -24,7 +22,7 @@ export default function DiwaliSaleNote() {
     >
       <Diya size={40} />
       <span className="text-sm text-gray-300 md:text-base">
-        <strong className="text-white">Victory to Light Sale, until 10 November:</strong> up to 25% off coaching
+        <strong className="text-white">Victory to Light Sale, until 10 November:</strong> up to {maxSalePercent(SALES.find((s) => s.theme === 'festive') ?? null)}% off coaching
         plans, so the week after Diwali starts with a plan, not a guilt trip.{' '}
         <span className="font-semibold text-amber-300">See the offers →</span>
       </span>

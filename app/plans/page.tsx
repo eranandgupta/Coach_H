@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import PlanCompare from '@/components/PlanCompare';
+import { LOWEST_ELITE_PRICE, LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
 
 // Direct WhatsApp chat for "Start Consultation" CTAs.
 const WHATSAPP_CONSULT =
@@ -68,7 +69,7 @@ export default function PlansPage() {
             <div className="text-sm text-gray-400">Transformations</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,499</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">{formatINR(LOWEST_PLAN_PRICE)}</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>
@@ -94,7 +95,7 @@ export default function PlansPage() {
                 Want a coach live on every rep? Try Elite 1-on-1 Personal Training
               </h2>
               <p className="text-gray-400 text-sm md:text-base">
-                60-minute live video sessions with real-time form correction — from ₹8,999. The closest thing to a trainer beside you.
+                60-minute live video sessions with real-time form correction — from {formatINR(LOWEST_ELITE_PRICE)}. The closest thing to a trainer beside you.
               </p>
             </div>
             <Link

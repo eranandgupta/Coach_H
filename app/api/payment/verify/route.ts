@@ -26,6 +26,7 @@ function buildNotesWithPartner2(
   return [base, lines.join('\n')].filter(Boolean).join('\n\n');
 }
 import { getSaleBonusDays } from '@/lib/sale';
+import { getPlanPrice } from '@/lib/pricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -120,8 +121,9 @@ export async function POST(request: NextRequest) {
 
     // Warn if amount doesn't match (could be promo discount — log but don't block)
     const paidAmount = Number(successful.payment_amount);
-    if (paidAmount > Number(plan.price)) {
-      console.warn('Paid amount exceeds plan price', { paidAmount, planPrice: Number(plan.price), paymentId });
+    const planPrice = getPlanPrice(plan.name) ?? Number(plan.price);
+    if (paidAmount > planPrice) {
+      console.warn('Paid amount exceeds plan price', { paidAmount, planPrice, paymentId });
     }
 
     // --- 5. Atomic: find/create user + subscription ---
@@ -161,7 +163,7 @@ export async function POST(request: NextRequest) {
 
         // Create/renew with the shared policy: calendar stacking (no paid time lost on early
         // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
-        // Add any July-sale bonus days to the purchased plan length.
+        // Add any sale bonus days (lib/pricing.ts) to the purchased plan length.
         const bonusDays = getSaleBonusDays(plan.name, plan.duration);
         const { subscription } = await createOrRenewSubscription(
           {

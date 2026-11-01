@@ -1,3 +1,5 @@
+import { LOWEST_ELITE_PRICE, LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
+
 export interface CountryData {
   slug: string;          // lowercase-hyphenated, matches URL — e.g. 'usa'
   name: string;          // prepositional display form, reads after "in " — e.g. 'the USA', 'Canada'
@@ -303,8 +305,8 @@ export function localPrice(inr: number, c: CountryData): string {
   }).format(inr / rate);
 }
 
-/** ≈ local value of the ₹1,499 starting plan (Kickstart). */
-export const STARTING_PRICE_INR = 1499;
+/** ≈ local value of the cheapest (starting) plan — price from lib/pricing.ts. */
+export const STARTING_PRICE_INR = LOWEST_PLAN_PRICE;
 export function approxStart(c: CountryData): string {
   return localPrice(STARTING_PRICE_INR, c);
 }
@@ -343,7 +345,7 @@ export const NRI_FAQS: { question: string; answer: string }[] = [
   },
   {
     question: 'How much does online coaching cost for NRIs, and can I pay with an international card?',
-    answer: `Prices are the same as for clients in India: recorded coaching plans start at ₹1,499 a month (roughly ${approxStart(getCountryBySlug('usa')!)}, ${approxStart(getCountryBySlug('uk')!)} or ${approxStart(getCountryBySlug('uae')!)}) and live 1-on-1 packages start at ₹8,999. International Visa, Mastercard and most debit and credit cards are accepted through Cashfree Payments; there is no separate NRI pricing.`,
+    answer: `Prices are the same as for clients in India: recorded coaching plans start at ${formatINR(LOWEST_PLAN_PRICE)} a month (roughly ${approxStart(getCountryBySlug('usa')!)}, ${approxStart(getCountryBySlug('uk')!)} or ${approxStart(getCountryBySlug('uae')!)}) and live 1-on-1 packages start at ${formatINR(LOWEST_ELITE_PRICE)}. International Visa, Mastercard and most debit and credit cards are accepted through Cashfree Payments; there is no separate NRI pricing.`,
   },
   {
     question: 'Is online coaching as effective as a gym trainer in my city?',

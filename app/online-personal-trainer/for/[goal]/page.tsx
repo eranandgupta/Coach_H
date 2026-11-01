@@ -9,6 +9,7 @@ import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { getGoalBySlug, getAllGoalSlugs, PT_GOALS } from '@/lib/ptGoals';
 import { CITIES } from '@/lib/cities';
 import { getToolBySlug } from '@/lib/fitnessTools';
+import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
 
 const WHATSAPP_1ON1 =
   'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20live%201-on-1%20personal%20training.%20Please%20help%20me%20pick%20a%20plan.';
@@ -146,7 +147,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">1000+</div><div className="text-sm text-gray-400">Transformations</div></div>
           <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">60 min</div><div className="text-sm text-gray-400">Per Live Session</div></div>
-          <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹8,999</div><div className="text-sm text-gray-400">1:1 Starting From</div></div>
+          <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">{formatINR(LOWEST_ELITE_PRICE)}</div><div className="text-sm text-gray-400">1:1 Starting From</div></div>
           <div><div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">NASM</div><div className="text-sm text-gray-400">Certified Coach</div></div>
         </div>
       </section>

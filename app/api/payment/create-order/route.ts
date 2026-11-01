@@ -3,7 +3,8 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/middleware';
 import { evaluatePromoCode, promoDiscount } from '@/lib/promo';
-import { isAutoSaleDiscountActive, MAX_AUTO_SALE_PERCENT } from '@/lib/sale';
+import { maxAutoSalePercent } from '@/lib/sale';
+import { getPlanPrice } from '@/lib/pricing';
 import { cashfreeMode, cashfreePhone, createCashfreeOrder } from '@/lib/cashfree';
 import { TERMS_VERSION } from '@/lib/legal';
 
@@ -32,13 +33,14 @@ export async function POST(request: NextRequest) {
     }
 
     // --- Never trust the browser's amount ---
-    // The price comes from the DB. The storefront may knock off a sale % (only inside sale
-    // windows) and then a promo code (validated here, server-side). We accept the browser's
-    // amount only if it is between the lowest legitimate price and the full DB price;
+    // The price comes from lib/pricing.ts (DB price only for plans not listed there). The
+    // storefront may knock off a sale % (only inside sale windows) and then a promo code
+    // (validated here, server-side). We accept the browser's amount only if it is between
+    // the lowest legitimate price and the full price;
     // otherwise someone edited the request (e.g. to pay ₹1 for a ₹11,999 plan).
     const requested = Number(amount);
-    const fullPrice = Number(plan.price);
-    const salePercent = isAutoSaleDiscountActive() ? MAX_AUTO_SALE_PERCENT : 0;
+    const fullPrice = getPlanPrice(plan.name) ?? Number(plan.price);
+    const salePercent = maxAutoSalePercent(plan.name, plan.duration);
     const salePrice = Math.round(fullPrice * (1 - salePercent / 100));
 
     let lowestPrice = salePrice;

@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { ALL_PLANS, PLAN_FAQS } from '@/lib/plans';
+import { LOWEST_ELITE_PRICE, LOWEST_PLAN_PRICE, formatINR, planPriceLabel } from '@/lib/pricing';
 
 const url = 'https://coachhimanshu.com/plans';
 const title = 'Fitness Coaching Plans & Pricing';
 const brandedTitle = 'Fitness Coaching Plans & Pricing | Coach Himanshu';
 const description =
-  'Online fitness coaching plans & pricing. Personalised coaching from ₹1,499, live 1-on-1 Elite training from ₹8,999, and couple plans from ₹4,999. Custom workout + Indian diet plans.';
+  `Online fitness coaching plans & pricing. Personalised coaching from ${formatINR(LOWEST_PLAN_PRICE)}, live 1-on-1 Elite training from ${formatINR(LOWEST_ELITE_PRICE)}, and couple plans from ${planPriceLabel('Couple Home Workout Plan')}. Custom workout + Indian diet plans.`;
 
 export const metadata: Metadata = {
   title,

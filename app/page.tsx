@@ -45,7 +45,16 @@ import Fireworks from '@/components/diwali/Fireworks';
 import Diya from '@/components/diwali/Diya';
 import LazyVideo from '@/components/LazyVideo';
 import { useCart } from '@/contexts/CartContext';
-import { SALES_ENABLED } from '@/lib/sale';
+import {
+  LOWEST_PLAN_PRICE,
+  LOWEST_ELITE_PRICE,
+  formatINR,
+  getActiveSale,
+  planPrice,
+  planPriceLabel,
+  saleBonusDaysFor,
+  salePercentFor,
+} from '@/lib/pricing';
 
 const CheckoutDrawer = dynamic(() => import('@/components/CheckoutDrawer'), { ssr: false });
 const LoginModal = dynamic(() => import('@/components/LoginModal'), { ssr: false });
@@ -98,189 +107,41 @@ export default function Home() {
   const [activePlanTab, setActivePlanTab] = useState<'gym' | 'home' | 'rehab' | 'live'>('gym');
   const [saleSlide, setSaleSlide] = useState(0);
 
-  // Determine which sale is active based on current date
+  // Which sale is running today (visitor's local date). Sale dates, banner copy, offer chips,
+  // % tables and bonus days all live in lib/pricing.ts.
   const activeSale = useMemo(() => {
-    // Master switch: when sales are disabled, no offer surfaces render (banner,
-    // strikethrough "% OFF" pricing, bonus-day badges). Flip SALES_ENABLED in lib/sale.ts.
-    if (!SALES_ENABLED) return null;
+    const sale = getActiveSale();
+    if (!sale) return null;
+    const day = new Date().getDate();
 
-    const now = new Date();
-    const month = now.getMonth(); // 0-indexed, June = 5, July = 6
-    const day = now.getDate();
+    // July health-awareness days: icons are UI-only, so they're mapped here.
+    const healthIcons: Record<string, LucideIcon> = {
+      'World Population Day': Globe,
+      'National Junk Food Day': Sandwich,
+      'World Brain Day': Brain,
+      'International Self-Care Day': Flower2,
+      'World Hepatitis Day': HeartPulse,
+    };
+    const healthDays = sale.healthDays?.map((h) => ({ ...h, icon: healthIcons[h.name] ?? HeartPulse }));
+    const todayEvent = healthDays?.find((h) => h.date === day);
+    const specials: string[] | null = todayEvent
+      ? [
+          `Today is ${todayEvent.name}!`,
+          'Extra motivation to prioritize your health — invest in yourself today.',
+          'All plans include personalized diet + workout + WhatsApp support.',
+        ]
+      : null;
 
-    const commonOffers = [
-      { label: '3M Gym Plan', off: '10% OFF' },
-      { label: '3M Home Plan', off: '10% OFF' },
-      { label: '3M Rehab Plan', off: '10% OFF' },
-      { label: '6M Gym Plan', off: '12% OFF' },
-      { label: '12M Gym Plan', off: '15% OFF' },
-      { label: '12 Sessions', off: '10% OFF' },
-      { label: '24 Sessions', off: '10% OFF' },
-      { label: '36 Sessions', off: '20% OFF' },
-      { label: '72 Sessions', off: '20% OFF' },
-    ];
-
-    // ── JUNE SALES ──
-    if (month === 5) {
-      if (day >= 1 && day <= 7) {
-        return {
-          theme: 'environment' as const,
-          title: 'WORLD ENVIRONMENT DAY SALE',
-          subtitle: 'Valid June 1 - 7 Only',
-          endDate: 'June 7, 2026',
-          offers: commonOffers,
-          specials: null as string[] | null,
-          description: 'Start your fitness journey this June with exclusive discounts on all plans. Transform yourself physically and mentally — the best time to begin is now.',
-        };
-      }
-      if (day >= 21 && day <= 30) {
-        return {
-          theme: 'yoga' as const,
-          title: 'WORLD YOGA DAY & FATHER\'S DAY SALE',
-          subtitle: 'Valid June 21 - 30 Only',
-          endDate: 'June 30, 2026',
-          offers: commonOffers,
-          specials: null as string[] | null,
-          description: 'Start your fitness journey this June with exclusive discounts on all plans. Transform yourself physically and mentally — the best time to begin is now.',
-        };
-      }
-    }
-
-    // ── JULY SALE — Health Revolution (10-31 July) ──
-    if (month === 6 && day >= 10 && day <= 31) {
-      // Health awareness days that fall within the sale window
-      const healthDays: { date: number; name: string; icon: LucideIcon }[] = [
-        { date: 11, name: 'World Population Day', icon: Globe },
-        { date: 21, name: 'National Junk Food Day', icon: Sandwich },
-        { date: 22, name: 'World Brain Day', icon: Brain },
-        { date: 24, name: 'International Self-Care Day', icon: Flower2 },
-        { date: 28, name: 'World Hepatitis Day', icon: HeartPulse },
-      ];
-
-      // Build specials for today if it's a health awareness day
-      const todayEvent = healthDays.find(h => h.date === day);
-      const specials: string[] | null = todayEvent
-        ? [
-            `Today is ${todayEvent.name}!`,
-            'Extra motivation to prioritize your health — invest in yourself today.',
-            'All plans include personalized diet + workout + WhatsApp support.',
-          ]
-        : null;
-
-      // Highlight the awareness day calendar in subtitle
-      const nextEvent = healthDays.find(h => h.date >= day);
-
-      return {
-        theme: 'health' as const,
-        title: 'HEALTH REVOLUTION SALE',
-        subtitle: 'Valid July 10 - 31 Only',
-        endDate: 'July 31, 2026',
-        offers: commonOffers,
-        specials,
-        description: '22 Days. 5 Global Health Awareness Days. One Mission: Help more people become healthier. Transform your body and mind with exclusive discounts on every plan.',
-        healthDays,
-        nextEvent: nextEvent || null,
-      };
-    }
-
-    // ── AUGUST SALE — Azaadi / Independence Day (Aug 10-20; live from Aug 9) ──
-    if (month === 7 && day >= 9 && day <= 20) {
-      return {
-        theme: 'independence' as const,
-        title: 'AZAADI FITNESS SALE',
-        subtitle: 'Independence Day Special · Aug 10 - 20',
-        endDate: 'August 20, 2026',
-        offers: [] as { label: string; off: string }[],
-        specials: null as string[] | null,
-        description: 'Celebrate your freedom to get fit. Spin the tricolour wheel and unlock a one-time coupon — win up to 50% OFF any Gym, Home, Rehab or 1:1 plan.',
-        spin: true,
-      };
-    }
-
-    // ── DUSSEHRA–DIWALI SALE — Victory to Light (Oct 20 - Nov 10) ──
-    if ((month === 9 && day >= 20) || (month === 10 && day <= 10)) {
-      return {
-        theme: 'festive' as const,
-        title: 'VICTORY TO LIGHT SALE',
-        subtitle: 'Valid Oct 20 - Nov 10 Only',
-        endDate: 'November 10, 2026',
-        offers: [
-          { label: '1M & 3M Gym', off: '10% OFF' },
-          { label: '6M Gym Plan', off: '20% OFF' },
-          { label: '12M Gym & Couple', off: '25% OFF' },
-          { label: '3M Home & Rehab', off: '10% OFF' },
-          { label: 'Couple Home & Rehab', off: '20% OFF' },
-          { label: '12 Sessions', off: '5% OFF' },
-          { label: '24 Sessions', off: '10% OFF' },
-          { label: '36 Sessions', off: '15% OFF' },
-          { label: '72 Sessions', off: '20% OFF' },
-        ],
-        specials: null as string[] | null,
-        description: 'This Dussehra, defeat the excuses. This Diwali, light up your health.',
-      };
-    }
-
-    return null;
+    return {
+      ...sale,
+      specials,
+      ...(healthDays ? { healthDays } : {}),
+    };
   }, []);
 
-  // Returns the sale discount percentage for a plan, or 0 if no sale applies.
-  // July "Health Revolution Sale" spec.
-  const getSalePercent = (plan: { duration: string; dbName: string; homeWorkout?: boolean; rehabilitation?: boolean; liveOneOnOne?: boolean }) => {
-    // Azaadi sale is coupon-only (spin wheel) — no automatic strikethrough pricing.
-    if (!activeSale || activeSale.theme === 'independence') return 0;
-    const d = plan.duration.toLowerCase();
-    const name = plan.dbName.toLowerCase();
-    // Victory to Light (Oct 20 - Nov 10). Highest % here must stay <= MAX_AUTO_SALE_PERCENT
-    // in lib/sale.ts, or checkout rejects the sale price.
-    if (activeSale.theme === 'festive') {
-      if (plan.liveOneOnOne || name.includes('elite')) {
-        if (name.includes('12 sessions')) return 5;
-        if (name.includes('24 sessions')) return 10;
-        if (name.includes('36 sessions')) return 15;
-        if (name.includes('72 sessions')) return 20;
-        return 0;
-      }
-      if (d === '12 months') return 25; // incl. couple
-      if (d === '6 months') return 20;  // incl. couple
-      if (d === '3 months') return name.includes('couple') ? 20 : 10; // couple home & rehab get 20
-      if (d === 'month' || d === '1 month') return 10;
-      return 0;
-    }
-    // Elite 1:1 sessions
-    if (plan.liveOneOnOne || name.includes('elite')) {
-      if (name.includes('12 sessions')) return 10;
-      if (name.includes('24 sessions')) return 10;
-      if (name.includes('36 sessions')) return 20;
-      if (name.includes('72 sessions')) return 20;
-      return 0;
-    }
-    // 1-month plans
-    if (d === 'month' || d === '1 month') return 5;
-    // 3-month gym, home & rehab plans (including couple variants)
-    if (d === '3 months') return 10;
-    // 6-month gym plans (including couple)
-    if (d === '6 months') return 10;
-    // 12-month gym plans (including couple)
-    if (d === '12 months') return 12;
-    return 0;
-  };
-
-  // Returns the bonus (free) days a plan gets during the sale, or 0. These are also
-  // applied to the actual subscription length at checkout (see lib/sale.ts on the server).
-  const getSaleBonusDays = (plan: { duration: string; dbName: string; liveOneOnOne?: boolean }) => {
-    // Only the July sale grants bonus days at checkout (isJulySaleActive) — never badge them otherwise.
-    if (!activeSale || activeSale.theme !== 'health') return 0;
-    const d = plan.duration.toLowerCase();
-    const name = plan.dbName.toLowerCase();
-    if (plan.liveOneOnOne || name.includes('elite')) {
-      if (name.includes('24 sessions')) return 3;
-      if (name.includes('72 sessions')) return 7;
-      return 0;
-    }
-    if (d === '6 months') return 5;
-    if (d === '12 months') return 10;
-    return 0;
-  };
+  // Sale % / bonus days for a homepage plan card (tables in lib/pricing.ts).
+  const getSalePercent = (plan: { dbName: string }) => salePercentFor(activeSale, plan.dbName);
+  const getSaleBonusDays = (plan: { dbName: string }) => saleBonusDaysFor(activeSale, plan.dbName);
 
   const totalSaleSlides = activeSale?.specials ? 3 : activeSale ? 2 : 0;
 
@@ -493,7 +354,7 @@ export default function Home() {
         name: 'What is the cost of online fitness coaching in India?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ₹1,499 for recorded coaching, while live 1-on-1 personal training plans start from ₹8,999. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.',
+          text: `The cost of online fitness coaching varies depending on the level of personalisation, support, and coaching provided. Coach Himanshu offers affordable plans starting from ${formatINR(LOWEST_PLAN_PRICE)} for recorded coaching, while live 1-on-1 personal training plans start from ${formatINR(LOWEST_ELITE_PRICE)}. Members can choose between gym workout plans, home workout plans, rehabilitation programs, and live coaching based on their individual goals and budget.`,
         },
       },
       {
@@ -533,7 +394,7 @@ export default function Home() {
         name: 'How much does online personal training cost in India?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: "Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ₹8,999 and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.",
+          text: `Online personal training fees in India vary depending on the trainer's experience and the level of support provided. Coach Himanshu's live 1-on-1 personal training plans start from ${formatINR(LOWEST_ELITE_PRICE)} and include real-time coaching, personalised workout and diet plans, live form correction, progress monitoring, exercise tutorials, habit tracking, and direct coach support throughout your subscription.`,
         },
       },
       {
@@ -611,7 +472,7 @@ export default function Home() {
         '@type': 'HowToStep',
         position: 2,
         name: 'Choose Your Plan',
-        text: 'Select a coaching plan that fits your goals and budget — Gym Plans (₹1,499-₹11,999), Home Workout Plans (₹2,999-₹4,999), Rehabilitation Plans, or Live 1-on-1 Session packages.',
+        text: `Select a coaching plan that fits your goals and budget — Gym Plans (${formatINR(planPrice('Kickstart Plan'))}-${formatINR(planPrice('Mastery Plan'))}), Home Workout Plans (${formatINR(planPrice('Home Workout'))}-${formatINR(planPrice('Couple Home Workout Plan'))}), Rehabilitation Plans, or Live 1-on-1 Session packages.`,
         url: 'https://coachhimanshu.com/#plans',
       },
       {
@@ -688,7 +549,7 @@ export default function Home() {
           name: 'Kickstart Fitness Program',
           description: '1-month personalised gym workout plan with custom meal plan, exercise video tutorials, and 24/7 WhatsApp support from a NASM Certified Coach.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '1499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          offers: { '@type': 'Offer', price: String(planPrice('Kickstart Plan')), priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
           hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P1M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Beginner',
           inLanguage: ['en', 'hi'],
@@ -702,7 +563,7 @@ export default function Home() {
           name: 'Consistency Fitness Program',
           description: '3-month comprehensive fitness coaching program with personalised workouts, nutrition planning, weekly consultations, and dedicated WhatsApp support.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '3499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          offers: { '@type': 'Offer', price: String(planPrice('Consistency Plan')), priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
           hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P3M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Beginner',
           inLanguage: ['en', 'hi'],
@@ -716,7 +577,7 @@ export default function Home() {
           name: 'Mastery Fitness Program',
           description: '12-month comprehensive fitness mastery program with periodised training, advanced nutrition, supplement guidance, and FREE RhynoGrip fitness gear.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '11999', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          offers: { '@type': 'Offer', price: String(planPrice('Mastery Plan')), priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
           hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P12M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Intermediate',
           inLanguage: ['en', 'hi'],
@@ -730,7 +591,7 @@ export default function Home() {
           name: 'Home Workout Program',
           description: '3-month home workout program requiring no gym or equipment. Bodyweight exercises, resistance band routines, and progressive overload training with personalised nutrition.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '2999', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          offers: { '@type': 'Offer', price: String(planPrice('Home Workout')), priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
           hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P3M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Beginner',
           inLanguage: ['en', 'hi'],
@@ -744,7 +605,7 @@ export default function Home() {
           name: 'Rehabilitation & Corrective Exercise Program',
           description: 'Specialised rehabilitation program based on NASM Corrective Exercise Continuum for injury recovery, posture correction, and pain management.',
           provider: { '@type': 'Organization', name: 'Coach Himanshu', url: 'https://coachhimanshu.com' },
-          offers: { '@type': 'Offer', price: '4499', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          offers: { '@type': 'Offer', price: String(planPrice('Rehabilitation Plan')), priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
           hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', duration: 'P3M', instructor: { '@type': 'Person', name: 'Coach Himanshu' } },
           educationalLevel: 'Beginner',
           inLanguage: ['en', 'hi'],
@@ -824,8 +685,8 @@ export default function Home() {
       dbName: 'Kickstart Plan',
       title: 'Kickstart Plan',
       duration: 'Month',
-      price: '₹1,499',
-      priceValue: 1499,
+      price: planPriceLabel('Kickstart Plan'),
+      priceValue: planPrice('Kickstart Plan'),
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
@@ -845,8 +706,8 @@ export default function Home() {
       dbName: 'Consistency Plan',
       title: 'Consistency Plan',
       duration: '3 Months',
-      price: '₹3,499',
-      priceValue: 3499,
+      price: planPriceLabel('Consistency Plan'),
+      priceValue: planPrice('Consistency Plan'),
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
@@ -867,8 +728,8 @@ export default function Home() {
       dbName: 'Strength Plan',
       title: 'Strength Plan',
       duration: '6 Months',
-      price: '₹5,999',
-      priceValue: 5999,
+      price: planPriceLabel('Strength Plan'),
+      priceValue: planPrice('Strength Plan'),
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
@@ -890,8 +751,8 @@ export default function Home() {
       dbName: 'Mastery Plan',
       title: 'Mastery Plan',
       duration: '12 Months',
-      price: '₹11,999',
-      priceValue: 11999,
+      price: planPriceLabel('Mastery Plan'),
+      priceValue: planPrice('Mastery Plan'),
       description: 'All Inclusive',
       features: [
         'Customised workout plan',
@@ -913,8 +774,8 @@ export default function Home() {
       dbName: 'Rehabilitation Plan',
       title: 'Rehabilitation',
       duration: '3 Months',
-      price: '₹4,499',
-      priceValue: 4499,
+      price: planPriceLabel('Rehabilitation Plan'),
+      priceValue: planPrice('Rehabilitation Plan'),
       description: 'Recovery & Healing',
       features: [
         'Customised rehabilitation workout',
@@ -934,8 +795,8 @@ export default function Home() {
       dbName: 'Couple Rehabilitation Plan',
       title: 'Couple Rehabilitation',
       duration: '3 Months',
-      price: '₹6,999',
-      priceValue: 6999,
+      price: planPriceLabel('Couple Rehabilitation Plan'),
+      priceValue: planPrice('Couple Rehabilitation Plan'),
       description: 'For 2 People',
       features: [
         'Customised rehabilitation workouts for both',
@@ -957,8 +818,8 @@ export default function Home() {
       dbName: 'Home Workout',
       title: 'Home Workout',
       duration: '3 Months',
-      price: '₹2,999',
-      priceValue: 2999,
+      price: planPriceLabel('Home Workout'),
+      priceValue: planPrice('Home Workout'),
       description: 'Home Workout',
       features: [
         'Customised home workout plan',
@@ -979,8 +840,8 @@ export default function Home() {
       dbName: 'Couple Home Workout Plan',
       title: 'Couple Home Workout',
       duration: '3 Months',
-      price: '₹4,999',
-      priceValue: 4999,
+      price: planPriceLabel('Couple Home Workout Plan'),
+      priceValue: planPrice('Couple Home Workout Plan'),
       description: 'For 2 People',
       features: [
         'Customised home workout plans for both',
@@ -1003,8 +864,8 @@ export default function Home() {
       dbName: 'Couple Strength',
       title: 'Couple Strength',
       duration: '6 Months',
-      price: '₹9,999',
-      priceValue: 9999,
+      price: planPriceLabel('Couple Strength'),
+      priceValue: planPrice('Couple Strength'),
       description: 'For 2 People',
       features: [
         'Personalized workout plans for both',
@@ -1028,8 +889,8 @@ export default function Home() {
       dbName: 'Couple Mastery',
       title: 'Couple Mastery',
       duration: '12 Months',
-      price: '₹19,999',
-      priceValue: 19999,
+      price: planPriceLabel('Couple Mastery'),
+      priceValue: planPrice('Couple Mastery'),
       description: 'For 2 People',
       features: [
         'Personalized workout plans for both',
@@ -1057,8 +918,8 @@ export default function Home() {
       dbName: 'Elite 1:1 Couple - 1 Month (12 Sessions)',
       title: '1:1 ELITE COACHING (COUPLE)',
       duration: 'Month',
-      price: '₹14,999',
-      priceValue: 14999,
+      price: planPriceLabel('Elite 1:1 Couple - 1 Month (12 Sessions)'),
+      priceValue: planPrice('Elite 1:1 Couple - 1 Month (12 Sessions)'),
       description: '12 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
@@ -1081,8 +942,8 @@ export default function Home() {
       dbName: 'Elite 1:1 Couple - 1 Month (24 Sessions)',
       title: '1:1 ELITE COACHING (COUPLE)',
       duration: 'Month',
-      price: '₹22,999',
-      priceValue: 22999,
+      price: planPriceLabel('Elite 1:1 Couple - 1 Month (24 Sessions)'),
+      priceValue: planPrice('Elite 1:1 Couple - 1 Month (24 Sessions)'),
       description: '24 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
@@ -1105,8 +966,8 @@ export default function Home() {
       dbName: 'Elite 1:1 Couple - 3 Months (36 Sessions)',
       title: '1:1 ELITE COACHING (COUPLE)',
       duration: '3 Months',
-      price: '₹32,999',
-      priceValue: 32999,
+      price: planPriceLabel('Elite 1:1 Couple - 3 Months (36 Sessions)'),
+      priceValue: planPrice('Elite 1:1 Couple - 3 Months (36 Sessions)'),
       description: '36 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
@@ -1131,8 +992,8 @@ export default function Home() {
       dbName: 'Elite 1:1 Couple - 3 Months (72 Sessions)',
       title: '1:1 ELITE COACHING (COUPLE)',
       duration: '3 Months',
-      price: '₹51,999',
-      priceValue: 51999,
+      price: planPriceLabel('Elite 1:1 Couple - 3 Months (72 Sessions)'),
+      priceValue: planPrice('Elite 1:1 Couple - 3 Months (72 Sessions)'),
       description: '72 Sessions · For 2 (Shared Slot)',
       features: [
         'Live 1:1 coaching for both partners',
@@ -1157,8 +1018,8 @@ export default function Home() {
       dbName: 'Elite 1:1 - 1 Month (12 Sessions)',
       title: '1:1 ELITE COACHING',
       duration: 'Month',
-      price: '₹8,999',
-      priceValue: 8999,
+      price: planPriceLabel('Elite 1:1 - 1 Month (12 Sessions)'),
+      priceValue: planPrice('Elite 1:1 - 1 Month (12 Sessions)'),
       description: '12 Sessions · Just ₹750/session',
       features: [
         'Live 1:1 personal training',
@@ -1180,8 +1041,8 @@ export default function Home() {
       dbName: 'Elite 1:1 - 1 Month (24 Sessions)',
       title: '1:1 ELITE COACHING',
       duration: 'Month',
-      price: '₹14,999',
-      priceValue: 14999,
+      price: planPriceLabel('Elite 1:1 - 1 Month (24 Sessions)'),
+      priceValue: planPrice('Elite 1:1 - 1 Month (24 Sessions)'),
       description: '24 Sessions · Just ₹625/session',
       features: [
         'Live 1:1 personal training',
@@ -1203,8 +1064,8 @@ export default function Home() {
       dbName: 'Elite 1:1 - 3 Months (36 Sessions)',
       title: '1:1 ELITE COACHING',
       duration: '3 Months',
-      price: '₹21,999',
-      priceValue: 21999,
+      price: planPriceLabel('Elite 1:1 - 3 Months (36 Sessions)'),
+      priceValue: planPrice('Elite 1:1 - 3 Months (36 Sessions)'),
       description: '36 Sessions · Just ₹611/session',
       features: [
         'Live 1:1 personal training',
@@ -1228,8 +1089,8 @@ export default function Home() {
       dbName: 'Elite 1:1 - 3 Months (72 Sessions)',
       title: '1:1 ELITE COACHING',
       duration: '3 Months',
-      price: '₹34,999',
-      priceValue: 34999,
+      price: planPriceLabel('Elite 1:1 - 3 Months (72 Sessions)'),
+      priceValue: planPrice('Elite 1:1 - 3 Months (72 Sessions)'),
       description: '72 Sessions · Just ₹486/session',
       features: [
         'Live 1:1 personal training',

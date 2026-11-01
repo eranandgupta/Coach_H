@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
 
         // Create/renew with the shared policy: calendar stacking (no paid time lost on early
         // renewal) + Elite session rollover. Runs inside this transaction via `tx`.
-        // Add any July-sale bonus days to the purchased plan length.
+        // Add any sale bonus days (lib/pricing.ts) to the purchased plan length.
         const bonusDays = getSaleBonusDays(plan.name, plan.duration);
         const { subscription } = await createOrRenewSubscription(
           {

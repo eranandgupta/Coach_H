@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/server';
 import { getGoalBySlug, getAllGoalSlugs } from '@/lib/ptGoals';
+import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
 
 export const runtime = 'edge';
 export const alt = 'Online Personal Trainer — Live 1-on-1 Training with Coach Himanshu';
@@ -71,7 +72,7 @@ export default async function Image({ params }: { params: { goal: string } }) {
 
         <div style={{ display: 'flex', gap: '48px', marginTop: '40px' }}>
           {[
-            { value: '₹8,999', label: '1:1 Starting From' },
+            { value: formatINR(LOWEST_ELITE_PRICE), label: '1:1 Starting From' },
             { value: '60 min', label: 'Live Sessions' },
             { value: 'NASM', label: 'Certified Coach' },
           ].map((stat) => (

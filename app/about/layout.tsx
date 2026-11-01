@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { planPrice } from '@/lib/pricing';
 
 export const metadata: Metadata = {
   title: 'About Coach Himanshu - NASM Certified Fitness Expert & Educator',
@@ -108,7 +109,7 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
           '@type': 'PriceSpecification',
           priceCurrency: 'INR',
           minPrice: '799',
-          maxPrice: '34999',
+          maxPrice: String(planPrice('Elite 1:1 - 3 Months (72 Sessions)')),
         },
       },
     },

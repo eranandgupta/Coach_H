@@ -1,91 +1,24 @@
 /**
- * Server-side sale logic for the July "Health Revolution Sale" (10–31 July).
- *
- * The sale is India-time; Vercel runs in UTC, so we evaluate the date in IST
- * (UTC+5:30) so the sale flips exactly at IST midnight, matching the storefront.
- *
- * Discounts are applied to the payment order amount on the client. This module
- * only handles the BONUS DAYS, which must be added to the actual subscription
- * length at checkout — so it lives on the server.
+ * Server-side sale helpers. All sale data (dates, % tables, bonus days) lives in
+ * lib/pricing.ts — edit it there; nothing here needs to change for a new sale.
  */
+import { getSaleBonusDaysIST, maxSalePercentAnywhere } from '@/lib/pricing';
+
+export { SALES_ENABLED } from '@/lib/pricing';
 
 /**
- * Master on/off switch for ALL plan offers (sale banner, strikethrough "% OFF" pricing,
- * "+N days free" badges, and checkout bonus days). Flip to `true` to run a seasonal sale;
- * the existing date logic and discount/bonus tables resume automatically. Kept `false`
- * to keep every offer surface off site-wide.
+ * Free bonus days added to the plan at payment for the sale running on today's India date
+ * (Vercel runs in UTC; the sale flips at IST midnight).
  */
-export const SALES_ENABLED = true;
-
-const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
-
-function istParts(now: Date) {
-  const ist = new Date(now.getTime() + IST_OFFSET_MS);
-  return { month: ist.getUTCMonth(), day: ist.getUTCDate(), year: ist.getUTCFullYear() };
-}
-
-/** True during 10–31 July (IST). month is 0-indexed, so July === 6. */
-export function isJulySaleActive(now: Date = new Date()): boolean {
-  if (!SALES_ENABLED) return false;
-  const { month, day } = istParts(now);
-  return month === 6 && day >= 10 && day <= 31;
+export function getSaleBonusDays(planName: string, planDurationDays: number, now: Date = new Date()): number {
+  return getSaleBonusDaysIST(planName, planDurationDays, now);
 }
 
 /**
- * Free bonus days for a plan during the active sale (0 outside the window):
- *   - Gym 6-month (incl. couple): +5
- *   - Gym 12-month (incl. couple): +10
- *   - Elite 1:1 24 sessions: +3
- *   - Elite 1:1 72 sessions: +7
+ * Highest automatic % off a browser anywhere in the world could be showing for this plan
+ * right now. /api/payment/create-order uses it as the lowest price it accepts, so a
+ * tampered browser can't pay less than a real sale price.
  */
-export function getSaleBonusDays(
-  planName: string,
-  planDurationDays: number,
-  now: Date = new Date()
-): number {
-  if (!isJulySaleActive(now)) return 0;
-  const name = (planName || '').toLowerCase();
-
-  if (name.includes('elite') || name.includes('1:1')) {
-    if (name.includes('24 session')) return 3;
-    if (name.includes('72 session')) return 7;
-    return 0;
-  }
-  // Time-based gym plans (couple variants share the same durations). Thresholds are
-  // widened so a 12-month plan stored as 360 or 365 days both qualify for +10, and a
-  // 6-month plan (180) for +5, while 3-month (90) and 1-month (30) get nothing.
-  if (planDurationDays >= 330) return 10; // ~12 months
-  if (planDurationDays >= 150) return 5;  // ~6 months
-  return 0;
-}
-
-/**
- * Highest automatic "% OFF" any plan gets during a storefront sale (see getSalePercent in
- * app/page.tsx — Victory to Light: 12-month gym plans at 25%). Used by /api/payment/create-order as the
- * lowest price it will accept, so a tampered browser can't charge less than a real sale price.
- * Raise this if a future sale offers a bigger discount.
- */
-export const MAX_AUTO_SALE_PERCENT = 25;
-
-/**
- * True when the storefront shows automatic strikethrough sale prices — mirrors the date
- * windows in app/page.tsx's `activeSale` (June 1–7, June 21–30, July 10–31, Oct 20–Nov 10;
- * the August Independence sale is coupon-only). The storefront uses the visitor's LOCAL date, so we
- * accept a date that is inside a window anywhere from UTC-12 to UTC+14.
- */
-export function isAutoSaleDiscountActive(now: Date = new Date()): boolean {
-  if (!SALES_ENABLED) return false;
-  const HOUR = 60 * 60 * 1000;
-  return [-12, 0, 14].some((offsetHours) => {
-    const local = new Date(now.getTime() + offsetHours * HOUR);
-    const month = local.getUTCMonth();
-    const day = local.getUTCDate();
-    return (
-      (month === 5 && day >= 1 && day <= 7) ||
-      (month === 5 && day >= 21 && day <= 30) ||
-      (month === 6 && day >= 10 && day <= 31) ||
-      (month === 9 && day >= 20) || // Victory to Light: Oct 20 –
-      (month === 10 && day <= 10)   //                   Nov 10
-    );
-  });
+export function maxAutoSalePercent(planName: string, planDurationDays: number, now: Date = new Date()): number {
+  return maxSalePercentAnywhere(planName, planDurationDays, now);
 }

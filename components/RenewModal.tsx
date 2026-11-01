@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
 import { loadCashfreeSdk, openCashfreeCheckout } from '@/lib/cashfreeCheckout';
 import { TERMS_VERSION } from '@/lib/legal';
+import { applyPercent, formatINR, getSalePercent } from '@/lib/pricing';
 
 interface RenewUser {
   name?: string;
@@ -16,6 +17,7 @@ interface PlanOption {
   id: number;
   name: string;
   price: number | string;
+  duration: number;
 }
 
 interface RenewModalProps {
@@ -70,7 +72,10 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
   }, [isOpen, onKey]);
 
   const selectedPlan = plans.find((p) => p.id === selectedId) || null;
-  const priceOf = (p: PlanOption) => Number(p.price) || 0;
+  const fullPriceOf = (p: PlanOption) => Number(p.price) || 0;
+  // Same sale % the homepage shows (lib/pricing.ts); create-order accepts it as the floor.
+  const salePercentOf = (p: PlanOption) => getSalePercent(p.name, p.duration);
+  const priceOf = (p: PlanOption) => applyPercent(fullPriceOf(p), salePercentOf(p));
 
   const handlePay = async () => {
     if (!selectedPlan || !user?.email) return;
@@ -209,6 +214,7 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
                   <div className="space-y-2 mb-5">
                     {plans.map((p) => {
                       const active = p.id === selectedId;
+                      const off = salePercentOf(p);
                       return (
                         <button
                           key={p.id}
@@ -231,8 +237,14 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
                             </span>
                             <span className="text-sm font-medium text-white">{p.name}</span>
                           </span>
-                          <span className="text-brand-gold font-bold">
-                            ₹{priceOf(p).toLocaleString('en-IN')}
+                          <span className="flex flex-col items-end flex-shrink-0 ml-3">
+                            {off > 0 && (
+                              <span className="flex items-center gap-1.5 text-[11px]">
+                                <span className="text-gray-500 line-through">{formatINR(fullPriceOf(p))}</span>
+                                <span className="font-semibold text-green-400">{off}% OFF</span>
+                              </span>
+                            )}
+                            <span className="text-brand-gold font-bold">{formatINR(priceOf(p))}</span>
                           </span>
                         </button>
                       );
@@ -267,7 +279,7 @@ export default function RenewModal({ isOpen, onClose, user, onRenewed }: RenewMo
                       <Loader2 className="animate-spin" size={18} /> Processing…
                     </>
                   ) : selectedPlan ? (
-                    `Pay ₹${priceOf(selectedPlan).toLocaleString('en-IN')} & Renew`
+                    `Pay ${formatINR(priceOf(selectedPlan))} & Renew`
                   ) : (
                     'Select a plan'
                   )}

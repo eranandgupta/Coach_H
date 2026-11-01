@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ConsultationForm from '@/components/ConsultationForm';
+import { LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
 
 // Audience pages that funnel into a wedding countdown plan.
 const WEDDING_LINK: Record<string, { href: string; label: string }> = {
@@ -91,7 +92,7 @@ export default function AudiencePage({ params }: { params: { audience: string } 
             <div className="text-sm text-gray-400">Personalised Plans</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,499</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">{formatINR(LOWEST_PLAN_PRICE)}</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>

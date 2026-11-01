@@ -1,7 +1,9 @@
 // Server-rendered catalog for the public /plans SEO page and its Offer schema.
-// Mirrors the active plans seeded in prisma/ensure-plans.ts — keep prices and
-// features in sync with that file (it is the DB source of truth). Grouped by the
+// Prices come from lib/pricing.ts (single source of truth); keep features in sync
+// with prisma/ensure-plans.ts. Grouped by the
 // way a buyer shops: recorded coaching, live 1:1, and couple/family.
+
+import { formatINR, LOWEST_ELITE_PRICE, LOWEST_PLAN_PRICE, planPrice, planPriceLabel } from '@/lib/pricing';
 
 export interface PlanSpecs {
   video: string;          // exact video access, e.g. 'Gym workout tutorials'
@@ -37,8 +39,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
     plans: [
       {
         name: 'Kickstart Plan',
-        price: 1499,
-        priceLabel: '₹1,499',
+        price: planPrice('Kickstart Plan'),
+        priceLabel: planPriceLabel('Kickstart Plan'),
         durationLabel: '1 Month',
         tagline: 'Try it out — all inclusive',
         specs: { video: 'Gym workout tutorials', consultations: '4 / month' },
@@ -56,8 +58,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Consistency Plan',
-        price: 3499,
-        priceLabel: '₹3,499',
+        price: planPrice('Consistency Plan'),
+        priceLabel: planPriceLabel('Consistency Plan'),
         durationLabel: '3 Months',
         tagline: 'Most popular — build the habit',
         popular: true,
@@ -76,8 +78,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Strength Plan',
-        price: 5999,
-        priceLabel: '₹5,999',
+        price: planPrice('Strength Plan'),
+        priceLabel: planPriceLabel('Strength Plan'),
         durationLabel: '6 Months',
         tagline: 'Serious, sustained progress',
         specs: { video: 'Gym workout tutorials', consultations: '6 / month', pauseDays: '7 days' },
@@ -95,8 +97,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Mastery Plan',
-        price: 11999,
-        priceLabel: '₹11,999',
+        price: planPrice('Mastery Plan'),
+        priceLabel: planPriceLabel('Mastery Plan'),
         durationLabel: '12 Months',
         tagline: 'A full year, best value/month',
         specs: { video: 'Complete video library', consultations: '6 / month', pauseDays: '15 days' },
@@ -114,8 +116,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Home Workout Plan',
-        price: 2999,
-        priceLabel: '₹2,999',
+        price: planPrice('Home Workout'),
+        priceLabel: planPriceLabel('Home Workout'),
         durationLabel: '3 Months',
         tagline: 'Train at home, minimal equipment',
         specs: { video: 'Home workout tutorials', consultations: '2 / month' },
@@ -133,8 +135,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Rehabilitation Plan',
-        price: 4499,
-        priceLabel: '₹4,499',
+        price: planPrice('Rehabilitation Plan'),
+        priceLabel: planPriceLabel('Rehabilitation Plan'),
         durationLabel: '3 Months',
         tagline: 'Recover & train around an injury',
         specs: { video: 'Rehab tutorials', consultations: '2 / month' },
@@ -159,8 +161,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
     plans: [
       {
         name: 'Elite 1:1 — 12 Sessions',
-        price: 8999,
-        priceLabel: '₹8,999',
+        price: planPrice('Elite 1:1 - 1 Month (12 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 - 1 Month (12 Sessions)'),
         durationLabel: '1 Month',
         tagline: '12 live sessions · 60 min each',
         specs: { video: 'Complete video library', liveSessions: '12 sessions' },
@@ -176,8 +178,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 — 24 Sessions',
-        price: 14999,
-        priceLabel: '₹14,999',
+        price: planPrice('Elite 1:1 - 1 Month (24 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 - 1 Month (24 Sessions)'),
         durationLabel: '1 Month',
         tagline: '24 live sessions · 60 min each',
         popular: true,
@@ -194,8 +196,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 — 36 Sessions',
-        price: 21999,
-        priceLabel: '₹21,999',
+        price: planPrice('Elite 1:1 - 3 Months (36 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 - 3 Months (36 Sessions)'),
         durationLabel: '3 Months',
         tagline: '36 live sessions · 60 min each',
         specs: { video: 'Complete video library', liveSessions: '36 sessions', pauseDays: '7 days' },
@@ -213,8 +215,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 — 72 Sessions',
-        price: 34999,
-        priceLabel: '₹34,999',
+        price: planPrice('Elite 1:1 - 3 Months (72 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 - 3 Months (72 Sessions)'),
         durationLabel: '3 Months',
         tagline: '72 live sessions · 60 min each',
         specs: { video: 'Complete video library', liveSessions: '72 sessions', pauseDays: '7 days' },
@@ -240,8 +242,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
     plans: [
       {
         name: 'Couple Home Workout',
-        price: 4999,
-        priceLabel: '₹4,999',
+        price: planPrice('Couple Home Workout Plan'),
+        priceLabel: planPriceLabel('Couple Home Workout Plan'),
         durationLabel: '3 Months',
         tagline: 'For 2 · train at home together',
         specs: { video: 'Home workout tutorials', consultations: '2 / month' },
@@ -257,8 +259,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Couple Rehabilitation',
-        price: 6999,
-        priceLabel: '₹6,999',
+        price: planPrice('Couple Rehabilitation Plan'),
+        priceLabel: planPriceLabel('Couple Rehabilitation Plan'),
         durationLabel: '3 Months',
         tagline: 'For 2 · recover together',
         specs: { video: 'Rehab tutorials', consultations: '2 / month' },
@@ -273,8 +275,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Couple Strength',
-        price: 9999,
-        priceLabel: '₹9,999',
+        price: planPrice('Couple Strength'),
+        priceLabel: planPriceLabel('Couple Strength'),
         durationLabel: '6 Months',
         tagline: 'For 2 · best-selling couple plan',
         popular: true,
@@ -292,8 +294,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Couple Mastery',
-        price: 19999,
-        priceLabel: '₹19,999',
+        price: planPrice('Couple Mastery'),
+        priceLabel: planPriceLabel('Couple Mastery'),
         durationLabel: '12 Months',
         tagline: 'For 2 · a full year together',
         specs: { video: 'Complete video library', consultations: '6 / month', pauseDays: '15 days' },
@@ -310,8 +312,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 Couple — 12 Sessions',
-        price: 14999,
-        priceLabel: '₹14,999',
+        price: planPrice('Elite 1:1 Couple - 1 Month (12 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 Couple - 1 Month (12 Sessions)'),
         durationLabel: '1 Month',
         tagline: 'For 2 · one shared live slot',
         specs: { video: 'Complete video library', liveSessions: '12 sessions' },
@@ -327,8 +329,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 Couple — 24 Sessions',
-        price: 22999,
-        priceLabel: '₹22,999',
+        price: planPrice('Elite 1:1 Couple - 1 Month (24 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 Couple - 1 Month (24 Sessions)'),
         durationLabel: '1 Month',
         tagline: 'For 2 · one shared live slot',
         specs: { video: 'Complete video library', liveSessions: '24 sessions' },
@@ -344,8 +346,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 Couple — 36 Sessions',
-        price: 32999,
-        priceLabel: '₹32,999',
+        price: planPrice('Elite 1:1 Couple - 3 Months (36 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 Couple - 3 Months (36 Sessions)'),
         durationLabel: '3 Months',
         tagline: 'For 2 · one shared live slot',
         specs: { video: 'Complete video library', liveSessions: '36 sessions', pauseDays: '7 days' },
@@ -363,8 +365,8 @@ export const PLAN_GROUPS: PlanGroup[] = [
       },
       {
         name: 'Elite 1:1 Couple — 72 Sessions',
-        price: 51999,
-        priceLabel: '₹51,999',
+        price: planPrice('Elite 1:1 Couple - 3 Months (72 Sessions)'),
+        priceLabel: planPriceLabel('Elite 1:1 Couple - 3 Months (72 Sessions)'),
         durationLabel: '3 Months',
         tagline: 'For 2 · one shared live slot',
         specs: { video: 'Complete video library', liveSessions: '72 sessions', pauseDays: '7 days' },
@@ -442,7 +444,7 @@ export const PLAN_FAQS: { question: string; answer: string }[] = [
   {
     question: 'How much does online fitness coaching with Coach Himanshu cost?',
     answer:
-      'Personalised recorded coaching starts at ₹1,499 for the 1-month Kickstart Plan, with 3, 6, and 12-month plans offering better value per month. Live 1-on-1 Elite personal training starts at ₹8,999 for 12 sessions, and couple plans start at ₹4,999 for two people. Every plan includes a customised workout and diet plan plus WhatsApp support.',
+      `Personalised recorded coaching starts at ${formatINR(LOWEST_PLAN_PRICE)} for the 1-month Kickstart Plan, with 3, 6, and 12-month plans offering better value per month. Live 1-on-1 Elite personal training starts at ${formatINR(LOWEST_ELITE_PRICE)} for 12 sessions, and couple plans start at ${planPriceLabel('Couple Home Workout Plan')} for two people. Every plan includes a customised workout and diet plan plus WhatsApp support.`,
   },
   {
     question: 'What is the difference between recorded coaching and Elite 1:1?',
@@ -452,7 +454,7 @@ export const PLAN_FAQS: { question: string; answer: string }[] = [
   {
     question: 'Can my partner and I train together on one plan?',
     answer:
-      'Yes. Couple and family plans give each person their own personalised workout and diet plan while you share the journey and accountability — and they cost less per person than two individual plans. Couple plans start at ₹4,999 for two people, with home, strength, mastery, rehabilitation, and live Elite 1:1 couple options available.',
+      `Yes. Couple and family plans give each person their own personalised workout and diet plan while you share the journey and accountability — and they cost less per person than two individual plans. Couple plans start at ${planPriceLabel('Couple Home Workout Plan')} for two people, with home, strength, mastery, rehabilitation, and live Elite 1:1 couple options available.`,
   },
   {
     question: 'Do I need a gym, or can I train at home?',

@@ -9,6 +9,7 @@
 
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
+import { PLAN_PRICES } from '../lib/pricing';
 
 const prisma = new PrismaClient();
 
@@ -16,8 +17,8 @@ const requiredPlans = [
   {
     name: 'Kickstart Plan',
     description: 'All Inclusive',
-    price: 1499,
-    duration: 30,
+    price: PLAN_PRICES['Kickstart Plan'].price,
+    duration: PLAN_PRICES['Kickstart Plan'].durationDays,
     features: [
       'Customised workout plan',
       'Personalised diet plan',
@@ -32,8 +33,8 @@ const requiredPlans = [
   {
     name: 'Consistency Plan',
     description: 'All Inclusive',
-    price: 3499,
-    duration: 90,
+    price: PLAN_PRICES['Consistency Plan'].price,
+    duration: PLAN_PRICES['Consistency Plan'].durationDays,
     features: [
       'Customised workout plan',
       'Personalised diet plan',
@@ -48,8 +49,8 @@ const requiredPlans = [
   {
     name: 'Strength Plan',
     description: 'All Inclusive',
-    price: 5999,
-    duration: 180,
+    price: PLAN_PRICES['Strength Plan'].price,
+    duration: PLAN_PRICES['Strength Plan'].durationDays,
     features: [
       'Customised workout plan',
       'Personalised diet plan',
@@ -66,8 +67,8 @@ const requiredPlans = [
   {
     name: 'Mastery Plan',
     description: 'All Inclusive',
-    price: 11999,
-    duration: 365,
+    price: PLAN_PRICES['Mastery Plan'].price,
+    duration: PLAN_PRICES['Mastery Plan'].durationDays,
     features: [
       'Customised workout plan',
       'Personalised diet plan',
@@ -84,8 +85,8 @@ const requiredPlans = [
   {
     name: 'Home Workout',
     description: 'Home Workout',
-    price: 2999,
-    duration: 90,
+    price: PLAN_PRICES['Home Workout'].price,
+    duration: PLAN_PRICES['Home Workout'].durationDays,
     features: [
       'Customised home workout plan',
       'Personalised diet plan',
@@ -100,8 +101,8 @@ const requiredPlans = [
   {
     name: 'Rehabilitation Plan',
     description: 'Recovery & Healing',
-    price: 4499,
-    duration: 90,
+    price: PLAN_PRICES['Rehabilitation Plan'].price,
+    duration: PLAN_PRICES['Rehabilitation Plan'].durationDays,
     features: [
       'Customised rehabilitation workout',
       'Rehabilitation workout video tutorial',
@@ -115,8 +116,8 @@ const requiredPlans = [
   {
     name: 'Couple Strength',
     description: 'For 2 People',
-    price: 9999,
-    duration: 180,
+    price: PLAN_PRICES['Couple Strength'].price,
+    duration: PLAN_PRICES['Couple Strength'].durationDays,
     features: [
       'Personalized workout plans for both',
       'Customized meal plans for both',
@@ -133,8 +134,8 @@ const requiredPlans = [
   {
     name: 'Couple Mastery',
     description: 'For 2 People',
-    price: 19999,
-    duration: 365,
+    price: PLAN_PRICES['Couple Mastery'].price,
+    duration: PLAN_PRICES['Couple Mastery'].durationDays,
     features: [
       'Personalized workout plans for both',
       'Customized meal plans for both',
@@ -154,8 +155,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 1 Month (12 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 14999,
-    duration: 30,
+    price: PLAN_PRICES['Elite 1:1 Couple - 1 Month (12 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 Couple - 1 Month (12 Sessions)'].durationDays,
     features: [
       'Live 1:1 coaching for both partners',
       'One shared slot — both attend the same session',
@@ -171,8 +172,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 1 Month (24 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 22999,
-    duration: 30,
+    price: PLAN_PRICES['Elite 1:1 Couple - 1 Month (24 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 Couple - 1 Month (24 Sessions)'].durationDays,
     features: [
       'Live 1:1 coaching for both partners',
       'One shared slot — both attend the same session',
@@ -188,8 +189,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 3 Months (36 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 32999,
-    duration: 90,
+    price: PLAN_PRICES['Elite 1:1 Couple - 3 Months (36 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 Couple - 3 Months (36 Sessions)'].durationDays,
     features: [
       'Live 1:1 coaching for both partners',
       'One shared slot — both attend the same session',
@@ -207,8 +208,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 Couple - 3 Months (72 Sessions)',
     description: 'For 2 People · One shared session slot',
-    price: 51999,
-    duration: 90,
+    price: PLAN_PRICES['Elite 1:1 Couple - 3 Months (72 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 Couple - 3 Months (72 Sessions)'].durationDays,
     features: [
       'Live 1:1 coaching for both partners',
       'One shared slot — both attend the same session',
@@ -226,8 +227,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 1 Month (24 Sessions)',
     description: '24 Sessions',
-    price: 14999,
-    duration: 30,
+    price: PLAN_PRICES['Elite 1:1 - 1 Month (24 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 - 1 Month (24 Sessions)'].durationDays,
     features: [
       'Live 1:1 personal training',
       'Personalised diet plan',
@@ -242,8 +243,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 1 Month (12 Sessions)',
     description: '12 Sessions',
-    price: 8999,
-    duration: 30,
+    price: PLAN_PRICES['Elite 1:1 - 1 Month (12 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 - 1 Month (12 Sessions)'].durationDays,
     features: [
       'Live 1:1 personal training',
       'Personalised diet plan',
@@ -258,8 +259,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 3 Months (72 Sessions)',
     description: '72 Sessions',
-    price: 34999,
-    duration: 90,
+    price: PLAN_PRICES['Elite 1:1 - 3 Months (72 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 - 3 Months (72 Sessions)'].durationDays,
     features: [
       'Live 1:1 personal training',
       'Personalised diet plan',
@@ -276,8 +277,8 @@ const requiredPlans = [
   {
     name: 'Elite 1:1 - 3 Months (36 Sessions)',
     description: '36 Sessions',
-    price: 21999,
-    duration: 90,
+    price: PLAN_PRICES['Elite 1:1 - 3 Months (36 Sessions)'].price,
+    duration: PLAN_PRICES['Elite 1:1 - 3 Months (36 Sessions)'].durationDays,
     features: [
       'Live 1:1 personal training',
       'Personalised diet plan',
@@ -294,8 +295,8 @@ const requiredPlans = [
   {
     name: 'Couple Home Workout Plan',
     description: 'For 2 People',
-    price: 4999,
-    duration: 90,
+    price: PLAN_PRICES['Couple Home Workout Plan'].price,
+    duration: PLAN_PRICES['Couple Home Workout Plan'].durationDays,
     features: [
       'Customised home workout plans for both',
       'Personalised diet plans for both',
@@ -310,8 +311,8 @@ const requiredPlans = [
   {
     name: 'Couple Rehabilitation Plan',
     description: 'For 2 People',
-    price: 6999,
-    duration: 90,
+    price: PLAN_PRICES['Couple Rehabilitation Plan'].price,
+    duration: PLAN_PRICES['Couple Rehabilitation Plan'].durationDays,
     features: [
       'Customised rehabilitation workouts for both',
       'Rehabilitation workout video tutorial',

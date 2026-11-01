@@ -4,13 +4,14 @@ import { CITIES } from '@/lib/cities';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import { LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
 
 const baseUrl = 'https://coachhimanshu.com';
 
 export const metadata: Metadata = {
   title: 'Online Fitness Coach in India | City-by-City Personal Training',
   description:
-    'Find a NASM certified online fitness coach in your city. Coach Himanshu offers personalized workout plans, custom regional meal plans & 24/7 WhatsApp support across major Indian cities. 1000+ transformations. Plans from ₹1,499/month.',
+    `Find a NASM certified online fitness coach in your city. Coach Himanshu offers personalized workout plans, custom regional meal plans & 24/7 WhatsApp support across major Indian cities. 1000+ transformations. Plans from ${formatINR(LOWEST_PLAN_PRICE)}/month.`,
   alternates: {
     canonical: `${baseUrl}/fitness-coach`,
   },
