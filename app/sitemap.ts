@@ -331,7 +331,12 @@ function getInternationalPages(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...hubPage, ...countryPages, ...cityPages];
+  // Every plan in every currency (prices from lib/pricing.ts).
+  const pricesPage: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/online-fitness-coach/prices`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+  ];
+
+  return [...hubPage, ...pricesPage, ...countryPages, ...cityPages];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

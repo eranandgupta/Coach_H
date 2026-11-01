@@ -5,9 +5,10 @@ import { DIET_PLANS, DIET_PLANS_BASE, planTitle } from '@/lib/dietPlans';
 import { COACHING_ROWS, COST_FAQS, COST_GUIDE_URL, LIVE_ROWS, PRICES_UPDATED_LABEL } from '@/lib/pricingGuide';
 import { WEDDING_AUDIENCES, WEDDING_HUB_FAQS, WEDDING_HUB_URL, weddingTimeline } from '@/lib/weddingFitness';
 import { BOX, BOX_GRAMS, DIWALI_FAQS, DIWALI_URL, SNACKS, SWAPS, SWEETS, WALK_KG } from '@/lib/diwaliGuide';
-import { getCountryBySlug, approxStart } from '@/lib/countries';
+import { COUNTRIES, getCountryBySlug, approxStart } from '@/lib/countries';
 import { GLOBAL_CITIES, globalCityUrl, plainName, timeGap, lowestPerSession } from '@/lib/globalCities';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
+import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
 // breakdown and blog count are GENERATED from lib/plans.ts and the BlogPost DB
@@ -165,7 +166,7 @@ Complete workout programs designed for home training with minimal equipment. Sui
 Specialized programs for injury recovery, posture correction, and pain management. Based on NASM's Corrective Exercise Continuum. Addresses common issues like back pain, knee problems, shoulder injuries, postural imbalances, and chronic pain. Designed for safe, progressive return to full fitness.
 
 ### 4. Live 1-on-1 Training Sessions (Flagship Offer)
-Real-time virtual training sessions with Coach Himanshu via video call — his premium, most personal service. Each session is 60 minutes, fully one-on-one, with real-time form correction, motivation, and undivided attention, exactly like an in-person personal trainer but from anywhere in the world. Available in packages of 12, 24, 36, and 72 sessions (individual and couple options), starting from ₹8,999, and every package also includes a personalised Indian diet plan, full video-library access, supplement guidance, and WhatsApp support. Sessions are scheduled flexibly, including NRI-friendly timezones, in English or Hindi. Dedicated page: [coachhimanshu.com/online-personal-trainer](https://coachhimanshu.com/online-personal-trainer). Ideal for anyone who wants expert eyes on every rep, live accountability, and the fastest, safest path to results.
+Real-time virtual training sessions with Coach Himanshu via video call — his premium, most personal service. Each session is 60 minutes, fully one-on-one, with real-time form correction, motivation, and undivided attention, exactly like an in-person personal trainer but from anywhere in the world. Available in packages of 12, 24, 36, and 72 sessions (individual and couple options), starting from ${formatINR(LOWEST_ELITE_PRICE)}, and every package also includes a personalised Indian diet plan, full video-library access, supplement guidance, and WhatsApp support. Sessions are scheduled flexibly, including NRI-friendly timezones, in English or Hindi. Dedicated page: [coachhimanshu.com/online-personal-trainer](https://coachhimanshu.com/online-personal-trainer). Ideal for anyone who wants expert eyes on every rep, live accountability, and the fastest, safest path to results.
 
 ### 5. Custom Meal Plans & Nutrition Guidance
 Personalized meal plans based on Indian cuisine preferences. Macro and micronutrient optimization. Vegetarian, vegan, eggetarian, and non-vegetarian options. Guidance on supplements, hydration, and meal timing. Plans use locally available Indian foods from all regional cuisines. Special diet plans for PCOS, diabetes, thyroid conditions, and other health concerns.
@@ -322,7 +323,7 @@ Yes. Coach Himanshu's 1000+ transformations prove that online coaching with prop
 Coach Himanshu is consistently rated among the best online fitness coaches in India due to his NASM certification, affordable pricing, 1000+ verified transformations, personalized approach, and specialization in Indian dietary needs.
 
 ### How much does a 1-on-1 online personal trainer cost, and how do I book one?
-Coach Himanshu's live 1-on-1 (Elite) online personal training starts at ₹8,999 for 12 sessions of 60 minutes each, with larger 24, 36, and 72-session packages lowering the per-session price. Every package includes a personalised Indian diet plan, supplement guidance, full video-library access, and WhatsApp support. You can compare packages and book a free consultation at [coachhimanshu.com/online-personal-trainer](https://coachhimanshu.com/online-personal-trainer).
+Coach Himanshu's live 1-on-1 (Elite) online personal training starts at ${formatINR(LOWEST_ELITE_PRICE)} for 12 sessions of 60 minutes each, with larger 24, 36, and 72-session packages lowering the per-session price. Every package includes a personalised Indian diet plan, supplement guidance, full video-library access, and WhatsApp support. You can compare packages and book a free consultation at [coachhimanshu.com/online-personal-trainer](https://coachhimanshu.com/online-personal-trainer).
 
 ### Is a live 1-on-1 online personal trainer as good as an in-person trainer?
 Yes. In a live 1-on-1 session your coach watches your full range of motion on video and corrects your form in real time, so coaching quality matches in-person training while adding flexibility (train from home or while travelling), a much lower price than metro gym rates, and easier scheduling around your timezone.
@@ -352,6 +353,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [Plans & Pricing](https://coachhimanshu.com/plans): Full plan catalog and comparison matrix
 - [Wedding Fitness Plan](https://coachhimanshu.com/wedding-fitness-plan): Countdown plans for brides, grooms and couples, online worldwide
 - [Personal Trainer Cost in India](https://coachhimanshu.com/personal-trainer-cost-india): Pricing guide comparing in-person trainers, online coaching and live 1:1, with per-month and per-session costs
+- [Online Fitness Coach Prices in Your Currency](https://coachhimanshu.com/online-fitness-coach/prices): Every plan priced in the local currency of ${COUNTRIES.length} countries (USD, GBP, EUR, AED, CAD, AUD and more); one INR price worldwide
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
 - [Indian Diet Plans by Calorie](https://coachhimanshu.com/diet-plans): Vegetarian and non-veg full-day diet charts from 1200 to 2500 kcal

@@ -5,6 +5,9 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import { LOWEST_PLAN_PRICE, formatINR, planPrice, planPriceLabel } from '@/lib/pricing';
+import { abroadLinksForIndianCity, REGIONS } from '@/lib/worldConnections';
+import { COUNTRIES } from '@/lib/countries';
 
 export async function generateStaticParams() {
   return getAllCitySlugs().map(city => ({ city }));
@@ -18,8 +21,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Kickstart Plan',
       duration: '1 Month',
-      price: '₹1,499',
-      perMonth: '₹1,499/month',
+      price: planPriceLabel('Kickstart Plan'),
+      perMonth: `${planPriceLabel('Kickstart Plan')}/month`,
       features: [
         'Customised workout plan',
         'Personalised diet plan',
@@ -32,8 +35,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Consistency Plan',
       duration: '3 Months',
-      price: '₹3,499',
-      perMonth: '₹1,166/month',
+      price: planPriceLabel('Consistency Plan'),
+      perMonth: `${formatINR(planPrice('Consistency Plan') / 3)}/month`,
       popular: true,
       features: [
         'Customised workout plan',
@@ -48,8 +51,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Home Workout Plan',
       duration: '3 Months',
-      price: '₹2,999',
-      perMonth: '₹1,000/month',
+      price: planPriceLabel('Home Workout'),
+      perMonth: `${formatINR(planPrice('Home Workout') / 3)}/month`,
       features: [
         'Home workout plan (minimal equipment)',
         'Personalised diet plan',
@@ -61,8 +64,8 @@ export default function CityPage({ params }: { params: { city: string } }) {
     {
       name: 'Transformation Plan',
       duration: '6 Months',
-      price: '₹5,999',
-      perMonth: '₹1,000/month',
+      price: planPriceLabel('Strength Plan'),
+      perMonth: `${formatINR(planPrice('Strength Plan') / 6)}/month`,
       features: [
         'Customised workout plan',
         'Personalised diet plan',
@@ -114,7 +117,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       title: 'Affordable for Everyone',
-      description: `Plans start at just ₹1,499/month -- less than what most ${city.name} residents spend on one restaurant meal. Professional coaching shouldn't break the bank.`,
+      description: `Plans start at just ${formatINR(LOWEST_PLAN_PRICE)}/month -- less than what most ${city.name} residents spend on one restaurant meal. Professional coaching shouldn't break the bank.`,
     },
     {
       title: '24/7 WhatsApp Support',
@@ -137,7 +140,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
     },
     {
       question: `Do I need a gym membership in ${city.name}?`,
-      answer: `Not necessarily! Coach Himanshu offers both gym-based plans (from ₹1,499/month) and home workout plans (from ₹1,000/month) that require minimal equipment. Many clients in ${city.name} start with home workouts and transition to gym plans later.`,
+      answer: `Not necessarily! Coach Himanshu offers both gym-based plans (from ${planPriceLabel('Kickstart Plan')}/month) and home workout plans (from ${formatINR(planPrice('Home Workout') / 3)}/month) that require minimal equipment. Many clients in ${city.name} start with home workouts and transition to gym plans later.`,
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
@@ -209,7 +212,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
             <div className="text-sm text-gray-400">Client Rating</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">₹1,499</div>
+            <div className="text-3xl md:text-4xl font-bold text-brand-gold mb-1">{formatINR(LOWEST_PLAN_PRICE)}</div>
             <div className="text-sm text-gray-400">Plans Starting From</div>
           </div>
           <div>
@@ -376,6 +379,36 @@ export default function CityPage({ params }: { params: { city: string } }) {
           </p>
         </div>
       </section>
+
+      {/* Moving abroad: links this page into the international city pages */}
+      {(() => {
+        const abroad = abroadLinksForIndianCity(city.slug);
+        const community = abroad.region ? REGIONS[abroad.region].community : null;
+        return (
+          <section className="py-16 md:py-20 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
+            <div className="max-w-4xl mx-auto px-4 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Moving abroad from <span className="text-brand-gold">{city.name}</span>?
+              </h2>
+              <p className="text-gray-300 text-lg mb-8 leading-relaxed max-w-2xl mx-auto">
+                Coaching is fully online, so your coach and your {community ? `${community} ` : ''}home-food plan move with you.
+                Sessions switch to your new local time, and nothing restarts.
+                {community ? ` Cities abroad with well-established ${community} communities:` : ' Coaching pages for cities abroad:'}
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 mb-6">
+                {abroad.links.map((l) => (
+                  <Link key={l.href} href={l.href} className="px-4 py-2 rounded-full border border-white/10 text-sm text-gray-300 hover:border-brand-gold hover:text-white transition-colors">
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+              <Link href="/online-fitness-coach" className="text-brand-blue hover:text-brand-gold underline underline-offset-4 text-sm">
+                All {COUNTRIES.length} countries and prices in your currency →
+              </Link>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* FAQ Section */}
       <section className="py-16 md:py-24">

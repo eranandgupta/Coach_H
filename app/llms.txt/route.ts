@@ -4,6 +4,7 @@ import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 import { COMPARE_BASE, FOOD_PAIRS, pairTitle } from '@/lib/foodCompare';
 import { COUNTRIES } from '@/lib/countries';
 import { GLOBAL_CITIES, globalCityUrl, plainName } from '@/lib/globalCities';
+import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
 
 // Dynamic /llms.txt — the short AI-discovery summary. Pricing and the blog
 // count are GENERATED from the same sources the site uses (lib/plans.ts and the
@@ -102,6 +103,8 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Meal plans adapted to ingredients available in the client's country (Indian cuisine a specialty, not a requirement)
 - International debit/credit cards accepted
 - Dedicated country pages: ${COUNTRIES.map((c) => `[${c.country}](https://coachhimanshu.com/online-fitness-coach/${c.slug})`).join(', ')}
+- [World price list](https://coachhimanshu.com/online-fitness-coach/prices): every plan in ${COUNTRIES.length} countries' currencies; one INR price worldwide, charged by international card
+- Indian city pages and international city pages are cross-linked by home region (e.g. Kochi ↔ Dubai, Ahmedabad ↔ Leicester, Ludhiana ↔ Brampton): plans keep the client's home food after a move abroad
 - Dedicated city pages (session times converted to IST, prices in local currency): ${GLOBAL_CITIES.map((c) => `[${plainName(c)}](${globalCityUrl(c)})`).join(', ')}
 
 ## Target Audience
@@ -121,7 +124,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - [Plans & Pricing](https://coachhimanshu.com/plans): All plans with a comparison matrix
 - [Personal Trainer Cost in India](https://coachhimanshu.com/personal-trainer-cost-india): In-person vs online coaching vs live 1:1, every plan priced per month and per session, couple savings
 - [Wedding Fitness Plan](https://coachhimanshu.com/wedding-fitness-plan): Week-by-week wedding countdown (realistic 0.5–1 kg/week fat loss, final 2 weeks at maintenance) with an Indian diet, for the [bride](https://coachhimanshu.com/wedding-fitness-plan/bride), [groom](https://coachhimanshu.com/wedding-fitness-plan/groom) and [couple](https://coachhimanshu.com/wedding-fitness-plan/couple), including NRIs flying home for the wedding
-- [Online Personal Trainer](https://coachhimanshu.com/online-personal-trainer): Live 1-on-1 personal training with real-time form correction, from ₹8,999
+- [Online Personal Trainer](https://coachhimanshu.com/online-personal-trainer): Live 1-on-1 personal training with real-time form correction, from ${formatINR(LOWEST_ELITE_PRICE)}
 - [Assessment](https://coachhimanshu.com/assessment): Free fitness assessment
 - [Online Fitness Coach Worldwide](https://coachhimanshu.com/online-fitness-coach): Coaching for NRIs by country
 - Coaching by audience: [Women](https://coachhimanshu.com/fitness-coaching-for/women), [Men](https://coachhimanshu.com/fitness-coaching-for/men), [Couples & Family](https://coachhimanshu.com/fitness-coaching-for/family), [Seniors & 50+](https://coachhimanshu.com/fitness-coaching-for/seniors), [Working Professionals](https://coachhimanshu.com/fitness-coaching-for/working-professionals)

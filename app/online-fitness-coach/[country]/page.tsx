@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ConsultationForm from '@/components/ConsultationForm';
+import { LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
 
 interface Props {
   params: { country: string };
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const pageTitle = `Online Indian Fitness Coach in ${c.name}`; // root template appends "| Coach Himanshu"
   const title = `${pageTitle} | Coach Himanshu`; // used for OG/Twitter, which the template does not touch
-  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ₹1,499/month (≈ ${approxStart(c)}), international cards accepted.`;
+  const description = `NASM certified Indian fitness coach for NRIs in ${c.name}. Personalized online workout & Indian meal plans, timezone-friendly video sessions, and 24/7 WhatsApp support. 1000+ transformations. Plans from ${formatINR(LOWEST_PLAN_PRICE)}/month (≈ ${approxStart(c)}), international cards accepted.`;
 
   return {
     title: pageTitle,
@@ -134,7 +135,7 @@ export default function CountryPage({ params }: Props) {
     },
     {
       title: 'Exceptional Value',
-      description: `Plans start at just ₹1,499/month (≈ ${approxStart(c)}) — a fraction of what personal training costs in ${c.name}. World-class, certified coaching without the local price tag. International cards accepted.`,
+      description: `Plans start at just ${formatINR(LOWEST_PLAN_PRICE)}/month (≈ ${approxStart(c)}) — a fraction of what personal training costs in ${c.name}. World-class, certified coaching without the local price tag. International cards accepted.`,
     },
     {
       title: 'NASM Certified Expertise',
@@ -157,7 +158,7 @@ export default function CountryPage({ params }: Props) {
     },
     {
       question: `How do I pay from ${c.name}, and how much does it cost?`,
-      answer: `Plans start at ₹1,499/month, which is roughly ${approxStart(c)}, and live 1-on-1 packages start at ${eliteFrom.priceLabel} (≈ ${localPrice(eliteFrom.price, c)}). Payment is handled through a secure checkout that accepts international debit and credit cards, so you can pay easily from ${c.name}. You get premium, NASM-certified coaching at a fraction of local personal-training prices.`,
+      answer: `Plans start at ${formatINR(LOWEST_PLAN_PRICE)}/month, which is roughly ${approxStart(c)}, and live 1-on-1 packages start at ${eliteFrom.priceLabel} (≈ ${localPrice(eliteFrom.price, c)}). Payment is handled through a secure checkout that accepts international debit and credit cards, so you can pay easily from ${c.name}. You get premium, NASM-certified coaching at a fraction of local personal-training prices.`,
     },
     {
       question: `Will the diet plan work with the food available in ${c.name}?`,
@@ -165,7 +166,7 @@ export default function CountryPage({ params }: Props) {
     },
     {
       question: 'Do I need a gym, or can I train at home?',
-      answer: `You can do either. There are home workout plans that need minimal equipment and gym-based plans if you have access to one, with plans starting from ₹1,499/month (≈ ${approxStart(c)}). Many NRI clients start with home workouts and add gym training later — your coach adapts the plan to whatever equipment you have.`,
+      answer: `You can do either. There are home workout plans that need minimal equipment and gym-based plans if you have access to one, with plans starting from ${formatINR(LOWEST_PLAN_PRICE)}/month (≈ ${approxStart(c)}). Many NRI clients start with home workouts and add gym training later — your coach adapts the plan to whatever equipment you have.`,
     },
     {
       question: 'What qualifications does Coach Himanshu have?',
@@ -260,7 +261,7 @@ export default function CountryPage({ params }: Props) {
             </Link>
           </div>
           <p className="text-sm text-gray-500">
-            Plans from ₹1,499/month (≈ {approxStart(c)}) · International cards accepted · English &amp; Hindi
+            Plans from {formatINR(LOWEST_PLAN_PRICE)}/month (≈ {approxStart(c)}) · International cards accepted · English &amp; Hindi
           </p>
         </div>
       </section>
@@ -501,6 +502,7 @@ export default function CountryPage({ params }: Props) {
             <Link href="/online-personal-trainer" className="hover:text-brand-blue transition-colors">Live 1:1 Training</Link>
             <Link href="/about" className="hover:text-brand-blue transition-colors">About Coach Himanshu</Link>
             <Link href="/online-fitness-coach" className="hover:text-brand-blue transition-colors">All Countries</Link>
+            <Link href="/online-fitness-coach/prices" className="hover:text-brand-blue transition-colors">Prices in Every Currency</Link>
             <Link href="/blog" className="hover:text-brand-blue transition-colors">Fitness Blog</Link>
             <Link href="/contact" className="hover:text-brand-blue transition-colors">Contact</Link>
           </div>

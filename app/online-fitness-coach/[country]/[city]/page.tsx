@@ -18,6 +18,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ConsultationForm from '@/components/ConsultationForm';
+import { LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
+import { homeConnectionsForGlobalCity, joinCommunities } from '@/lib/worldConnections';
 
 interface Props {
   params: { country: string; city: string };
@@ -75,6 +77,8 @@ export default function GlobalCityPage({ params }: Props) {
   const start = approxStart(country);
   const elite = getEliteOfferRange();
   const siblings = citiesInCountry(country.slug).filter((c) => c.slug !== city.slug);
+  const home = homeConnectionsForGlobalCity(city);
+  const communities = joinCommunities(home.regions);
   const areasText = city.areas.length
     ? `${city.areas.slice(0, -1).join(', ')}${city.areas.length > 1 ? ' and ' : ''}${city.areas[city.areas.length - 1]}`
     : '';
@@ -84,7 +88,7 @@ export default function GlobalCityPage({ params }: Props) {
   const faqs = [
     {
       question: `How much does an online personal trainer cost in ${place}?`,
-      answer: `With Coach Himanshu, live 1-on-1 video training costs from ${rows.find((r) => r.perSession)?.inr} for 12 sessions (about ${rows.find((r) => r.perSession)?.local}) down to about ${perSession} a session on the 72-session package. Recorded coaching, with a personalised workout and Indian diet plan plus weekly one-on-one video check-ins, starts at ₹1,499 a month (about ${start}). Prices are charged in Indian rupees by international card; local amounts are approximate at ${FX_AS_OF} rates.`,
+      answer: `With Coach Himanshu, live 1-on-1 video training costs from ${rows.find((r) => r.perSession)?.inr} for 12 sessions (about ${rows.find((r) => r.perSession)?.local}) down to about ${perSession} a session on the 72-session package. Recorded coaching, with a personalised workout and Indian diet plan plus weekly one-on-one video check-ins, starts at ${formatINR(LOWEST_PLAN_PRICE)} a month (about ${start}). Prices are charged in Indian rupees by international card; local amounts are approximate at ${FX_AS_OF} rates.`,
     },
     {
       question: `What is the time difference between ${place} and India for live sessions?`,
@@ -94,6 +98,14 @@ export default function GlobalCityPage({ params }: Props) {
       question: `Will my Indian diet plan work with food I can buy in ${place}?`,
       answer: `Yes. Plans are built around dal, roti, rice, sabzi, paneer, curd, eggs, chicken and fish, with portions set for your goal and swaps for what your local supermarket stocks${areasText ? `, as well as the Indian grocers in areas like ${areasText}` : ''}. Vegetarian, eggetarian, non-vegetarian and vegan versions are available, with eating-out guidance for ${place}.`,
     },
+    ...(home.regions.length
+      ? [
+          {
+            question: `Can my plan in ${place} keep ${communities} home food?`,
+            answer: `Yes. ${place} has well-established ${communities} communities, and plans keep the food you grew up with (for example ${home.dishes.join(', ')}) with portions set for your goal. Sessions run on your local time, and you keep the same coach if you move again or fly home.`,
+          },
+        ]
+      : []),
     {
       question: 'Can I train at home or in my building gym?',
       answer: 'Yes. Your coach writes the plan for whatever you have: a full gym, a small apartment or building gym, a pair of dumbbells or just bodyweight. In live sessions the coach watches every rep on video and corrects your form in real time.',
@@ -312,10 +324,45 @@ export default function GlobalCityPage({ params }: Props) {
             </table>
           </div>
           <p className="text-center text-sm text-gray-500 mt-6">
-            Couple and rehabilitation plans are on the{' '}
+            Every currency:{' '}
+            <Link href="/online-fitness-coach/prices" className="text-brand-blue hover:text-brand-gold underline">world price list</Link>. Couple and rehabilitation plans are on the{' '}
             <Link href="/plans" className="text-brand-blue hover:text-brand-gold underline">plans page</Link>. Live 1:1 details:{' '}
             <Link href="/online-personal-trainer" className="text-brand-blue hover:text-brand-gold underline">online personal training</Link>.
           </p>
+        </div>
+      </section>
+
+      {/* Home ↔ abroad: links this page into the Indian city pages and sister cities abroad */}
+      <section className="py-14 md:py-20">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-3">
+            {home.regions.length ? `From home to ${place}` : `Your home food, in ${place}`}
+          </h2>
+          <p className="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
+            {home.regions.length
+              ? `${place} has well-established ${communities} communities. Your plan keeps the food from home (${home.dishes.join(', ')}) and you keep the same coach if you move again or fly home.`
+              : `Whichever part of India you are from, your plan is built around the food you grew up with, and you keep the same coach if you move again or fly home.`}
+          </p>
+          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Coaching back home in India</h3>
+          <div className="flex flex-wrap gap-3 mb-8">
+            {home.homeCities.map((c) => (
+              <Link key={c.slug} href={`/fitness-coach/${c.slug}`} className="px-4 py-2 rounded-full border border-white/10 text-sm text-gray-300 hover:border-brand-gold hover:text-white transition-colors">
+                {c.name}
+              </Link>
+            ))}
+          </div>
+          {home.sameCommunityAbroad.length > 0 && (
+            <>
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">{communities} communities in other countries</h3>
+              <div className="flex flex-wrap gap-3">
+                {home.sameCommunityAbroad.map((c) => (
+                  <Link key={`${c.country}/${c.slug}`} href={`/online-fitness-coach/${c.country}/${c.slug}`} className="px-4 py-2 rounded-full border border-white/10 text-sm text-gray-300 hover:border-brand-gold hover:text-white transition-colors">
+                    {plainName(c)}
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
