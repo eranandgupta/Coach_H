@@ -211,6 +211,9 @@ export const AUDIENCES: AudienceData[] = [
       { title: 'PCOS Weight Loss: Diet & Exercise Plan for Indian Women', href: '/blog/pcos-weight-loss-diet-exercise-plan-for-indian-women' },
       { title: 'Thyroid & Weight Loss: Complete Guide for Indian Women', href: '/blog/thyroid-and-weight-loss-complete-guide-for-indian-women' },
       { title: 'Postpartum Weight Loss: Safe Exercise & Diet for New Moms', href: '/blog/postpartum-weight-loss-safe-exercise-and-diet-plan-for-new-moms' },
+      { title: 'Live 1-on-1 Training for PCOS', href: '/online-personal-trainer/for/pcos' },
+      { title: 'Live 1-on-1 Training With Hypothyroidism', href: '/online-personal-trainer/for/thyroid' },
+      { title: 'Live 1-on-1 Postpartum Training', href: '/online-personal-trainer/for/postpartum' },
     ],
     ctaTitle: 'Ready to Train Smarter, Not Harder?',
     ctaText:
@@ -741,6 +744,8 @@ export const AUDIENCES: AudienceData[] = [
       { title: 'Fitness After 50: Strength Training Guide for Seniors in India', href: '/blog/fitness-after-50-strength-training-guide-for-seniors-in-india' },
       { title: 'After 40, Joint Pain Is Not Normal — It’s Your Lifestyle', href: '/blog/after-40-joint-pain-is-not-normal-it-s-your-poor-lifestyle' },
       { title: 'Hypertension & Strength Training: Control High BP Naturally', href: '/blog/hypertension-strength-training-a-scientific-guide-to-controlling-high-blood-pressure-naturally' },
+      { title: 'Live 1-on-1 Training for Knee Pain', href: '/online-personal-trainer/for/knee-pain' },
+      { title: 'Live 1-on-1 Training With High Blood Pressure', href: '/online-personal-trainer/for/high-blood-pressure' },
     ],
     ctaTitle: 'It’s Never Too Late to Get Stronger',
     ctaText:
@@ -918,6 +923,8 @@ export const AUDIENCES: AudienceData[] = [
       { title: 'Best Workout Schedule for Working Professionals in India', href: '/blog/best-workout-schedule-for-working-professionals-in-india' },
       { title: 'Best Time to Work Out: Morning vs Evening', href: '/blog/best-time-to-work-out-morning-vs-evening-india-guide' },
       { title: 'How to Lose Weight Without Going to the Gym', href: '/blog/how-to-lose-weight-without-going-to-the-gym' },
+      { title: 'Live 1-on-1 Training for Back Pain', href: '/online-personal-trainer/for/back-pain' },
+      { title: 'Live 1-on-1 Training With Fatty Liver', href: '/online-personal-trainer/for/fatty-liver' },
     ],
     ctaTitle: 'Fitness That Fits Your Career',
     ctaText:

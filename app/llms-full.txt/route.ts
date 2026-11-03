@@ -9,6 +9,7 @@ import { COUNTRIES, getCountryBySlug, approxStart } from '@/lib/countries';
 import { GLOBAL_CITIES, globalCityUrl, plainName, timeGap, lowestPerSession } from '@/lib/globalCities';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
 import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
+import { PT_CONDITIONS } from '@/lib/ptConditions';
 
 // Dynamic /llms-full.txt — the detailed AI-discovery document. The pricing
 // breakdown and blog count are GENERATED from lib/plans.ts and the BlogPost DB
@@ -184,6 +185,12 @@ Two personalised plans, one shared journey — each person gets their own workou
 Free, no-sign-up calculators at [coachhimanshu.com/tools](https://coachhimanshu.com/tools). Each page shows the formula, a worked example, a reference table and its sources.
 
 ${tools}
+
+## Training With a Health Condition
+
+Coach Himanshu is a fitness coach, not a doctor. Live 1:1 coaching works alongside medical care and does not diagnose or treat any condition.
+
+${PT_CONDITIONS.map((c) => `### ${c.name}\nhttps://coachhimanshu.com/online-personal-trainer/for/${c.slug}\n${c.intro}\nSources: ${Array.from(new Set(c.health?.evidence.map((e) => `${e.source} (${e.url})`))).join('; ')}`).join('\n\n')}
 
 ## Wedding Fitness Plans
 Online wedding countdown coaching for brides, grooms and couples, in India and abroad.

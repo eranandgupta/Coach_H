@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { getGoalBySlug, getAllGoalSlugs, PT_GOALS } from '@/lib/ptGoals';
+import { CONDITIONS_REVIEWED, PT_CONDITIONS } from '@/lib/ptConditions';
 import { CITIES } from '@/lib/cities';
 import { getToolBySlug } from '@/lib/fitnessTools';
 import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
@@ -21,6 +22,13 @@ const GOAL_TOOL: Record<string, string> = {
   'weight-gain': 'tdee-calculator',
   beginners: 'bmi-calculator',
   toning: 'body-fat-calculator',
+  pcos: 'calorie-deficit-calculator',
+  thyroid: 'tdee-calculator',
+  'high-blood-pressure': 'bmi-calculator',
+  'fatty-liver': 'bmi-calculator',
+  'back-pain': 'bmi-calculator',
+  'knee-pain': 'bmi-calculator',
+  postpartum: 'tdee-calculator',
 };
 
 export function generateStaticParams() {
@@ -31,14 +39,15 @@ export async function generateMetadata({ params }: { params: { goal: string } })
   const goal = getGoalBySlug(params.goal);
   if (!goal) return { title: 'Not Found' };
   const url = `https://coachhimanshu.com/online-personal-trainer/for/${goal.slug}`;
+  const inSentence = goal.sentenceName ?? goal.name.toLowerCase();
   return {
     title: goal.metaTitle,
     description: goal.metaDescription,
     keywords: [
-      `online personal trainer for ${goal.name.toLowerCase()}`,
-      `personal trainer for ${goal.name.toLowerCase()}`,
-      `1 on 1 online training ${goal.name.toLowerCase()}`,
-      `online fitness coach for ${goal.name.toLowerCase()}`,
+      `online personal trainer for ${inSentence}`,
+      `personal trainer for ${inSentence}`,
+      `1 on 1 online training ${inSentence}`,
+      `online fitness coach for ${inSentence}`,
     ],
     openGraph: { title: `${goal.metaTitle} | Coach Himanshu`, description: goal.metaDescription, url, type: 'website' },
     twitter: { card: 'summary_large_image', title: `${goal.metaTitle} | Coach Himanshu`, description: goal.metaDescription },
@@ -51,7 +60,9 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
   if (!goal) notFound();
 
   const elitePlans = getElitePlans();
+  const health = goal.health;
   const siblings = PT_GOALS.filter((g) => g.slug !== goal.slug);
+  const conditionSiblings = PT_CONDITIONS.filter((g) => g.slug !== goal.slug);
   const goalTool = getToolBySlug(GOAL_TOOL[goal.slug] ?? '');
   const url = `https://coachhimanshu.com/online-personal-trainer/for/${goal.slug}`;
   const { low, high, count } = getEliteOfferRange();
@@ -97,8 +108,20 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
     ],
   };
 
+  const healthPageSchema = health && {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url,
+    name: goal.metaTitle,
+    lastReviewed: CONDITIONS_REVIEWED,
+    about: { '@type': health.aboutType ?? 'Thing', name: health.aboutName },
+    citation: Array.from(new Set(health.evidence.map((e) => e.url))),
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['#goal-answer'] },
+  };
+
   return (
     <div className="min-h-screen bg-brand-navy">
+      {healthPageSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(healthPageSchema) }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
@@ -129,7 +152,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
             {goal.heroTail}
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">{goal.intro}</p>
+          <p id="goal-answer" className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">{goal.intro}</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href={WHATSAPP_1ON1} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40">
@@ -156,7 +179,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
       <section className="py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">What We Focus On</h2>
-          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">Coaching built specifically around {goal.name.toLowerCase()}.</p>
+          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">Coaching built specifically around {goal.sentenceName ?? goal.name.toLowerCase()}.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {goal.focusChips.map((chip, i) => (
               <div key={i} className="flex items-center gap-3 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02]">
@@ -172,7 +195,7 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
       <section className="py-16 md:py-24 border-y border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(201,166,70,0.03) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">{goal.approachHeading}</h2>
-          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">A method proven across 1000+ transformations — coached live, one-on-one.</p>
+          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">{health ? "Coached live, one-on-one, and adjusted to what your doctor has advised." : 'A method proven across 1000+ transformations — coached live, one-on-one.'}</p>
           <div className="grid md:grid-cols-2 gap-6">
             {goal.approach.map((item, i) => (
               <div key={i} className="p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-300">
@@ -183,10 +206,50 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
             ))}
           </div>
           <div className="mt-10 p-6 rounded-2xl border border-brand-gold/20 bg-brand-gold/5 max-w-3xl mx-auto">
-            <p className="text-gray-200 text-sm leading-relaxed"><strong className="text-brand-gold">Realistic timeline:</strong> {goal.timeline}</p>
+            <p className="text-gray-200 text-sm leading-relaxed"><strong className="text-brand-gold">{health ? 'What to expect:' : 'Realistic timeline:'}</strong> {goal.timeline}</p>
           </div>
         </div>
       </section>
+
+      {health && (
+        <section className="py-16 md:py-24">
+          <div className="max-w-3xl mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Before You Start</h2>
+            <p className="text-gray-300 leading-relaxed mb-6">{health.doctorNote}</p>
+            {health.urgent && (
+              <div className="p-6 rounded-2xl border border-red-500/30 bg-red-500/5 mb-10">
+                <h3 className="text-lg font-semibold text-white mb-3">{health.urgent.heading}</h3>
+                <ul className="list-disc pl-5 space-y-1 text-gray-300 text-sm leading-relaxed">
+                  {health.urgent.items.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+                <p className="text-xs text-gray-500 mt-3">
+                  Source: <a href={health.urgent.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-blue">{health.urgent.source}</a>
+                </p>
+              </div>
+            )}
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">What the Health Bodies Say</h2>
+            <ul className="space-y-3 mb-6">
+              {health.evidence.map((e) => (
+                <li key={e.text} className="text-gray-300 text-sm leading-relaxed">
+                  {e.text}{' '}
+                  <a href={e.url} target="_blank" rel="noopener noreferrer" className="text-gray-500 underline hover:text-brand-blue whitespace-nowrap">{e.source}</a>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-500 leading-relaxed mb-8">
+              Sources last checked{' '}
+              {new Date(CONDITIONS_REVIEWED).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}. Coach Himanshu is a fitness coach, not a doctor. This page is general information, not medical advice. See our{' '}
+              <Link href="/disclaimer" className="underline hover:text-brand-blue">disclaimer</Link>.
+            </p>
+            <h3 className="text-lg font-semibold text-white mb-3">Read more</h3>
+            <ul className="space-y-2 text-sm">
+              {health.guides.map((g) => (
+                <li key={g.href}><Link href={g.href} className="text-brand-blue hover:text-brand-gold transition-colors underline">{g.title}</Link></li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* Packages */}
       <section id="packages" className="py-16 md:py-24 scroll-mt-24">
@@ -235,13 +298,20 @@ export default function GoalPersonalTrainerPage({ params }: { params: { goal: st
       {/* Final CTA + sibling goals */}
       <section className="py-16 md:py-24 border-t border-white/[0.06]" style={{ background: 'linear-gradient(180deg, rgba(23,95,255,0.06) 0%, rgb(var(--c-navy) / 1) 100%)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Start Your {goal.name} Journey — Live 1-on-1</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{health?.ctaHeading ?? `Start Your ${goal.name} Journey — Live 1-on-1`}</h2>
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">Book a free consultation. Coach Himanshu will learn your goals and recommend the right 1:1 package — no payment required to start.</p>
           <a href={WHATSAPP_1ON1} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-10 py-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40">Book a Free Consultation</a>
 
           <p className="text-gray-500 text-sm mt-12 mb-4">Live 1:1 coaching for other goals:</p>
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400 mb-8">
             {siblings.map((s) => (
+              <Link key={s.slug} href={`/online-personal-trainer/for/${s.slug}`} className="hover:text-brand-blue transition-colors">For {s.name}</Link>
+            ))}
+          </div>
+
+          <p className="text-gray-500 text-sm mb-4">Training with a health condition:</p>
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400 mb-8">
+            {conditionSiblings.map((s) => (
               <Link key={s.slug} href={`/online-personal-trainer/for/${s.slug}`} className="hover:text-brand-blue transition-colors">For {s.name}</Link>
             ))}
           </div>

@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/middleware';
+import { requireActiveSubscription } from '@/lib/middleware';
 
 export const dynamic = 'force-dynamic';
 
 // Coach / admin / trainer may view any client's habit data. Clients only ever
 // read and write their own (the POST always writes to the logged-in user's id).
+// Clients need an active subscription; staff are exempt, so they can still view an expired client.
 const STAFF_ROLES = ['coach', 'admin', 'trainer'];
 
 function monthRange(month?: string | null) {
@@ -100,5 +101,5 @@ async function postHandler(request: NextRequest, context: any) {
   }
 }
 
-export const GET = requireAuth(getHandler);
-export const POST = requireAuth(postHandler);
+export const GET = requireActiveSubscription(getHandler);
+export const POST = requireActiveSubscription(postHandler);

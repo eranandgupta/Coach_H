@@ -134,16 +134,26 @@ export default function ClientDashboard() {
   const { isSupported, isSubscribed, subscribe } = usePushNotifications();
   usePresenceHeartbeat();
 
-  // Video Library is an active-subscription perk; inactive clients get a renew prompt.
-  const openVideoLibrary = () => {
+  // Active-subscription perks; inactive clients get a renew prompt.
+  const openMemberFeature = (label: string, description: string, open: () => void) => {
     if (isSubscriptionActive) {
-      setIsVideoLibraryOpen(true);
+      open();
     } else {
-      toast.error('Renew your subscription to unlock the Video Library', {
-        description: 'The exercise video library is available to active members only.',
+      toast.error(`Renew your subscription to unlock the ${label}`, {
+        description,
         action: { label: 'Renew', onClick: () => setIsRenewOpen(true) },
       });
     }
+  };
+  const openVideoLibrary = () =>
+    openMemberFeature('Video Library', 'The exercise video library is available to active members only.', () => setIsVideoLibraryOpen(true));
+  const openHabitTracker = () => {
+    dismissFeatureHint();
+    openMemberFeature('Habit Tracker', 'The habit tracker is available to active members only.', () => setIsHabitTrackerOpen(true));
+  };
+  const openLogbook = () => {
+    dismissFeatureHint();
+    openMemberFeature('Logbook', 'The transformation logbook is available to active members only.', () => setIsLogbookOpen(true));
   };
 
   const openCalories = () => {
@@ -456,6 +466,8 @@ export default function ClientDashboard() {
   }
 
   const isSubscriptionActive = subscription?.isActive;
+  // Don't advertise the Habit Tracker + Logbook to clients who can't open them.
+  const showHint = showFeatureHint && !!isSubscriptionActive;
   const currentWorkout = workouts[selectedWorkoutIndex] || workouts[0];
   const currentDiet = diets[selectedDietIndex] || diets[0];
   const planName = subscription?.subscription?.plan?.name || '';
@@ -510,13 +522,14 @@ export default function ClientDashboard() {
             {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
             <div ref={newIconsRef} className="relative hidden sm:flex items-center gap-0.5">
             <button
-              onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
+              onClick={openHabitTracker}
               className="hdr-btn"
-              title="Habit Tracker"
+              aria-disabled={!isSubscriptionActive}
+              title={isSubscriptionActive ? 'Habit Tracker' : 'Habit Tracker — renew to unlock'}
               aria-label="Habit Tracker"
             >
               <ClipboardList />
-              {showFeatureHint && (
+              {showHint && (
                 <>
                   <span className="absolute inset-0 rounded-[10px] ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
                   <span className="absolute -top-1 -right-1 bg-amber-400 text-ink text-[8px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
@@ -524,13 +537,14 @@ export default function ClientDashboard() {
               )}
             </button>
             <button
-              onClick={() => { dismissFeatureHint(); setIsLogbookOpen(true); }}
+              onClick={openLogbook}
               className="hdr-btn"
-              title="Transformation Logbook"
+              aria-disabled={!isSubscriptionActive}
+              title={isSubscriptionActive ? 'Transformation Logbook' : 'Transformation Logbook — renew to unlock'}
               aria-label="Transformation Logbook"
             >
               <TrendingUp />
-              {showFeatureHint && (
+              {showHint && (
                 <>
                   <span className="absolute inset-0 rounded-[10px] ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
                   <span className="absolute -top-1 -right-1 bg-amber-400 text-ink text-[8px] font-extrabold leading-none px-1 py-0.5 rounded-full shadow">NEW</span>
@@ -541,7 +555,7 @@ export default function ClientDashboard() {
             {/* Friendly "hey, check this out" callout.
                Phones: a fixed, full-width banner just under the header (never clips off-screen).
                sm+: an icon-anchored speech bubble under the two glowing icons. */}
-            {showFeatureHint && (
+            {showHint && (
               <div className="fixed left-3 right-3 top-[72px] z-50 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-3 sm:w-[17rem] sm:max-w-[80vw]">
                 {/* Phones: arrow measured to point at the two NEW icons. */}
                 <div
@@ -559,7 +573,7 @@ export default function ClientDashboard() {
                   </p>
                   <div className="flex items-center gap-2 mt-3">
                     <button
-                      onClick={() => { dismissFeatureHint(); setIsHabitTrackerOpen(true); }}
+                      onClick={openHabitTracker}
                       className="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-brand-blue to-blue-600 hover:shadow-lg hover:shadow-brand-blue/25 transition-all"
                     >
                       Show me
@@ -1592,13 +1606,13 @@ export default function ClientDashboard() {
 
       {/* Video Library Modal */}
       <HabitTracker
-        isOpen={isHabitTrackerOpen}
+        isOpen={isHabitTrackerOpen && !!isSubscriptionActive}
         onClose={() => setIsHabitTrackerOpen(false)}
       />
 
       {user && (
         <TransformationLogModal
-          isOpen={isLogbookOpen}
+          isOpen={isLogbookOpen && !!isSubscriptionActive}
           onClose={() => setIsLogbookOpen(false)}
           userId={user.id}
           userName={user.name}
@@ -1657,8 +1671,8 @@ export default function ClientDashboard() {
         badges={{ chat: unreadChatCount }}
         moreItems={[
           ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', icon: Play, onSelect: openVideoLibrary, disabled: !isSubscriptionActive }] : []),
-          { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showFeatureHint, onSelect: () => { dismissFeatureHint(); setIsHabitTrackerOpen(true); } },
-          { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showFeatureHint, onSelect: () => { dismissFeatureHint(); setIsLogbookOpen(true); } },
+          { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showHint, onSelect: openHabitTracker, disabled: !isSubscriptionActive },
+          { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showHint, onSelect: openLogbook, disabled: !isSubscriptionActive },
           { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },
           { id: 'alerts', label: 'Notifications', icon: Bell, badge: notificationCount, onSelect: () => setIsNotificationPanelOpen(true) },
           { id: 'profile', label: 'Profile', icon: User, onSelect: () => { setActiveView('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },

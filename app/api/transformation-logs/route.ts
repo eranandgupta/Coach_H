@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth } from '@/lib/middleware';
+import { requireActiveSubscription } from '@/lib/middleware';
 
 export const dynamic = 'force-dynamic';
 
 // Coach / admin / trainer may read AND edit any client's logbook (they take Day-30
 // measurements in person). Clients only ever touch their own.
+// Clients need an active subscription; staff are exempt, so they can still open an expired client's logbook.
 const STAFF_ROLES = ['coach', 'admin', 'trainer'];
 
 const parseDate = (v: any) => {
@@ -136,7 +137,7 @@ async function deleteHandler(request: NextRequest, context: any) {
   }
 }
 
-export const GET = requireAuth(getHandler);
-export const POST = requireAuth(postHandler);
-export const PUT = requireAuth(putHandler);
-export const DELETE = requireAuth(deleteHandler);
+export const GET = requireActiveSubscription(getHandler);
+export const POST = requireActiveSubscription(postHandler);
+export const PUT = requireActiveSubscription(putHandler);
+export const DELETE = requireActiveSubscription(deleteHandler);
