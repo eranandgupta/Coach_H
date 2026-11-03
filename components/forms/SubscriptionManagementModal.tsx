@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Calendar, CheckCircle, Loader2 } from 'lucide-react';
+import RenewalPreview from '@/components/admin/RenewalPreview';
 
 interface SubscriptionManagementModalProps {
   isOpen: boolean;
@@ -235,6 +236,10 @@ export default function SubscriptionManagementModal({
                   </div>
                 </div>
               )}
+
+              <div className="text-gray-300">
+                <RenewalPreview clientId={client?.id} planId={selectedPlanId} duration={customDuration} />
+              </div>
 
               {/* Error Message */}
               {errors.submit && (

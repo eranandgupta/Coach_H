@@ -4,6 +4,7 @@ import {
   computeQueuePushes,
   computeRenewalWindow,
   eliteSessionsExhausted,
+  getEffectiveTotalSessions,
   getMaxPauseDays,
   pauseGraceEnd,
   type RenewalSource,
@@ -214,6 +215,30 @@ export async function createOrRenewSubscription(
     subscription,
     previousSub: current,
     bonusSessions: window.bonusSessions,
+    startDate: window.startDate,
+    endDate: window.endDate,
+  };
+}
+
+/**
+ * Read-only preview of what createOrRenewSubscription would do right now, so an admin sees session
+ * rollover and queueing before submitting. Uses the same policy function as the real write.
+ */
+export async function previewRenewal(
+  db: Db,
+  userId: number,
+  plan: { name: string; duration: number },
+  duration?: number | null,
+  now: Date = new Date()
+) {
+  const { current, queued } = await loadCoverage(db, userId, now);
+  const window = computeRenewalWindow(current, queued, plan.name, duration ?? plan.duration, now);
+  return {
+    currentPlanName: current?.plan.name ?? null,
+    rollover: window.supersedeId !== null,
+    queuedAfterCoverage: window.startDate.getTime() > now.getTime(),
+    carriedSessions: window.bonusSessions,
+    totalSessions: getEffectiveTotalSessions(plan.name, window.bonusSessions),
     startDate: window.startDate,
     endDate: window.endDate,
   };

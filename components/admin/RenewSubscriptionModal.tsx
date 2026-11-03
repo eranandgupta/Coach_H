@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import RenewalPreview from '@/components/admin/RenewalPreview';
 
 interface Plan {
   id: number;
@@ -153,6 +154,8 @@ export default function RenewSubscriptionModal({
               </SelectContent>
             </Select>
           </div>
+
+          <RenewalPreview clientId={client?.id} planId={planId} />
 
           <div className="space-y-2">
             <Label htmlFor="transactionId">Transaction ID</Label>

@@ -867,7 +867,7 @@ export default function AdminDashboard() {
                                     title={`Invoice: ${sub.plan.name} (${new Date(sub.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })})`}
                                     className="flex items-center gap-1 px-3 py-1.5 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-400 hover:bg-amber-500/30 hover:text-amber-300 transition-all text-xs">
                                     <FileText className="h-3.5 w-3.5" />
-                                    {sub.plan.name.split(' ')[0]} {new Date(sub.startDate).toLocaleDateString('en-IN', { month: 'short', year: '2-digit' })}
+                                    {sub.plan.name} {new Date(sub.startDate).toLocaleDateString('en-IN', { month: 'short', year: '2-digit' })}
                                   </button>
                                 ))}
                                 <button
