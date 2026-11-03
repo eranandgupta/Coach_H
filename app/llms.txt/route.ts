@@ -79,6 +79,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - Dedicated page: https://coachhimanshu.com/online-personal-trainer
 - City-specific pages (cost & convenience) for 30 major Indian cities: https://coachhimanshu.com/online-personal-trainer/{city} (e.g. /mumbai, /delhi, /bangalore, /hyderabad, /pune)
 - Goal-specific 1:1 pages: https://coachhimanshu.com/online-personal-trainer/for/{goal} — weight-loss, muscle-gain, weight-gain, beginners, toning
+- Health-condition 1:1 pages (same URL pattern, each cites WHO/NHS/ATA sources, coaching alongside a doctor's care, not medical treatment): pcos, thyroid, high-blood-pressure, fatty-liver, back-pain, knee-pain, postpartum
 
 ## What Every Plan Includes
 - Personalized workout plan tailored to individual goals

@@ -5,15 +5,27 @@
 // (approach, timeline, focus areas, FAQs) so it earns its place in the index.
 
 import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
+import { PT_CONDITIONS } from '@/lib/ptConditions';
 
 export interface PTGoalFaq {
   question: string;
   answer: string;
 }
 
+export interface PTGoalHealth {
+  aboutType: 'MedicalCondition' | null; // schema.org type of the page's subject
+  aboutName: string;
+  evidence: { text: string; source: string; url: string }[];
+  doctorNote: string;
+  urgent?: { heading: string; items: string[]; source: string; url: string };
+  guides: { title: string; href: string }[];
+  ctaHeading: string;
+}
+
 export interface PTGoal {
   slug: string;
   name: string;            // "Weight Loss"
+  sentenceName?: string;   // mid-sentence form; defaults to lowercase `name` (keeps "PCOS" intact)
   metaTitle: string;
   metaDescription: string;
   heroLead: string;        // gradient part of H1
@@ -24,6 +36,7 @@ export interface PTGoal {
   timeline: string;        // honest expectation line
   focusChips: string[];
   faqs: PTGoalFaq[];
+  health?: PTGoalHealth;   // only on the health-condition pages (lib/ptConditions.ts)
 }
 
 export const PT_GOALS: PTGoal[] = [
@@ -165,9 +178,9 @@ export const PT_GOALS: PTGoal[] = [
 ];
 
 export function getGoalBySlug(slug: string): PTGoal | undefined {
-  return PT_GOALS.find((g) => g.slug === slug);
+  return [...PT_GOALS, ...PT_CONDITIONS].find((g) => g.slug === slug);
 }
 
 export function getAllGoalSlugs(): string[] {
-  return PT_GOALS.map((g) => g.slug);
+  return [...PT_GOALS, ...PT_CONDITIONS].map((g) => g.slug);
 }

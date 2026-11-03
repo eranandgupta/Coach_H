@@ -9,6 +9,7 @@ import { getElitePlans, getEliteOfferRange } from '@/lib/personalTraining';
 import { PT_COMPARISON, PT_FAQS } from '@/lib/personalTraining';
 import { CITIES } from '@/lib/cities';
 import { PT_GOALS } from '@/lib/ptGoals';
+import { PT_CONDITIONS } from '@/lib/ptConditions';
 import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
 
 const PAGE_URL = 'https://coachhimanshu.com/online-personal-trainer';
@@ -474,6 +475,30 @@ export default function OnlinePersonalTrainerPage() {
                 <h3 className="text-lg font-bold text-white mb-1">For {g.name}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{g.metaDescription.split('.')[0]}.</p>
                 <span className="inline-block mt-3 text-brand-gold text-sm">Explore →</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Health conditions — internal links to condition-specific 1:1 pages */}
+      <section className="py-16 md:py-24 border-t border-white/[0.06]">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            Training With a Health Condition
+          </h2>
+          <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+            Live 1:1 coaching planned around your doctor&apos;s advice, with what the health bodies say on each page.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {PT_CONDITIONS.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/online-personal-trainer/for/${g.slug}`}
+                className="block p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-brand-blue/30 transition-all duration-300"
+              >
+                <h3 className="text-base font-bold text-white">{g.name}</h3>
+                <span className="inline-block mt-2 text-brand-gold text-sm">Explore →</span>
               </Link>
             ))}
           </div>
