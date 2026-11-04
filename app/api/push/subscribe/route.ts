@@ -28,6 +28,12 @@ export async function POST(request: NextRequest) {
 
     const endpointHash = hashEndpoint(endpoint);
 
+    // A browser has one endpoint whoever is logged in. Drop any previous owner on this device, or
+    // their private chat messages would keep appearing on the lock screen of the new user.
+    await prisma.pushSubscription.deleteMany({
+      where: { endpointHash, userId: { not: authUser.userId } },
+    });
+
     // Save or update subscription
     const subscription = await prisma.pushSubscription.upsert({
       where: {

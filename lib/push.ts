@@ -21,6 +21,19 @@ export interface PushNotificationPayload {
   badge?: string;
   url?: string;
   tag?: string;
+  /** Alert again when this replaces a notification with the same tag. */
+  renotify?: boolean;
+  /** Set for chat messages: lets the app open that chat, and stay quiet if it's on screen. */
+  conversationId?: number;
+}
+
+export interface PushDeliveryOptions {
+  /** Seconds the push service keeps trying if the device is offline. */
+  TTL?: number;
+  /** 'high' wakes a phone in Doze / on the lock screen; default 'normal' can be held back. */
+  urgency?: 'very-low' | 'low' | 'normal' | 'high';
+  /** Milliseconds to wait for the push service. */
+  timeout?: number;
 }
 
 /**
@@ -28,7 +41,8 @@ export interface PushNotificationPayload {
  */
 export async function sendPushToUser(
   userId: number,
-  payload: PushNotificationPayload
+  payload: PushNotificationPayload,
+  options?: PushDeliveryOptions
 ) {
   try {
     // Get all subscriptions for this user
@@ -52,7 +66,8 @@ export async function sendPushToUser(
                 auth: sub.auth,
               },
             },
-            JSON.stringify(payload)
+            JSON.stringify(payload),
+            options
           );
           return { success: true };
         } catch (error: any) {

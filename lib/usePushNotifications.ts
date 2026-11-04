@@ -2,6 +2,21 @@ import { useEffect, useState } from 'react';
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
+// Tell the server this device belongs to the logged-in user.
+async function saveSubscription(sub: PushSubscription) {
+  const { endpoint, keys } = sub.toJSON();
+  const token = localStorage.getItem('token');
+  const res = await fetch('/api/push/subscribe', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ endpoint, keys }),
+  });
+  if (!res.ok) throw new Error(`Saving push subscription failed: ${res.status}`);
+}
+
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -20,11 +35,13 @@ export function usePushNotifications() {
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [permission, setPermission] = useState<NotificationPermission>('default');
 
   useEffect(() => {
     // Check if push notifications are supported
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true);
+      setPermission(Notification.permission);
       checkSubscription();
     }
   }, []);
@@ -32,7 +49,16 @@ export function usePushNotifications() {
   const checkSubscription = async () => {
     try {
       const registration = await navigator.serviceWorker.ready;
-      const sub = await registration.pushManager.getSubscription();
+      let sub = await registration.pushManager.getSubscription();
+      // Permission already given needs no prompt, so re-link this device on every visit. That
+      // covers logging back in, a browser that rotated its endpoint, and a row the server dropped.
+      if (Notification.permission === 'granted' && VAPID_PUBLIC_KEY) {
+        sub = sub || await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        });
+        await saveSubscription(sub);
+      }
       setSubscription(sub);
       setIsSubscribed(!!sub);
     } catch (error) {
@@ -50,9 +76,10 @@ export function usePushNotifications() {
 
     try {
       // Request notification permission
-      const permission = await Notification.requestPermission();
+      const result = await Notification.requestPermission();
+      setPermission(result);
 
-      if (permission !== 'granted') {
+      if (result !== 'granted') {
         console.log('Notification permission denied');
         setLoading(false);
         return false;
@@ -67,27 +94,10 @@ export function usePushNotifications() {
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
 
+      await saveSubscription(sub);
+
       setSubscription(sub);
       setIsSubscribed(true);
-
-      // Send subscription to server
-      const token = localStorage.getItem('token');
-      if (token) {
-        await fetch('/api/push/subscribe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            endpoint: sub.endpoint,
-            keys: {
-              p256dh: arrayBufferToBase64(sub.getKey('p256dh')!),
-              auth: arrayBufferToBase64(sub.getKey('auth')!),
-            },
-          }),
-        });
-      }
 
       setLoading(false);
       return true;
@@ -131,18 +141,10 @@ export function usePushNotifications() {
   return {
     isSupported,
     isSubscribed,
+    permission,
     subscription,
     loading,
     subscribe,
     unsubscribe,
   };
-}
-
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-  const bytes = new Uint8Array(buffer);
-  let binary = '';
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return window.btoa(binary);
 }

@@ -68,9 +68,11 @@ interface ChatViewProps {
   trainerName?: string;
   trainerUserId?: number;
   onMessagesRead?: () => void;
+  /** False while the surrounding chat panel is closed. */
+  onScreen?: boolean;
 }
 
-export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId, onMessagesRead }: ChatViewProps) {
+export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId, onMessagesRead, onScreen = true }: ChatViewProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -170,6 +172,24 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
       window.removeEventListener('online', fetchMessages);
     };
   }, [fetchMessages, conversationId, userId, readOnly]);
+
+  // Lock-screen notifications: tell the service worker when this chat is on screen, so it stays
+  // quiet, and clear this chat's alerts from the notification tray once it's being read.
+  useEffect(() => {
+    if (!onScreen || !('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.getRegistration().then(async (registration) => {
+      const shown = await registration?.getNotifications({ tag: `chat-${conversationId}` });
+      shown?.forEach((n) => n.close());
+    }).catch(() => {});
+
+    const onWorkerMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'is-viewing-chat') {
+        event.ports[0]?.postMessage(!document.hidden && event.data.conversationId === conversationId);
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', onWorkerMessage);
+    return () => navigator.serviceWorker.removeEventListener('message', onWorkerMessage);
+  }, [conversationId, onScreen]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {

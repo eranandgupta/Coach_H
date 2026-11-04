@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, trainerPermissionError } from '@/lib/middleware';
+import { notifyChatMessage } from '@/lib/chatPush';
 
 const RETRY_MATCH_SLACK_MS = 30000;
 
@@ -138,6 +139,8 @@ async function postHandler(request: NextRequest, context: any) {
     } catch (error) {
       console.error('Error updating conversation timestamp:', error);
     }
+
+    await notifyChatMessage(conversation, user.userId, message.content);
 
     return Response.json({ message });
   } catch (error) {

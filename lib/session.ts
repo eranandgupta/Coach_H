@@ -52,7 +52,27 @@ export async function loadSession(retries = 2): Promise<SessionResult> {
   return { status: 'error' };
 }
 
+// Stop this device receiving the user's chat notifications once they log out. Must run while
+// still authenticated. Bounded, so a slow network can never hold up logging out.
+async function removeDevicePushSubscription(): Promise<void> {
+  try {
+    const registration = await navigator.serviceWorker?.getRegistration();
+    const sub = await registration?.pushManager.getSubscription();
+    if (!sub) return;
+    const token = getToken();
+    await fetch(`/api/push/subscribe?endpoint=${encodeURIComponent(sub.endpoint)}`, {
+      method: 'DELETE',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      credentials: 'same-origin',
+      signal: AbortSignal.timeout(2000),
+    });
+  } catch {
+    // best effort
+  }
+}
+
 export async function logout(): Promise<void> {
+  await removeDevicePushSubscription();
   try {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

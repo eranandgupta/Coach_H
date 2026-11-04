@@ -29,9 +29,13 @@ interface ChatContainerProps {
   userRole: string;
   onClose?: () => void;
   onUnreadChange?: (count: number) => void;
+  /** False while the chat panel is closed (it stays mounted in the coach and trainer dashboards). */
+  open?: boolean;
+  /** Set from a tapped notification. A new object re-opens the chat even if the id is unchanged. */
+  openConversation?: { id: number } | null;
 }
 
-export default function ChatContainer({ userId, userRole, onClose, onUnreadChange }: ChatContainerProps) {
+export default function ChatContainer({ userId, userRole, onClose, onUnreadChange, open = true, openConversation }: ChatContainerProps) {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedConv, setSelectedConv] = useState<ConversationItem | null>(null);
   const [coachInfo, setCoachInfo] = useState<Participant | null>(null);
@@ -146,6 +150,17 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
     );
   }, []);
 
+  // Open the chat a tapped notification points at, as soon as the list has it.
+  const handledOpenRef = useRef<{ id: number } | null>(null);
+  useEffect(() => {
+    if (!openConversation || handledOpenRef.current === openConversation) return;
+    const conv = conversations.find((c) => c.id === openConversation.id);
+    if (!conv) return;
+    handledOpenRef.current = openConversation;
+    setSelectedConv(conv);
+    setConversations((prev) => prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c)));
+  }, [openConversation, conversations]);
+
   const handleStartChat = async (client: Participant) => {
     try {
       const token = localStorage.getItem('token');
@@ -191,6 +206,7 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
     return (
       <ChatView
         conversationId={selectedConv.id}
+        onScreen={open}
         participant={selectedConv.participant}
         userId={userId}
         onMessagesRead={handleMessagesRead}
@@ -224,6 +240,7 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
             <ChatView
               key={selectedConv.id}
               conversationId={selectedConv.id}
+              onScreen={open}
               participant={selectedConv.participant}
               userId={userId}
               onMessagesRead={handleMessagesRead}
