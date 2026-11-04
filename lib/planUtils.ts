@@ -3,6 +3,17 @@ export function isElitePlan(planName: string): boolean {
   return /elite\s*1\s*[:\-]?\s*1/i.test(planName || '');
 }
 
+// Coarse plan type for filtering. Plans have no category column, so this keys off the name.
+// Everything that isn't Elite 1:1 or Home Workout (Kickstart, Strength, Rehabilitation, ...) is 'gym'.
+export type PlanCategory = 'gym' | 'elite' | 'home';
+
+export function planCategory(planName: string): PlanCategory {
+  const name = planName || '';
+  if (isElitePlan(name)) return 'elite';
+  if (/\bhome\b/i.test(name)) return 'home';
+  return 'gym';
+}
+
 export function getTotalSessions(planName: string): number | null {
   // Match "N Sessions" with or without surrounding parentheses (e.g. "(24 Sessions)" or "24 Session").
   const match = (planName || '').match(/(\d+)\s*sessions?/i);

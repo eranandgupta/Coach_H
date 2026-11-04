@@ -154,14 +154,14 @@ export default function ViewWorkoutModal({ isOpen, onClose, workout, userEmail, 
                                     key={idx}
                                     className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-all"
                                   >
-                                    <div className="flex items-start justify-between mb-2">
-                                      <div className="flex items-center gap-2">
-                                        <h5 className="text-lg font-semibold text-white">{exercise.name}</h5>
+                                    <div className="flex items-start justify-between gap-3 mb-2">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <h5 className="text-lg font-semibold text-white break-words min-w-0">{exercise.name}</h5>
                                         {exercise.exerciseType === 'dropset' && (
                                           <span className="px-2 py-0.5 bg-red-500/20 text-red-300 rounded text-xs font-semibold">DROP SET</span>
                                         )}
                                       </div>
-                                      <div className="flex gap-3 text-sm">
+                                      <div className="flex gap-3 text-sm shrink-0">
                                         {exercise.sets && exercise.reps && (
                                           <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full">
                                             {exercise.sets}×{exercise.reps}

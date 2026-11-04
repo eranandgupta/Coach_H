@@ -158,7 +158,7 @@ export default function MobileBottomNav({ role, activeTab, onTabChange, onAction
     )}
     <div className="fixed bottom-0 inset-x-0 z-50 lg:hidden" style={{ background: 'rgb(var(--c-navy) / 0.98)' }}>
       <div className="border-t border-white/[0.08]">
-        <nav className="flex items-stretch">
+        <nav data-tour="bottom-nav" className="flex items-stretch">
           {items.map((item) => {
             const isActive = item.id === 'more' ? moreOpen || active === 'more' : active === item.id;
             const Icon = item.icon;

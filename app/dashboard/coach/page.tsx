@@ -50,7 +50,7 @@ import DashboardLoader from '@/components/DashboardLoader';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
+import { isElitePlan, isSubscriptionCurrentlyActive, planCategory, subscriptionDisplayStatus, type PlanCategory } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { loadSession, logout } from '@/lib/session';
 import ThemeToggle from '@/components/theme/ThemeToggle';
@@ -60,6 +60,8 @@ import { avatarTone } from '@/lib/avatarTone';
 import { lastActiveAt, lastActiveLabel } from '@/lib/lastActive';
 import { usePresenceHeartbeat } from '@/lib/usePresence';
 import ChatContainer from '@/components/chat/ChatContainer';
+import PushPrompt from '@/components/PushPrompt';
+import { useChatDeepLink } from '@/lib/useChatDeepLink';
 import TrainerAssignmentModal from '@/components/forms/TrainerAssignmentModal';
 import TrainerManagementModal from '@/components/forms/TrainerManagementModal';
 import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
@@ -100,6 +102,7 @@ export default function CoachDashboard() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [clientTab, setClientTab] = useState<'active' | 'inactive'>('active');
+  const [planFilter, setPlanFilter] = useState<'all' | PlanCategory>('all');
   const [enrollPage, setEnrollPage] = useState(1);
   const [blogPage, setBlogPage] = useState(1);
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
@@ -128,6 +131,12 @@ export default function CoachDashboard() {
   const [deletingSubId, setDeletingSubId] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  // Tapping a chat notification opens that chat.
+  const [chatTarget, setChatTarget] = useState<{ id: number } | null>(null);
+  useChatDeepLink((id) => {
+    setChatTarget({ id });
+    setIsChatOpen(true);
+  });
   const [isTrainerAssignmentOpen, setIsTrainerAssignmentOpen] = useState(false);
   const [isTrainerManagementOpen, setIsTrainerManagementOpen] = useState(false);
   const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
@@ -469,10 +478,38 @@ export default function CoachDashboard() {
     client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  // My Clients is split into Active / Inactive tabs (default Active).
-  const filteredClients = searchedClients.filter((c) =>
-    clientTab === 'active' ? isClientActive(c) : !isClientActive(c)
-  );
+  // The plan a client card features: the one covering today; else the queued (upcoming) one; else newest.
+  const featuredSubscription = (c: any) => {
+    const subs = c.subscriptions || [];
+    return (
+      subs.find((s: any) => isSubscriptionCurrentlyActive(s, now)) ||
+      subs.find((s: any) => subscriptionDisplayStatus(s, now) === 'upcoming') ||
+      subs[0]
+    );
+  };
+  // Plan type follows the featured plan, so the filter always agrees with what the card shows.
+  // Clients who never had a plan have no type and only appear under "All".
+  const clientPlanCategory = (c: any): PlanCategory | null => {
+    const sub = featuredSubscription(c);
+    return sub ? planCategory(sub.plan?.name) : null;
+  };
+  const inClientTab = (c: any) => (clientTab === 'active' ? isClientActive(c) : !isClientActive(c));
+  const matchesPlanFilter = (c: any) => planFilter === 'all' || clientPlanCategory(c) === planFilter;
+
+  // My Clients is split into Active / Inactive tabs (default Active), then by plan type.
+  const filteredClients = searchedClients.filter((c) => inClientTab(c) && matchesPlanFilter(c));
+
+  // Each control's counts reflect the other control's selection, so they read as what you'd get on click.
+  const planFilteredClients = clients.filter(matchesPlanFilter);
+  const activeTabCount = planFilteredClients.filter(isClientActive).length;
+  const inactiveTabCount = planFilteredClients.length - activeTabCount;
+  const tabClients = clients.filter(inClientTab);
+  const planFilterOptions = [
+    { key: 'all', label: 'All', count: tabClients.length },
+    { key: 'gym', label: 'Gym', count: tabClients.filter((c) => clientPlanCategory(c) === 'gym').length },
+    { key: 'elite', label: '1:1', count: tabClients.filter((c) => clientPlanCategory(c) === 'elite').length },
+    { key: 'home', label: 'Home', count: tabClients.filter((c) => clientPlanCategory(c) === 'home').length },
+  ] as const;
 
   // Pagination for New Enrollments and Manage Blog Posts.
   const PAGE_SIZE = 6;
@@ -699,7 +736,7 @@ export default function CoachDashboard() {
 
             {/* Active / Inactive segmented control (default Active) */}
             <div role="tablist" aria-label="Client status" className="inline-flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-              {([['active', 'Active', activeClientsCount], ['inactive', 'Inactive', inactiveClientsCount]] as const).map(([key, label, count]) => {
+              {([['active', 'Active', activeTabCount], ['inactive', 'Inactive', inactiveTabCount]] as const).map(([key, label, count]) => {
                 const selected = clientTab === key;
                 return (
                   <button
@@ -714,6 +751,28 @@ export default function CoachDashboard() {
                     }`}
                   >
                     <span className={`w-1.5 h-1.5 rounded-full ${key === 'active' ? 'bg-emerald-400' : 'bg-rose-400'} ${selected ? '' : 'opacity-50'}`} />
+                    {label}
+                    <span className={`min-w-[22px] px-1.5 py-0.5 rounded-md text-[11px] leading-none tabular-nums ${selected ? 'bg-white/[0.08] text-gray-300' : 'bg-white/[0.04] text-gray-500'}`}>{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Plan type filter */}
+            <div role="group" aria-label="Filter by plan type" className="inline-flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+              {planFilterOptions.map(({ key, label, count }) => {
+                const selected = planFilter === key;
+                return (
+                  <button
+                    key={key}
+                    aria-pressed={selected}
+                    onClick={() => setPlanFilter(key)}
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                      selected
+                        ? 'bg-brand-navy-light text-white shadow-sm ring-1 ring-white/[0.08]'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
                     {label}
                     <span className={`min-w-[22px] px-1.5 py-0.5 rounded-md text-[11px] leading-none tabular-nums ${selected ? 'bg-white/[0.08] text-gray-300' : 'bg-white/[0.04] text-gray-500'}`}>{count}</span>
                   </button>
@@ -738,7 +797,11 @@ export default function CoachDashboard() {
               <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400 mb-2">No clients found</p>
               <p className="text-gray-500 text-sm">
-                {searchTerm ? 'Try a different search term' : 'Start by creating workout plans for your clients'}
+                {searchTerm
+                  ? 'Try a different search term'
+                  : planFilter !== 'all'
+                    ? 'No clients on this plan type in this tab'
+                    : 'Start by creating workout plans for your clients'}
               </p>
             </div>
           ) : (
@@ -783,12 +846,7 @@ export default function CoachDashboard() {
 
                     {/* Subscription */}
                     {client.subscriptions && client.subscriptions.length > 0 && (() => {
-                      // Feature the plan covering today; else the queued (upcoming) one; else newest.
-                      const subs = client.subscriptions;
-                      const sub =
-                        subs.find((s: any) => isSubscriptionCurrentlyActive(s, now)) ||
-                        subs.find((s: any) => subscriptionDisplayStatus(s, now) === 'upcoming') ||
-                        subs[0];
+                      const sub = featuredSubscription(client);
                       const ds = subscriptionDisplayStatus(sub, now);
                       const isActive = ds === 'active' || ds === 'paused';
                       const hasCoverage = isActive || ds === 'upcoming';
@@ -1186,8 +1244,8 @@ export default function CoachDashboard() {
         </motion.div>
         </div>
 
-        {/* Right rail — what needs attention today */}
-        <div className="mt-6 xl:mt-0">
+        {/* Right rail — what needs attention today. Stretches to the full grid height so the sticky aside has room to stick. */}
+        <div className="mt-6 xl:mt-0 xl:self-stretch">
           <CoachInsightsRail
             clients={clients}
             workouts={workouts}
@@ -1376,7 +1434,7 @@ export default function CoachDashboard() {
         {/* Chat Content */}
         {user && (
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} onUnreadChange={setUnreadChatCount} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
+            <ChatContainer userId={user.id} userRole={user.role} open={isChatOpen} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
           </div>
         )}
 
@@ -1385,6 +1443,8 @@ export default function CoachDashboard() {
       </div>
 
       {/* Mobile Bottom Navigation */}
+      <PushPrompt />
+
       <MobileBottomNav
         role="coach"
         activeTab={isChatOpen ? 'chat' : undefined}

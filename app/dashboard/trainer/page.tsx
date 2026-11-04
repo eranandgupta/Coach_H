@@ -25,6 +25,8 @@ import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
 import DashboardLoader from '@/components/DashboardLoader';
 import ChatContainer from '@/components/chat/ChatContainer';
+import PushPrompt from '@/components/PushPrompt';
+import { useChatDeepLink } from '@/lib/useChatDeepLink';
 import { ALL_TRAINER_PERMISSIONS, resolveTrainerPermissions, type TrainerPermissions } from '@/lib/trainerPermissions';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -60,6 +62,12 @@ export default function TrainerDashboard() {
   const [selectedDiet, setSelectedDiet] = useState<any>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  // Tapping a chat notification opens that chat.
+  const [chatTarget, setChatTarget] = useState<{ id: number } | null>(null);
+  useChatDeepLink((id) => {
+    setChatTarget({ id });
+    setIsChatOpen(true);
+  });
   // What the coach has given this trainer access to (Manage Trainer). The server enforces it too.
   const [perms, setPerms] = useState<TrainerPermissions>(ALL_TRAINER_PERMISSIONS);
 
@@ -685,7 +693,7 @@ export default function TrainerDashboard() {
 
         {user && (
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} onUnreadChange={setUnreadChatCount} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
+            <ChatContainer userId={user.id} userRole={user.role} open={isChatOpen} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
           </div>
         )}
 
@@ -693,6 +701,8 @@ export default function TrainerDashboard() {
       </div>
 
       {/* Mobile Bottom Navigation */}
+      <PushPrompt />
+
       <MobileBottomNav
         role="trainer"
         activeTab={isChatOpen ? 'chat' : undefined}

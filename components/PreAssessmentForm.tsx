@@ -399,7 +399,10 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
 
               return (
                 <div key={step.id} className="flex items-center">
-                  <div className="flex flex-col items-center">
+                  <div
+                    className="flex flex-col items-center"
+                    ref={isActive ? (el) => el?.scrollIntoView({ block: 'nearest', inline: 'center' }) : undefined}
+                  >
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${
                         isActive
@@ -1258,12 +1261,12 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
         </motion.div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-2">
             {isEditMode && onCancel && (
               <button
                 onClick={onCancel}
-                className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-all"
+                className="flex items-center gap-2 px-3 sm:px-6 py-3 rounded-lg font-medium bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-all"
               >
                 <X size={20} />
                 Cancel
@@ -1272,21 +1275,22 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
             <button
               onClick={handlePrev}
               disabled={currentStepIndex === 0}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+              aria-label="Previous"
+              className={`flex items-center gap-2 px-3 sm:px-6 py-3 rounded-lg font-medium transition-all ${
                 currentStepIndex === 0
                   ? 'opacity-50 cursor-not-allowed bg-brand-navy-light text-gray-500'
                   : 'bg-brand-navy-light text-white hover:bg-brand-navy-light/80'
               }`}
             >
               <ChevronLeft size={20} />
-              Previous
+              <span className="hidden sm:inline">Previous</span>
             </button>
           </div>
 
           {currentStepIndex < steps.length - 1 ? (
             <button
               onClick={handleNextWithValidation}
-              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-gradient-to-r from-brand-blue to-brand-blue-dark text-white hover:shadow-[0_0_30px_rgba(23,95,255,0.4)] transition-all"
+              className="ml-auto flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-medium bg-gradient-to-r from-brand-blue to-brand-blue-dark text-white hover:shadow-[0_0_30px_rgba(23,95,255,0.4)] transition-all"
             >
               Next
               <ChevronRight size={20} />
@@ -1295,7 +1299,7 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
             <button
               onClick={handleSubmitWithValidation}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-8 py-3 rounded-lg font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ml-auto flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

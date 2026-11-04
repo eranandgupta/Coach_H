@@ -17,8 +17,6 @@ import {
   Key,
   MessageSquare,
   Play,
-  FileText,
-  Clock,
   ChevronRight,
   ChevronLeft,
   Calculator,
@@ -29,15 +27,13 @@ import {
   Shield,
   ClipboardList,
   Pause,
-  PlayCircle, Hand
+  PlayCircle, Hand, HelpCircle,
 } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ViewWorkoutModal from '@/components/modals/ViewWorkoutModal';
 import ViewDietModal from '@/components/modals/ViewDietModal';
 import EditAssessmentModal from '@/components/modals/EditAssessmentModal';
-import LatestBlogWidget from '@/components/LatestBlogWidget';
 import NotificationPanel from '@/components/NotificationPanel';
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal';
 import DashboardLoader from '@/components/DashboardLoader';
@@ -47,7 +43,14 @@ import TransformationLogModal from '@/components/TransformationLogModal';
 import RenewModal from '@/components/RenewModal';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
-import { usePushNotifications } from '@/lib/usePushNotifications';
+import PushPrompt from '@/components/PushPrompt';
+import ArticlesRow from '@/components/client/ArticlesRow';
+import CurrentPlanCard, { type LoadStatus } from '@/components/client/CurrentPlanCard';
+import DashboardTour, { type TourStep } from '@/components/client/DashboardTour';
+import InfoTip from '@/components/client/InfoTip';
+import QuickActions, { type QuickAction } from '@/components/client/QuickActions';
+import { useChatDeepLink } from '@/lib/useChatDeepLink';
+import { flushChatOutbox } from '@/lib/chatOutbox';
 import { isStaffRole } from '@/lib/trainerPermissions';
 import { usePresenceHeartbeat } from '@/lib/usePresence';
 import { toast } from 'sonner';
@@ -62,7 +65,24 @@ const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator')
   loading: () => <div className="h-64 rounded-2xl bg-white/[0.03] border border-white/[0.06] animate-pulse" />,
 });
 import ChatContainer from '@/components/chat/ChatContainer';
-import { flushChatOutbox } from '@/lib/chatOutbox';
+
+const TOUR_SEEN_KEY = 'ch_client_tour_seen';
+const RENEW_REMINDER_DAYS = 14;
+
+const TOUR_STEPS: TourStep[] = [
+  { target: 'status', title: 'Your plan at a glance', body: 'See your plan, how many days are left and how far along you are. Each box in the row below is one week or session. You can pause your plan here too, if your plan allows it.' },
+  { target: 'live', title: 'Your live sessions', body: 'Join your live training sessions from here. The link appears once your coach has scheduled one.' },
+  { target: 'stats', title: 'Your numbers', body: 'A quick count of your active workouts and diet plans, plus the week or session you are on.' },
+  { target: 'quick-actions', title: 'Your tools', body: 'Message your coach, watch exercise videos, track daily habits, log your transformation, count calories or update your assessment.' },
+  { target: 'workout', title: 'Your workout', body: 'Today\'s exercises appear first. Tap a day to see another one, or open the full workout for all the details and videos.' },
+  { target: 'diet', title: 'Your diet', body: 'Today\'s meals appear first, with the total calories for the day. Open the full plan to see everything your coach has written.' },
+  { target: 'header-actions', title: 'Always within reach', body: 'Notifications, chat, light or dark mode and your password are up here. Hover over any icon to see what it does.' },
+  { target: 'bottom-nav', title: 'Getting around', body: 'Jump to your workout, diet or chat from here. More holds your other tools, your profile and this guide.' },
+];
+
+// Stable references: CurrentPlanCard memoises on these.
+const exercisesOf = (workout: any) => workout?.exercises || [];
+const mealsOf = (diet: any) => diet?.meals || [];
 
 export default function ClientDashboard() {
   const router = useRouter();
@@ -70,6 +90,10 @@ export default function ClientDashboard() {
   const [subscription, setSubscription] = useState<any>(null);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [diets, setDiets] = useState<any[]>([]);
+  const [workoutsStatus, setWorkoutsStatus] = useState<LoadStatus>('loading');
+  const [dietsStatus, setDietsStatus] = useState<LoadStatus>('loading');
+  const [isTourOpen, setIsTourOpen] = useState(false);
+  const blogLoadedRef = useRef(false);
   const [loading, setLoading] = useState(true);
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
   const [isDietModalOpen, setIsDietModalOpen] = useState(false);
@@ -131,9 +155,13 @@ export default function ClientDashboard() {
   // Hides the callout for this visit only; it reappears on the next visit within the week.
   const dismissFeatureHint = () => setShowFeatureHint(false);
 
-  // Push notifications
-  const { isSupported, isSubscribed, subscribe } = usePushNotifications();
   usePresenceHeartbeat();
+  // Tapping a chat notification opens that chat.
+  const [chatTarget, setChatTarget] = useState<{ id: number } | null>(null);
+  useChatDeepLink((id) => {
+    setChatTarget({ id });
+    setActiveView('chat');
+  });
 
   // Active-subscription perks; inactive clients get a renew prompt.
   const openMemberFeature = (label: string, description: string, open: () => void) => {
@@ -226,18 +254,6 @@ export default function ClientDashboard() {
     };
   }, []);
 
-  // Auto-subscribe to push notifications if supported and not already subscribed
-  useEffect(() => {
-    if (isSupported && !isSubscribed && user) {
-      // Wait a bit before requesting permission (better UX)
-      const timer = setTimeout(() => {
-        subscribe();
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isSupported, isSubscribed, user, subscribe]);
-
   const fetchNotificationCount = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -267,21 +283,49 @@ export default function ClientDashboard() {
     }
   };
 
+  // A failed refresh keeps what's already on screen: only a first load can land in the error state,
+  // and never as "no plan yet", which would wrongly tell the client they have nothing assigned.
+  const loadWorkouts = () => {
+    const token = localStorage.getItem('token');
+    return fetch('/api/workouts/my-workouts', { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+      .then((res) => {
+        if (!res.ok) throw new Error(String(res.status));
+        return res.json();
+      })
+      .then((data) => {
+        setWorkouts(data.currentWorkouts || []);
+        setWorkoutsStatus('ready');
+      })
+      .catch(() => setWorkoutsStatus((s) => (s === 'ready' ? s : 'error')));
+  };
+
+  const loadDiets = () => {
+    const token = localStorage.getItem('token');
+    return fetch('/api/diets/my-diets', { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+      .then((res) => {
+        if (!res.ok) throw new Error(String(res.status));
+        return res.json();
+      })
+      .then((data) => {
+        setDiets(data.currentDiets || []);
+        setDietsStatus('ready');
+      })
+      .catch(() => setDietsStatus((s) => (s === 'ready' ? s : 'error')));
+  };
+
   const fetchDashboardData = async () => {
     try {
-
-      // Essential: /api/auth/me determines the user and any redirect. Block the
-      // loader on THIS request only. Previously all 5 calls below ran
-      // sequentially before the loader cleared, so the "Loading Dashboard"
-      // screen stayed up for the sum of every request's latency — 15-25s on a
-      // cold start / slow connection (worst in Safari). Everything else now
-      // loads in parallel in the background so the dashboard appears at once.
-      // Restores from the session cookie if localStorage was wiped; only a real 401
-      // sends the user home — network/server hiccups retry instead of logging out.
+      // Essential: /api/auth/me determines the user and any redirect, so the loader waits on THIS
+      // request only and everything else loads in parallel behind it. It restores from the session
+      // cookie if localStorage was wiped; only a real 401 sends the user home.
       const session = await loadSession();
       if (session.status === 'unauthenticated') { window.location.href = '/'; return; }
-      if (session.status === 'error') { toast.error('Connection problem — retrying…'); setTimeout(fetchDashboardData, 4000); return; }
-      const token = session.token as string;
+      if (session.status === 'error') {
+        // Stay on the loader: without a session, the page would falsely show "Subscription Expired".
+        toast.error('Connection problem — retrying…');
+        setTimeout(fetchDashboardData, 4000);
+        return;
+      }
       const userData = { user: session.user, subscription: session.subscription };
 
       // Check if client has completed assessment (coaches and admins skip this check)
@@ -294,24 +338,17 @@ export default function ClientDashboard() {
       setSubscription(userData.subscription);
       setLoading(false); // dashboard shell can render now; rest streams in
 
-      // Secondary data — fetched in parallel, never blocks the loader. Each
-      // section already renders an empty/placeholder state until its data lands.
-      const authHeader = { headers: { Authorization: `Bearer ${token}` } };
+      loadWorkouts();
+      loadDiets();
 
-      fetch('/api/workouts/my-workouts', authHeader)
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => { if (data) setWorkouts(data.currentWorkouts); })
-        .catch(() => {});
-
-      fetch('/api/diets/my-diets', authHeader)
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => { if (data) setDiets(data.currentDiets); })
-        .catch(() => {});
-
-      fetch('/api/blog')
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => { if (data) setBlogPosts(data.slice(0, 6)); }) // latest 6
-        .catch(() => {});
+      // Articles don't change minute to minute: load once, not on every background refresh.
+      if (!blogLoadedRef.current) {
+        blogLoadedRef.current = true;
+        fetch('/api/blog')
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => { if (data) setBlogPosts(data.slice(0, 6)); }) // latest 6
+          .catch(() => { blogLoadedRef.current = false; });
+      }
 
       // Completed sessions for Elite 1:1 plans
       const subPlanName = userData.subscription?.subscription?.plan?.name || '';
@@ -323,8 +360,8 @@ export default function ClientDashboard() {
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-    } finally {
-      setLoading(false);
+      toast.error('Something went wrong loading your dashboard — retrying…');
+      setTimeout(fetchDashboardData, 4000);
     }
   };
 
@@ -332,6 +369,29 @@ export default function ClientDashboard() {
   useEffect(() => {
     if (user?.id) flushChatOutbox(user.id);
   }, [user?.id]);
+
+  // First visit: offer the guide once the sections below have their data, so it highlights real
+  // content and not loading placeholders.
+  const plansSettled = workoutsStatus !== 'loading' && dietsStatus !== 'loading';
+  useEffect(() => {
+    if (loading || !plansSettled || activeView !== 'dashboard') return;
+    let seen = true;
+    try { seen = !!localStorage.getItem(TOUR_SEEN_KEY); } catch {}
+    if (seen) return;
+    const timer = setTimeout(() => setIsTourOpen(true), 600);
+    return () => clearTimeout(timer);
+  }, [loading, plansSettled, activeView]);
+
+  const closeTour = () => {
+    setIsTourOpen(false);
+    try { localStorage.setItem(TOUR_SEEN_KEY, String(Date.now())); } catch {}
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  };
+
+  const startTour = () => {
+    setActiveView('dashboard');
+    setIsTourOpen(true);
+  };
 
   const getDaysRemaining = (endDate: string) => {
     const end = new Date(endDate);
@@ -351,12 +411,13 @@ export default function ClientDashboard() {
       const data = await res.json();
       if (res.ok) {
         setShowPauseConfirm(false);
+        toast.success('Plan paused. Resume whenever you are ready.');
         fetchDashboardData();
       } else {
-        alert(data.error || 'Failed to pause subscription');
+        toast.error(data.error || 'Failed to pause subscription');
       }
     } catch {
-      alert('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setPauseLoading(false);
     }
@@ -372,13 +433,13 @@ export default function ClientDashboard() {
       });
       const data = await res.json();
       if (res.ok) {
-        alert(data.message);
+        toast.success(data.message || 'Welcome back! Your plan is running again.');
         fetchDashboardData();
       } else {
-        alert(data.error || 'Failed to resume subscription');
+        toast.error(data.error || 'Failed to resume subscription');
       }
     } catch {
-      alert('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setPauseLoading(false);
     }
@@ -473,7 +534,7 @@ export default function ClientDashboard() {
 
   const isSubscriptionActive = subscription?.isActive;
   // Don't advertise the Habit Tracker + Logbook to clients who can't open them.
-  const showHint = showFeatureHint && !!isSubscriptionActive;
+  const showHint = showFeatureHint && !!isSubscriptionActive && !isTourOpen;
   const currentWorkout = workouts[selectedWorkoutIndex] || workouts[0];
   const currentDiet = diets[selectedDietIndex] || diets[0];
   const planName = subscription?.subscription?.plan?.name || '';
@@ -484,6 +545,23 @@ export default function ClientDashboard() {
   const isPaused = subscription?.subscription?.status === 'paused';
   const hasUsedPause = (subscription?.subscription?.pauseDaysUsed || 0) > 0;
   const canPause = isSubscriptionActive && maxPauseDays > 0 && !isPaused && !hasUsedPause;
+  const isOverlayOpen =
+    isWorkoutModalOpen || isDietModalOpen || isEditAssessmentOpen || isVideoLibraryOpen || isHabitTrackerOpen ||
+    isLogbookOpen || isRenewOpen || isChangePasswordOpen || isNotificationPanelOpen;
+  const daysLeft = subscription?.subscription ? getDaysRemaining(subscription.subscription.endDate) : 0;
+  const showRenewReminder =
+    !!isSubscriptionActive && !isPaused && !subscription?.hasQueuedPlan && daysLeft <= RENEW_REMINDER_DAYS;
+  const showPlans = !isLiveSessionPlan || isEliteOneOnOnePlan;
+  const quickActions: QuickAction[] = [
+    { id: 'chat', label: 'Chat with coach', hint: 'Ask anything, anytime', icon: MessageSquare, onSelect: () => setActiveView('chat'), badge: unreadChatCount },
+    ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', hint: 'See how each exercise is done', icon: Play, onSelect: openVideoLibrary, locked: !isSubscriptionActive }] : []),
+    { id: 'habits', label: 'Habit Tracker', hint: 'Tick off your daily habits', icon: ClipboardList, onSelect: openHabitTracker, locked: !isSubscriptionActive },
+    { id: 'logbook', label: 'Logbook', hint: 'Log your 30-day transformation', icon: TrendingUp, onSelect: openLogbook, locked: !isSubscriptionActive },
+    { id: 'calories', label: 'Calorie Calculator', hint: 'Count calories in 850+ Indian foods', icon: Calculator, onSelect: openCalories },
+    ...(user?.assessmentCompleted ? [{ id: 'assessment', label: 'My Assessment', hint: 'View or update your details', icon: Edit3, onSelect: () => setIsEditAssessmentOpen(true) }] : []),
+  ];
+  // Renewing is the next step for an expired client; waiting on the coach isn't.
+  const renewAction = !isSubscriptionActive ? { label: 'Renew plan', onClick: () => setIsRenewOpen(true) } : undefined;
 
   return (
     <div className="min-h-screen bg-brand-navy">
@@ -514,7 +592,7 @@ export default function ClientDashboard() {
             <p className="text-xs text-gray-500 truncate">Let&apos;s crush your fitness goals today</p>
           </div>
 
-          <div className="ml-auto hdr-group relative">
+          <div data-tour="header-actions" className="ml-auto hdr-group relative">
             {/* Video Library is an active-subscription perk. Inactive clients see it
                disabled and get a "please renew" prompt with renewal plan options. */}
             {!isLiveSessionPlan && <button
@@ -522,6 +600,7 @@ export default function ClientDashboard() {
               className="hdr-btn hidden sm:inline-flex"
               aria-disabled={!isSubscriptionActive}
               title={isSubscriptionActive ? 'Video Library' : 'Video Library — renew to unlock'}
+              aria-label="Video Library"
             >
               <Play />
             </button>}
@@ -627,10 +706,18 @@ export default function ClientDashboard() {
               onClick={() => setActiveView('chat')}
               className="hdr-btn hidden sm:inline-flex"
               aria-label="Chat"
+              title="Chat with your coach"
             >
               <MessageSquare />
-              <span className="hidden lg:inline">Chat</span>
               {unreadChatCount > 0 && <span className="hdr-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}
+            </button>
+            <button
+              onClick={startTour}
+              className="hdr-btn hidden sm:inline-flex"
+              title="Dashboard guide"
+              aria-label="Dashboard guide"
+            >
+              <HelpCircle />
             </button>
             <button
               onClick={handleLogout}
@@ -646,7 +733,7 @@ export default function ClientDashboard() {
 
       {/* Main Content */}
       {activeView === 'dashboard' && (
-      <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
+      <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Welcome (shown only on small screens) */}
           <div className="md:hidden mb-4">
@@ -657,8 +744,9 @@ export default function ClientDashboard() {
           </div>
 
         {/* Subscription Status Card - Compact & Aesthetic */}
-        <div id="section-home" />
+        <div id="section-home" className="scroll-mt-24" />
         <motion.div
+          data-tour="status"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -711,25 +799,12 @@ export default function ClientDashboard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0 pl-8 sm:pl-0">
-              {/* Assessment Badge with Edit Button */}
-              {user?.assessmentCompleted && (
-                <button
-                  onClick={() => setIsEditAssessmentOpen(true)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-blue/20 border border-brand-blue/30 rounded-lg hover:bg-brand-blue/30 transition-all group"
-                  title="Click to edit your assessment"
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-white flex-shrink-0" />
-                  <span className="text-white text-[10px] sm:text-xs font-medium whitespace-nowrap">Assessment</span>
-                  <Edit3 className="w-3 h-3 text-white" />
-                </button>
-              )}
-
+            <div className="flex items-center gap-2 flex-shrink-0 pl-8 sm:pl-0 empty:hidden">
               {/* Renew Button (if expired) */}
               {!isSubscriptionActive && (
                 <button
                   onClick={() => setIsRenewOpen(true)}
-                  className="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-all flex items-center gap-1.5 flex-shrink-0"
+                  className="bg-brand-blue text-white px-4 min-h-[44px] rounded-lg text-sm font-semibold hover:bg-blue-600 transition-all flex items-center gap-1.5 flex-shrink-0"
                 >
                   Renew
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -738,10 +813,28 @@ export default function ClientDashboard() {
             </div>
           </div>
 
+          {/* Renew before the plan runs out */}
+          {showRenewReminder && (
+            <div className="mt-3 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <p className="text-xs text-gray-300">
+                <span className="font-semibold text-white">
+                  {daysLeft <= 0 ? 'Your plan ends today.' : `Your plan ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.`}
+                </span>{' '}
+                Renew now to keep going without a break. You won&apos;t lose any days you have left.
+              </p>
+              <button
+                onClick={() => setIsRenewOpen(true)}
+                className="shrink-0 min-h-[44px] px-4 rounded-lg text-sm font-semibold text-white bg-brand-blue hover:bg-blue-600 transition-colors"
+              >
+                Renew early
+              </button>
+            </div>
+          )}
+
           {/* Pause/Resume Section */}
           {isPaused && (
             <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   <Pause className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <div className="min-w-0">
@@ -754,7 +847,7 @@ export default function ClientDashboard() {
                 <button
                   onClick={handleResumeSubscription}
                   disabled={pauseLoading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-semibold hover:bg-green-600 transition-all flex-shrink-0 disabled:opacity-50"
+                  className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-all flex-shrink-0 disabled:opacity-50"
                 >
                   <PlayCircle className="w-3.5 h-3.5" />
                   {pauseLoading ? 'Resuming...' : 'Resume'}
@@ -764,13 +857,16 @@ export default function ClientDashboard() {
           )}
 
           {canPause && !showPauseConfirm && (
-            <div className="mt-3 flex items-center justify-between">
-              <p className="text-gray-500 text-xs">
-                You can pause your subscription for up to {maxPauseDays} days (one-time)
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <p className="text-gray-500 text-xs flex items-center gap-1">
+                <span>You can pause for up to {maxPauseDays} days (one-time)</span>
+                <InfoTip label="pausing">
+                  Going on holiday or feeling unwell? Pause your plan and the days you miss are added back to your end date when you resume. You can use this once per plan.
+                </InfoTip>
               </p>
               <button
                 onClick={() => setShowPauseConfirm(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg text-xs font-medium hover:bg-yellow-500/20 transition-all flex-shrink-0"
+                className="flex items-center gap-1.5 px-3.5 min-h-[44px] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg text-sm font-medium hover:bg-yellow-500/20 transition-all flex-shrink-0"
               >
                 <Pause className="w-3 h-3" />
                 Pause
@@ -788,14 +884,14 @@ export default function ClientDashboard() {
                 <button
                   onClick={handlePauseSubscription}
                   disabled={pauseLoading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-500 text-black rounded-lg text-xs font-semibold hover:bg-yellow-400 transition-all disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 min-h-[44px] bg-yellow-500 text-black rounded-lg text-sm font-semibold hover:bg-yellow-400 transition-all disabled:opacity-50"
                 >
                   <Pause className="w-3 h-3" />
                   {pauseLoading ? 'Pausing...' : 'Yes, Pause'}
                 </button>
                 <button
                   onClick={() => setShowPauseConfirm(false)}
-                  className="px-3 py-1.5 text-gray-400 text-xs font-medium hover:text-white transition-colors"
+                  className="px-3 min-h-[44px] text-gray-400 text-sm font-medium hover:text-white transition-colors"
                 >
                   Cancel
                 </button>
@@ -811,20 +907,12 @@ export default function ClientDashboard() {
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
                   <span className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                    {new Date(subscription.subscription.startDate).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
+                    {new Date(subscription.subscription.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                    {new Date(subscription.subscription.endDate).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
+                    {new Date(subscription.subscription.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                   <Calendar className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
                 </div>
@@ -839,32 +927,23 @@ export default function ClientDashboard() {
                     transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1], delay: 0.3 }}
                     className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-500 rounded-full shadow-lg shadow-green-500/30"
                   />
-                  {/* Shimmer Effect - runs 3 times then stops to save mobile resources */}
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${getSubscriptionProgress()}%` }}
-                    transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
-                    className="absolute inset-y-0 left-0 overflow-hidden rounded-full"
-                  >
-                    <motion.div
-                      animate={{ x: ['-200%', '200%'] }}
-                      transition={{ duration: 2.5, repeat: 3, ease: 'linear', delay: 1.5 }}
-                      className="absolute inset-0 w-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                    />
-                  </motion.div>
                 </div>
               </div>
 
               {/* Week/Session Milestones - Responsive Grid */}
               <div className="relative">
+                <p className="flex items-center gap-0.5 px-1 mb-1.5 text-xs font-medium text-gray-400">
+                  {isEliteOneOnOnePlan ? 'Your sessions' : 'Your progress'}
+                  <InfoTip label="this tracker">
+                    {isEliteOneOnOnePlan
+                      ? 'Each box is one session (S1, S2...). It turns green once your coach confirms it. Your plan ends when your sessions or your days run out, whichever comes first.'
+                      : 'Each box is one week or month of your plan (W1, M1...). Green is finished and blue is where you are now.'}
+                  </InfoTip>
+                </p>
                 {(() => {
                   const milestones = getWeekMilestones();
-                  const cols = milestones.length <= 12 ? milestones.length : 12;
                   return (
-                    <div
-                      className="grid gap-1.5 md:gap-2 px-0 md:px-1 pb-2 pt-1 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
-                      style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-                    >
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(44px,1fr))] gap-1.5 md:gap-2 px-0.5 md:px-1 pb-2 pt-1 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                       {milestones.map((milestone, index) => (
                         <div
                           key={milestone.id}
@@ -872,7 +951,7 @@ export default function ClientDashboard() {
                           <div
                             className={`relative flex flex-col items-center justify-center w-full h-10 md:h-11 rounded-xl transition-all duration-300 ${
                               milestone.isCurrent
-                                ? 'bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-lg shadow-brand-blue/40 ring-2 ring-brand-blue/30 scale-105'
+                                ? 'bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-lg shadow-brand-blue/40 ring-2 ring-brand-blue/30'
                                 : milestone.isPassed
                                 ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30'
                                 : 'bg-white/5 text-gray-500 border border-white/10'
@@ -883,7 +962,7 @@ export default function ClientDashboard() {
                             </span>
                             {milestone.isCurrent && (
                               <div
-                                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0f1628] shadow-lg"
+                                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-brand-navy shadow-lg"
                               />
                             )}
                             {milestone.isPassed && !milestone.isCurrent && (
@@ -904,486 +983,128 @@ export default function ClientDashboard() {
           )}
         </motion.div>
 
-        {/* Fun Fact Widget — shown for all plans */}
-        <FunFactWidget />
-
-        {/* Elite 1:1 Plans — show live session widget alongside regular dashboard */}
-        {isEliteOneOnOnePlan && isSubscriptionActive && (
-          <LiveSessionWidget planName={planName} />
-        )}
-
-        {/* Live Session Plans — show different dashboard */}
-        {isLiveSessionPlan && !isEliteOneOnOnePlan && isSubscriptionActive && (
-          <>
-          <LiveSessionWidget planName={planName} />
-
-          {/* Blog Posts for Live Session Users */}
-          {blogPosts.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 }}
-              className="mt-8"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 rounded-xl border border-brand-blue/20">
-                    <FileText className="w-5 h-5 text-brand-blue" />
-                  </div>
-                  <div>
-                    <h2 className="text-base md:text-xl font-bold text-white">Latest Articles</h2>
-                    <p className="text-gray-500 text-xs">Fitness tips & insights</p>
-                  </div>
-                </div>
-                <Link href="/blog">
-                  <button className="flex items-center gap-1 text-brand-blue hover:text-brand-gold text-sm font-medium transition-colors">
-                    View All
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </Link>
-              </div>
-
-              {/* Carousel Container */}
-              <div className="relative -mx-4 sm:-mx-6 lg:mx-0">
-                {/* Fade edges */}
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
-
-                {/* Scrollable container */}
-                <div className="flex gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 lg:px-0 pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible">
-                  {blogPosts.map((post, index) => (
-                    <Link key={post.id} href={`/blog/${post.slug}`} className="flex-shrink-0 w-72 lg:w-auto">
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5 + index * 0.05 }}
-                        className="group glass-card overflow-hidden hover:border-white/[0.12] transition-all duration-300 h-full"
-                      >
-                        {/* Cover Image */}
-                        <div className="relative h-36 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 overflow-hidden">
-                          {post.coverImage ? (
-                            <img
-                              src={post.coverImage}
-                              alt={post.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <FileText className="w-12 h-12 text-white/20" />
-                            </div>
-                          )}
-                          {/* Overlay gradient */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                          {/* Read time badge */}
-                          {post.readTime && (
-                            <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 rounded-full">
-                              <Clock className="w-3 h-3 text-gray-300" />
-                              <span className="text-[10px] text-gray-300 font-medium">{post.readTime} min</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-4">
-                          {/* Date */}
-                          <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-2">
-                            <Calendar className="w-3 h-3" />
-                            <span>
-                              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              }) : 'Draft'}
-                            </span>
-                          </div>
-
-                          {/* Title */}
-                          <h3 className="text-white font-semibold line-clamp-2 group-hover:text-brand-blue transition-colors mb-2">
-                            {post.title}
-                          </h3>
-
-                          {/* Excerpt */}
-                          {post.excerpt && (
-                            <p className="text-gray-400 text-xs line-clamp-2">
-                              {post.excerpt}
-                            </p>
-                          )}
-
-                          {/* Read more */}
-                          <div className="flex items-center gap-1 text-brand-blue text-xs font-medium mt-3 group-hover:gap-2 transition-all">
-                            <span>Read Article</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </div>
-                        </div>
-                      </motion.div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-          </>
+        {/* Live sessions: Elite 1:1 and the live-session programmes */}
+        {(isEliteOneOnOnePlan || isLiveSessionPlan) && isSubscriptionActive && (
+          <div data-tour="live" className="mb-5 md:mb-8">
+            <LiveSessionWidget planName={planName} />
+          </div>
         )}
 
         {/* Regular Plans — stats, workouts, diets (also shown for Elite 1:1) */}
-        {(!isLiveSessionPlan || isEliteOneOnOnePlan) && (
-        <>
+        {showPlans && (
+          <div data-tour="stats">
         {/* Stats band */}
         <DashboardHero
           id="section-stats"
           stats={[
-            { label: 'Active Workouts', short: 'Workouts', value: workouts.length, icon: Dumbbell },
-            { label: 'Diet Plans', short: 'Diets', value: diets.length, icon: UtensilsCrossed },
+            { label: 'Active Workouts', short: 'Workouts', value: workoutsStatus === 'ready' ? workouts.length : '–', icon: Dumbbell },
+            { label: 'Diet Plans', short: 'Diets', value: dietsStatus === 'ready' ? diets.length : '–', icon: UtensilsCrossed },
             isEliteOneOnOnePlan
               ? { label: 'Sessions Done', short: 'Sessions', value: completedSessions.length, icon: Calendar }
               : {
                   label: 'Current Week',
                   short: 'Week',
-                  value: `Week ${currentWorkout?.weekNumber || (subscription?.subscription?.startDate ? Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7))) : 1)}`,
+                  value: currentWorkout?.weekNumber
+                    ? `Week ${currentWorkout.weekNumber}`
+                    : subscription?.subscription?.startDate
+                      ? `Week ${Math.max(1, Math.ceil((new Date().getTime() - new Date(subscription.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24 * 7)))}`
+                      : '–',
                   icon: Calendar,
                 },
           ]}
         />
 
-        {/* Calorie Calculator shortcut — opens in-dashboard */}
-        <button
-          onClick={openCalories}
-          className="group w-full mb-5 md:mb-8 flex items-center gap-3 md:gap-4 p-3.5 md:p-4 rounded-2xl text-left bg-brand-navy-light/60 border border-white/[0.08] hover:border-amber-500/35 transition-colors"
-        >
-          <span className="shrink-0 w-11 h-11 rounded-xl bg-amber-500/10 ring-1 ring-amber-500/20 flex items-center justify-center group-hover:bg-amber-500 transition-colors">
-            <Calculator className="w-5 h-5 text-amber-400 group-hover:text-snow transition-colors" />
-          </span>
-          <span className="flex-1 min-w-0">
-            <span className="block text-sm md:text-base font-semibold text-white">Calorie Calculator</span>
-            <span className="block text-xs text-gray-500 truncate">Count calories &amp; macros of your meals — 850+ Indian foods</span>
-          </span>
-          <ChevronRight className="w-4 h-4 shrink-0 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
-        </button>
-
-        {/* Blog Posts Carousel */}
-        <div id="section-blog" />
-        {blogPosts.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45 }}
-            className="mb-8"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 rounded-xl border border-brand-blue/20">
-                  <FileText className="w-5 h-5 text-brand-blue" />
-                </div>
-                <div>
-                  <h2 className="text-base md:text-xl font-bold text-white">Latest Articles</h2>
-                  <p className="text-gray-500 text-xs">Fitness tips & insights</p>
-                </div>
-              </div>
-              <Link href="/blog">
-                <button className="flex items-center gap-1 text-brand-blue hover:text-brand-gold text-sm font-medium transition-colors">
-                  View All
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </Link>
-            </div>
-
-            {/* Carousel Container */}
-            <div className="relative -mx-4 sm:-mx-6 lg:mx-0">
-              {/* Fade edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
-              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10 pointer-events-none lg:hidden" />
-
-              {/* Scrollable container */}
-              <div className="flex gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 lg:px-0 pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible">
-                {blogPosts.map((post, index) => (
-                  <Link key={post.id} href={`/blog/${post.slug}`} className="flex-shrink-0 w-72 lg:w-auto">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5 + index * 0.05 }}
-                      className="group glass-card overflow-hidden hover:border-white/[0.12] transition-all duration-300 h-full"
-                    >
-                      {/* Cover Image */}
-                      <div className="relative h-36 bg-gradient-to-br from-brand-blue/20 to-brand-gold/20 overflow-hidden">
-                        {post.coverImage ? (
-                          <img
-                            src={post.coverImage}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <FileText className="w-12 h-12 text-white/20" />
-                          </div>
-                        )}
-                        {/* Overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                        {/* Read time badge */}
-                        {post.readTime && (
-                          <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 rounded-full">
-                            <Clock className="w-3 h-3 text-gray-300" />
-                            <span className="text-[10px] text-gray-300 font-medium">{post.readTime} min</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4">
-                        {/* Date */}
-                        <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-2">
-                          <Calendar className="w-3 h-3" />
-                          <span>
-                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric'
-                            }) : 'Draft'}
-                          </span>
-                        </div>
-
-                        {/* Title */}
-                        <h3 className="text-white font-semibold line-clamp-2 group-hover:text-brand-blue transition-colors mb-2">
-                          {post.title}
-                        </h3>
-
-                        {/* Excerpt */}
-                        {post.excerpt && (
-                          <p className="text-gray-400 text-xs line-clamp-2">
-                            {post.excerpt}
-                          </p>
-                        )}
-
-                        {/* Read more */}
-                        <div className="flex items-center gap-1 text-brand-blue text-xs font-medium mt-3 group-hover:gap-2 transition-all">
-                          <span>Read Article</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </div>
-                      </div>
-                    </motion.div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+          </div>
         )}
 
-        {/* Current Plans Section */}
-        <div id="section-workout" className={`grid grid-cols-1 ${isEliteOneOnOnePlan ? '' : 'lg:grid-cols-2'} gap-4 md:gap-6`}>
-          {/* Current Workout — hidden for 1:1 Elite plans */}
-          {!isEliteOneOnOnePlan && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="glass-card p-6"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(168,85,247,0.03) 100%)' }}>
-                  <Dumbbell className="w-6 h-6 text-purple-400" />
-                </div>
-                <h2 className="text-lg font-bold text-white">Current Workout</h2>
-              </div>
-            </div>
+        <QuickActions actions={quickActions} />
 
-            {workouts.length > 1 && (
-              <div className="flex gap-2 mb-4 flex-wrap">
-                {workouts.map((workout: any, idx: number) => (
-                  <button
-                    key={workout.id}
-                    onClick={() => setSelectedWorkoutIndex(idx)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      selectedWorkoutIndex === idx
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
-                    }`}
-                  >
-                    {workout.title || `Plan ${idx + 1}`}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {currentWorkout ? (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    {currentWorkout.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    {currentWorkout.description}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Calendar className="w-4 h-4" />
-                    <span>{isEliteOneOnOnePlan ? `Session ${currentWorkout.weekNumber}` : `Week ${currentWorkout.weekNumber}`}</span>
-                  </div>
-                  <div className="text-gray-400">
-                    {getDaysRemaining(currentWorkout.endDate)} days left
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/10">
-                  <h4 className="text-sm font-semibold text-gray-300 mb-3">
-                    Exercises ({currentWorkout.exercises?.length || 0})
-                  </h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {currentWorkout.exercises?.slice(0, 5).map((exercise: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div>
-                            <p className="text-white font-medium">{exercise.name}</p>
-                            <p className="text-gray-400 text-xs">{exercise.day}</p>
-                          </div>
-                          {exercise.exerciseType === 'superset' && (
-                            <span className="px-1.5 py-0.5 bg-orange-500/20 text-orange-300 rounded text-[10px] font-semibold">SS</span>
-                          )}
-                          {exercise.exerciseType === 'dropset' && (
-                            <span className="px-1.5 py-0.5 bg-red-500/20 text-red-300 rounded text-[10px] font-semibold">DS</span>
-                          )}
-                        </div>
-                        <div className="text-gray-300 text-sm">
-                          {exercise.sets && exercise.reps && `${exercise.sets}x${exercise.reps}`}
-                          {exercise.duration && exercise.sets && !exercise.reps && `${exercise.duration} min × ${exercise.sets} sets`}
-                          {exercise.duration && !exercise.sets && `${exercise.duration} min`}
-                        </div>
+        {showPlans && (
+          <div id="section-workout" className={`scroll-mt-24 grid grid-cols-1 ${isEliteOneOnOnePlan ? '' : 'lg:grid-cols-2'} gap-4 md:gap-6 mb-5 md:mb-8 items-start`}>
+            {/* Elite 1:1 clients train in live sessions, so they have no workout card. */}
+            {!isEliteOneOnOnePlan && (
+              <CurrentPlanCard
+                tourId="workout"
+                title="Current Workout"
+                icon={Dumbbell}
+                tip="The workout your coach has set for this week. Tap a day to see its exercises. In the list, 3x12 means 3 sets of 12 reps, SS is a superset and DS is a dropset."
+                status={workoutsStatus}
+                onRetry={() => { setWorkoutsStatus('loading'); loadWorkouts(); }}
+                plans={workouts}
+                selectedIndex={selectedWorkoutIndex}
+                onSelectPlan={setSelectedWorkoutIndex}
+                itemsOf={exercisesOf}
+                itemNoun="Exercises"
+                meta={(w: any) => `Week ${w.weekNumber} · ${getDaysRemaining(w.endDate)} days left`}
+                renderItem={(exercise: any) => (
+                  <>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="min-w-0">
+                        <p className="text-white font-medium break-words">{exercise.name}</p>
+                        <p className="text-gray-400 text-xs">{exercise.day}</p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setIsWorkoutModalOpen(true)}
-                  className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all"
-                >
-                  View Full Workout
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center text-center py-8">
-                <span className="w-12 h-12 rounded-2xl bg-violet-500/10 ring-1 ring-violet-500/20 flex items-center justify-center mb-3">
-                  <Dumbbell className="w-5 h-5 text-violet-400" />
-                </span>
-                <p className="text-white font-semibold">No active workout plan</p>
-                <p className="text-gray-500 text-sm mt-1">Your coach will assign one soon</p>
-              </div>
-            )}
-          </motion.div>
-          )}
-
-          {/* Current Diet (anchor lives on the card — a bare div here took a grid cell) */}
-          <motion.div
-            id="section-diet"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="glass-card p-6"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl border border-white/[0.06]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.03) 100%)' }}>
-                  <UtensilsCrossed className="w-6 h-6 text-green-400" />
-                </div>
-                <h2 className="text-lg font-bold text-white">Current Diet</h2>
-              </div>
-            </div>
-
-            {diets.length > 1 && (
-              <div className="flex gap-2 mb-4 flex-wrap">
-                {diets.map((diet: any, idx: number) => (
-                  <button
-                    key={diet.id}
-                    onClick={() => setSelectedDietIndex(idx)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      selectedDietIndex === idx
-                        ? 'bg-green-500 text-white'
-                        : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
-                    }`}
-                  >
-                    {diet.title || `Plan ${idx + 1}`}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {currentDiet ? (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    {currentDiet.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    {currentDiet.description}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Calendar className="w-4 h-4" />
-                    <span>{isEliteOneOnOnePlan ? `Session ${currentDiet.weekNumber}` : `Week ${currentDiet.weekNumber}`}</span>
-                  </div>
-                  {currentDiet.targetCalories && (
-                    <div className="text-gray-400">
-                      {currentDiet.targetCalories} cal/day
+                      {exercise.exerciseType === 'superset' && (
+                        <span className="px-1.5 py-0.5 bg-orange-500/20 text-orange-300 rounded text-[10px] font-semibold">SS</span>
+                      )}
+                      {exercise.exerciseType === 'dropset' && (
+                        <span className="px-1.5 py-0.5 bg-red-500/20 text-red-300 rounded text-[10px] font-semibold">DS</span>
+                      )}
                     </div>
-                  )}
-                </div>
-
-                <div className="pt-4 border-t border-white/10">
-                  <h4 className="text-sm font-semibold text-gray-300 mb-3">
-                    Meals ({currentDiet.meals?.length || 0})
-                  </h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {currentDiet.meals?.slice(0, 5).map((meal: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
-                      >
-                        <div>
-                          <p className="text-white font-medium">{meal.name}</p>
-                          <p className="text-gray-400 text-xs">
-                            {meal.mealType} • {meal.day}
-                          </p>
-                        </div>
-                        {meal.calories && (
-                          <div className="text-gray-300 text-sm">
-                            {meal.calories} cal
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setIsDietModalOpen(true)}
-                  className="w-full mt-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all"
-                >
-                  View Full Diet Plan
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center text-center py-8">
-                <span className="w-12 h-12 rounded-2xl bg-emerald-500/10 ring-1 ring-emerald-500/20 flex items-center justify-center mb-3">
-                  <UtensilsCrossed className="w-5 h-5 text-emerald-400" />
-                </span>
-                <p className="text-white font-semibold">No active diet plan</p>
-                <p className="text-gray-500 text-sm mt-1">Your coach will create one soon</p>
-              </div>
+                    <div className="shrink-0 text-gray-300 text-sm">
+                      {exercise.sets && exercise.reps && `${exercise.sets}x${exercise.reps}`}
+                      {exercise.duration && exercise.sets && !exercise.reps && `${exercise.duration} min × ${exercise.sets} sets`}
+                      {exercise.duration && !exercise.sets && `${exercise.duration} min`}
+                    </div>
+                  </>
+                )}
+                viewAllLabel="View Full Workout"
+                onViewAll={() => setIsWorkoutModalOpen(true)}
+                empty={{
+                  title: 'No active workout plan',
+                  body: isSubscriptionActive ? 'Your coach will assign one soon.' : 'Renew your plan to get new workouts from your coach.',
+                  action: renewAction,
+                }}
+              />
             )}
-          </motion.div>
-        </div>
-        </>
+
+            <CurrentPlanCard
+              id="section-diet"
+              tourId="diet"
+              title="Current Diet"
+              icon={UtensilsCrossed}
+              tip="The meals your coach has planned for you. Tap a day to see its meals and the day's total calories."
+              status={dietsStatus}
+              onRetry={() => { setDietsStatus('loading'); loadDiets(); }}
+              plans={diets}
+              selectedIndex={selectedDietIndex}
+              onSelectPlan={setSelectedDietIndex}
+              itemsOf={mealsOf}
+              itemNoun="Meals"
+              meta={(d: any) => `${isEliteOneOnOnePlan ? `Session ${d.weekNumber}` : `Week ${d.weekNumber}`}${d.targetCalories ? ` · ${d.targetCalories} cal/day` : ''}`}
+              renderItem={(meal: any) => (
+                <>
+                  <div className="min-w-0">
+                    <p className="text-white font-medium break-words">{meal.name}</p>
+                    <p className="text-gray-400 text-xs">{meal.mealType} • {meal.day}</p>
+                  </div>
+                  {meal.calories && <div className="shrink-0 text-gray-300 text-sm">{meal.calories} cal</div>}
+                </>
+              )}
+              viewAllLabel="View Full Diet Plan"
+              onViewAll={() => setIsDietModalOpen(true)}
+              empty={{
+                title: 'No active diet plan',
+                body: isSubscriptionActive ? 'Your coach will create one soon.' : 'Renew your plan to get new diet plans from your coach.',
+                action: renewAction,
+              }}
+            />
+          </div>
         )}
+
+        <FunFactWidget />
+
+        <div id="section-blog" className="scroll-mt-24" />
+        <ArticlesRow posts={blogPosts} />
 
         </div>
       </div>
@@ -1391,7 +1112,7 @@ export default function ClientDashboard() {
 
       {/* Calorie Calculator View — in-dashboard, no redirect to the public page */}
       {activeView === 'calories' && (
-      <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
+      <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
         <div className="max-w-5xl mx-auto">
           <button
             onClick={() => setActiveView('dashboard')}
@@ -1417,7 +1138,7 @@ export default function ClientDashboard() {
 
       {/* Profile View */}
       {activeView === 'profile' && (
-      <div className="pt-24 md:pt-28 pb-28 lg:pb-20 px-3 md:px-4">
+      <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
         <div className="max-w-2xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1528,6 +1249,20 @@ export default function ClientDashboard() {
                     <ChevronRight className="w-4 h-4 text-gray-500 ml-auto group-hover:text-brand-blue transition-colors" />
                   </button>
                 )}
+                <button
+                  onClick={startTour}
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08] hover:border-brand-blue/30 transition-all group"
+                  style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.06) 0%, rgba(23,95,255,0.02) 100%)' }}
+                >
+                  <div className="p-2 rounded-lg bg-brand-blue/15">
+                    <HelpCircle className="w-4 h-4 text-brand-blue" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white text-sm font-medium">Dashboard guide</p>
+                    <p className="text-gray-500 text-xs">See how everything works, step by step</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto group-hover:text-brand-blue transition-colors" />
+                </button>
                 <div
                   className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.08]"
                   style={{ background: 'linear-gradient(135deg, rgba(23,95,255,0.06) 0%, rgba(23,95,255,0.02) 100%)' }}
@@ -1591,9 +1326,6 @@ export default function ClientDashboard() {
         userEmail={user?.email}
         isElitePlan={isEliteOneOnOnePlan}
       />
-
-      {/* Latest Blog Widget */}
-      <LatestBlogWidget />
 
       {/* Notification Panel */}
       <NotificationPanel
@@ -1665,12 +1397,17 @@ export default function ClientDashboard() {
             </button>
           </div>
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} onUnreadChange={setUnreadChatCount} onClose={() => { setActiveView('dashboard'); fetchUnreadChat(); }} />
+            <ChatContainer userId={user.id} userRole={user.role} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setActiveView('dashboard'); fetchUnreadChat(); }} />
           </div>
         </div>
       )}
 
-      {/* Mobile Bottom Navigation */}
+      {isTourOpen && activeView === 'dashboard' && <DashboardTour steps={TOUR_STEPS} onClose={closeTour} />}
+
+      <PushPrompt />
+
+      {/* Mobile Bottom Navigation. Hidden behind a popup, where it would cover the popup's own buttons. */}
+      {!isOverlayOpen && (
       <MobileBottomNav
         role="client"
         activeTab={activeView === 'profile' || activeView === 'calories' ? 'more' : activeView === 'chat' ? 'chat' : undefined}
@@ -1681,6 +1418,7 @@ export default function ClientDashboard() {
           { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showHint, onSelect: openLogbook, disabled: !isSubscriptionActive },
           { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },
           { id: 'alerts', label: 'Notifications', icon: Bell, badge: notificationCount, onSelect: () => setIsNotificationPanelOpen(true) },
+          { id: 'guide', label: 'Guide', icon: HelpCircle, onSelect: startTour },
           { id: 'profile', label: 'Profile', icon: User, onSelect: () => { setActiveView('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
           { id: 'logout', label: 'Logout', icon: LogOut, danger: true, onSelect: handleLogout },
         ]}
@@ -1694,20 +1432,20 @@ export default function ClientDashboard() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
           }
+          const scrollToSection = () => {
+            const el = document.getElementById(`section-${tab}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            else toast('Your programme runs on live sessions, so it has no separate workout or diet plan here.');
+          };
           if (activeView !== 'dashboard') {
             setActiveView('dashboard');
-            setTimeout(() => {
-              if (tab !== 'home') {
-                const el = document.getElementById(`section-${tab}`);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 100);
+            setTimeout(() => { if (tab !== 'home') scrollToSection(); }, 100);
             return;
           }
-          const el = document.getElementById(`section-${tab}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          scrollToSection();
         }}
       />
+      )}
     </div>
   );
 }

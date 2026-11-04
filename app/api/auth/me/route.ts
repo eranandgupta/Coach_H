@@ -59,6 +59,16 @@ export async function GET(request: NextRequest) {
     let subscriptionStatus = null;
     if (user.role !== 'coach') {
       subscriptionStatus = await checkSubscription(user.id);
+
+      // Stops the client dashboard nudging someone to renew when they already have.
+      const current = subscriptionStatus.subscription;
+      if (subscriptionStatus.isActive && current) {
+        const now = new Date();
+        const queued = await prisma.userSubscription.count({
+          where: { userId: user.id, startDate: { gt: now }, status: { notIn: ['cancelled', 'expired'] } },
+        });
+        subscriptionStatus = { ...subscriptionStatus, hasQueuedPlan: queued > 0 };
+      }
     }
 
     // Sliding session: hand back a fresh token (and re-arm the cookie) once the current
