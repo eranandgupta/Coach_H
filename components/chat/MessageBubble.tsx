@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, CheckCheck } from 'lucide-react';
+import { AlertCircle, Check, CheckCheck, Clock } from 'lucide-react';
 
 interface MessageBubbleProps {
   content: string;
@@ -9,6 +9,10 @@ interface MessageBubbleProps {
   isRead: boolean;
   showAvatar?: boolean;
   senderName?: string;
+  /** Set on a message the server hasn't confirmed yet. */
+  status?: 'sending' | 'failed';
+  onRetry?: () => void;
+  onDelete?: () => void;
 }
 
 const URL_REGEX = /(https?:\/\/[^\s]+|(?:www\.)[^\s]+|[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.(?:com|org|net|io|dev|app|life|in|co|me|info|xyz|tech|ai|gg|tv|cc|us|uk|ca|au|de|fr|es|it|nl|be|ch|at|se|no|dk|fi|pl|cz|pt|br|jp|kr|cn|ru|za|nz|ie|sg|hk|tw|my|ph|th|vn|id|ae|sa|eg|ke|ng|gh|tz|ug)(?:\/[^\s]*)?)/gi;
@@ -51,6 +55,9 @@ export default function MessageBubble({
   isRead,
   showAvatar = true,
   senderName,
+  status,
+  onRetry,
+  onDelete,
 }: MessageBubbleProps) {
   const time = new Date(createdAt).toLocaleTimeString([], {
     hour: '2-digit',
@@ -70,7 +77,7 @@ export default function MessageBubble({
         <div
           className={`px-4 py-2.5 text-sm leading-relaxed break-words ${
             isSender
-              ? 'bg-brand-blue text-white rounded-2xl rounded-br-sm'
+              ? `bg-brand-blue text-white rounded-2xl rounded-br-sm ${status ? 'opacity-70' : ''}`
               : 'bg-white/[0.08] text-white rounded-2xl rounded-bl-sm'
           }`}
         >
@@ -84,7 +91,8 @@ export default function MessageBubble({
           }`}
         >
           <span className="text-[10px] text-white/30">{time}</span>
-          {isSender && (
+          {status === 'sending' && <Clock size={12} className="text-white/30" aria-label="Sending" />}
+          {isSender && !status && (
             isRead ? (
               <CheckCheck size={12} className="text-blue-400" />
             ) : (
@@ -92,6 +100,19 @@ export default function MessageBubble({
             )
           )}
         </div>
+
+        {status === 'failed' && (
+          <div role="alert" className="flex items-center justify-end gap-1 mt-0.5 text-xs">
+            <AlertCircle size={13} className="text-rose-400 shrink-0" aria-hidden />
+            <span className="text-rose-400">Not sent</span>
+            <button onClick={onRetry} className="min-h-[36px] px-2 font-semibold text-white hover:underline">
+              Retry
+            </button>
+            <button onClick={onDelete} className="min-h-[36px] pl-1 text-white/50 hover:text-white">
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

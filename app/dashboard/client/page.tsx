@@ -62,6 +62,7 @@ const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator')
   loading: () => <div className="h-64 rounded-2xl bg-white/[0.03] border border-white/[0.06] animate-pulse" />,
 });
 import ChatContainer from '@/components/chat/ChatContainer';
+import { flushChatOutbox } from '@/lib/chatOutbox';
 
 export default function ClientDashboard() {
   const router = useRouter();
@@ -326,6 +327,11 @@ export default function ClientDashboard() {
       setLoading(false);
     }
   };
+
+  // Send any chat message left unconfirmed last time, even if the client doesn't reopen the chat.
+  useEffect(() => {
+    if (user?.id) flushChatOutbox(user.id);
+  }, [user?.id]);
 
   const getDaysRemaining = (endDate: string) => {
     const end = new Date(endDate);

@@ -5,6 +5,7 @@ import { MessageCircle } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import ConversationList from './ConversationList';
 import ChatView from './ChatView';
+import { flushChatOutbox } from '@/lib/chatOutbox';
 
 interface Participant {
   id: number;
@@ -47,6 +48,10 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
   useEffect(() => {
     onUnreadChangeRef.current?.(totalUnread);
   }, [totalUnread]);
+
+  useEffect(() => {
+    flushChatOutbox(userId);
+  }, [userId]);
 
   const isCoach = userRole === 'coach' || userRole === 'admin';
   const isTrainer = userRole === 'trainer';

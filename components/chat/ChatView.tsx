@@ -5,6 +5,15 @@ import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
+import {
+  SETTLE_MS,
+  addToOutbox,
+  deliverOutboxItem,
+  isSending,
+  readOutbox,
+  removeFromOutbox,
+  type OutboxItem,
+} from '@/lib/chatOutbox';
 
 interface ChatMessage {
   id: number;
@@ -12,7 +21,20 @@ interface ChatMessage {
   content: string;
   isRead: boolean;
   createdAt: string;
+  /** Only on a message the server hasn't confirmed yet. These have a negative id. */
+  status?: 'sending' | 'failed';
 }
+
+const MAX_AUTO_RETRIES = 5;
+
+const tempMessageFor = (item: OutboxItem, senderId: number, status: 'sending' | 'failed'): ChatMessage => ({
+  id: item.tempId,
+  senderId,
+  content: item.content,
+  isRead: false,
+  createdAt: new Date().toISOString(),
+  status,
+});
 
 interface Participant {
   id: number;
@@ -56,44 +78,69 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
   const containerRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<NodeJS.Timeout>();
   const mountedRef = useRef(true);
-  // Track optimistic (pending) message IDs so polls don't wipe them
-  const pendingIdsRef = useRef<Set<number>>(new Set());
+  // Goes up whenever a send is confirmed. A refresh that began before that can't contain the new
+  // message, so its result is thrown away rather than making the message vanish from the screen.
+  const sendEpochRef = useRef(0);
+  const noAutoRetryRef = useRef<Set<number>>(new Set());
+  const autoAttemptsRef = useRef<Map<number, number>>(new Map());
+  const sendItemRef = useRef<(item: OutboxItem, retry: boolean) => Promise<void>>();
 
   const fetchMessages = useCallback(async () => {
     if (!mountedRef.current) return;
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
+      const epoch = sendEpochRef.current;
       const res = await fetch(`/api/chat/conversations/${conversationId}/messages`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok || !mountedRef.current) return;
       const data = await res.json();
-      if (data.messages) {
+      if (data.messages && epoch === sendEpochRef.current) {
         // Opening this chat marks the other person's messages read server-side —
         // tell the parent so the unread badges/counts clear immediately.
         const hadUnread = data.messages.some((m: ChatMessage) => m.senderId !== userId && !m.isRead);
         setMessages((prev) => {
-          // Keep any pending optimistic messages that the server doesn't have yet
-          const serverIds = new Set(data.messages.map((m: ChatMessage) => m.id));
-          const pendingMessages = prev.filter(
-            (m) => m.id < 0 && pendingIdsRef.current.has(m.id) && !serverIds.has(m.id)
-          );
-          return [...data.messages, ...pendingMessages];
+          // Keep unconfirmed messages on screen. One that's left the outbox was confirmed
+          // elsewhere (sent on app open), and this refresh brings in the saved copy.
+          const unsent = new Set(readOutbox(userId, conversationId).map((i) => i.tempId));
+          return [...data.messages, ...prev.filter((m) => m.id < 0 && unsent.has(m.id))];
         });
         if (hadUnread) onMessagesRead?.();
+      }
+
+      // The connection works right now, so try again whatever couldn't be sent earlier.
+      if (!readOnly) {
+        readOutbox(userId, conversationId).forEach((item) => {
+          const attempts = autoAttemptsRef.current.get(item.tempId) || 0;
+          if (
+            isSending(item.tempId) ||
+            noAutoRetryRef.current.has(item.tempId) ||
+            attempts >= MAX_AUTO_RETRIES ||
+            Date.now() - item.attemptedAt < SETTLE_MS
+          ) return;
+          autoAttemptsRef.current.set(item.tempId, attempts + 1);
+          void sendItemRef.current?.(item, true);
+        });
       }
     } catch {
       // silent fail
     } finally {
       if (mountedRef.current) setLoading(false);
     }
-  }, [conversationId, userId, onMessagesRead]);
+  }, [conversationId, userId, onMessagesRead, readOnly]);
 
   useEffect(() => {
     mountedRef.current = true;
     setLoading(true);
-    setMessages([]);
+    // Anything from last time that never got confirmed shows straight away, ready to send.
+    setMessages(
+      readOnly
+        ? []
+        : readOutbox(userId, conversationId).map((item) =>
+            tempMessageFor(item, userId, isSending(item.tempId) ? 'sending' : 'failed')
+          )
+    );
     fetchMessages();
 
     // Poll messages every 8s - only when tab is visible
@@ -114,57 +161,58 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
 
     startPoll();
     document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('online', fetchMessages);
 
     return () => {
       mountedRef.current = false;
       stopPoll();
       document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('online', fetchMessages);
     };
-  }, [fetchMessages]);
+  }, [fetchMessages, conversationId, userId, readOnly]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
+  const sendItem = useCallback(async (item: OutboxItem, retry: boolean) => {
+    setMessages((prev) => prev.map((m) => (m.id === item.tempId ? { ...m, status: 'sending' } : m)));
+    const result = await deliverOutboxItem(userId, conversationId, item, retry);
+    if (!result) return;
+    if (result.ok) {
+      sendEpochRef.current += 1;
+      // Dropping the same id first stops a duplicate if a refresh already brought this message in.
+      setMessages((prev) =>
+        prev.filter((m) => m.id !== result.message.id).map((m) => (m.id === item.tempId ? result.message : m))
+      );
+      return;
+    }
+    if (result.permanent) noAutoRetryRef.current.add(item.tempId);
+    setMessages((prev) => prev.map((m) => (m.id === item.tempId ? { ...m, status: 'failed' } : m)));
+  }, [userId, conversationId]);
+  sendItemRef.current = sendItem;
+
   const handleSend = async (content: string) => {
     setSending(true);
+    const now = Date.now();
+    const item: OutboxItem = { tempId: -now, content, attemptedAt: now };
+    addToOutbox(userId, conversationId, item);
+    setMessages((prev) => [...prev, tempMessageFor(item, userId, 'sending')]);
+    await sendItem(item, false);
+    setSending(false);
+  };
 
-    // Optimistic update
-    const tempId = -Date.now();
-    const tempMessage: ChatMessage = {
-      id: tempId,
-      senderId: userId,
-      content,
-      isRead: false,
-      createdAt: new Date().toISOString(),
-    };
-    pendingIdsRef.current.add(tempId);
-    setMessages((prev) => [...prev, tempMessage]);
+  const handleRetry = (tempId: number) => {
+    noAutoRetryRef.current.delete(tempId);
+    autoAttemptsRef.current.delete(tempId);
+    const item = readOutbox(userId, conversationId).find((i) => i.tempId === tempId);
+    if (item) void sendItem(item, true);
+  };
 
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`/api/chat/conversations/${conversationId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ content }),
-      });
-      const data = await res.json();
-      if (data.message) {
-        pendingIdsRef.current.delete(tempId);
-        setMessages((prev) =>
-          prev.map((m) => (m.id === tempId ? data.message : m))
-        );
-      }
-    } catch {
-      pendingIdsRef.current.delete(tempId);
-      setMessages((prev) => prev.filter((m) => m.id !== tempId));
-    } finally {
-      setSending(false);
-    }
+  const handleDeleteUnsent = (tempId: number) => {
+    removeFromOutbox(userId, conversationId, tempId);
+    setMessages((prev) => prev.filter((m) => m.id !== tempId));
   };
 
   // Group messages by date
@@ -275,6 +323,9 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
                   isSender={readOnly && trainerUserId ? msg.senderId === trainerUserId : msg.senderId === userId}
                   isRead={msg.isRead}
                   senderName={readOnly && trainerUserId ? (msg.senderId === trainerUserId ? trainerName : participant.name || 'Client') : undefined}
+                  status={msg.status}
+                  onRetry={() => handleRetry(msg.id)}
+                  onDelete={() => handleDeleteUnsent(msg.id)}
                 />
               ))}
             </div>

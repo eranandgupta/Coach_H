@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, trainerPermissionError } from '@/lib/middleware';
 
+const RETRY_MATCH_SLACK_MS = 30000;
+
 async function getHandler(request: NextRequest, context: any) {
   const user = context.user;
   const denied = await trainerPermissionError(user, 'chat');
@@ -93,32 +95,49 @@ async function postHandler(request: NextRequest, context: any) {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { content } = await request.json();
+    const { content, retryAgeMs } = await request.json();
 
-    if (!content || !content.trim()) {
+    if (typeof content !== 'string' || !content.trim()) {
       return Response.json({ error: 'Message content required' }, { status: 400 });
+    }
+    const text = content.trim();
+    const select = { id: true, senderId: true, content: true, isRead: true, createdAt: true };
+
+    // A retry may be for a message that WAS saved, with only the reply lost on the way back. If it's
+    // already here, return it so it isn't stored twice. retryAgeMs comes from the phone's own timer,
+    // so a wrong phone clock can't affect this.
+    if (typeof retryAgeMs === 'number' && retryAgeMs >= 0) {
+      const existing = await prisma.message.findFirst({
+        where: {
+          conversationId: id,
+          senderId: user.userId,
+          content: text,
+          createdAt: { gte: new Date(Date.now() - retryAgeMs - RETRY_MATCH_SLACK_MS) },
+        },
+        orderBy: { createdAt: 'desc' },
+        select,
+      });
+      if (existing) return Response.json({ message: existing });
     }
 
     const message = await prisma.message.create({
       data: {
         conversationId: id,
         senderId: user.userId,
-        content: content.trim(),
+        content: text,
       },
-      select: {
-        id: true,
-        senderId: true,
-        content: true,
-        isRead: true,
-        createdAt: true,
-      },
+      select,
     });
 
-    // Update conversation timestamp
-    await prisma.conversation.update({
-      where: { id },
-      data: { updatedAt: new Date() },
-    });
+    // The message is saved from here on, so nothing below may report the send as failed.
+    try {
+      await prisma.conversation.update({
+        where: { id },
+        data: { updatedAt: new Date() },
+      });
+    } catch (error) {
+      console.error('Error updating conversation timestamp:', error);
+    }
 
     return Response.json({ message });
   } catch (error) {
