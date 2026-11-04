@@ -1,6 +1,7 @@
 'use client';
 
-import { AlertCircle, Check, CheckCheck, Clock } from 'lucide-react';
+import { AlertCircle, Check, CheckCheck, Clock, Play } from 'lucide-react';
+import { parseVideoMessage } from '@/lib/chatVideo';
 
 interface MessageBubbleProps {
   content: string;
@@ -13,6 +14,7 @@ interface MessageBubbleProps {
   status?: 'sending' | 'failed';
   onRetry?: () => void;
   onDelete?: () => void;
+  onPlayVideo?: (videoId: string, title: string) => void;
 }
 
 const URL_REGEX = /(https?:\/\/[^\s]+|(?:www\.)[^\s]+|[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.(?:com|org|net|io|dev|app|life|in|co|me|info|xyz|tech|ai|gg|tv|cc|us|uk|ca|au|de|fr|es|it|nl|be|ch|at|se|no|dk|fi|pl|cz|pt|br|jp|kr|cn|ru|za|nz|ie|sg|hk|tw|my|ph|th|vn|id|ae|sa|eg|ke|ng|gh|tz|ug)(?:\/[^\s]*)?)/gi;
@@ -58,7 +60,9 @@ export default function MessageBubble({
   status,
   onRetry,
   onDelete,
+  onPlayVideo,
 }: MessageBubbleProps) {
+  const video = parseVideoMessage(content);
   const time = new Date(createdAt).toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
@@ -81,7 +85,25 @@ export default function MessageBubble({
               : 'bg-white/[0.08] text-white rounded-2xl rounded-bl-sm'
           }`}
         >
-          {renderWithLinks(content, isSender)}
+          {video ? (
+            <>
+              <button
+                onClick={() => onPlayVideo?.(video.videoId, video.title)}
+                className="flex items-center gap-3 w-full min-w-[12rem] min-h-[44px] text-left"
+              >
+                <span className="w-10 h-10 shrink-0 rounded-full bg-white/20 flex items-center justify-center">
+                  <Play size={18} className="text-white ml-0.5" fill="currentColor" aria-hidden />
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-semibold break-words">{video.title}</span>
+                  <span className="block text-xs opacity-75">Tap to watch</span>
+                </span>
+              </button>
+              {video.note && <p className="mt-2 whitespace-pre-wrap">{renderWithLinks(video.note, isSender)}</p>}
+            </>
+          ) : (
+            renderWithLinks(content, isSender)
+          )}
         </div>
 
         {/* Timestamp + read indicator */}

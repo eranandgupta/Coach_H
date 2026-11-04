@@ -1053,6 +1053,17 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
   },
 ];
 
+/** Looks a video up across every category and sub-category. */
+export function findLibraryVideo(videoId: string): ScreenPalVideo | null {
+  for (const category of VIDEO_CATEGORIES) {
+    for (const group of [category, ...(category.subCategories || [])]) {
+      const video = group.videos.find((v) => v.id === videoId);
+      if (video) return video;
+    }
+  }
+  return null;
+}
+
 // Helper to get video URL for embedding
 export function getScreenPalEmbedUrl(videoId: string): string {
   return `https://go.screenpal.com/player/${videoId}`;

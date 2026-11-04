@@ -1434,7 +1434,7 @@ export default function CoachDashboard() {
         {/* Chat Content */}
         {user && (
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} open={isChatOpen} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
+            <ChatContainer userId={user.id} userRole={user.role} userEmail={user.email} open={isChatOpen} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setIsChatOpen(false); fetchUnreadChat(); }} />
           </div>
         )}
 

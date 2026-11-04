@@ -33,9 +33,11 @@ interface ChatContainerProps {
   open?: boolean;
   /** Set from a tapped notification. A new object re-opens the chat even if the id is unchanged. */
   openConversation?: { id: number } | null;
+  /** Shown as the watermark on videos played from chat. */
+  userEmail?: string;
 }
 
-export default function ChatContainer({ userId, userRole, onClose, onUnreadChange, open = true, openConversation }: ChatContainerProps) {
+export default function ChatContainer({ userId, userRole, onClose, onUnreadChange, open = true, openConversation, userEmail }: ChatContainerProps) {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedConv, setSelectedConv] = useState<ConversationItem | null>(null);
   const [coachInfo, setCoachInfo] = useState<Participant | null>(null);
@@ -207,6 +209,7 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
       <ChatView
         conversationId={selectedConv.id}
         onScreen={open}
+        userEmail={userEmail}
         participant={selectedConv.participant}
         userId={userId}
         onMessagesRead={handleMessagesRead}
@@ -241,6 +244,8 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
               key={selectedConv.id}
               conversationId={selectedConv.id}
               onScreen={open}
+              userEmail={userEmail}
+              canShareVideo={isStaff && !selectedConv.isTrainerConversation}
               participant={selectedConv.participant}
               userId={userId}
               onMessagesRead={handleMessagesRead}

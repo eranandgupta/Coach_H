@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, trainerPermissionError } from '@/lib/middleware';
 import { notifyChatMessage } from '@/lib/chatPush';
+import { buildVideoMessage, parseVideoMessage } from '@/lib/chatVideo';
+import { findLibraryVideo } from '@/lib/screenpal';
+import { isStaffRole } from '@/lib/trainerPermissions';
 
 const RETRY_MATCH_SLACK_MS = 30000;
 
@@ -101,7 +104,22 @@ async function postHandler(request: NextRequest, context: any) {
     if (typeof content !== 'string' || !content.trim()) {
       return Response.json({ error: 'Message content required' }, { status: 400 });
     }
-    const text = content.trim();
+    let text = content.trim();
+
+    // A shared video must be sent by staff and must really be in our library. Storing the library's
+    // own title means a sent message can't show a made-up name.
+    const shared = parseVideoMessage(text);
+    if (shared) {
+      if (!isStaffRole(user.role)) {
+        return Response.json({ error: 'Only your coach or trainer can share library videos' }, { status: 403 });
+      }
+      const video = findLibraryVideo(shared.videoId);
+      if (!video) {
+        return Response.json({ error: 'That video is not in the library' }, { status: 400 });
+      }
+      text = buildVideoMessage(video.id, video.title, shared.note);
+    }
+
     const select = { id: true, senderId: true, content: true, isRead: true, createdAt: true };
 
     // A retry may be for a message that WAS saved, with only the reply lost on the way back. If it's

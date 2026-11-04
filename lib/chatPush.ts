@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import { messagePreview } from './chatVideo';
 import { sendPushToUser } from './push';
 import { resolveTrainerPermissions } from './trainerPermissions';
 
@@ -24,7 +25,8 @@ export async function notifyChatMessage(
   try {
     const { id, coachId, trainerId, clientId } = conversation;
     const sender = await prisma.user.findUnique({ where: { id: senderId }, select: { name: true } });
-    const text = content.length > BODY_MAX ? `${content.slice(0, BODY_MAX - 1)}…` : content;
+    const preview = messagePreview(content);
+    const text = preview.length > BODY_MAX ? `${preview.slice(0, BODY_MAX - 1)}…` : preview;
 
     const recipients: { userId: number; dashboard: string }[] = [];
     if (clientId !== senderId) recipients.push({ userId: clientId, dashboard: 'client' });

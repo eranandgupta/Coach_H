@@ -2,9 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, MessageCircle } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
+import SharedVideoPlayer from './SharedVideoPlayer';
+import VideoPickerModal from '@/components/modals/VideoPickerModal';
+import { buildVideoMessage } from '@/lib/chatVideo';
 import {
   SETTLE_MS,
   addToOutbox,
@@ -70,12 +74,19 @@ interface ChatViewProps {
   onMessagesRead?: () => void;
   /** False while the surrounding chat panel is closed. */
   onScreen?: boolean;
+  /** Coach and trainer only: lets them send a Video Library video in this chat. */
+  canShareVideo?: boolean;
+  /** Shown as the watermark on videos played from this chat. */
+  userEmail?: string;
 }
 
-export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId, onMessagesRead, onScreen = true }: ChatViewProps) {
+export default function ChatView({ conversationId, participant, userId, onBack, showWhatsApp, readOnly, trainerName, trainerUserId, onMessagesRead, onScreen = true, canShareVideo, userEmail }: ChatViewProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [isVideoPickerOpen, setIsVideoPickerOpen] = useState(false);
+  const [attachedVideo, setAttachedVideo] = useState<{ id: string; title: string } | null>(null);
+  const [playingVideo, setPlayingVideo] = useState<{ id: string; title: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<NodeJS.Timeout>();
@@ -213,7 +224,9 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
   }, [userId, conversationId]);
   sendItemRef.current = sendItem;
 
-  const handleSend = async (content: string) => {
+  const handleSend = async (text: string) => {
+    const content = attachedVideo ? buildVideoMessage(attachedVideo.id, attachedVideo.title, text) : text;
+    setAttachedVideo(null);
     setSending(true);
     const now = Date.now();
     const item: OutboxItem = { tempId: -now, content, attemptedAt: now };
@@ -346,6 +359,7 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
                   status={msg.status}
                   onRetry={() => handleRetry(msg.id)}
                   onDelete={() => handleDeleteUnsent(msg.id)}
+                  onPlayVideo={(id, title) => setPlayingVideo({ id, title })}
                 />
               ))}
             </div>
@@ -363,9 +377,37 @@ export default function ChatView({ conversationId, participant, userId, onBack, 
             </p>
           </div>
         ) : (
-          <MessageInput onSend={handleSend} disabled={sending} />
+          <MessageInput
+            onSend={handleSend}
+            disabled={sending}
+            onShareVideo={canShareVideo ? () => setIsVideoPickerOpen(true) : undefined}
+            attachedVideoTitle={attachedVideo?.title}
+            onRemoveVideo={() => setAttachedVideo(null)}
+          />
         )}
       </div>
+      {/* Rendered on the page body: the coach and trainer chat drawer would otherwise trap these inside it. */}
+      {typeof document !== 'undefined' && createPortal(
+        <>
+        {canShareVideo && (
+          <VideoPickerModal
+            isOpen={isVideoPickerOpen}
+            onClose={() => setIsVideoPickerOpen(false)}
+            onSelect={(_url, title, id) => setAttachedVideo({ id, title })}
+            title="Share a video"
+          />
+        )}
+        {playingVideo && (
+          <SharedVideoPlayer
+            videoId={playingVideo.id}
+            title={playingVideo.title}
+            userEmail={userEmail}
+            onClose={() => setPlayingVideo(null)}
+          />
+        )}
+        </>,
+        document.body
+      )}
     </motion.div>
   );
 }

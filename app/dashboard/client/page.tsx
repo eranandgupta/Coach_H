@@ -1397,7 +1397,7 @@ export default function ClientDashboard() {
             </button>
           </div>
           <div className="flex-1 overflow-hidden">
-            <ChatContainer userId={user.id} userRole={user.role} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setActiveView('dashboard'); fetchUnreadChat(); }} />
+            <ChatContainer userId={user.id} userRole={user.role} userEmail={user.email} openConversation={chatTarget} onUnreadChange={setUnreadChatCount} onClose={() => { setActiveView('dashboard'); fetchUnreadChat(); }} />
           </div>
         </div>
       )}

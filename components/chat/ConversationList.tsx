@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search, MessageSquare, ArrowLeft } from 'lucide-react';
+import { messagePreview } from '@/lib/chatVideo';
 
 interface ConversationItem {
   id: number;
@@ -110,10 +111,11 @@ export default function ConversationList({
             const initials = (conv.participant.name || '?').charAt(0).toUpperCase();
             const isSelected = selectedId === conv.id;
             const hasUnread = conv.unreadCount > 0;
-            const preview = conv.lastMessage?.content
-              ? conv.lastMessage.content.length > 40
-                ? conv.lastMessage.content.slice(0, 40) + '...'
-                : conv.lastMessage.content
+            const lastText = conv.lastMessage?.content ? messagePreview(conv.lastMessage.content) : '';
+            const preview = lastText
+              ? lastText.length > 40
+                ? lastText.slice(0, 40) + '...'
+                : lastText
               : 'No messages yet';
 
             return (

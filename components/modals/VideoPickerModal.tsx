@@ -29,9 +29,10 @@ interface Video {
 interface VideoPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (videoUrl: string, videoTitle: string) => void;
+  onSelect: (videoUrl: string, videoTitle: string, videoId: string) => void;
   currentVideoUrl?: string;
   exerciseName?: string;
+  title?: string;
 }
 
 const categoryConfig: Record<string, { name: string; color: string }> = {
@@ -61,7 +62,7 @@ const categoryConfig: Record<string, { name: string; color: string }> = {
   rehab_ankle: { name: 'Ankle & Foot', color: 'from-emerald-500 to-teal-500' },
 };
 
-export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVideoUrl, exerciseName }: VideoPickerModalProps) {
+export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVideoUrl, exerciseName, title }: VideoPickerModalProps) {
   const [categories, setCategories] = useState<VideoCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<VideoCategory | null>(null);
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | null>(null);
@@ -143,8 +144,8 @@ export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVid
     if (isOpen && allVideos.length === 0) {
       const fetchAll = async () => {
         const allVids: (Video & { categoryId: string; categoryName: string })[] = [];
-        const categoryIds = Object.keys(categoryConfig).filter(id => !id.startsWith('hw_') && !id.startsWith('rehab_'));
-        for (const catId of categoryIds) {
+        // Includes the Home Workout and Rehabilitation folders, so search can find every library video.
+        await Promise.all(Object.keys(categoryConfig).map(async (catId) => {
           try {
             const response = await fetch(`/api/videos?category=${catId}`);
             if (response.ok) {
@@ -156,8 +157,9 @@ export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVid
               })));
             }
           } catch {}
-        }
-        setAllVideos(allVids);
+        }));
+        const seen = new Set<string>();
+        setAllVideos(allVids.filter((v) => !seen.has(v.id) && !!seen.add(v.id)));
       };
       fetchAll();
     }
@@ -185,7 +187,7 @@ export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVid
   };
 
   const handleVideoSelect = (video: Video) => {
-    onSelect(video.url, video.title);
+    onSelect(video.url, video.title, video.id);
     handleClose();
   };
 
@@ -204,7 +206,7 @@ export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVid
 
   const currentTitle = selectedSubCategoryId
     ? categoryConfig[selectedSubCategoryId]?.name || ''
-    : selectedCategory?.name || 'Select Exercise Video';
+    : selectedCategory?.name || title || 'Select Exercise Video';
 
   return (
     <AnimatePresence>
@@ -226,7 +228,7 @@ export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVid
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-white/10 flex-shrink-0">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-white/10 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   {(selectedCategory || searchQuery) && !searchQuery && (
                     <button
@@ -240,7 +242,7 @@ export default function VideoPickerModal({ isOpen, onClose, onSelect, currentVid
                 </div>
 
                 {/* Search */}
-                <div className="flex-1 max-w-sm mx-4">
+                <div className="order-last sm:order-none w-full sm:w-auto sm:flex-1 sm:max-w-sm sm:mx-4">
                   <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
                     <Search className="w-4 h-4 text-gray-500" />
                     <input
