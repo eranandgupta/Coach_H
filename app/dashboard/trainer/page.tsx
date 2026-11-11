@@ -23,6 +23,8 @@ import CreateWorkoutModal from '@/components/forms/CreateWorkoutModal';
 import CreateDietModal from '@/components/forms/CreateDietModal';
 import ManageTemplatesModal from '@/components/forms/ManageTemplatesModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
+import ProgressWatchList from '@/components/progress/ProgressWatchList';
+import ProgressDiary from '@/components/progress/ProgressDiary';
 import DashboardLoader from '@/components/DashboardLoader';
 import ChatContainer from '@/components/chat/ChatContainer';
 import PushPrompt from '@/components/PushPrompt';
@@ -54,6 +56,7 @@ export default function TrainerDashboard() {
   const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
   const [isDietModalOpen, setIsDietModalOpen] = useState(false);
   const [isClientDetailModalOpen, setIsClientDetailModalOpen] = useState(false);
+  const [diaryClient, setDiaryClient] = useState<{ id: number; name: string | null } | null>(null);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isLiveSessionModalOpen, setIsLiveSessionModalOpen] = useState(false);
   const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
@@ -480,6 +483,11 @@ export default function TrainerDashboard() {
             )}
           </motion.div>
 
+          {/* Client Progress Diaries — who is logging, who has gone quiet */}
+          <div className="mb-6">
+            <ProgressWatchList onOpenClient={(id, name) => setDiaryClient({ id, name })} />
+          </div>
+
           {/* Recent Activity */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -618,6 +626,12 @@ export default function TrainerDashboard() {
         isOpen={isTemplatesModalOpen}
         onClose={() => setIsTemplatesModalOpen(false)}
         currentUserId={user?.id}
+      />
+      <ProgressDiary
+        isOpen={!!diaryClient}
+        onClose={() => setDiaryClient(null)}
+        clientId={diaryClient?.id}
+        clientName={diaryClient?.name}
       />
       <ClientDetailModal
         isOpen={isClientDetailModalOpen}

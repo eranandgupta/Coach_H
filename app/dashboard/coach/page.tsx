@@ -44,6 +44,8 @@ import RenewSubscriptionModal from '@/components/admin/RenewSubscriptionModal';
 import AdjustDaysModal from '@/components/admin/AdjustDaysModal';
 import ActivateSubscriptionModal from '@/components/admin/ActivateSubscriptionModal';
 import ClientDetailModal from '@/components/forms/ClientDetailModal';
+import ProgressWatchList from '@/components/progress/ProgressWatchList';
+import ProgressDiary from '@/components/progress/ProgressDiary';
 import CreateBlogModal from '@/components/CreateBlogModal';
 import NotificationModal from '@/components/NotificationModal';
 import DashboardLoader from '@/components/DashboardLoader';
@@ -110,6 +112,7 @@ export default function CoachDashboard() {
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
   const [isClientDetailModalOpen, setIsClientDetailModalOpen] = useState(false);
+  const [diaryClient, setDiaryClient] = useState<{ id: number; name: string | null } | null>(null);
   const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
@@ -1001,6 +1004,11 @@ export default function CoachDashboard() {
           )}
         </motion.div>
 
+        {/* Client Progress Diaries — who is logging, who has gone quiet */}
+        <div className="mb-6">
+          <ProgressWatchList onOpenClient={(id, name) => setDiaryClient({ id, name })} />
+        </div>
+
         {/* Recent Activity */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1327,6 +1335,12 @@ export default function CoachDashboard() {
         onOpenChange={setActivateSubOpen}
         onSuccess={fetchDashboardData}
         subscription={activateSubData}
+      />
+      <ProgressDiary
+        isOpen={!!diaryClient}
+        onClose={() => setDiaryClient(null)}
+        clientId={diaryClient?.id}
+        clientName={diaryClient?.name}
       />
       <ClientDetailModal
         isOpen={isClientDetailModalOpen}

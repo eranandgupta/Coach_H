@@ -27,7 +27,7 @@ import {
   Shield,
   ClipboardList,
   Pause,
-  PlayCircle, Hand, HelpCircle,
+  PlayCircle, Hand, HelpCircle, NotebookPen,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -65,6 +65,8 @@ const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator')
   loading: () => <div className="h-64 rounded-2xl bg-white/[0.03] border border-white/[0.06] animate-pulse" />,
 });
 import ChatContainer from '@/components/chat/ChatContainer';
+import ProgressSnapshot from '@/components/progress/ProgressSnapshot';
+const ProgressDiary = dynamic(() => import('@/components/progress/ProgressDiary'), { ssr: false });
 
 const TOUR_SEEN_KEY = 'ch_client_tour_seen';
 const RENEW_REMINDER_DAYS = 14;
@@ -107,6 +109,8 @@ export default function ClientDashboard() {
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
+  const [isDiaryOpen, setIsDiaryOpen] = useState(false);
+  const [diaryRefresh, setDiaryRefresh] = useState(0);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [isRenewOpen, setIsRenewOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
@@ -184,6 +188,9 @@ export default function ClientDashboard() {
     dismissFeatureHint();
     openMemberFeature('Logbook', 'The transformation logbook is available to active members only.', () => setIsLogbookOpen(true));
   };
+
+  const openDiary = () =>
+    openMemberFeature('Progress Diary', 'The progress diary is available to active members only.', () => setIsDiaryOpen(true));
 
   const openCalories = () => {
     setActiveView('calories');
@@ -528,6 +535,17 @@ export default function ClientDashboard() {
     return milestones;
   };
 
+  // Push notifications (new PR, coach feedback) link to ?open=progress.
+  useEffect(() => {
+    if (!subscription?.isActive) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('open') !== 'progress') return;
+    setIsDiaryOpen(true);
+    params.delete('open');
+    const qs = params.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${qs ? `?${qs}` : ''}`);
+  }, [subscription?.isActive]);
+
   if (loading) {
     return <DashboardLoader />;
   }
@@ -546,7 +564,7 @@ export default function ClientDashboard() {
   const hasUsedPause = (subscription?.subscription?.pauseDaysUsed || 0) > 0;
   const canPause = isSubscriptionActive && maxPauseDays > 0 && !isPaused && !hasUsedPause;
   const isOverlayOpen =
-    isWorkoutModalOpen || isDietModalOpen || isEditAssessmentOpen || isVideoLibraryOpen || isHabitTrackerOpen ||
+    isWorkoutModalOpen || isDietModalOpen || isEditAssessmentOpen || isVideoLibraryOpen || isHabitTrackerOpen || isDiaryOpen ||
     isLogbookOpen || isRenewOpen || isChangePasswordOpen || isNotificationPanelOpen;
   const daysLeft = subscription?.subscription ? getDaysRemaining(subscription.subscription.endDate) : 0;
   const showRenewReminder =
@@ -555,6 +573,7 @@ export default function ClientDashboard() {
   const quickActions: QuickAction[] = [
     { id: 'chat', label: 'Chat with coach', hint: 'Ask anything, anytime', icon: MessageSquare, onSelect: () => setActiveView('chat'), badge: unreadChatCount },
     ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', hint: 'See how each exercise is done', icon: Play, onSelect: openVideoLibrary, locked: !isSubscriptionActive }] : []),
+    { id: 'diary', label: 'Progress Diary', hint: 'Log workouts, PRs, runs, meals, weight', icon: NotebookPen, onSelect: openDiary, locked: !isSubscriptionActive },
     { id: 'habits', label: 'Habit Tracker', hint: 'Tick off your daily habits', icon: ClipboardList, onSelect: openHabitTracker, locked: !isSubscriptionActive },
     { id: 'logbook', label: 'Logbook', hint: 'Log your 30-day transformation', icon: TrendingUp, onSelect: openLogbook, locked: !isSubscriptionActive },
     { id: 'calories', label: 'Calorie Calculator', hint: 'Count calories in 850+ Indian foods', icon: Calculator, onSelect: openCalories },
@@ -1019,6 +1038,11 @@ export default function ClientDashboard() {
 
         <QuickActions actions={quickActions} />
 
+        {/* Progress Diary — today's workout, diet, water, weight, week/month and PRs */}
+        <div id="section-progress" className="scroll-mt-24 mb-5 md:mb-8">
+          <ProgressSnapshot onOpen={openDiary} refreshKey={diaryRefresh} locked={!isSubscriptionActive} />
+        </div>
+
         {showPlans && (
           <div id="section-workout" className={`scroll-mt-24 grid grid-cols-1 ${isEliteOneOnOnePlan ? '' : 'lg:grid-cols-2'} gap-4 md:gap-6 mb-5 md:mb-8 items-start`}>
             {/* Elite 1:1 clients train in live sessions, so they have no workout card. */}
@@ -1343,6 +1367,10 @@ export default function ClientDashboard() {
       />
 
       {/* Video Library Modal */}
+      <ProgressDiary
+        isOpen={isDiaryOpen && !!isSubscriptionActive}
+        onClose={() => { setIsDiaryOpen(false); setDiaryRefresh((k) => k + 1); }}
+      />
       <HabitTracker
         isOpen={isHabitTrackerOpen && !!isSubscriptionActive}
         onClose={() => setIsHabitTrackerOpen(false)}
@@ -1414,6 +1442,7 @@ export default function ClientDashboard() {
         badges={{ chat: unreadChatCount }}
         moreItems={[
           ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', icon: Play, onSelect: openVideoLibrary, disabled: !isSubscriptionActive }] : []),
+          { id: 'diary', label: 'Progress Diary', icon: NotebookPen, onSelect: openDiary, disabled: !isSubscriptionActive },
           { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showHint, onSelect: openHabitTracker, disabled: !isSubscriptionActive },
           { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showHint, onSelect: openLogbook, disabled: !isSubscriptionActive },
           { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },

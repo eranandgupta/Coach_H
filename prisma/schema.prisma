@@ -39,6 +39,12 @@ model User {
   lastSeenAt           DateTime?          // presence heartbeat — updated while the app is open
   trainerPermissions   Json?              // trainer accounts only: what they may do (lib/trainerPermissions.ts); null = everything
   loginEvents          LoginEvent[]
+  workoutLogs          WorkoutLog[]       @relation("ClientWorkoutLogs")
+  cardioLogs           CardioLog[]        @relation("ClientCardioLogs")
+  foodLogs             FoodLog[]          @relation("ClientFoodLogs")
+  bodyMetrics          BodyMetric[]       @relation("ClientBodyMetrics")
+  progressTarget       ProgressTarget?    @relation("ClientProgressTarget")
+  progressFeedback     ProgressFeedback[] @relation("ClientProgressFeedback")
 }
 
 model SubscriptionPlan {
@@ -591,4 +597,133 @@ model Feedback {
   @@index([isVisible])
   @@index([rating])
   @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Daily Progress Diary (components/progress, app/api/progress, lib/progress*.ts)
+// Clients log their own day; coach/admin/trainer read every client's diary and set
+// targets + feedback. Water lives in HabitEntry.water so the habit card and the diary
+// never disagree.
+// ---------------------------------------------------------------------------
+
+// One gym session on a day. Sets are stored one row each so PRs, reps and volume are exact.
+model WorkoutLog {
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  date        DateTime        @db.Date
+  title       String?
+  durationMin Int?
+  notes       String?         @db.Text
+  loggedById  Int?            // who typed it (client, or staff logging on their behalf)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User            @relation("ClientWorkoutLogs", fields: [userId], references: [id], onDelete: Cascade)
+  sets        WorkoutSetLog[]
+
+  @@index([userId, date])
+}
+
+model WorkoutSetLog {
+  id           Int        @id @default(autoincrement())
+  workoutLogId Int
+  userId       Int        // denormalised from the log so PR queries stay a single index scan
+  exercise     String     // display name as typed
+  exerciseKey  String     @db.VarChar(120) // lower-cased, single-spaced — groups "Bench Press" / "bench  press"
+  exerciseNote String?    @db.Text
+  setNumber    Int
+  reps         Int
+  weightKg     Decimal    @default(0) @db.Decimal(6, 2)
+  workoutLog   WorkoutLog @relation(fields: [workoutLogId], references: [id], onDelete: Cascade)
+
+  @@index([workoutLogId])
+  @@index([userId, exerciseKey])
+}
+
+model CardioLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  date        DateTime @db.Date
+  activity    String   @default("run") // run | treadmill | walk | cycle | other (lib/progressCalc.ts)
+  distanceKm  Decimal? @db.Decimal(6, 2)
+  durationSec Int?
+  inclinePct  Decimal? @db.Decimal(4, 1)
+  calories    Int?     // entered by the client, or estimated when left blank
+  notes       String?  @db.Text
+  loggedById  Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation("ClientCardioLogs", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model FoodLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  date      DateTime @db.Date
+  mealType  String   // breakfast | lunch | snacks | pre_workout | post_workout | dinner
+  foodName  String
+  foodSlug  String?  // lib/foods.ts entry when picked from the database
+  quantity  String?
+  calories  Int?
+  protein   Decimal? @db.Decimal(6, 1)
+  carbs     Decimal? @db.Decimal(6, 1)
+  fats      Decimal? @db.Decimal(6, 1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation("ClientFoodLogs", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+// One check-in per day: weight, body fat, tape measurements and optional progress photos.
+model BodyMetric {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  date       DateTime @db.Date
+  weightKg   Decimal? @db.Decimal(5, 1)
+  bodyFatPct Decimal? @db.Decimal(4, 1)
+  chestCm    Decimal? @db.Decimal(5, 1)
+  waistCm    Decimal? @db.Decimal(5, 1)
+  hipsCm     Decimal? @db.Decimal(5, 1)
+  armsCm     Decimal? @db.Decimal(5, 1)
+  thighsCm   Decimal? @db.Decimal(5, 1)
+  neckCm     Decimal? @db.Decimal(5, 1)
+  photoFront String?  @db.Text
+  photoSide  String?  @db.Text
+  photoBack  String?  @db.Text
+  notes      String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation("ClientBodyMetrics", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+// Daily targets the coach sets for a client. When absent, the active diet plan is used.
+model ProgressTarget {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  calories        Int?
+  protein         Int?
+  carbs           Int?
+  fats            Int?
+  waterL          Decimal? @db.Decimal(3, 1)
+  workoutsPerWeek Int?
+  updatedById     Int?
+  updatedAt       DateTime @updatedAt
+  user            User     @relation("ClientProgressTarget", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Coach / trainer notes on a client's progress, shown to the client in their diary.
+model ProgressFeedback {
+  id        Int      @id @default(autoincrement())
+  clientId  Int
+  authorId  Int
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  client    User     @relation("ClientProgressFeedback", fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, createdAt])
 }

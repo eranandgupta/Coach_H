@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import AssessmentResultsModal from '@/components/AssessmentResultsModal';
 import HabitSummaryView from '@/components/HabitSummaryView';
 import TransformationLogModal from '@/components/TransformationLogModal';
+import ProgressSnapshot from '@/components/progress/ProgressSnapshot';
+import ProgressDiary from '@/components/progress/ProgressDiary';
 import InvoicePreviewModal from '@/components/admin/InvoicePreviewModal';
 import { isElitePlan, getEffectiveTotalSessions, subscriptionDisplayStatus, isSubscriptionCurrentlyActive } from "@/lib/planUtils";
 
@@ -75,6 +77,8 @@ export default function ClientDetailModal({
   const [expiringSubId, setExpiringSubId] = useState<number | null>(null);
   const [showPreviousSubs, setShowPreviousSubs] = useState(false);
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
+  const [isDiaryOpen, setIsDiaryOpen] = useState(false);
+  const [diaryRefresh, setDiaryRefresh] = useState(0);
   const [loginHistory, setLoginHistory] = useState<any[]>([]);
   const [loginTotal, setLoginTotal] = useState(0);
   const [lastLoginAt, setLastLoginAt] = useState<string | null>(null);
@@ -610,6 +614,11 @@ export default function ClientDetailModal({
                 </div>
               </div>
 
+              {/* Progress Diary — the client's workouts, PRs, cardio, diet and body log */}
+              <div className="mb-6">
+                <ProgressSnapshot clientId={client.id} onOpen={() => setIsDiaryOpen(true)} refreshKey={diaryRefresh} />
+              </div>
+
               {/* Habit Tracker */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -887,6 +896,14 @@ export default function ClientDetailModal({
 
           {/* Editable invoice — coaches/admins can adjust amounts (discounts, split payments) */}
           <InvoicePreviewModal open={invoiceOpen} onOpenChange={setInvoiceOpen} subscription={invoiceSub} />
+
+          {/* Progress Diary for this client (opens above the card) */}
+          <ProgressDiary
+            isOpen={isDiaryOpen}
+            onClose={() => { setIsDiaryOpen(false); setDiaryRefresh((k) => k + 1); }}
+            clientId={client?.id}
+            clientName={client?.name}
+          />
 
           {/* Transformation Logbook — coach/trainer can view & fill Day-30 measurements */}
           {isLogbookOpen && (
