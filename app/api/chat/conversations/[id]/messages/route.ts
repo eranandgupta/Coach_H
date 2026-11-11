@@ -6,6 +6,9 @@ import { buildVideoMessage, parseVideoMessage } from '@/lib/chatVideo';
 import { findLibraryVideo } from '@/lib/screenpal';
 import { isStaffRole } from '@/lib/trainerPermissions';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 const RETRY_MATCH_SLACK_MS = 30000;
 
 async function getHandler(request: NextRequest, context: any) {

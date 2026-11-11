@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthUser, trainerPermissionError } from '@/lib/middleware';
 
+// Per-user, frequently changed data: never cache (responses were going out `public, max-age=0`).
+export const dynamic = 'force-dynamic';
+
 // GET — fetch active live session link for a plan
 export async function GET(request: NextRequest) {
   try {

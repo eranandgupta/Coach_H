@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch all feedbacks (for admin)
 export async function GET(request: NextRequest) {
   try {

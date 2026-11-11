@@ -9,6 +9,7 @@ import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
 import { BackToBlogButton, ExplorePlansButton, StickyCtaBanner } from '@/components/BlogPostCTA';
 import BlogViewTracker from '@/components/BlogViewTracker';
 import ConsultationForm from '@/components/ConsultationForm';
+import { prepareBlogHtml, BLOG_SCOPE_CLASS } from '@/lib/blogHtml';
 
 // On-demand ISR: don't enumerate slugs at build time (that queried the DB during
 // the build and made deploys fail when the DB was unreachable / over its connection
@@ -195,6 +196,10 @@ export default async function BlogPostPage({ params }: Props) {
     orderBy: { publishedAt: 'desc' },
   });
 
+  // Full-document posts carry their own stylesheet: keep only the body and scope that CSS to
+  // the article so it can't restyle the navbar / Explore More / footer (lib/blogHtml.ts).
+  const { html: postHtml, css: postCss } = prepareBlogHtml(post.content);
+
   return (
     <div className="min-h-screen bg-brand-navy">
       <BlogViewTracker slug={post.slug} />
@@ -272,8 +277,9 @@ export default async function BlogPostPage({ params }: Props) {
           className="max-w-4xl mx-auto px-3 md:px-6"
         >
           <div className="bg-brand-navy-light border border-brand-navy-light/50 rounded-lg md:rounded-2xl p-3 md:p-8 lg:p-12">
+            {postCss && <style dangerouslySetInnerHTML={{ __html: postCss }} />}
             <div
-              className="prose prose-invert prose-base md:prose-lg max-w-none break-words
+              className={postCss ? `${BLOG_SCOPE_CLASS} break-words` : `prose prose-invert prose-base md:prose-lg max-w-none break-words
                 prose-headings:text-white prose-headings:font-bold
                 prose-h2:text-xl prose-h2:md:text-2xl prose-h2:lg:text-3xl prose-h2:mt-8 prose-h2:md:mt-12 prose-h2:mb-4 prose-h2:md:mb-6 prose-h2:border-b prose-h2:border-white/10 prose-h2:pb-3
                 prose-h3:text-lg prose-h3:md:text-xl prose-h3:lg:text-2xl prose-h3:mt-6 prose-h3:md:mt-8 prose-h3:mb-3 prose-h3:md:mb-4
@@ -297,8 +303,8 @@ export default async function BlogPostPage({ params }: Props) {
                 [&_.stat-card]:bg-white/5 [&_.stat-card]:border [&_.stat-card]:border-white/10 [&_.stat-card]:rounded-lg [&_.stat-card]:p-3 [&_.stat-card]:md:p-4 [&_.stat-card]:text-center
                 [&_.stat-card_strong]:text-brand-blue [&_.stat-card_strong]:text-xl [&_.stat-card_strong]:md:text-2xl [&_.stat-card_strong]:block [&_.stat-card_strong]:mb-1
                 [&>*]:break-words [&>*]:overflow-hidden
-              "
-              dangerouslySetInnerHTML={{ __html: addSeoLinks(formatContent(post.content)) }}
+              `}
+              dangerouslySetInnerHTML={{ __html: addSeoLinks(formatContent(postHtml)) }}
             />
           </div>
         </div>

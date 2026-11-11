@@ -53,6 +53,12 @@ async function getHandler(request: NextRequest, context: any) {
       },
     });
 
+    // Newest activity first: a client who signed up long ago and only now paid would otherwise sit
+    // far down the list (ordered by account creation) and look like the payment never arrived.
+    const lastActivity = (c: (typeof clients)[number]) =>
+      Math.max(new Date(c.createdAt).getTime(), ...c.subscriptions.map((s) => new Date(s.createdAt).getTime()));
+    clients.sort((a, b) => lastActivity(b) - lastActivity(a));
+
     return NextResponse.json({ clients }, { status: 200 });
   } catch (error) {
     console.error('Get clients error:', error);

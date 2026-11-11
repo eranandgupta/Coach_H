@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getUploadAuthParams } from '@imagekit/next/server';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const authParams = getUploadAuthParams({

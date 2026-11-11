@@ -4,6 +4,9 @@ import { getAuthUser } from '@/lib/middleware';
 import { sendPushToAllClients } from '@/lib/push';
 import { pingIndexNow } from '@/lib/indexnow';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch all blog posts (published for public, all for coach)
 export async function GET(request: NextRequest) {
   try {
@@ -116,8 +119,8 @@ export async function POST(request: NextRequest) {
         await sendPushToAllClients({
           title: '📰 New Blog Post',
           body: excerpt || title,
-          icon: coverImage || '/icon-192x192.png',
-          badge: '/icon-192x192.png',
+          icon: coverImage || '/icons/icon-192x192.png',
+          badge: '/icons/badge-96x96.png',
           tag: 'blog',
           url: `/blog/${slug}`,
         });
@@ -236,6 +239,22 @@ export async function PUT(request: NextRequest) {
       const changed = [`/blog/${updatedPost.slug}`, '/blog', '/sitemap/1.xml'];
       if (existingPost.slug !== updatedPost.slug) changed.push(`/blog/${existingPost.slug}`); // old URL → 404/redirect, let engines recrawl it
       pingIndexNow(changed);
+    }
+    // A draft published from the edit screen is a new post for clients too — this used to notify
+    // only when a post was created already published.
+    if (updatedPost.published && !existingPost.published) {
+      try {
+        await sendPushToAllClients({
+          title: '📰 New Blog Post',
+          body: updatedPost.excerpt || updatedPost.title,
+          icon: updatedPost.coverImage || '/icons/icon-192x192.png',
+          badge: '/icons/badge-96x96.png',
+          tag: 'blog',
+          url: `/blog/${updatedPost.slug}`,
+        });
+      } catch (pushError) {
+        console.error('Failed to send push notifications for published draft:', pushError);
+      }
     }
     return NextResponse.json({
       success: true,

@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/middleware';
 import { sendPushToAllClients } from '@/lib/push';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch active notifications
 export async function GET(request: NextRequest) {
   try {
@@ -69,8 +72,8 @@ export async function POST(request: NextRequest) {
       await sendPushToAllClients({
         title: '🔔 New Notification from Coach',
         body: message.trim(),
-        icon: '/icon-192x192.png',
-        badge: '/icon-192x192.png',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/badge-96x96.png',
         tag: 'notification',
       });
     } catch (pushError) {

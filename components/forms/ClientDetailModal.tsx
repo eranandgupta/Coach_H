@@ -194,19 +194,26 @@ export default function ClientDetailModal({
         body: JSON.stringify({ subscriptionId, sessionNumber, notes: notes || undefined }),
       });
 
+      // Read as text first: a gateway error page (timeout, crash) isn't JSON, and parsing it used
+      // to throw into the catch below and show a bare "Error confirming session" with no cause.
+      const raw = await res.text();
+      let data: any = {};
+      try { data = raw ? JSON.parse(raw) : {}; } catch { /* non-JSON body */ }
+
       if (res.ok) {
-        const data = await res.json();
         fetchSessions();
         if (data.subscriptionExpired) {
           alert('That was the last session, so this 1:1 plan has now expired. Renew it to keep training.');
           onRefreshClients?.();
         }
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to confirm session');
+        // The save may have gone through before the error (e.g. a timeout after the write).
+        fetchSessions();
+        alert(data.error || `Failed to confirm session (HTTP ${res.status}${raw && !data.error ? `: ${raw.slice(0, 120)}` : ''}). Please try again.`);
       }
-    } catch (error) {
-      alert('Error confirming session');
+    } catch (error: any) {
+      fetchSessions();
+      alert(`Could not reach the server to confirm Session ${sessionNumber} (${error?.message || 'network error'}). Check your connection and try again.`);
     }
   };
 

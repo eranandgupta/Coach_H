@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import imagekit from '@/lib/imagekit';
 import { toFile } from '@imagekit/nodejs';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 // POST - Submit new feedback
 export async function POST(request: NextRequest) {
   try {

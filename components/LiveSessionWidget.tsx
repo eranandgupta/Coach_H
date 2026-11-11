@@ -30,9 +30,13 @@ export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) 
         const token = localStorage.getItem('token');
         const res = await fetch(`/api/live-sessions?planName=${encodeURIComponent(planName)}`, {
           headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store',
         });
+        if (!res.ok) return; // keep what we have on a transient error
         const data = await res.json();
-        if (data.link) setSessionLink(data.link);
+        // `link: null` means the coach removed it — clear it, or the old Meet link stays on
+        // screen until the app is reloaded (logout/login was the only fix).
+        setSessionLink(data.link || null);
       } catch (error) {
         console.error('Failed to fetch session link:', error);
       }
@@ -40,7 +44,20 @@ export default function LiveSessionWidget({ planName }: LiveSessionWidgetProps) 
     fetchLink();
     // Refresh every 60 seconds in case coach updates the link
     const interval = setInterval(fetchLink, 60000);
-    return () => clearInterval(interval);
+    // Installed app (PWA): timers freeze in the background and the page is never reloaded, so
+    // re-check the moment the app comes back to the foreground.
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchLink();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+    window.addEventListener('pageshow', onVisible);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
+      window.removeEventListener('pageshow', onVisible);
+    };
   }, [planName]);
 
   return (

@@ -10,6 +10,11 @@ const createTransporter = () => {
       user: process.env.SMTP_USER || 'info@coachhimanshu.com',
       pass: process.env.SMTP_PASSWORD || '',
     },
+    // Nodemailer's defaults (2 min connect, 10 min socket) let a slow SMTP server hold a request
+    // open until the serverless function is killed — payment verify awaits these emails.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
 };
 

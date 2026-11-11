@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, trainerPermissionError } from '@/lib/middleware';
 
+// Never statically render: Next 13 caches a GET with no dynamic input at build time.
+export const dynamic = 'force-dynamic';
+
 async function getHandler(request: NextRequest, context: any) {
   const user = context.user;
   const denied = await trainerPermissionError(user, 'chat');
