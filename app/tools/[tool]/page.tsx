@@ -217,6 +217,10 @@ export default function FitnessToolPage({ params }: { params: { tool: string } }
               <div className="font-semibold text-white">Indian Diet Plans by Calorie</div>
               <div className="mt-1 text-sm text-gray-400">Full-day veg and non-veg charts from 1200 to 2500 kcal.</div>
             </Link>
+            <Link href="/workout-plans" className="rounded-xl border border-white/10 p-4 hover:border-brand-blue/50 transition-colors">
+              <div className="font-semibold text-white">Free Workout Plans</div>
+              <div className="mt-1 text-sm text-gray-400">Gym and home schedules with every set, rep and rest time.</div>
+            </Link>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { PLAN_GROUPS, ALL_PLANS } from '@/lib/plans';
 import { FITNESS_TOOLS, TOOLS_BASE } from '@/lib/fitnessTools';
 import { DIET_PLANS, DIET_PLANS_BASE, planTitle } from '@/lib/dietPlans';
+import { WORKOUT_PLANS, WORKOUT_PLANS_BASE, ex as wpEx, sessionRange as wpSessionRange, strengthDays as wpStrengthDays } from '@/lib/workoutPlans';
 import { COACHING_ROWS, COST_FAQS, COST_GUIDE_URL, LIVE_ROWS, PRICES_UPDATED_LABEL } from '@/lib/pricingGuide';
 import { WEDDING_AUDIENCES, WEDDING_HUB_FAQS, WEDDING_HUB_URL, weddingTimeline } from '@/lib/weddingFitness';
 import { BOX, BOX_GRAMS, DIWALI_FAQS, DIWALI_URL, SNACKS, SWAPS, SWEETS, WALK_KG } from '@/lib/diwaliGuide';
@@ -82,6 +83,17 @@ export async function GET() {
       .map((m) => `- ${m.meal}: ${m.items.map((it) => `${it.food.name} ${it.label}`).join(', ')}`)
       .join('\n');
     return `### ${planTitle(p)}\n${DIET_PLANS_BASE}/${p.slug}\nTotal ${Math.round(t.kcal)} kcal, ${Math.round(t.protein)} g protein, ${Math.round(t.carbs)} g carbs, ${Math.round(t.fat)} g fat, ${Math.round(t.fiber)} g fibre. Best for: ${p.goal.toLowerCase()}.\n${meals}`;
+  }).join('\n\n');
+
+  // Workout plans — the same sessions each /workout-plans page shows.
+  const workoutPlans = WORKOUT_PLANS.map((p) => {
+    const s = wpSessionRange(p);
+    const days = p.days
+      .map((d) => d.cardio
+        ? `- ${d.weekday} (${d.focus}): ${d.cardio}`
+        : `- ${d.weekday} (${d.focus}): ${d.items!.map((it) => `${wpEx(it.ex).name} ${it.sets} x ${it.reps}`).join(', ')}`)
+      .join('\n');
+    return `### ${p.h1}\n${WORKOUT_PLANS_BASE}/${p.slug}\n${p.level}, ${p.where.toLowerCase()}, ${wpStrengthDays(p).length} strength days a week, about ${s.min}-${s.max} min per session. Goal: ${p.goal.toLowerCase()}.\n${days}`;
   }).join('\n\n');
 
   // Wedding countdown — the same computed ranges and phases the /wedding-fitness-plan pages show.
@@ -206,6 +218,11 @@ ${diwali}
 Full-day Indian diet charts. Every total is computed from the Indian food database (cooked dishes include typical home cooking oil).
 
 ${dietPlans}
+
+## Free Workout Plans
+Complete weekly plans by Coach Himanshu. Every plan works all the major muscle groups (legs, hips, back, abdomen, chest, shoulders and arms) on at least 2 days a week, as the NHS adult guidelines advise. Reps like 8-12 mean stop with 1-2 good reps left; progress by adding reps, then weight.
+
+${workoutPlans}
 
 ## Indian Food Comparisons
 Head-to-head nutrition comparisons at [coachhimanshu.com/calories/compare](https://coachhimanshu.com/calories/compare). Values per 100 g of the ready-to-eat form from INDB, IFCT 2017 (NIN-ICMR) and USDA FoodData Central. Weight-loss verdicts follow a published rule: fewer calories per 100 g wins when the gap is 10% or more, unless the other food gives at least 1.5x the protein and fibre per calorie.
@@ -364,6 +381,7 @@ Personalized workout and meal plans are delivered within 24 hours of completing 
 - [Free Assessment](https://coachhimanshu.com/assessment): Comprehensive fitness evaluation
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): BMI (Asian Indian cut-offs), TDEE, calorie deficit, protein, macros, ideal weight and body fat
 - [Indian Diet Plans by Calorie](https://coachhimanshu.com/diet-plans): Vegetarian and non-veg full-day diet charts from 1200 to 2500 kcal
+- [Free Workout Plans](https://coachhimanshu.com/workout-plans): Gym and home weekly plans from 3 to 6 days, with sets, reps and rest
 - [Indian Food Comparisons](https://coachhimanshu.com/calories/compare): ${FOOD_PAIRS.length} head-to-head comparisons such as roti vs rice, paneer vs tofu and ghee vs olive oil
 - [FAQ](https://coachhimanshu.com/faq): Commonly asked questions answered
 - [Knowledge Base](https://coachhimanshu.com/knowledge): Comprehensive fitness education resource

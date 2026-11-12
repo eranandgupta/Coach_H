@@ -142,6 +142,10 @@ export default function DietPlansHubPage() {
               protein foods in place.
             </li>
             <li>Weigh yourself weekly. If nothing changes after 2–3 weeks, move to the next plan down.</li>
+            <li>
+              Train alongside it: pick one of the{' '}
+              <Link href="/workout-plans" className="text-brand-blue hover:underline">free workout plans</Link> so the weight you lose is fat, not muscle.
+            </li>
           </ul>
         </div>
       </section>

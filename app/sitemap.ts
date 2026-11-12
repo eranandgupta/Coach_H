@@ -10,6 +10,7 @@ import { getAllListSlugs } from '@/lib/foodLists';
 import { getAllPairSlugs } from '@/lib/foodCompare';
 import { getAllToolSlugs } from '@/lib/fitnessTools';
 import { DIET_PLANS } from '@/lib/dietPlans';
+import { WORKOUT_PLANS } from '@/lib/workoutPlans';
 import { WEDDING_AUDIENCES } from '@/lib/weddingFitness';
 
 const baseUrl = 'https://coachhimanshu.com';
@@ -267,6 +268,19 @@ function getResourcePages(): MetadataRoute.Sitemap {
     },
     ...DIET_PLANS.map((p) => ({
       url: `${baseUrl}/diet-plans/${p.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
+    // Free workout plans — hub + one page per plan
+    {
+      url: `${baseUrl}/workout-plans`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    ...WORKOUT_PLANS.map((p) => ({
+      url: `${baseUrl}/workout-plans/${p.slug}`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.8,

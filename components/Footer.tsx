@@ -26,6 +26,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: '/calories', label: 'Food Calorie Chart' },
       { href: '/diwali-sweets-calories', label: 'Diwali Sweets Calories' },
       { href: '/diet-plans', label: 'Indian Diet Plans' },
+      { href: '/workout-plans', label: 'Free Workout Plans' },
       { href: '/assessment', label: 'Free Assessment' },
       { href: '/about', label: 'About Coach Himanshu' },
       { href: '/dashboard', label: 'Member Dashboard' },
