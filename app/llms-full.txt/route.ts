@@ -9,6 +9,7 @@ import { BOX, BOX_GRAMS, DIWALI_FAQS, DIWALI_URL, SNACKS, SWAPS, SWEETS, WALK_KG
 import { COUNTRIES, getCountryBySlug, approxStart } from '@/lib/countries';
 import { GLOBAL_CITIES, globalCityUrl, plainName, timeGap, lowestPerSession } from '@/lib/globalCities';
 import { COMPARE_BASE, FOOD_PAIRS, answerSentence, bottomLine, getPairBySlug, pairTitle } from '@/lib/foodCompare';
+import { FOOD_LISTS, LISTS_BASE, listFaqs } from '@/lib/foodLists';
 import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
 import { PT_CONDITIONS } from '@/lib/ptConditions';
 
@@ -112,6 +113,12 @@ export async function GET() {
   const comparisons = FOOD_PAIRS.map((p) => {
     const r = getPairBySlug(p.slug)!;
     return `### ${pairTitle(p)}\n${COMPARE_BASE}/${p.slug}\n${answerSentence(r)} ${bottomLine(r)}`;
+  }).join('\n\n');
+
+  // Ranked food lists — the same computed top five, coach note and FAQ each list page shows.
+  const foodLists = FOOD_LISTS.map((l) => {
+    const [top, need] = listFaqs(l);
+    return `### ${l.name}\n${LISTS_BASE}/${l.slug}\n${top.answer} ${l.coachNote}\n**${need.question}** ${need.answer}`;
   }).join('\n\n');
 
   // International city pages — the same computed time gap and local prices each page shows.
@@ -228,6 +235,11 @@ ${workoutPlans}
 Head-to-head nutrition comparisons at [coachhimanshu.com/calories/compare](https://coachhimanshu.com/calories/compare). Values per 100 g of the ready-to-eat form from INDB, IFCT 2017 (NIN-ICMR) and USDA FoodData Central. Weight-loss verdicts follow a published rule: fewer calories per 100 g wins when the gap is 10% or more, unless the other food gives at least 1.5x the protein and fibre per calorie.
 
 ${comparisons}
+
+## Ranked Indian Food Lists
+Foods ranked by one nutrient per 100 g of the ready-to-eat form (INDB, IFCT 2017 NIN-ICMR, USDA FoodData Central). Raw ingredients, supplements and alcohol are excluded where they would mislead.
+
+${foodLists}
 
 ## Coaching by City (Outside India)
 Online coaching and live 1-on-1 training for Indians and NRIs abroad. Local prices are approximate conversions from INR.

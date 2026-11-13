@@ -40,6 +40,8 @@ import DashboardLoader from '@/components/DashboardLoader';
 import VideoLibrary from '@/components/VideoLibrary';
 import HabitTracker from '@/components/HabitTracker';
 import TransformationLogModal from '@/components/TransformationLogModal';
+import type { CheckInAction } from '@/lib/checkins';
+import type { DiaryTab } from '@/components/progress/OverviewTab';
 import RenewModal from '@/components/RenewModal';
 import FunFactWidget from '@/components/FunFactWidget';
 import LiveSessionWidget from '@/components/LiveSessionWidget';
@@ -67,6 +69,7 @@ const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator')
 import ChatContainer from '@/components/chat/ChatContainer';
 import ProgressSnapshot from '@/components/progress/ProgressSnapshot';
 const ProgressDiary = dynamic(() => import('@/components/progress/ProgressDiary'), { ssr: false });
+const CheckInPrompt = dynamic(() => import('@/components/progress/CheckInPrompt'), { ssr: false });
 
 const TOUR_SEEN_KEY = 'ch_client_tour_seen';
 const RENEW_REMINDER_DAYS = 14;
@@ -111,6 +114,9 @@ export default function ClientDashboard() {
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
   const [isDiaryOpen, setIsDiaryOpen] = useState(false);
   const [diaryRefresh, setDiaryRefresh] = useState(0);
+  const [diaryTab, setDiaryTab] = useState<DiaryTab>('overview');
+  // Bumped whenever a tracker closes, so the check-in popup re-checks what is still due.
+  const [checkInRefresh, setCheckInRefresh] = useState(0);
   const [isEditAssessmentOpen, setIsEditAssessmentOpen] = useState(false);
   const [isRenewOpen, setIsRenewOpen] = useState(false);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
@@ -189,8 +195,15 @@ export default function ClientDashboard() {
     openMemberFeature('Logbook', 'The transformation logbook is available to active members only.', () => setIsLogbookOpen(true));
   };
 
-  const openDiary = () =>
-    openMemberFeature('Progress Diary', 'The progress diary is available to active members only.', () => setIsDiaryOpen(true));
+  const openDiary = (tab: DiaryTab = 'overview') =>
+    openMemberFeature('Progress Diary', 'The progress diary is available to active members only.', () => { setDiaryTab(tab); setIsDiaryOpen(true); });
+
+  // Check-in popup buttons open the matching tracker (and the right diary tab).
+  const handleCheckIn = (a: CheckInAction) => {
+    if (a.kind === 'habits') openHabitTracker();
+    else if (a.kind === 'logbook') openLogbook();
+    else openDiary(a.tab);
+  };
 
   const openCalories = () => {
     setActiveView('calories');
@@ -573,10 +586,10 @@ export default function ClientDashboard() {
   const quickActions: QuickAction[] = [
     { id: 'chat', label: 'Chat with coach', hint: 'Ask anything, anytime', icon: MessageSquare, onSelect: () => setActiveView('chat'), badge: unreadChatCount },
     ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', hint: 'See how each exercise is done', icon: Play, onSelect: openVideoLibrary, locked: !isSubscriptionActive }] : []),
-    { id: 'diary', label: 'Progress Diary', hint: 'Log workouts, PRs, runs, meals, weight', icon: NotebookPen, onSelect: openDiary, locked: !isSubscriptionActive },
+    { id: 'diary', label: 'Progress Diary', hint: 'Log workouts, PRs, runs, meals, weight', icon: NotebookPen, onSelect: () => openDiary(), locked: !isSubscriptionActive },
     { id: 'habits', label: 'Habit Tracker', hint: 'Tick off your daily habits', icon: ClipboardList, onSelect: openHabitTracker, locked: !isSubscriptionActive },
     { id: 'logbook', label: 'Logbook', hint: 'Log your 30-day transformation', icon: TrendingUp, onSelect: openLogbook, locked: !isSubscriptionActive },
-    { id: 'calories', label: 'Calorie Calculator', hint: 'Count calories in 850+ Indian foods', icon: Calculator, onSelect: openCalories },
+    { id: 'calories', label: 'Calorie Calculator', hint: 'Count calories in 1,300+ Indian foods', icon: Calculator, onSelect: openCalories },
     ...(user?.assessmentCompleted ? [{ id: 'assessment', label: 'My Assessment', hint: 'View or update your details', icon: Edit3, onSelect: () => setIsEditAssessmentOpen(true) }] : []),
   ];
   // Renewing is the next step for an expired client; waiting on the coach isn't.
@@ -1040,7 +1053,7 @@ export default function ClientDashboard() {
 
         {/* Progress Diary — today's workout, diet, water, weight, week/month and PRs */}
         <div id="section-progress" className="scroll-mt-24 mb-5 md:mb-8">
-          <ProgressSnapshot onOpen={openDiary} refreshKey={diaryRefresh} locked={!isSubscriptionActive} />
+          <ProgressSnapshot onOpen={() => openDiary()} refreshKey={diaryRefresh} locked={!isSubscriptionActive} />
         </div>
 
         {showPlans && (
@@ -1369,17 +1382,18 @@ export default function ClientDashboard() {
       {/* Video Library Modal */}
       <ProgressDiary
         isOpen={isDiaryOpen && !!isSubscriptionActive}
-        onClose={() => { setIsDiaryOpen(false); setDiaryRefresh((k) => k + 1); }}
+        initialTab={diaryTab}
+        onClose={() => { setIsDiaryOpen(false); setDiaryTab('overview'); setDiaryRefresh((k) => k + 1); setCheckInRefresh((k) => k + 1); }}
       />
       <HabitTracker
         isOpen={isHabitTrackerOpen && !!isSubscriptionActive}
-        onClose={() => setIsHabitTrackerOpen(false)}
+        onClose={() => { setIsHabitTrackerOpen(false); setCheckInRefresh((k) => k + 1); }}
       />
 
       {user && (
         <TransformationLogModal
           isOpen={isLogbookOpen && !!isSubscriptionActive}
-          onClose={() => setIsLogbookOpen(false)}
+          onClose={() => { setIsLogbookOpen(false); setCheckInRefresh((k) => k + 1); }}
           userId={user.id}
           userName={user.name}
         />
@@ -1434,6 +1448,16 @@ export default function ClientDashboard() {
 
       <PushPrompt />
 
+      {user?.id && isSubscriptionActive && (
+        <CheckInPrompt
+          userId={user.id}
+          enabled={activeView === 'dashboard' && !isOverlayOpen && !isTourOpen}
+          tourSeenKey={TOUR_SEEN_KEY}
+          refreshKey={checkInRefresh}
+          onAction={handleCheckIn}
+        />
+      )}
+
       {/* Mobile Bottom Navigation. Hidden behind a popup, where it would cover the popup's own buttons. */}
       {!isOverlayOpen && (
       <MobileBottomNav
@@ -1442,7 +1466,7 @@ export default function ClientDashboard() {
         badges={{ chat: unreadChatCount }}
         moreItems={[
           ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', icon: Play, onSelect: openVideoLibrary, disabled: !isSubscriptionActive }] : []),
-          { id: 'diary', label: 'Progress Diary', icon: NotebookPen, onSelect: openDiary, disabled: !isSubscriptionActive },
+          { id: 'diary', label: 'Progress Diary', icon: NotebookPen, onSelect: () => openDiary(), disabled: !isSubscriptionActive },
           { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showHint, onSelect: openHabitTracker, disabled: !isSubscriptionActive },
           { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showHint, onSelect: openLogbook, disabled: !isSubscriptionActive },
           { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },

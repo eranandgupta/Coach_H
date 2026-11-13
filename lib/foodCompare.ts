@@ -11,7 +11,7 @@
  */
 import { FOODS, type FoodItem, type FoodNutrients, type FoodServing } from './foods';
 import { caloriesFor } from './nutrition';
-import { isAlcohol, isSugary, primaryServing, servingText } from './foodPages';
+import { coachingGoalForFood, isAlcohol, isSugary, primaryServing, servingText } from './foodPages';
 
 export const COMPARE_BASE = 'https://coachhimanshu.com/calories/compare';
 
@@ -87,17 +87,31 @@ export const FOOD_PAIRS: FoodPair[] = [
   P('samosa-vs-kachori', 'samosa', 'kachori', 'Samosa', 'Kachori'),
   P('rasgulla-vs-gulab-jamun', 'rasgulla', 'gulab-jamun', 'Rasgulla', 'Gulab Jamun'),
   P('dark-chocolate-vs-milk-chocolate', 'dark-chocolate', 'milk-chocolate', 'Dark Chocolate', 'Milk Chocolate'),
+  // Added with food database v6 (Nov 2026)
+  P('roti-vs-kerala-parotta', 'roti-chapati', 'kerala-parotta', 'Roti', 'Kerala Parotta'),
+  P('chicken-biryani-vs-veg-biryani', 'chicken-biryani', 'veg-biryani', 'Chicken Biryani', 'Veg Biryani'),
+  P('idli-vs-ragi-idli', 'idli', 'ragi-idli', 'Idli', 'Ragi Idli'),
+  P('oats-upma-vs-upma', 'oats-upma', 'upma', 'Oats Upma', 'Rava Upma'),
+  P('boiled-egg-vs-omelette', 'egg-boiled', 'egg-omelette', 'Boiled Egg', 'Omelette'),
+  P('butter-chicken-vs-chicken-tikka-masala', 'butter-chicken', 'chicken-tikka-masala', 'Butter Chicken', 'Chicken Tikka Masala'),
+  P('paneer-butter-masala-vs-palak-paneer', 'paneer-butter-masala', 'palak-paneer', 'Paneer Butter Masala', 'Palak Paneer'),
+  P('whey-protein-vs-whey-isolate', 'protein-shake-whey', 'whey-isolate-dry-powder', 'Whey Protein', 'Whey Isolate'),
+  P('whey-protein-vs-pea-protein', 'protein-shake-whey', 'pea-protein-dry-powder', 'Whey Protein', 'Pea Protein'),
+  P('almond-milk-vs-oat-milk', 'almond-milk-unsweetened', 'oat-milk', 'Almond Milk', 'Oat Milk'),
+  P('soy-milk-vs-almond-milk', 'soy-milk', 'almond-milk-unsweetened', 'Soy Milk', 'Almond Milk'),
+  P('air-fryer-fries-vs-french-fries', 'air-fryer-french-fries', 'french-fries', 'Air Fryer Fries', 'French Fries'),
 ];
 
 /** Sections for the /calories/compare hub, in display order. */
 export const PAIR_GROUPS: { title: string; slugs: string[] }[] = [
-  { title: 'Rotis, rice & grains', slugs: ['roti-vs-rice', 'brown-rice-vs-white-rice', 'basmati-rice-vs-brown-rice', 'quinoa-vs-brown-rice', 'roti-vs-paratha', 'roti-vs-naan', 'roti-vs-brown-bread', 'brown-bread-vs-white-bread', 'ragi-roti-vs-wheat-roti', 'jowar-roti-vs-wheat-roti', 'bajra-roti-vs-jowar-roti', 'khichdi-vs-dal-chawal'] },
-  { title: 'Breakfast', slugs: ['idli-vs-dosa', 'poha-vs-upma', 'oats-vs-poha', 'oats-vs-cornflakes'] },
-  { title: 'Protein sources', slugs: ['paneer-vs-tofu', 'paneer-vs-chicken', 'egg-vs-paneer', 'chicken-vs-egg', 'egg-white-vs-whole-egg', 'soya-chunks-vs-paneer', 'chicken-vs-mutton', 'fish-vs-chicken', 'tandoori-chicken-vs-butter-chicken'] },
+  { title: 'Rotis, rice & grains', slugs: ['roti-vs-rice', 'brown-rice-vs-white-rice', 'basmati-rice-vs-brown-rice', 'quinoa-vs-brown-rice', 'roti-vs-paratha', 'roti-vs-naan', 'roti-vs-brown-bread', 'brown-bread-vs-white-bread', 'ragi-roti-vs-wheat-roti', 'jowar-roti-vs-wheat-roti', 'bajra-roti-vs-jowar-roti', 'roti-vs-kerala-parotta', 'khichdi-vs-dal-chawal', 'chicken-biryani-vs-veg-biryani'] },
+  { title: 'Breakfast', slugs: ['idli-vs-dosa', 'idli-vs-ragi-idli', 'poha-vs-upma', 'oats-upma-vs-upma', 'oats-vs-poha', 'oats-vs-cornflakes', 'boiled-egg-vs-omelette'] },
+  { title: 'Protein sources', slugs: ['paneer-vs-tofu', 'paneer-vs-chicken', 'egg-vs-paneer', 'chicken-vs-egg', 'egg-white-vs-whole-egg', 'soya-chunks-vs-paneer', 'chicken-vs-mutton', 'fish-vs-chicken', 'tandoori-chicken-vs-butter-chicken', 'butter-chicken-vs-chicken-tikka-masala', 'paneer-butter-masala-vs-palak-paneer'] },
+  { title: 'Protein powders', slugs: ['whey-protein-vs-whey-isolate', 'whey-protein-vs-pea-protein'] },
   { title: 'Dals & legumes', slugs: ['rajma-vs-chana', 'moong-dal-vs-masoor-dal', 'dal-tadka-vs-dal-makhani'] },
-  { title: 'Dairy & drinks', slugs: ['curd-vs-greek-yogurt', 'toned-milk-vs-full-cream-milk', 'cow-milk-vs-soy-milk', 'chaas-vs-lassi', 'tea-vs-coffee', 'green-tea-vs-black-coffee', 'coconut-water-vs-sports-drink', 'orange-vs-orange-juice'] },
+  { title: 'Dairy & drinks', slugs: ['curd-vs-greek-yogurt', 'toned-milk-vs-full-cream-milk', 'cow-milk-vs-soy-milk', 'soy-milk-vs-almond-milk', 'almond-milk-vs-oat-milk', 'chaas-vs-lassi', 'tea-vs-coffee', 'green-tea-vs-black-coffee', 'coconut-water-vs-sports-drink', 'orange-vs-orange-juice'] },
   { title: 'Fats & sweeteners', slugs: ['ghee-vs-butter', 'ghee-vs-olive-oil', 'mustard-oil-vs-olive-oil', 'jaggery-vs-sugar', 'honey-vs-sugar'] },
-  { title: 'Fruit, veg, nuts & snacks', slugs: ['banana-vs-apple', 'sweet-potato-vs-potato', 'almonds-vs-walnuts', 'almonds-vs-peanuts', 'peanut-butter-vs-almond-butter', 'chia-seeds-vs-flax-seeds', 'makhana-vs-popcorn', 'makhana-vs-roasted-chana', 'samosa-vs-kachori', 'rasgulla-vs-gulab-jamun', 'dark-chocolate-vs-milk-chocolate'] },
+  { title: 'Fruit, veg, nuts & snacks', slugs: ['banana-vs-apple', 'sweet-potato-vs-potato', 'almonds-vs-walnuts', 'almonds-vs-peanuts', 'peanut-butter-vs-almond-butter', 'chia-seeds-vs-flax-seeds', 'makhana-vs-popcorn', 'makhana-vs-roasted-chana', 'samosa-vs-kachori', 'air-fryer-fries-vs-french-fries', 'rasgulla-vs-gulab-jamun', 'dark-chocolate-vs-milk-chocolate'] },
 ];
 
 const bySlug = new Map(FOODS.map((f) => [f.slug, f]));
@@ -264,7 +278,13 @@ export function verdicts(p: ResolvedPair): Verdict[] {
       text = `${gives(nm(winner))} ${round1(pW)} g protein per 100 kcal against ${round1(pO)} g for ${nm(other(winner))} (${W.protein} g vs ${O.protein} g per 100 g).`;
     }
     if (!bothTrivial && Math.max(a.protein, b.protein) >= 1) {
-      if (Math.max(pa, pb) < 5) text += mealBase(A) && mealBase(B) ? ' Neither is a major protein source, so pair them with dal, curd, paneer, eggs or chicken.' : ' Neither is a major protein source.';
+      if (Math.max(pa, pb) < 5) {
+        // Don't suggest a protein the dishes already contain ("pair chicken biryani with chicken").
+        const names = `${p.nameA} ${p.nameB}`.toLowerCase();
+        const adds = ['dal', 'curd', 'paneer', 'eggs', 'chicken'].filter((x) => !names.includes(x.replace(/s$/, '')));
+        const list = adds.length > 1 ? `${adds.slice(0, -1).join(', ')} or ${adds[adds.length - 1]}` : adds[0];
+        text += mealBase(A) && mealBase(B) && list ? ` Neither is a major protein source, so pair them with ${list}.` : ' Neither is a major protein source.';
+      }
       else if (Math.max(pa, pb) >= 10) text += ' That is a strong protein-to-calorie ratio for building or keeping muscle.';
     }
     out.push({ key: 'protein', label: 'More protein per calorie', winner, text });
@@ -392,4 +412,10 @@ export function compareFaqs(p: ResolvedPair): CompareFaq[] {
     });
   }
   return faqs;
+}
+
+/** 1:1 goal for a comparison's "train live" CTA: muscle gain only when both foods are lean protein. */
+export function coachingGoalForPair(slug: string): 'muscle-gain' | 'weight-loss' {
+  const p = getPairBySlug(slug);
+  return p && coachingGoalForFood(p.foodA) === 'muscle-gain' && coachingGoalForFood(p.foodB) === 'muscle-gain' ? 'muscle-gain' : 'weight-loss';
 }

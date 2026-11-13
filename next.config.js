@@ -244,6 +244,8 @@ const nextConfig = {
         destination: 'https://coachhimanshu.com/:path*',
         permanent: true,
       },
+      // Food DB v6 merged the duplicate "brown-bread" entry into "bread-brown"
+      { source: '/calories/brown-bread', destination: '/calories/bread-brown', permanent: true },
     ];
   },
   async headers() {

@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { progressApi, type DayBundle, type FoodRow } from './api';
 import { Card, Field, TargetBar, btnGhost, btnPrimary, fmtNum, inputCls } from './ui';
 import { MEAL_TYPES, foodTotals, round1 } from '@/lib/progressCalc';
-import { searchFoods, type FoodItem } from '@/lib/foods';
+import { FOODS, searchFoods, type FoodItem } from '@/lib/foods';
 
 interface Draft { id?: number; mealType: string; foodName: string; foodSlug: string | null; quantity: string; calories: string; protein: string; carbs: string; fats: string }
 const blank = (mealType: string): Draft => ({ mealType, foodName: '', foodSlug: null, quantity: '', calories: '', protein: '', carbs: '', fats: '' });
@@ -28,7 +28,7 @@ function FoodPicker({ onPick }: { onPick: (f: FoodItem) => void }) {
   return (
     <div className="relative">
       <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-      <input className={`${inputCls} pl-9`} placeholder="Search 850+ foods (roti, paneer, dal...)" value={q} onChange={(e) => setQ(e.target.value)} />
+      <input className={`${inputCls} pl-9`} placeholder={`Search ${(Math.floor(FOODS.length / 100) * 100).toLocaleString('en-IN')}+ foods (roti, paneer, dal...)`} value={q} onChange={(e) => setQ(e.target.value)} />
       {results.length > 0 && (
         <div className="absolute z-20 left-0 right-0 mt-1 rounded-lg border border-white/10 bg-[#0a0f1f] shadow-2xl max-h-64 overflow-y-auto">
           {results.map((f) => (

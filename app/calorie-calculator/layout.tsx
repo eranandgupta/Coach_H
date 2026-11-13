@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { CALCULATOR_FAQS } from './content';
+import { FOOD_COUNT_LABEL } from '@/lib/foodPages';
 
 const url = 'https://coachhimanshu.com/calorie-calculator';
 const title = 'Indian Food Calorie Calculator';
 const brandedTitle = 'Indian Food Calorie Calculator | Coach Himanshu';
-const description =
-  'Free calorie calculator for Indian food. Search dal, roti, rice, paneer, fish, fruits, salad & 600+ foods, pick a katori/roti/cup or grams, and get exact calories + protein, carbs & fat — for a single item or a full meal.';
+const description = `Free calorie calculator for Indian food. Search ${FOOD_COUNT_LABEL} foods (dal, roti, rice, paneer, chicken, sweets), pick a katori, roti, cup or grams, and get calories, protein, carbs and fat.`;
 
 export const metadata: Metadata = {
   title,

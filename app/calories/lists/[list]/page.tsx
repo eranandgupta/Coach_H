@@ -7,9 +7,7 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import { caloriesFor } from '@/lib/nutrition';
 import { CALORIES_BASE, primaryServing } from '@/lib/foodPages';
 import { FOOD_LISTS, LISTS_BASE, getAllListSlugs, getListBySlug, listFaqs, metricPhrase, rankList } from '@/lib/foodLists';
-
-const WHATSAPP_CONSULT =
-  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20a%20personalised%20diet%20plan.';
+import SessionsCta from '@/components/SessionsCta';
 
 export function generateStaticParams() {
   return getAllListSlugs().map((list) => ({ list }));
@@ -200,25 +198,7 @@ export default function FoodListPage({ params }: { params: { list: string } }) {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="pb-16">
-        <div className="max-w-3xl mx-auto px-4">
-          <div className="rounded-2xl border border-brand-blue/20 bg-gradient-to-r from-brand-blue/10 to-brand-navy-light p-6 text-center">
-            <h2 className="text-xl md:text-2xl font-bold text-white">Turn this list into a plan</h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-gray-300">
-              Knowing the right foods is step one. Get an Indian diet plan with your exact portions and targets, built by NASM-certified Coach Himanshu.
-            </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <a href={WHATSAPP_CONSULT} target="_blank" rel="noopener noreferrer" className="rounded-xl bg-gradient-to-r from-brand-blue to-blue-500 px-6 py-3 font-semibold text-white shadow-lg shadow-brand-blue/25 hover:-translate-y-0.5 transition-transform">
-                Get a free consultation
-              </a>
-              <Link href="/calorie-calculator" className="rounded-xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/5 transition-colors">
-                Try the calorie calculator
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <SessionsCta goal={list.coachingGoal} topic={list.name.toLowerCase()} source={`Food list: ${list.name}`} />
 
       <Footer />
     </div>

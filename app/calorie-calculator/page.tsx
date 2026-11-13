@@ -7,10 +7,7 @@ import IndependenceDayBanner from '@/components/IndependenceDayBanner';
 import { FOODS, getFoodBySlug } from '@/lib/foods';
 import { caloriesForServing } from '@/lib/nutrition';
 import { CALCULATOR_FAQS, COMMON_FOOD_SLUGS } from './content';
-
-// Same WhatsApp consult link used across the site (plans, audience pages).
-const WHATSAPP_CONSULT =
-  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20to%20start%20a%20free%20consultation.';
+import SessionsCta from '@/components/SessionsCta';
 
 export default function CalorieCalculatorPage() {
   // Precompute the static "common foods" table (household serving of each) — SSR'd for SEO/AEO.
@@ -131,37 +128,12 @@ export default function CalorieCalculatorPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="pb-14">
-        <div className="max-w-3xl mx-auto px-4">
-          <div className="rounded-2xl border border-brand-blue/20 bg-gradient-to-r from-brand-blue/10 to-brand-navy-light p-6 text-center">
-            <h2 className="text-xl md:text-2xl font-bold text-white">
-              Knowing your calories is step one. Knowing your target is step two.
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-gray-300">
-              Get a personalised Indian diet + workout plan built around your body, routine and goal.
-            </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <a
-                href={WHATSAPP_CONSULT}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl bg-gradient-to-r from-brand-blue to-blue-500 px-6 py-3 font-semibold text-white shadow-lg shadow-brand-blue/25 hover:-translate-y-0.5 transition-transform"
-              >
-                Take the free assessment
-              </a>
-              <a
-                href={WHATSAPP_CONSULT}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/5 transition-colors"
-              >
-                View coaching plans
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* CTA: live 1-on-1 sessions + enquiry form (was two WhatsApp links, one wrongly labelled "View coaching plans") */}
+      <div className="max-w-3xl mx-auto px-4 pb-4 text-center text-sm text-gray-300">
+        Not sure what your calorie target should be?{' '}
+        <Link href="/assessment" className="font-semibold text-brand-blue hover:underline">Take the free assessment</Link>
+      </div>
+      <SessionsCta goal="weight-loss" topic="your everyday Indian meals" source="Calorie calculator" />
 
       {/* Data-source credit */}
       <section className="pb-16">

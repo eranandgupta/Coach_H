@@ -2,7 +2,7 @@
  * Content helpers for the programmatic "Calories in {food}" pages (/calories/[food]).
  *
  * Every sentence here is DERIVED from the food's own numbers in lib/foods.ts — no
- * hand-written per-food copy — so 850+ pages stay accurate when the sheet is re-imported,
+ * hand-written per-food copy — so 1,300+ pages stay accurate when the sheet is re-imported,
  * and each page still says something specific (verdicts, comparisons, FAQs) about its food.
  */
 import { FOODS, type FoodItem, type FoodServing } from './foods';
@@ -15,6 +15,9 @@ export const SOURCE_LABEL: Record<FoodItem['source'], string> = {
   IFCT: 'Indian Food Composition Tables 2017 (NIN, ICMR)',
   USDA: 'USDA FoodData Central',
 };
+
+/** "1,300+" — the food count rounded down to the hundred, for copy that shouldn't go stale. */
+export const FOOD_COUNT_LABEL = `${(Math.floor(FOODS.length / 100) * 100).toLocaleString('en-IN')}+`;
 
 export function getAllFoodSlugs(): string[] {
   return FOODS.map((f) => f.slug);
@@ -53,6 +56,19 @@ export const isSugary = (food: FoodItem) =>
 /** Too few calories for a macro split to mean anything (black coffee, plain tea, water). */
 const isTrivial = (food: FoodItem) => food.per100g.kcal < 20;
 
+const CONDIMENT_CATEGORIES = new Set(['Sauces & Spreads', 'Staples & Basics', 'Salad & Raw Veggies']);
+/**
+ * Used by the spoonful, not the plateful (spices, herbs, sweeteners, sauces, pickles):
+ * a household serving of at most 20 g and 30 kcal. Per-100 g advice ("measure your portion",
+ * "low in protein, add dal", "good iron source") would be misleading for these. Sugars and
+ * syrups (sugar >= 50 g per 100 g) are left out so they keep the sugar advice.
+ */
+export const isCondiment = (food: FoodItem) => {
+  if (!CONDIMENT_CATEGORIES.has(food.category) || food.per100g.sugar >= 50) return false;
+  const s = primaryServing(food);
+  return s.grams <= 20 && (food.per100g.kcal * s.grams) / 100 <= 30;
+};
+
 /** Share of calories from protein / carbs / fat (Atwater 4-4-9), rounded to whole %. */
 export function macroSplit(food: FoodItem): { protein: number; carbs: number; fat: number } {
   const p = food.per100g.protein * 4;
@@ -80,6 +96,13 @@ export function foodTags(food: FoodItem): FoodTag[] {
   const n = food.per100g;
   const split = macroSplit(food);
   const tags: FoodTag[] = [];
+  if (isCondiment(food)) {
+    tags.push({ label: 'Used in small amounts', tone: 'neutral' });
+    if (n.kcal < 60) tags.push({ label: 'Very low calorie', tone: 'good' });
+    if (isSugary(food)) tags.push({ label: 'High sugar', tone: 'watch' });
+    if (n.sodium >= 600) tags.push({ label: 'High sodium', tone: 'watch' });
+    return tags;
+  }
   if (n.kcal >= 40 && split.protein >= 25) tags.push({ label: 'High protein', tone: 'good' });
   else if (n.protein >= 10) tags.push({ label: 'Good protein source', tone: 'good' });
   if (n.fiber >= 6) tags.push({ label: 'High fibre', tone: 'good' });
@@ -103,10 +126,13 @@ export function answerSentence(food: FoodItem): string {
   const s = primaryServing(food);
   const n = caloriesFor(food, s.grams);
   const per100 = food.per100g;
+  if (per100.kcal === 0) {
+    return `${food.name} has 0 calories, so ${is100g(s) ? 'it' : lc(servingText(s))} adds nothing to your daily total.`;
+  }
   if (is100g(s)) {
     return `100 g of ${food.name} has ${per100.kcal} calories, with ${per100.protein} g protein, ${per100.carbs} g carbs and ${per100.fat} g fat.`;
   }
-  return `${food.name} has about ${n.kcal} calories per ${lc(servingText(s))}, with ${n.protein} g protein, ${n.carbs} g carbs and ${n.fat} g fat. Per 100 g it has ${per100.kcal} kcal.`;
+  return `${food.name} has about ${n.kcal} ${n.kcal === 1 ? 'calorie' : 'calories'} per ${lc(servingText(s))}, with ${n.protein} g protein, ${n.carbs} g carbs and ${n.fat} g fat. Per 100 g it has ${per100.kcal} kcal.`;
 }
 
 /** Minutes to burn `kcal` — assumes a ~70 kg adult: brisk walk ≈ 5 kcal/min, running ≈ 11 kcal/min. */
@@ -124,6 +150,19 @@ export function coachTake(food: FoodItem): string[] {
   const points: string[] = [];
 
   const st = lc(servingText(s));
+  if (isCondiment(food)) {
+    points.push(
+      serving.kcal === 0
+        ? `You use ${food.name} in small amounts, and ${st} has 0 kcal, so it adds nothing to your daily total.`
+        : serving.kcal <= 10
+        ? `You use ${food.name} in small amounts: ${st} has about ${serving.kcal} kcal, so it barely registers on your daily total.`
+        : `You use ${food.name} in small amounts: ${st} has about ${serving.kcal} kcal, so a spoonful adds little. Count it if you use several.`
+    );
+    if (n.kcal >= 60) points.push(`Per 100 g it has ${n.kcal} kcal, but you'd rarely use anywhere near that much.`);
+    if (isSugary(food)) points.push(`Most of its calories come from sugar (${n.sugar} g per 100 g), so they add up if you use it generously.`);
+    if (n.sodium >= 600) points.push(`It's high in sodium: ${n.sodium} mg per 100 g, about ${Math.round((n.sodium * s.grams) / 100)} mg in ${st}. Go easy if you're watching your blood pressure.`);
+    return points;
+  }
   if (isAlcohol(food)) {
     points.push(`Most of the calories in ${food.name} come from the alcohol itself (about 7 kcal per gram), not from protein, carbs or fat. It has ${n.kcal} kcal per 100 g.`);
   } else if (isTrivial(food)) {
@@ -156,7 +195,7 @@ export function coachTake(food: FoodItem): string[] {
   // Muscle gain / protein
   if (serving.protein >= 15) {
     points.push(`With ${serving.protein} g protein in ${st}, it makes a solid contribution to a muscle-building day. Most active adults aim for about 1.6 g protein per kg of body weight.`);
-  } else if (serving.protein < 5 && n.kcal >= 100) {
+  } else if (serving.protein < 5 && n.kcal >= 100 && split.fat < 80) {
     points.push(`It's low in protein (${serving.protein} g in ${st}), so if you're building muscle, pair it with dal, paneer, curd, eggs or chicken.`);
   }
 
@@ -195,7 +234,7 @@ export function foodFaqs(food: FoodItem): FoodFaq[] {
   if (!is100g(s)) {
     faqs.push({
       question: `How many calories are in one serving of ${food.name}?`,
-      answer: `One serving of ${food.name}, ${lc(servingText(s))}, has roughly ${serving.kcal} calories, with ${serving.protein} g protein, ${serving.carbs} g carbohydrates, ${serving.fat} g fat and ${serving.fiber} g fibre.`,
+      answer: `One serving of ${food.name}, ${lc(servingText(s))}, has roughly ${serving.kcal} ${serving.kcal === 1 ? 'calorie' : 'calories'}, with ${serving.protein} g protein, ${serving.carbs} g carbohydrates, ${serving.fat} g fat and ${serving.fiber} g fibre.`,
     });
   }
   faqs.push({
@@ -208,7 +247,8 @@ export function foodFaqs(food: FoodItem): FoodFaq[] {
   });
 
   let wl: string;
-  if (isAlcohol(food)) wl = `Not really. Alcohol calories don't fill you up, and your body burns alcohol before fat. ${servingText(s)} adds ${serving.kcal} kcal. If you drink, keep it occasional and count it in your daily target.`;
+  if (isCondiment(food)) wl = `Yes, in the amounts people normally use. ${servingText(s)} adds about ${serving.kcal} kcal${isSugary(food) ? ', but most of it is sugar, so go easy if you use a lot' : ''}. What you eat it with matters far more.`;
+  else if (isAlcohol(food)) wl = `Not really. Alcohol calories don't fill you up, and your body burns alcohol before fat. ${servingText(s)} adds ${serving.kcal} kcal. If you drink, keep it occasional and count it in your daily target.`;
   else if (isSugary(food)) wl = `Not ideal. Most of its ${n.kcal} kcal per 100 g come from sugar, which won't keep you full. ${servingText(s)} adds ${serving.kcal} kcal, so keep it occasional.`;
   else if (isTrivial(food) || (n.kcal < 150 && n.sugar < 15)) wl = `Yes. At ${n.kcal} kcal per 100 g it is ${densityBand(n.kcal).note}, so it fits a weight-loss diet well.`;
   else if (split.protein >= 25 && n.kcal < 300) wl = `It can be. It gets ${split.protein}% of its calories from protein, which keeps you full and protects muscle in a calorie deficit. Keep the added oil low.`;
@@ -223,4 +263,13 @@ export function foodFaqs(food: FoodItem): FoodFaq[] {
     });
   }
   return faqs;
+}
+
+/**
+ * Which 1:1 goal page a food page's "train live" CTA points to: lean protein foods (at least 25%
+ * of calories from protein: chicken breast, eggs, paneer, whey) -> muscle gain; everything else,
+ * including rich curries like butter chicken, -> weight loss.
+ */
+export function coachingGoalForFood(food: FoodItem): 'muscle-gain' | 'weight-loss' {
+  return !isCondiment(food) && food.per100g.kcal >= 40 && macroSplit(food).protein >= 25 ? 'muscle-gain' : 'weight-loss';
 }
