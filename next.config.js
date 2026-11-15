@@ -235,6 +235,10 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    // Sitemap index (see app/sitemap-index.xml/route.ts); robots.txt points here.
+    return [{ source: '/sitemap.xml', destination: '/sitemap-index.xml' }];
+  },
   async redirects() {
     return [
       // Consolidate www → non-www so search engines index a single canonical host

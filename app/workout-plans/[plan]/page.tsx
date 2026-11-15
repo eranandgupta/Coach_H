@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ConsultationForm from '@/components/ConsultationForm';
+import { exerciseSlug } from '@/lib/exerciseGuides';
 import {
   BLOG_TITLES,
   MUSCLES,
@@ -205,7 +206,7 @@ export default function WorkoutPlanPage({ params }: { params: { plan: string } }
                       {d.items!.map((it, i) => (
                         <tr key={i}>
                           <td className={td}>
-                            <span className="font-medium text-white">{ex(it.ex).name}</span>
+                            <Link href={`/exercises/${exerciseSlug(it.ex)}`} className="font-medium text-white hover:text-brand-blue hover:underline">{ex(it.ex).name}</Link>
                             <span className="mt-0.5 block text-xs text-gray-500">{ex(it.ex).cue}</span>
                           </td>
                           <td className={td}>{it.sets}</td>

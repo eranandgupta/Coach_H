@@ -11,6 +11,7 @@ import { getAllPairSlugs } from '@/lib/foodCompare';
 import { getAllToolSlugs } from '@/lib/fitnessTools';
 import { DIET_PLANS } from '@/lib/dietPlans';
 import { WORKOUT_PLANS } from '@/lib/workoutPlans';
+import { EXERCISE_KEYS, MUSCLE_PAGES, MUSCLE_SLUG, exerciseSlug } from '@/lib/exerciseGuides';
 import { WEDDING_AUDIENCES } from '@/lib/weddingFitness';
 
 const baseUrl = 'https://coachhimanshu.com';
@@ -284,6 +285,25 @@ function getResourcePages(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
+    })),
+    // Exercise library — hub, one page per muscle, one how-to page per exercise
+    {
+      url: `${baseUrl}/exercises`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    ...MUSCLE_PAGES.map((m) => ({
+      url: `${baseUrl}/exercises/muscle/${MUSCLE_SLUG[m]}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
+    ...EXERCISE_KEYS.map((k) => ({
+      url: `${baseUrl}/exercises/${exerciseSlug(k)}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.75,
     })),
     // Seasonal: Diwali sweets & snacks calorie guide
     {

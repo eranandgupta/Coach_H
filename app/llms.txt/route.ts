@@ -7,6 +7,7 @@ import { FOOD_COUNT_LABEL } from '@/lib/foodPages';
 import { COUNTRIES } from '@/lib/countries';
 import { GLOBAL_CITIES, globalCityUrl, plainName } from '@/lib/globalCities';
 import { LOWEST_ELITE_PRICE, formatINR } from '@/lib/pricing';
+import { EXERCISE_KEYS, MUSCLE_PAGES, MUSCLE_SLUG, muscleTitle } from '@/lib/exerciseGuides';
 
 // Dynamic /llms.txt — the short AI-discovery summary. Pricing and the blog
 // count are GENERATED from the same sources the site uses (lib/plans.ts and the
@@ -137,6 +138,7 @@ Coach Himanshu's premium service is live, real-time, one-on-one online personal 
 - [Indian Food Comparisons](https://coachhimanshu.com/calories/compare): ${FOOD_PAIRS.length} head-to-head nutrition comparisons with a data-backed weight-loss verdict, for example ${FOOD_PAIRS.slice(0, 8).map((p) => `[${pairTitle(p)}](${COMPARE_BASE}/${p.slug})`).join(', ')}
 - [Indian Diet Plans by Calorie](https://coachhimanshu.com/diet-plans): Full-day vegetarian and non-veg Indian diet charts at 1200, 1500, 1800, 2000 and 2500 kcal, with portions, calories and protein computed from Indian food data
 - [Free Workout Plans](https://coachhimanshu.com/workout-plans): Complete weekly gym and home plans with every exercise, set, rep and rest time: beginner full body (3 days), upper/lower (4 days), push pull legs (6 days), 5-day split, home with no equipment, dumbbells only, women (3 days) and fat loss (4 strength + 2 cardio). Each works every NHS major muscle group on at least 2 days a week
+- [Exercise Library](https://coachhimanshu.com/exercises): Step-by-step form for ${EXERCISE_KEYS.length} gym and home exercises with muscles worked, common mistakes, alternatives and the sets and reps used in the free plans, one page per exercise at /exercises/{exercise} (for example [barbell back squat](https://coachhimanshu.com/exercises/barbell-back-squat) and [push-up](https://coachhimanshu.com/exercises/push-up)), plus muscle pages: ${MUSCLE_PAGES.map((m) => `[${muscleTitle(m)}](https://coachhimanshu.com/exercises/muscle/${MUSCLE_SLUG[m]})`).join(', ')}
 - [Diwali Sweets & Snacks Calories](https://coachhimanshu.com/diwali-sweets-calories): Calories, sugar and brisk-walk minutes per piece for kaju katli, gulab jamun, soan papdi, laddoo, namkeen and more, plus lighter swaps and how to avoid weight gain during Diwali
 - [Free Fitness Calculators](https://coachhimanshu.com/tools): ${FITNESS_TOOLS.map((t) => `[${t.name}](${TOOLS_BASE}/${t.slug})`).join(', ')}. Each shows its formula, a worked example and sources; BMI is read against Asian Indian cut-offs (overweight from 23, obese from 25) as well as WHO cut-offs
 - [FAQ](https://coachhimanshu.com/faq): Common questions answered

@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # robots.txt for Coach Himanshu
 # https://coachhimanshu.com
-# Last updated: 2026-06-30
+# Last updated: 2026-11-14
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Default rules — allow everything public
@@ -168,13 +168,21 @@ Allow: /
 #   /sitemap/1.xml  → Blog content (64+ articles)
 #   /sitemap/2.xml  → Location pages (Indian cities)
 #   /sitemap/3.xml  → Legal & policy pages
-#   /sitemap/4.xml  → Resources & feeds (calculators at /tools, knowledge, FAQ, RSS)
+#   /sitemap/4.xml  → Resources & feeds (calculators, diet + workout plans, exercise library, knowledge, FAQ, RSS)
 #   /sitemap/5.xml  → International pages (online coaching by country)
 #   /sitemap/6.xml  → Live 1:1 personal-trainer city pages
 #   /sitemap/7.xml  → Food calorie pages (/calories + one per food, ranked lists, food-vs-food comparisons)
 # ─────────────────────────────────────────────────────────────────────────────
 
 Sitemap: https://coachhimanshu.com/sitemap.xml
+Sitemap: https://coachhimanshu.com/sitemap/0.xml
+Sitemap: https://coachhimanshu.com/sitemap/1.xml
+Sitemap: https://coachhimanshu.com/sitemap/2.xml
+Sitemap: https://coachhimanshu.com/sitemap/3.xml
+Sitemap: https://coachhimanshu.com/sitemap/4.xml
+Sitemap: https://coachhimanshu.com/sitemap/5.xml
+Sitemap: https://coachhimanshu.com/sitemap/6.xml
+Sitemap: https://coachhimanshu.com/sitemap/7.xml
 
 # ─────────────────────────────────────────────────────────────────────────────
 # AI Discovery Files

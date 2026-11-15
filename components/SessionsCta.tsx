@@ -16,9 +16,11 @@ interface Props {
   topic: string;
   /** Enquiry source shown to the coach, e.g. "Food page: Butter Chicken". */
   source: string;
+  /** 'food' (default) pitches the diet side; 'training' pitches form correction for exercise pages. */
+  kind?: 'food' | 'training';
 }
 
-export default function SessionsCta({ goal, topic, source }: Props) {
+export default function SessionsCta({ goal, topic, source, kind = 'food' }: Props) {
   const g = goal ? getGoalBySlug(goal) : undefined;
   if (goal && !g) throw new Error(`SessionsCta: unknown 1:1 goal "${goal}"`);
   const href = g ? `/online-personal-trainer/for/${g.slug}` : '/online-personal-trainer';
@@ -32,11 +34,22 @@ export default function SessionsCta({ goal, topic, source }: Props) {
         <div className="rounded-2xl border border-brand-blue/20 bg-gradient-to-r from-brand-blue/10 to-brand-navy-light p-6 md:p-8">
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Live 1-on-1 coaching</p>
           <h2 className="mt-2 text-xl md:text-2xl font-bold text-white">
-            Knowing the calories is step one. Want a coach to build them into your week?
+            {kind === 'training'
+              ? `Want a coach to watch your ${topic} and fix it live?`
+              : 'Knowing the calories is step one. Want a coach to build them into your week?'}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-gray-300">
-            Train live with NASM-certified Coach Himanshu over video: 60-minute 1-on-1 sessions, a personalised Indian diet
-            plan around foods like {topic}, and WhatsApp support between sessions. Packages start at{' '}
+            {kind === 'training' ? (
+              <>
+                Train live with NASM-certified Coach Himanshu over video: 60-minute 1-on-1 sessions where your form is
+                corrected rep by rep, a plan built around your equipment and injuries, and WhatsApp support between sessions.
+              </>
+            ) : (
+              <>
+                Train live with NASM-certified Coach Himanshu over video: 60-minute 1-on-1 sessions, a personalised Indian diet
+                plan around foods like {topic}, and WhatsApp support between sessions.
+              </>
+            )} Packages start at{' '}
             <strong className="text-white">{inr(SUMMARY.liveFrom)} for 12 sessions</strong>, and larger packages come to about{' '}
             {inr(SUMMARY.sessionLow)} a session.
           </p>
