@@ -21,7 +21,27 @@ function createPrismaClient(): PrismaClient {
       withAccelerate()
     ) as unknown as PrismaClient;
   }
-  return new PrismaClient();
+  return new PrismaClient({ datasourceUrl: withPoolLimits(process.env.DATABASE_URL) });
+}
+
+/**
+ * Serverless guard for the direct MySQL connection. Every Vercel function instance gets its
+ * own client, and Hostinger caps this database user at 75 concurrent connections. Prisma's
+ * default pool is (CPU count x 2 + 1) connections per instance, so a traffic burst that spins
+ * up many instances blew past the cap and every query failed until it drained (Nov 2026).
+ * One connection per instance keeps a burst within the cap. Values already present in the
+ * URL win, so the environment can still override them.
+ */
+function withPoolLimits(url: string | undefined): string | undefined {
+  if (!url || !url.startsWith('mysql://')) return url;
+  try {
+    const u = new URL(url);
+    if (!u.searchParams.has('connection_limit')) u.searchParams.set('connection_limit', '1');
+    if (!u.searchParams.has('pool_timeout')) u.searchParams.set('pool_timeout', '20');
+    return u.toString();
+  } catch {
+    return url;
+  }
 }
 
 const globalForPrisma = globalThis as unknown as {
@@ -30,4 +50,5 @@ const globalForPrisma = globalThis as unknown as {
 
 export const prisma: PrismaClient = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// Reuse one client per process (dev hot reload, and warm serverless instances).
+globalForPrisma.prisma = prisma;

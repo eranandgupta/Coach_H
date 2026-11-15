@@ -24,7 +24,17 @@ export function hasSessionHint(): boolean {
   return typeof document !== 'undefined' && /(?:^|;\s*)ch_auth=1/.test(document.cookie);
 }
 
-export async function loadSession(retries = 2): Promise<SessionResult> {
+// Several components on one page ask for the session at the same moment. Share one request
+// instead of firing one each: during a database hiccup the duplicates (each with retries)
+// multiplied the load and kept the connection cap exhausted.
+let inFlight: Promise<SessionResult> | null = null;
+
+export function loadSession(retries = 2): Promise<SessionResult> {
+  if (!inFlight) inFlight = fetchSession(retries).finally(() => { inFlight = null; });
+  return inFlight;
+}
+
+async function fetchSession(retries: number): Promise<SessionResult> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const token = getToken();
