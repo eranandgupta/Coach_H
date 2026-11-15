@@ -197,10 +197,12 @@ export default function VideoLibrary({ isOpen, onClose, userEmail, userPlan, use
         const categoriesWithConfig = data.categories
           .filter((cat: any) => {
             if (userRole === 'admin' || userRole === 'coach' || userRole === 'trainer') return true;
+            // Elite 1:1 and Mastery plans promise the full library (gym, home and rehab) in lib/plans.ts
+            if (userPlan && (userPlan.startsWith('Elite 1:1') || userPlan === 'Mastery Plan' || userPlan === 'Couple Mastery')) return true;
             // Rehab plan clients only see the rehabilitation section
-            if (userPlan === 'Rehabilitation Plan') return cat.id === 'rehabilitation';
+            if (userPlan === 'Rehabilitation Plan' || userPlan === 'Couple Rehabilitation' || userPlan === 'Couple Rehabilitation Plan') return cat.id === 'rehabilitation';
             // Home Workout plan clients only see the home workout section
-            if (userPlan === 'Home Workout' || userPlan === 'Home Workout Plan') return cat.id === 'homeWorkout';
+            if (userPlan === 'Home Workout' || userPlan === 'Home Workout Plan' || userPlan === 'Couple Home Workout' || userPlan === 'Couple Home Workout Plan') return cat.id === 'homeWorkout';
             // Show unrestricted categories to all other users
             if (!cat.requiredPlans || cat.requiredPlans.length === 0) return true;
             // Show plan-gated categories if user has the matching plan

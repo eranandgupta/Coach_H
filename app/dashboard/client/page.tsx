@@ -27,8 +27,9 @@ import {
   Shield,
   ClipboardList,
   Pause,
-  PlayCircle, Hand, HelpCircle, NotebookPen,
+  PlayCircle, Hand, HelpCircle, NotebookPen, Gauge,
 } from 'lucide-react';
+import type { ToolSlug } from '@/lib/fitnessTools';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ViewWorkoutModal from '@/components/modals/ViewWorkoutModal';
@@ -62,6 +63,19 @@ import { loadSession, logout } from '@/lib/session';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import DashboardHero from '@/components/coach/DashboardHero';
 import dynamic from 'next/dynamic';
+// The calculator maths only loads when a client opens the Fitness Calculators view.
+const FitnessToolWidget = dynamic(() => import('@/components/FitnessToolWidget'), { ssr: false });
+
+/** The /tools calculators, shown inside the dashboard (short names for the tab chips). */
+const DASHBOARD_TOOLS: { slug: ToolSlug; label: string; hint: string }[] = [
+  { slug: 'tdee-calculator', label: 'TDEE', hint: 'Your maintenance calories and BMR.' },
+  { slug: 'calorie-deficit-calculator', label: 'Calorie Deficit', hint: 'Daily calories to lose weight at a safe pace.' },
+  { slug: 'protein-calculator', label: 'Protein', hint: 'Your daily protein target by weight and goal.' },
+  { slug: 'macro-calculator', label: 'Macros', hint: 'Protein, carbs and fat targets for your goal.' },
+  { slug: 'bmi-calculator', label: 'BMI', hint: 'Your BMI against Indian and WHO cut-offs.' },
+  { slug: 'ideal-weight-calculator', label: 'Ideal Weight', hint: 'Healthy weight range for your height.' },
+  { slug: 'body-fat-calculator', label: 'Body Fat', hint: 'Estimate body-fat % with a tape measure.' },
+];
 const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator'), {
   ssr: false,
   loading: () => <div className="h-64 rounded-2xl bg-white/[0.03] border border-white/[0.06] animate-pulse" />,
@@ -107,7 +121,8 @@ export default function ClientDashboard() {
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat' | 'calories'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat' | 'calories' | 'tools'>('dashboard');
+  const [toolSlug, setToolSlug] = useState<ToolSlug>('tdee-calculator');
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
@@ -207,6 +222,12 @@ export default function ClientDashboard() {
 
   const openCalories = () => {
     setActiveView('calories');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openTools = (slug?: ToolSlug) => {
+    if (slug) setToolSlug(slug);
+    setActiveView('tools');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -590,6 +611,7 @@ export default function ClientDashboard() {
     { id: 'habits', label: 'Habit Tracker', hint: 'Tick off your daily habits', icon: ClipboardList, onSelect: openHabitTracker, locked: !isSubscriptionActive },
     { id: 'logbook', label: 'Logbook', hint: 'Log your 30-day transformation', icon: TrendingUp, onSelect: openLogbook, locked: !isSubscriptionActive },
     { id: 'calories', label: 'Calorie Calculator', hint: 'Count calories in 1,300+ Indian foods', icon: Calculator, onSelect: openCalories },
+    { id: 'tools', label: 'Fitness Calculators', hint: 'TDEE, protein, macros, BMI, body fat', icon: Gauge, onSelect: () => openTools() },
     ...(user?.assessmentCompleted ? [{ id: 'assessment', label: 'My Assessment', hint: 'View or update your details', icon: Edit3, onSelect: () => setIsEditAssessmentOpen(true) }] : []),
   ];
   // Renewing is the next step for an expired client; waiting on the coach isn't.
@@ -637,6 +659,15 @@ export default function ClientDashboard() {
               <Play />
             </button>}
             {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
+            <button
+              onClick={() => openDiary()}
+              className="hdr-btn hidden sm:inline-flex"
+              aria-disabled={!isSubscriptionActive}
+              title={isSubscriptionActive ? 'Progress Diary' : 'Progress Diary — renew to unlock'}
+              aria-label="Progress Diary"
+            >
+              <NotebookPen />
+            </button>
             <div ref={newIconsRef} className="relative hidden sm:flex items-center gap-0.5">
             <button
               onClick={openHabitTracker}
@@ -713,6 +744,14 @@ export default function ClientDashboard() {
               aria-label="Calorie Calculator"
             >
               <Calculator />
+            </button>
+            <button
+              onClick={() => openTools()}
+              className="hdr-btn hidden sm:inline-flex"
+              title="Fitness Calculators (TDEE, protein, macros, BMI)"
+              aria-label="Fitness Calculators"
+            >
+              <Gauge />
             </button>
             <span aria-hidden className="hidden sm:block hdr-sep" />
             <ThemeToggle size="sm" className="mx-1" />
@@ -1173,6 +1212,52 @@ export default function ClientDashboard() {
       </div>
       )}
 
+      {/* Fitness Calculators View — the /tools calculators, in-dashboard */}
+      {activeView === 'tools' && (
+      <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
+        <div className="max-w-3xl mx-auto">
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4"
+          >
+            <ChevronLeft className="w-4 h-4" /> Back to dashboard
+          </button>
+          <div className="flex items-center gap-3 mb-1">
+            <span className="w-10 h-10 rounded-xl bg-brand-blue/10 ring-1 ring-brand-blue/20 flex items-center justify-center">
+              <Gauge className="w-5 h-5 text-brand-blue" />
+            </span>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">Fitness Calculators</h1>
+              <p className="text-xs md:text-sm text-gray-500">{DASHBOARD_TOOLS.find((t) => t.slug === toolSlug)?.hint}</p>
+            </div>
+          </div>
+          <div role="tablist" aria-label="Calculator" className="mt-5 flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+            {DASHBOARD_TOOLS.map((t) => (
+              <button
+                key={t.slug}
+                role="tab"
+                aria-selected={toolSlug === t.slug}
+                onClick={() => setToolSlug(t.slug)}
+                className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold border transition-colors ${
+                  toolSlug === t.slug
+                    ? 'bg-brand-blue text-white border-brand-blue'
+                    : 'border-white/10 text-gray-300 hover:bg-white/5'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4">
+            <FitnessToolWidget key={toolSlug} slug={toolSlug} />
+          </div>
+          <p className="mt-4 text-xs text-gray-500">
+            These are estimates. Your coach sets your actual calorie and protein targets in your diet plan.
+          </p>
+        </div>
+      </div>
+      )}
+
       {/* Profile View */}
       {activeView === 'profile' && (
       <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
@@ -1462,7 +1547,7 @@ export default function ClientDashboard() {
       {!isOverlayOpen && (
       <MobileBottomNav
         role="client"
-        activeTab={activeView === 'profile' || activeView === 'calories' ? 'more' : activeView === 'chat' ? 'chat' : undefined}
+        activeTab={activeView === 'profile' || activeView === 'calories' || activeView === 'tools' ? 'more' : activeView === 'chat' ? 'chat' : undefined}
         badges={{ chat: unreadChatCount }}
         moreItems={[
           ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', icon: Play, onSelect: openVideoLibrary, disabled: !isSubscriptionActive }] : []),
@@ -1470,6 +1555,7 @@ export default function ClientDashboard() {
           { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showHint, onSelect: openHabitTracker, disabled: !isSubscriptionActive },
           { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showHint, onSelect: openLogbook, disabled: !isSubscriptionActive },
           { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },
+          { id: 'tools', label: 'Fitness Calculators', icon: Gauge, onSelect: () => openTools() },
           { id: 'alerts', label: 'Notifications', icon: Bell, badge: notificationCount, onSelect: () => setIsNotificationPanelOpen(true) },
           { id: 'guide', label: 'Guide', icon: HelpCircle, onSelect: startTour },
           { id: 'profile', label: 'Profile', icon: User, onSelect: () => { setActiveView('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },

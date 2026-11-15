@@ -1357,14 +1357,74 @@ export const FOOD_CATEGORIES: string[] = FOODS.reduce<string[]>((acc, f) => {
 
 const norm = (s: string) => s.toLowerCase().trim();
 
-/** Case-insensitive search over name + aliases + category. Empty query -> all foods. */
+const words = (s: string) => norm(s).split(/[^a-z0-9]+/).filter(Boolean);
+
+/** "eggs" -> "egg", so plural queries still hit singular names/aliases. */
+const singular = (s: string) => (s.length > 3 && s.endsWith("s") && !s.endsWith("ss") ? s.slice(0, -1) : s);
+
+/** How well a query (word or phrase) matches one text (lower = better), or null for no match. */
+function wordScore(term: string, text: string): number | null {
+  const t = norm(text);
+  const tw = words(t).join(" ");
+  const q = words(term).join(" ");
+  if (!q) return null;
+  if (t === term || tw === q) return 0;
+  if (tw.startsWith(q + " ")) return 1; // "Egg Curry"
+  if ((" " + tw + " ").includes(" " + q + " ")) return 2; // "Boiled Egg"
+  if (tw.startsWith(q)) return 2.5; // "Buttermilk"
+  if ((" " + tw).includes(" " + q)) return 3; // word prefix
+  if (t.includes(term)) return 20; // mid-word ("tea" in "steak"): weak
+  return null;
+}
+
+/** Best of the query word and its singular form (the latter a hair worse, so "oats" prefers Oats over Oat Milk). */
+function matchScore(term: string, text: string): number | null {
+  const a = wordScore(term, text);
+  const s = singular(term);
+  const sb = s === term ? null : wordScore(s, text);
+  const b = sb === null ? null : sb + 0.25;
+  return a === null ? b : b === null ? a : Math.min(a, b);
+}
+
+/**
+ * Relevance-ranked search. Every query word must appear in the name, an alias or the category.
+ * Name matches rank first, then aliases (an exact alias like "egg" on Boiled Egg counts as a top
+ * name hit); a category-only match ("egg" in "Paneer, Egg & Dairy") ranks last, so "egg" lists eggs
+ * before milk. A name/alias hit whose category also matches ("rice" in Rice & Grains) gets a small
+ * boost. Ties keep dataset order. Empty query -> all foods.
+ */
 export function searchFoods(query: string): FoodItem[] {
   const q = norm(query);
   if (!q) return FOODS;
-  return FOODS.filter((f) => {
-    const hay = [f.name, f.category, ...(f.aliases ?? [])].map(norm).join(' ');
-    return hay.includes(q);
+  const terms = words(q);
+  if (!terms.length) return FOODS;
+  const scored: { f: FoodItem; s: number; i: number }[] = [];
+  FOODS.forEach((f, i) => {
+    let total = 0;
+    for (const term of terms) {
+      const name = matchScore(term, f.name);
+      const alias = (f.aliases ?? []).reduce<number | null>((best, a) => {
+        const s = matchScore(term, a);
+        return s === null ? best : best === null ? s : Math.min(best, s);
+      }, null);
+      const aliasAdj = alias === null ? null : alias < 1 ? alias : 10 + alias; // exact alias = top hit
+      const direct = name === null ? aliasAdj : aliasAdj === null ? name : Math.min(name, aliasAdj);
+      const cat = matchScore(term, f.category);
+      if (direct === null) {
+        if (cat === null) return;
+        total += 100;
+      } else {
+        total += direct - (cat !== null && cat < 20 ? 1.5 : 0);
+      }
+    }
+    // A whole-phrase hit on the name ("boiled egg") beats the same words scattered.
+    if (terms.length > 1) {
+      const phrase = matchScore(q, f.name);
+      if (phrase !== null && phrase < 20) total -= 5 - phrase;
+    }
+    scored.push({ f, s: total, i });
   });
+  return scored.sort((a, b) => a.s - b.s || a.i - b.i).map((x) => x.f);
 }
 
 export function getFoodBySlug(slug: string): FoodItem | undefined {
