@@ -34,15 +34,16 @@ interface CreatePromoCodeModalProps {
   clients: Client[];
 }
 
+// Must match SubscriptionPlan names (lib/pricing.ts), which is what checkout sends.
 const APPLICABLE_PLANS = [
   'Kickstart Plan',
   'Consistency Plan',
   'Strength Plan',
   'Mastery Plan',
   'Rehabilitation Plan',
-  'Home Workout Plan',
-  'Couple Strength Plan',
-  'Couple Mastery Plan',
+  'Home Workout',
+  'Couple Strength',
+  'Couple Mastery',
   'Couple Home Workout Plan',
   'Couple Rehabilitation Plan',
   'Elite 1:1 - 1 Month (24 Sessions)',

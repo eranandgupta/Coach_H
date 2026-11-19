@@ -11,6 +11,17 @@ export type PromoEvaluation =
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
+/**
+ * Plan names compared loosely: case, extra spaces and a trailing "Plan" are ignored. The admin
+ * promo form lists "Home Workout Plan", "Couple Strength Plan" and "Couple Mastery Plan", while the
+ * plans themselves are named "Home Workout", "Couple Strength" and "Couple Mastery", so an exact
+ * match rejected every code limited to those plans.
+ */
+export function samePlanName(a: string, b: string): boolean {
+  const norm = (s: string) => s.toLowerCase().replace(/\s+/g, ' ').trim().replace(/\s+plan$/, '');
+  return norm(a) === norm(b);
+}
+
 /** Discount a promo gives on `amount`, capped at the amount itself. */
 export function promoDiscount(discountType: string, discountValue: number, amount: number): number {
   let discount = 0;
@@ -56,7 +67,7 @@ export async function evaluatePromoCode(params: {
       const applicablePlans = JSON.parse(promoCode.applicablePlans);
       if (Array.isArray(applicablePlans) && applicablePlans.length > 0) {
         const isApplicable = applicablePlans.some(
-          (plan: string) => plan.toLowerCase() === planName.toLowerCase()
+          (plan: unknown) => typeof plan === 'string' && samePlanName(plan, planName)
         );
         if (!isApplicable) {
           return { ok: false, error: `This promo code is only valid for: ${applicablePlans.join(', ')}`, status: 400 };
