@@ -12,6 +12,7 @@ interface ConversationItem {
   updatedAt: string;
   isTrainerConversation?: boolean;
   trainer?: { id: number; name: string | null; image: string | null };
+  participantRole?: 'client' | 'coach' | 'trainer';
 }
 
 interface AvailableClient {
@@ -158,6 +159,11 @@ export default function ConversationList({
                       <p className={`text-sm truncate ${hasUnread ? 'text-white font-semibold' : 'text-white/80 font-medium'}`}>
                         {conv.participant.name || 'Unknown'}
                       </p>
+                      {(conv.participantRole === 'coach' || conv.participantRole === 'trainer') && (
+                        <span className="flex-shrink-0 px-1.5 py-0.5 text-[9px] font-semibold bg-white/[0.06] text-white/50 border border-white/[0.08] rounded-full">
+                          {conv.participantRole === 'coach' ? 'Coach' : 'Trainer'}
+                        </span>
+                      )}
                       {conv.isTrainerConversation && conv.trainer && (
                         <span className="flex-shrink-0 px-1.5 py-0.5 text-[9px] font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full">
                           via {conv.trainer.name?.split(' ')[0] || 'Trainer'}

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Heart, Activity, Utensils, Target, CheckCircle, XCircle, Calendar, TriangleAlert } from 'lucide-react';
+import { CURRENT_DIET_MEALS, STEPS_OPTIONS, WATER_OPTIONS, optionLabel } from '@/lib/assessmentOptions';
 
 interface AssessmentResultsModalProps {
   isOpen: boolean;
@@ -233,6 +234,13 @@ export default function AssessmentResultsModal({
                       <span className="text-gray-300 text-sm">Exercising Consistently (3 months)</span>
                       <BooleanBadge value={assessment.exercisingConsistently} />
                     </div>
+                    {assessment.exercisingConsistently && assessment.currentWorkoutRoutine && (
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Current Workout Routine:</p>
+                        <p className="text-white text-sm whitespace-pre-wrap">{assessment.currentWorkoutRoutine}</p>
+                      </div>
+                    )}
+                    <InfoRow label="Daily Steps" value={optionLabel(STEPS_OPTIONS, assessment.dailySteps)} />
                     <div>
                       <span className="text-gray-400 text-sm">Current Fitness Level: </span>
                       <span className="text-white font-medium">
@@ -248,7 +256,27 @@ export default function AssessmentResultsModal({
                     <Utensils className="w-5 h-5 text-yellow-400" />
                     <h3 className="text-xl font-bold text-white">Nutrition</h3>
                   </div>
+                  {assessment.currentDiet && CURRENT_DIET_MEALS.some((m) => assessment.currentDiet?.[m.key]) && (
+                    <div className="mb-4 pb-4 border-b border-white/5">
+                      <p className="text-gray-400 text-sm mb-2">Current Diet (typical day):</p>
+                      <dl className="space-y-1.5">
+                        {CURRENT_DIET_MEALS.map((m) => (
+                          <div key={m.key} className="flex gap-3 text-sm">
+                            <dt className="w-36 flex-shrink-0 text-gray-500">{m.label}</dt>
+                            <dd className="text-white">{assessment.currentDiet?.[m.key] || <span className="text-gray-600">Skipped</span>}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
+                  {assessment.allergies && (
+                    <div className="mb-4 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-sm">
+                      <span className="text-amber-300 font-semibold">Allergies: </span>
+                      <span className="text-amber-100">{assessment.allergies}</span>
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                    <InfoRow label="Daily Water" value={optionLabel(WATER_OPTIONS, assessment.waterIntake)} />
                     <InfoRow label="Meals Per Day" value={assessment.mealsPerDay || 'N/A'} />
                     <InfoRow label="Eat Outside Per Week" value={assessment.eatOutsidePerWeek || 'N/A'} />
                     <div className="flex items-center justify-between py-2 border-b border-white/5">

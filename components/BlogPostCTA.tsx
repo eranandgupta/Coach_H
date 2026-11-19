@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-/** WhatsApp chat for the free-assessment CTA (same number used across the site). */
-const WHATSAPP_ASSESSMENT =
-  'https://wa.me/917303484648?text=Hi%20Coach%20Himanshu!%20I%20want%20my%20free%20fitness%20assessment.';
+import { WHATSAPP_ASSESSMENT } from '@/lib/whatsapp';
 
 export function BackToBlogButton() {
   return (

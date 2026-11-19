@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Instagram, Youtube, Mail, Phone, Facebook, Twitter, ArrowRight, ClipboardCheck, ShieldCheck } from 'lucide-react';
+import { WHATSAPP_ASSESSMENT } from '@/lib/whatsapp';
 
 // Internal links are kept intact (they matter for crawl depth / SEO) — only regrouped.
 const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
@@ -28,7 +29,8 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: '/diet-plans', label: 'Indian Diet Plans' },
       { href: '/workout-plans', label: 'Free Workout Plans' },
       { href: '/exercises', label: 'Exercise Library' },
-      { href: '/assessment', label: 'Free Assessment' },
+      // /assessment is the post-signup form for logged-in clients; visitors chat on WhatsApp instead.
+      { href: WHATSAPP_ASSESSMENT, label: 'Free Assessment' },
       { href: '/about', label: 'About Coach Himanshu' },
       { href: '/dashboard', label: 'Member Dashboard' },
     ],
@@ -75,7 +77,9 @@ export default function Footer() {
               View Plans <ArrowRight className="w-4 h-4" />
             </a>
             <a
-              href="/assessment"
+              href={WHATSAPP_ASSESSMENT}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/10 ring-1 ring-white/20 text-white text-sm font-semibold hover:bg-white/15 transition-colors"
             >
               <ClipboardCheck className="w-4 h-4" /> Free Assessment
@@ -142,7 +146,11 @@ export default function Footer() {
               <ul className={i === 2 ? 'grid grid-cols-2 gap-x-6 gap-y-2.5 sm:block sm:space-y-2.5' : 'space-y-2.5'}>
                 {col.links.map((l) => (
                   <li key={l.href}>
-                    <a href={l.href} className="text-sm text-gray-300 hover:text-brand-blue transition-colors">
+                    <a
+                      href={l.href}
+                      {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="text-sm text-gray-300 hover:text-brand-blue transition-colors"
+                    >
                       {l.label}
                     </a>
                   </li>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { ingredientTotals } from '@/lib/ingredientMacros';
+import IngredientBreakdown from '@/components/forms/IngredientBreakdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Trash2, UtensilsCrossed, ChevronUp, ChevronDown, LayoutTemplate, Save, Check } from 'lucide-react';
 import { isElitePlan } from '@/lib/planUtils';
@@ -322,6 +324,24 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet, mode
     const updated = [...meals];
     updated[index][field] = value;
     setMeals(updated);
+  };
+
+  // Ingredients drive the meal's calories and macros: each recognised food + amount is looked up
+  // in the food database (the same one as the Calorie Calculator) and the totals fill the fields.
+  const applyIngredientTotals = (meal: Meal, text: string): Meal => {
+    const t = ingredientTotals(text);
+    if (t.counted === 0) return { ...meal, ingredients: text };
+    return {
+      ...meal,
+      ingredients: text,
+      calories: String(t.kcal),
+      protein: String(t.protein),
+      carbs: String(t.carbs),
+      fats: String(t.fat),
+    };
+  };
+  const updateIngredients = (index: number, text: string) => {
+    setMeals((prev) => prev.map((m, i) => (i === index ? applyIngredientTotals(m, text) : m)));
   };
 
   const cleanMeals = () => meals.filter(meal => meal.name.trim() !== '').map(({ _id, ...rest }) => rest);
@@ -814,13 +834,19 @@ export default function CreateDietModal({ isOpen, onClose, onSuccess, diet, mode
                             placeholder="Fats (g)"
                           />
 
-                          <textarea
-                            value={meal.ingredients}
-                            onChange={(e) => updateMeal(index, 'ingredients', e.target.value)}
-                            className="bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue md:col-span-2"
-                            rows={2}
-                            placeholder="Ingredients list..."
-                          />
+                          <div className="md:col-span-2">
+                            <textarea
+                              value={meal.ingredients}
+                              onChange={(e) => updateIngredients(index, e.target.value)}
+                              className="w-full bg-brand-navy/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-blue"
+                              rows={2}
+                              placeholder="Ingredients, e.g. Rolled oats (40 g), Milk (150 ml), Whey protein (1 scoop). Calories and macros fill in automatically."
+                            />
+                            <IngredientBreakdown
+                              text={meal.ingredients}
+                              onRecalculate={() => updateIngredients(index, meal.ingredients)}
+                            />
+                          </div>
 
                           <textarea
                             value={meal.instructions}

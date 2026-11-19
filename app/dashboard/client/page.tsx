@@ -27,9 +27,8 @@ import {
   Shield,
   ClipboardList,
   Pause,
-  PlayCircle, Hand, HelpCircle, NotebookPen, Gauge,
+  PlayCircle, Hand, HelpCircle, NotebookPen,
 } from 'lucide-react';
-import type { ToolSlug } from '@/lib/fitnessTools';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ViewWorkoutModal from '@/components/modals/ViewWorkoutModal';
@@ -63,23 +62,7 @@ import { loadSession, logout } from '@/lib/session';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import DashboardHero from '@/components/coach/DashboardHero';
 import dynamic from 'next/dynamic';
-// The calculator maths only loads when a client opens the Fitness Calculators view.
-const FitnessToolWidget = dynamic(() => import('@/components/FitnessToolWidget'), { ssr: false });
-
-/** The /tools calculators, shown inside the dashboard (short names for the tab chips). */
-const DASHBOARD_TOOLS: { slug: ToolSlug; label: string; hint: string }[] = [
-  { slug: 'tdee-calculator', label: 'TDEE', hint: 'Your maintenance calories and BMR.' },
-  { slug: 'calorie-deficit-calculator', label: 'Calorie Deficit', hint: 'Daily calories to lose weight at a safe pace.' },
-  { slug: 'protein-calculator', label: 'Protein', hint: 'Your daily protein target by weight and goal.' },
-  { slug: 'macro-calculator', label: 'Macros', hint: 'Protein, carbs and fat targets for your goal.' },
-  { slug: 'bmi-calculator', label: 'BMI', hint: 'Your BMI against Indian and WHO cut-offs.' },
-  { slug: 'ideal-weight-calculator', label: 'Ideal Weight', hint: 'Healthy weight range for your height.' },
-  { slug: 'body-fat-calculator', label: 'Body Fat', hint: 'Estimate body-fat % with a tape measure.' },
-];
-const CalorieCalculator = dynamic(() => import('@/components/CalorieCalculator'), {
-  ssr: false,
-  loading: () => <div className="h-64 rounded-2xl bg-white/[0.03] border border-white/[0.06] animate-pulse" />,
-});
+import CalculatorsHub, { type CalcSlug } from '@/components/CalculatorsHub';
 import ChatContainer from '@/components/chat/ChatContainer';
 import ProgressSnapshot from '@/components/progress/ProgressSnapshot';
 const ProgressDiary = dynamic(() => import('@/components/progress/ProgressDiary'), { ssr: false });
@@ -121,8 +104,8 @@ export default function ClientDashboard() {
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat' | 'calories' | 'tools'>('dashboard');
-  const [toolSlug, setToolSlug] = useState<ToolSlug>('tdee-calculator');
+  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'chat' | 'tools'>('dashboard');
+  const [toolSlug, setToolSlug] = useState<CalcSlug>('calories');
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [isVideoLibraryOpen, setIsVideoLibraryOpen] = useState(false);
   const [isHabitTrackerOpen, setIsHabitTrackerOpen] = useState(false);
@@ -139,13 +122,13 @@ export default function ClientDashboard() {
   const [pauseLoading, setPauseLoading] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
 
-  // "New feature" spotlight for the Habit Tracker + Transformation Logbook buttons.
+  // "New feature" spotlight for the Progress Diary + Calculators buttons.
   // Shows a friendly callout + pulsing badges on EVERY visit for one week after the
   // client first sees it, then stops for good.
   const [showFeatureHint, setShowFeatureHint] = useState(false);
   useEffect(() => {
     try {
-      const KEY = 'ch_hint_habits_logbook_first_seen';
+      const KEY = 'ch_hint_diary_calculators_first_seen';
       const WEEK = 7 * 24 * 60 * 60 * 1000;
       let firstSeen = Number(localStorage.getItem(KEY));
       if (!firstSeen) { firstSeen = Date.now(); localStorage.setItem(KEY, String(firstSeen)); }
@@ -202,16 +185,16 @@ export default function ClientDashboard() {
   const openVideoLibrary = () =>
     openMemberFeature('Video Library', 'The exercise video library is available to active members only.', () => setIsVideoLibraryOpen(true));
   const openHabitTracker = () => {
-    dismissFeatureHint();
     openMemberFeature('Habit Tracker', 'The habit tracker is available to active members only.', () => setIsHabitTrackerOpen(true));
   };
   const openLogbook = () => {
-    dismissFeatureHint();
     openMemberFeature('Logbook', 'The transformation logbook is available to active members only.', () => setIsLogbookOpen(true));
   };
 
-  const openDiary = (tab: DiaryTab = 'overview') =>
+  const openDiary = (tab: DiaryTab = 'overview') => {
+    dismissFeatureHint();
     openMemberFeature('Progress Diary', 'The progress diary is available to active members only.', () => { setDiaryTab(tab); setIsDiaryOpen(true); });
+  };
 
   // Check-in popup buttons open the matching tracker (and the right diary tab).
   const handleCheckIn = (a: CheckInAction) => {
@@ -220,12 +203,9 @@ export default function ClientDashboard() {
     else openDiary(a.tab);
   };
 
-  const openCalories = () => {
-    setActiveView('calories');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const openTools = (slug?: ToolSlug) => {
+  // Every calculator (calorie counter, TDEE, protein, macros, BMI…) lives in one Calculators view.
+  const openTools = (slug?: CalcSlug) => {
+    dismissFeatureHint();
     if (slug) setToolSlug(slug);
     setActiveView('tools');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -585,7 +565,7 @@ export default function ClientDashboard() {
   }
 
   const isSubscriptionActive = subscription?.isActive;
-  // Don't advertise the Habit Tracker + Logbook to clients who can't open them.
+  // Don't advertise the Progress Diary to clients who can't open it.
   const showHint = showFeatureHint && !!isSubscriptionActive && !isTourOpen;
   const currentWorkout = workouts[selectedWorkoutIndex] || workouts[0];
   const currentDiet = diets[selectedDietIndex] || diets[0];
@@ -610,8 +590,7 @@ export default function ClientDashboard() {
     { id: 'diary', label: 'Progress Diary', hint: 'Log workouts, PRs, runs, meals, weight', icon: NotebookPen, onSelect: () => openDiary(), locked: !isSubscriptionActive },
     { id: 'habits', label: 'Habit Tracker', hint: 'Tick off your daily habits', icon: ClipboardList, onSelect: openHabitTracker, locked: !isSubscriptionActive },
     { id: 'logbook', label: 'Logbook', hint: 'Log your 30-day transformation', icon: TrendingUp, onSelect: openLogbook, locked: !isSubscriptionActive },
-    { id: 'calories', label: 'Calorie Calculator', hint: 'Count calories in 1,300+ Indian foods', icon: Calculator, onSelect: openCalories },
-    { id: 'tools', label: 'Fitness Calculators', hint: 'TDEE, protein, macros, BMI, body fat', icon: Gauge, onSelect: () => openTools() },
+    { id: 'tools', label: 'Calculators', hint: 'Calories in foods, TDEE, protein, macros, BMI', icon: Calculator, onSelect: () => openTools() },
     ...(user?.assessmentCompleted ? [{ id: 'assessment', label: 'My Assessment', hint: 'View or update your details', icon: Edit3, onSelect: () => setIsEditAssessmentOpen(true) }] : []),
   ];
   // Renewing is the next step for an expired client; waiting on the coach isn't.
@@ -658,25 +637,34 @@ export default function ClientDashboard() {
             >
               <Play />
             </button>}
-            {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
-            <button
-              onClick={() => openDiary()}
-              className="hdr-btn hidden sm:inline-flex"
-              aria-disabled={!isSubscriptionActive}
-              title={isSubscriptionActive ? 'Progress Diary' : 'Progress Diary — renew to unlock'}
-              aria-label="Progress Diary"
-            >
-              <NotebookPen />
-            </button>
-            <div ref={newIconsRef} className="relative hidden sm:flex items-center gap-0.5">
             <button
               onClick={openHabitTracker}
-              className="hdr-btn"
+              className="hdr-btn hidden sm:inline-flex"
               aria-disabled={!isSubscriptionActive}
               title={isSubscriptionActive ? 'Habit Tracker' : 'Habit Tracker — renew to unlock'}
               aria-label="Habit Tracker"
             >
               <ClipboardList />
+            </button>
+            <button
+              onClick={openLogbook}
+              className="hdr-btn hidden sm:inline-flex"
+              aria-disabled={!isSubscriptionActive}
+              title={isSubscriptionActive ? 'Transformation Logbook' : 'Transformation Logbook — renew to unlock'}
+              aria-label="Transformation Logbook"
+            >
+              <TrendingUp />
+            </button>
+            {/* Group the two "NEW" icons so the callout anchors under them, not the row's edge */}
+            <div ref={newIconsRef} className="relative hidden sm:flex items-center gap-0.5">
+            <button
+              onClick={() => openDiary()}
+              className="hdr-btn"
+              aria-disabled={!isSubscriptionActive}
+              title={isSubscriptionActive ? 'Progress Diary' : 'Progress Diary — renew to unlock'}
+              aria-label="Progress Diary"
+            >
+              <NotebookPen />
               {showHint && (
                 <>
                   <span className="absolute inset-0 rounded-[10px] ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
@@ -685,13 +673,12 @@ export default function ClientDashboard() {
               )}
             </button>
             <button
-              onClick={openLogbook}
+              onClick={() => openTools()}
               className="hdr-btn"
-              aria-disabled={!isSubscriptionActive}
-              title={isSubscriptionActive ? 'Transformation Logbook' : 'Transformation Logbook — renew to unlock'}
-              aria-label="Transformation Logbook"
+              title="Calculators (food calories, TDEE, protein, macros, BMI)"
+              aria-label="Calculators"
             >
-              <TrendingUp />
+              <Calculator />
               {showHint && (
                 <>
                   <span className="absolute inset-0 rounded-[10px] ring-2 ring-amber-400/70 animate-pulse pointer-events-none" />
@@ -717,11 +704,11 @@ export default function ClientDashboard() {
                     <Hand className="w-4 h-4 text-amber-400" aria-hidden /> New here!
                   </p>
                   <p className="text-xs text-gray-300 mt-1 leading-relaxed">
-                    Track your daily habits and log your 30-day transformation — tap the glowing icons above. You can also download & print them.
+                    Log your workouts, meals, water and weight in the Progress Diary. All calculators (food calories, TDEE, protein, macros, BMI) are now in one place. Tap the glowing icons above.
                   </p>
                   <div className="flex items-center gap-2 mt-3">
                     <button
-                      onClick={openHabitTracker}
+                      onClick={() => openDiary()}
                       className="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-brand-blue to-blue-600 hover:shadow-lg hover:shadow-brand-blue/25 transition-all"
                     >
                       Show me
@@ -737,22 +724,6 @@ export default function ClientDashboard() {
               </div>
             )}
             </div>
-            <button
-              onClick={openCalories}
-              className="hdr-btn hidden sm:inline-flex"
-              title="Calorie Calculator"
-              aria-label="Calorie Calculator"
-            >
-              <Calculator />
-            </button>
-            <button
-              onClick={() => openTools()}
-              className="hdr-btn hidden sm:inline-flex"
-              title="Fitness Calculators (TDEE, protein, macros, BMI)"
-              aria-label="Fitness Calculators"
-            >
-              <Gauge />
-            </button>
             <span aria-hidden className="hidden sm:block hdr-sep" />
             <ThemeToggle size="sm" className="mx-1" />
             <span aria-hidden className="hidden sm:block hdr-sep" />
@@ -1186,75 +1157,15 @@ export default function ClientDashboard() {
       </div>
       )}
 
-      {/* Calorie Calculator View — in-dashboard, no redirect to the public page */}
-      {activeView === 'calories' && (
-      <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
-        <div className="max-w-5xl mx-auto">
-          <button
-            onClick={() => setActiveView('dashboard')}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4"
-          >
-            <ChevronLeft className="w-4 h-4" /> Back to dashboard
-          </button>
-          <div className="flex items-center gap-3 mb-1">
-            <span className="w-10 h-10 rounded-xl bg-amber-500/10 ring-1 ring-amber-500/20 flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-amber-400" />
-            </span>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">Calorie Calculator</h1>
-              <p className="text-xs md:text-sm text-gray-500">Search Indian foods, pick a serving, see calories &amp; macros instantly.</p>
-            </div>
-          </div>
-          <div className="mt-5">
-            <CalorieCalculator />
-          </div>
-        </div>
-      </div>
-      )}
-
-      {/* Fitness Calculators View — the /tools calculators, in-dashboard */}
+      {/* Calculators View — calorie counter + the /tools calculators, all in one place */}
       {activeView === 'tools' && (
       <div className="pt-24 md:pt-32 pb-28 lg:pb-20 px-3 md:px-4">
-        <div className="max-w-3xl mx-auto">
-          <button
-            onClick={() => setActiveView('dashboard')}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4"
-          >
-            <ChevronLeft className="w-4 h-4" /> Back to dashboard
-          </button>
-          <div className="flex items-center gap-3 mb-1">
-            <span className="w-10 h-10 rounded-xl bg-brand-blue/10 ring-1 ring-brand-blue/20 flex items-center justify-center">
-              <Gauge className="w-5 h-5 text-brand-blue" />
-            </span>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">Fitness Calculators</h1>
-              <p className="text-xs md:text-sm text-gray-500">{DASHBOARD_TOOLS.find((t) => t.slug === toolSlug)?.hint}</p>
-            </div>
-          </div>
-          <div role="tablist" aria-label="Calculator" className="mt-5 flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-            {DASHBOARD_TOOLS.map((t) => (
-              <button
-                key={t.slug}
-                role="tab"
-                aria-selected={toolSlug === t.slug}
-                onClick={() => setToolSlug(t.slug)}
-                className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold border transition-colors ${
-                  toolSlug === t.slug
-                    ? 'bg-brand-blue text-white border-brand-blue'
-                    : 'border-white/10 text-gray-300 hover:bg-white/5'
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-          <div className="mt-4">
-            <FitnessToolWidget key={toolSlug} slug={toolSlug} />
-          </div>
-          <p className="mt-4 text-xs text-gray-500">
-            These are estimates. Your coach sets your actual calorie and protein targets in your diet plan.
-          </p>
-        </div>
+        <CalculatorsHub
+          slug={toolSlug}
+          onSlugChange={setToolSlug}
+          onBack={() => setActiveView('dashboard')}
+          footnote="These are estimates. Your coach sets your actual calorie and protein targets in your diet plan."
+        />
       </div>
       )}
 
@@ -1547,15 +1458,14 @@ export default function ClientDashboard() {
       {!isOverlayOpen && (
       <MobileBottomNav
         role="client"
-        activeTab={activeView === 'profile' || activeView === 'calories' || activeView === 'tools' ? 'more' : activeView === 'chat' ? 'chat' : undefined}
+        activeTab={activeView === 'profile' || activeView === 'tools' ? 'more' : activeView === 'chat' ? 'chat' : undefined}
         badges={{ chat: unreadChatCount }}
         moreItems={[
           ...(!isLiveSessionPlan ? [{ id: 'video', label: 'Video Library', icon: Play, onSelect: openVideoLibrary, disabled: !isSubscriptionActive }] : []),
-          { id: 'diary', label: 'Progress Diary', icon: NotebookPen, onSelect: () => openDiary(), disabled: !isSubscriptionActive },
-          { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, isNew: showHint, onSelect: openHabitTracker, disabled: !isSubscriptionActive },
-          { id: 'logbook', label: 'Logbook', icon: TrendingUp, isNew: showHint, onSelect: openLogbook, disabled: !isSubscriptionActive },
-          { id: 'calories', label: 'Calorie Calculator', icon: Calculator, onSelect: openCalories },
-          { id: 'tools', label: 'Fitness Calculators', icon: Gauge, onSelect: () => openTools() },
+          { id: 'diary', label: 'Progress Diary', icon: NotebookPen, isNew: showHint, onSelect: () => openDiary(), disabled: !isSubscriptionActive },
+          { id: 'habits', label: 'Habit Tracker', icon: ClipboardList, onSelect: openHabitTracker, disabled: !isSubscriptionActive },
+          { id: 'logbook', label: 'Logbook', icon: TrendingUp, onSelect: openLogbook, disabled: !isSubscriptionActive },
+          { id: 'tools', label: 'Calculators', icon: Calculator, isNew: showHint, onSelect: () => openTools() },
           { id: 'alerts', label: 'Notifications', icon: Bell, badge: notificationCount, onSelect: () => setIsNotificationPanelOpen(true) },
           { id: 'guide', label: 'Guide', icon: HelpCircle, onSelect: startTour },
           { id: 'profile', label: 'Profile', icon: User, onSelect: () => { setActiveView('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },

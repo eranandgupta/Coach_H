@@ -204,11 +204,10 @@ async function putHandler(request: NextRequest, context: any) {
       );
     }
 
-    // Check if workout exists (trainers can edit any, coaches only their own)
+    // Check if workout exists
     const existingWorkout = await prisma.workoutPlan.findFirst({
-      where: user.role === 'trainer'
-        ? { id: parseInt(id) }
-        : { id: parseInt(id), coachId: user.userId },
+      // The coach (business owner) and trainers can edit any plan, including ones a trainer made.
+      where: { id: parseInt(id) },
     });
 
     if (!existingWorkout) {
@@ -295,12 +294,11 @@ async function deleteHandler(request: NextRequest, context: any) {
       );
     }
 
-    // Check if workout exists and belongs to this coach
+    // Check if workout exists
     const existingWorkout = await prisma.workoutPlan.findFirst({
-      where: {
-        id: parseInt(id),
-        coachId: user.userId,
-      },
+      // Only coaches reach here (requireCoach). They may delete any plan, including ones a
+      // trainer created for an assigned client (those carry the trainer's id as coachId).
+      where: { id: parseInt(id) },
     });
 
     if (!existingWorkout) {

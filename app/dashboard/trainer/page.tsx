@@ -35,6 +35,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { isElitePlan, isSubscriptionCurrentlyActive, subscriptionDisplayStatus } from '@/lib/planUtils';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import { CalculatorsButton } from '@/components/CalculatorsHub';
 import { loadSession, logout } from '@/lib/session';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import CoachInsightsRail from '@/components/coach/CoachInsightsRail';
@@ -223,6 +224,7 @@ export default function TrainerDashboard() {
           </div>
 
           <div className="ml-auto hdr-group">
+            <CalculatorsButton />
             {perms.chat && (
               <>
                 <button onClick={() => setIsChatOpen(true)} className="hdr-btn" aria-label="Chat">

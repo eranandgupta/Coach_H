@@ -214,6 +214,7 @@ export function bodyFatBand(pct: number, sex: Sex): BodyFatBand | null {
 // ─────────────────────────────────────────────────────────────────────────────
 export type ToolSlug =
   | 'bmi-calculator'
+  | 'bmr-calculator'
   | 'tdee-calculator'
   | 'calorie-deficit-calculator'
   | 'protein-calculator'

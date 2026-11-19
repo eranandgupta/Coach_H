@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, trainerPermissionError } from '@/lib/middleware';
+import { resolveTrainerPermissions } from '@/lib/trainerPermissions';
 
 // Never statically render: Next 13 caches a GET with no dynamic input at build time.
 export const dynamic = 'force-dynamic';
@@ -29,7 +30,30 @@ async function getHandler(request: NextRequest, context: any) {
       whereClause = { clientId: user.userId };
     }
 
-    const conversations = await prisma.conversation.findMany({
+    // Clients: the trainers they can message right now — currently assigned, with chat access.
+    // Each gets its conversation created here, so the client sees the trainer in their chat list
+    // straight away (before, only the trainer could start it, so client messages went to the coach).
+    let chatTrainerIds = new Set<number>();
+    if (!isCoach && !isTrainer) {
+      const assignments = await prisma.trainerClient.findMany({
+        where: { clientId: user.userId },
+        select: { trainerId: true, trainer: { select: { trainerPermissions: true } } },
+      });
+      chatTrainerIds = new Set(
+        assignments
+          .filter((a) => resolveTrainerPermissions(a.trainer.trainerPermissions).chat)
+          .map((a) => a.trainerId)
+      );
+      for (const trainerId of Array.from(chatTrainerIds)) {
+        await prisma.conversation.upsert({
+          where: { trainerId_clientId: { trainerId, clientId: user.userId } },
+          create: { trainerId, clientId: user.userId },
+          update: {},
+        });
+      }
+    }
+
+    const allConversations = await prisma.conversation.findMany({
       where: whereClause,
       include: {
         coach: { select: { id: true, name: true, image: true, lastSeenAt: true } },
@@ -43,6 +67,11 @@ async function getHandler(request: NextRequest, context: any) {
       },
       orderBy: { updatedAt: 'desc' },
     });
+
+    // A client no longer sees a trainer chat once that trainer is unassigned or loses chat access.
+    const conversations = isCoach || isTrainer
+      ? allConversations
+      : allConversations.filter((c) => c.trainerId === null || chatTrainerIds.has(c.trainerId));
 
     // Add unread count for each conversation
     const conversationsWithUnread = await Promise.all(
@@ -62,8 +91,8 @@ async function getHandler(request: NextRequest, context: any) {
         } else if (isTrainer) {
           participant = conv.client;
         } else {
-          // Client: show coach or trainer as participant
-          participant = conv.coach || conv.trainer;
+          // Client: show the trainer for a trainer chat, otherwise the coach
+          participant = conv.trainerId !== null ? conv.trainer : conv.coach;
         }
 
         // For coach: flag trainer conversations and include trainer info
@@ -77,15 +106,19 @@ async function getHandler(request: NextRequest, context: any) {
           updatedAt: conv.updatedAt,
           isTrainerConversation,
           trainer: isTrainerConversation ? conv.trainer : undefined,
+          // Who the other side is, so a client with a coach AND a trainer chat can tell them apart.
+          participantRole: isCoach || isTrainer ? 'client' : conv.trainerId !== null ? 'trainer' : 'coach',
         };
       })
     );
 
-    // For clients: return coach/trainer info if no conversation exists yet
+    // For clients: return the coach's info if there's no coach conversation yet. Only plans made by
+    // the coach count — a trainer-made plan carries the trainer's id as coachId.
     let coachInfo = null;
-    if (!isCoach && !isTrainer && conversations.length === 0) {
+    const coachRole = { role: { in: ['coach', 'admin'] } };
+    if (!isCoach && !isTrainer && !conversations.some((c) => c.coachId !== null)) {
       const workoutPlan = await prisma.workoutPlan.findFirst({
-        where: { clientId: user.userId },
+        where: { clientId: user.userId, coach: coachRole },
         orderBy: { createdAt: 'desc' },
         select: { coachId: true, coach: { select: { id: true, name: true, image: true } } },
       });
@@ -93,7 +126,7 @@ async function getHandler(request: NextRequest, context: any) {
         coachInfo = workoutPlan.coach;
       } else {
         const dietPlan = await prisma.dietPlan.findFirst({
-          where: { clientId: user.userId },
+          where: { clientId: user.userId, coach: coachRole },
           orderBy: { createdAt: 'desc' },
           select: { coachId: true, coach: { select: { id: true, name: true, image: true } } },
         });

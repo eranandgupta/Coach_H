@@ -22,6 +22,7 @@ interface ConversationItem {
   updatedAt: string;
   isTrainerConversation?: boolean;
   trainer?: Participant;
+  participantRole?: 'client' | 'coach' | 'trainer';
 }
 
 interface ChatContainerProps {
@@ -74,7 +75,7 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
       if (!res.ok || !mountedRef.current) return;
       const data = await res.json();
       if (data.conversations) setConversations(data.conversations);
-      if (data.coachInfo) setCoachInfo(data.coachInfo);
+      setCoachInfo(data.coachInfo || null);
       if (data.availableClients) setAvailableClients(data.availableClients);
     } catch {
       // silent fail
@@ -108,10 +109,11 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
     };
   }, [fetchConversations]);
 
-  // For clients: auto-create conversation with coach if none exists (one-time)
+  // For clients: auto-create conversation with coach if none exists (one-time). The server only
+  // sends coachInfo while the client has no coach conversation (a trainer chat may already exist).
   const createdRef = useRef(false);
   useEffect(() => {
-    if (!isStaff && !loading && conversations.length === 0 && coachInfo && !createdRef.current) {
+    if (!isStaff && !loading && coachInfo && !createdRef.current) {
       createdRef.current = true;
       const token = localStorage.getItem('token');
       if (!token) return;
@@ -123,7 +125,7 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
         .then(() => fetchConversations())
         .catch(() => {});
     }
-  }, [isStaff, loading, conversations.length, coachInfo, userId, fetchConversations]);
+  }, [isStaff, loading, coachInfo, userId, fetchConversations]);
 
   // For clients: auto-select the single conversation
   useEffect(() => {
@@ -203,6 +205,9 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
     );
   }
 
+  // A client with both a coach and a trainer chat picks from a list; with one, it opens directly.
+  const clientHasChoice = !isStaff && conversations.length > 1;
+
   // Client: go straight to chat
   if (!isStaff && selectedConv) {
     return (
@@ -213,8 +218,8 @@ export default function ChatContainer({ userId, userRole, onClose, onUnreadChang
         participant={selectedConv.participant}
         userId={userId}
         onMessagesRead={handleMessagesRead}
-        showWhatsApp
-        onBack={onClose}
+        showWhatsApp={selectedConv.participantRole !== 'trainer'}
+        onBack={clientHasChoice ? handleBack : onClose}
       />
     );
   }

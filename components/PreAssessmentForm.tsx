@@ -15,6 +15,7 @@ import {
   X, Salad, Egg, Drumstick, CalendarDays, Flame, Stethoscope, Trophy, BicepsFlexed
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { CURRENT_DIET_MEALS, STEPS_OPTIONS, WATER_OPTIONS, type CurrentDietMeal } from '@/lib/assessmentOptions';
 
 interface AssessmentData {
   dateOfBirth?: string;
@@ -68,6 +69,11 @@ interface AssessmentData {
   goalMuscleGain?: boolean;
   goalOther?: string;
   specialConditions?: string;
+  currentDiet?: Partial<Record<CurrentDietMeal, string>> | null;
+  currentWorkoutRoutine?: string;
+  allergies?: string;
+  waterIntake?: string;
+  dailySteps?: string;
 }
 
 interface PreAssessmentFormProps {
@@ -179,6 +185,17 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     goalMuscleGain: initialData?.goalMuscleGain || false,
     goalOther: initialData?.goalOther || '',
     specialConditions: initialData?.specialConditions || '',
+    currentDiet: {
+      breakfast: initialData?.currentDiet?.breakfast || '',
+      brunch: initialData?.currentDiet?.brunch || '',
+      lunch: initialData?.currentDiet?.lunch || '',
+      snack: initialData?.currentDiet?.snack || '',
+      dinner: initialData?.currentDiet?.dinner || '',
+    } as Record<CurrentDietMeal, string>,
+    currentWorkoutRoutine: initialData?.currentWorkoutRoutine || '',
+    allergies: initialData?.allergies || '',
+    waterIntake: initialData?.waterIntake || '',
+    dailySteps: initialData?.dailySteps || '',
   });
 
   const allSteps: { id: Step; title: string; icon: any }[] = [
@@ -217,6 +234,8 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     currentFitnessLevel: formData.currentFitnessLevel ? parseInt(formData.currentFitnessLevel) : null,
     mealsPerDay: formData.mealsPerDay ? parseInt(formData.mealsPerDay) : null,
     eatOutsidePerWeek: formData.eatOutsidePerWeek ? parseInt(formData.eatOutsidePerWeek) : null,
+    // The routine only applies to someone who is exercising.
+    currentWorkoutRoutine: formData.exercisingConsistently ? formData.currentWorkoutRoutine.trim() || null : null,
   });
 
   const handleSubmit = async () => {
@@ -313,11 +332,16 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
     const stepErrors: string[] = [];
     if (!formData.bestShapePeriod) stepErrors.push('Please describe when you were in best shape');
     if (!formData.currentFitnessLevel) stepErrors.push('Current fitness level is required');
+    if (formData.exercisingConsistently && !formData.currentWorkoutRoutine.trim()) stepErrors.push('Please describe your current workout routine');
+    if (!formData.dailySteps) stepErrors.push('Please select your average daily steps');
     return stepErrors;
   };
 
   const validateNutritionStep = (): string[] => {
     const stepErrors: string[] = [];
+    if (!Object.values(formData.currentDiet).some((v) => v.trim())) stepErrors.push('Please tell us what you currently eat in a day');
+    if (!formData.allergies.trim()) stepErrors.push('Please list any food or supplement allergies, or write "None"');
+    if (!formData.waterIntake) stepErrors.push('Please select your daily water intake');
     if (!formData.mealsPerDay) stepErrors.push('Meals per day is required');
     if (!formData.eatLateNight) stepErrors.push('Please select late night eating frequency');
     if (formData.energyDrops && !formData.energyDropTime) stepErrors.push('Please specify when you feel energy drops');
@@ -873,6 +897,19 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                 </div>
               </div>
 
+              {formData.exercisingConsistently && (
+                <div>
+                  <label className="block text-gray-300 text-sm mb-2">What is your current workout routine? <span className="text-red-400">*</span></label>
+                  <textarea
+                    value={formData.currentWorkoutRoutine}
+                    onChange={(e) => setFormData({ ...formData, currentWorkoutRoutine: e.target.value })}
+                    className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                    rows={3}
+                    placeholder="e.g., Gym 5 days a week: push/pull/legs, 30 min cardio after. Or: morning walk 45 min + yoga twice a week"
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="block text-gray-300 text-sm mb-2">
                   Current Fitness Level (1=Worst, 10=Best): {formData.currentFitnessLevel || 'Not set'} <span className="text-red-400">*</span>
@@ -890,6 +927,24 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
                   <span>Best</span>
                 </div>
               </div>
+
+              <div>
+                <label className="block text-gray-300 text-sm mb-2">How many steps do you walk on an average day? <span className="text-red-400">*</span></label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {STEPS_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, dailySteps: o.value })}
+                      className={`px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                        formData.dailySteps === o.value ? 'bg-brand-blue text-white' : 'bg-brand-navy border border-white/10 text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
@@ -897,6 +952,54 @@ export default function PreAssessmentForm({ userId, initialData, isEditMode = fa
           {currentStep === 'nutrition' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-white mb-4">Nutrition Questions</h2>
+
+              <div>
+                <label className="block text-gray-300 text-sm mb-1">What do you eat on a typical day right now? <span className="text-red-400">*</span></label>
+                <p className="text-xs text-gray-500 mb-3">Write what and roughly how much. Leave a meal blank if you skip it.</p>
+                <div className="space-y-3">
+                  {CURRENT_DIET_MEALS.map((m) => (
+                    <div key={m.key}>
+                      <label className="block text-gray-400 text-xs mb-1">{m.label}</label>
+                      <input
+                        type="text"
+                        value={formData.currentDiet[m.key]}
+                        onChange={(e) => setFormData({ ...formData, currentDiet: { ...formData.currentDiet, [m.key]: e.target.value } })}
+                        className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                        placeholder={m.placeholder}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-300 text-sm mb-2">Any food or supplement allergies? <span className="text-red-400">*</span></label>
+                <input
+                  type="text"
+                  value={formData.allergies}
+                  onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
+                  className="w-full bg-brand-navy border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue"
+                  placeholder='e.g., peanuts, lactose, whey protein. Write "None" if you have none'
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-300 text-sm mb-2">How much water do you drink in a day? <span className="text-red-400">*</span></label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {WATER_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, waterIntake: o.value })}
+                      className={`px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                        formData.waterIntake === o.value ? 'bg-brand-blue text-white' : 'bg-brand-navy border border-white/10 text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <div>
                 <label className="block text-gray-300 text-sm mb-2">How many times a day do you usually eat (including snacks)? <span className="text-red-400">*</span></label>

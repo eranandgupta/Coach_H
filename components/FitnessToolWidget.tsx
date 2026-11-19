@@ -38,6 +38,8 @@ const TONE: Record<string, string> = {
 /** Which inputs each calculator asks for. */
 const FIELDS: Record<ToolSlug, { sex?: boolean; age?: boolean; weight?: boolean; activity?: boolean }> = {
   'bmi-calculator': { weight: true },
+  // Dashboard-only (no public /tools page yet): FITNESS_TOOLS has no entry for it.
+  'bmr-calculator': { sex: true, age: true, weight: true },
   'tdee-calculator': { sex: true, age: true, weight: true, activity: true },
   'calorie-deficit-calculator': { sex: true, age: true, weight: true, activity: true },
   'protein-calculator': { weight: true },
@@ -167,6 +169,26 @@ export default function FitnessToolWidget({ slug }: { slug: ToolSlug }) {
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <Stat label="WHO global category" value={who.label} />
               <Stat label="Healthy weight for your height" value={`${healthy.min.toFixed(1)}–${healthy.max.toFixed(1)} kg`} sub={`You are ${diff}`} />
+            </div>
+          </>
+        );
+      }
+
+      case 'bmr-calculator': {
+        const rest = bmr(sex, w, heightCm, a);
+        return (
+          <>
+            <div className="text-xs text-gray-400">Basal metabolic rate (BMR)</div>
+            <div className="mt-1 text-5xl font-extrabold text-white">
+              {rest.toLocaleString('en-IN')} <span className="text-xl font-semibold text-gray-400">kcal / day</span>
+            </div>
+            <p className="mt-2 text-sm text-gray-400">
+              Calories your body burns at complete rest (Mifflin-St Jeor). Your daily need is higher once you add movement — see TDEE.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <Stat label="Per hour at rest" value={kcal(rest / 24)} />
+              <Stat label="Sedentary day" value={kcal(tdee(sex, w, heightCm, a, 'sedentary'))} sub="BMR × 1.2" />
+              <Stat label="Active day" value={kcal(tdee(sex, w, heightCm, a, 'moderate'))} sub="Training 3–5 days a week" />
             </div>
           </>
         );
