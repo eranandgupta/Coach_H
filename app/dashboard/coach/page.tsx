@@ -1,5 +1,6 @@
 'use client';
 
+import { appAlert, appConfirm } from '@/components/AppDialogs';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -259,7 +260,7 @@ export default function CoachDashboard() {
   };
 
   const handleDeleteClient = async (clientId: number) => {
-    if (!confirm('Are you sure you want to delete this client? This will also delete all their workouts and diets.')) {
+    if (!(await appConfirm('Are you sure you want to delete this client? This will also delete all their workouts and diets.'))) {
       return;
     }
 
@@ -267,7 +268,7 @@ export default function CoachDashboard() {
     const password = prompt('Please enter your password to confirm deletion:');
 
     if (!password) {
-      alert('Password is required to delete a client');
+      appAlert('Password is required to delete a client');
       return;
     }
 
@@ -283,15 +284,15 @@ export default function CoachDashboard() {
       });
 
       if (response.ok) {
-        alert('Client deleted successfully');
+        appAlert('Client deleted successfully');
         fetchDashboardData();
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to delete client');
+        appAlert(data.error || 'Failed to delete client');
       }
     } catch (error) {
       console.error('Error deleting client:', error);
-      alert('An error occurred while deleting the client');
+      appAlert('An error occurred while deleting the client');
     }
   };
 
@@ -318,7 +319,7 @@ export default function CoachDashboard() {
   };
 
   const handleDeleteWorkout = async (workoutId: number) => {
-    if (!confirm('Are you sure you want to delete this workout plan?')) {
+    if (!(await appConfirm('Are you sure you want to delete this workout plan?'))) {
       return;
     }
 
@@ -335,11 +336,11 @@ export default function CoachDashboard() {
         fetchDashboardData();
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to delete workout');
+        appAlert(data.error || 'Failed to delete workout');
       }
     } catch (error) {
       console.error('Error deleting workout:', error);
-      alert('An error occurred while deleting the workout');
+      appAlert('An error occurred while deleting the workout');
     }
   };
 
@@ -350,7 +351,7 @@ export default function CoachDashboard() {
   };
 
   const handleDeleteDiet = async (dietId: number) => {
-    if (!confirm('Are you sure you want to delete this diet plan?')) {
+    if (!(await appConfirm('Are you sure you want to delete this diet plan?'))) {
       return;
     }
 
@@ -367,11 +368,11 @@ export default function CoachDashboard() {
         fetchDashboardData();
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to delete diet');
+        appAlert(data.error || 'Failed to delete diet');
       }
     } catch (error) {
       console.error('Error deleting diet:', error);
-      alert('An error occurred while deleting the diet');
+      appAlert('An error occurred while deleting the diet');
     }
   };
 
@@ -381,7 +382,7 @@ export default function CoachDashboard() {
   };
 
   const handleDeleteBlog = async (blogId: number) => {
-    if (!confirm('Are you sure you want to delete this blog post?')) {
+    if (!(await appConfirm('Are you sure you want to delete this blog post?'))) {
       return;
     }
 
@@ -396,20 +397,20 @@ export default function CoachDashboard() {
 
       if (response.ok) {
         fetchDashboardData();
-        alert('Blog post deleted successfully');
+        appAlert('Blog post deleted successfully');
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to delete blog post');
+        appAlert(data.error || 'Failed to delete blog post');
       }
     } catch (error) {
       console.error('Error deleting blog:', error);
-      alert('An error occurred while deleting the blog post');
+      appAlert('An error occurred while deleting the blog post');
     }
   };
 
   const handleSendReminder = async (client: any) => {
     if (!client.subscriptions || client.subscriptions.length === 0) {
-      alert('This client has no active subscription');
+      appAlert('This client has no active subscription');
       return;
     }
 
@@ -418,7 +419,7 @@ export default function CoachDashboard() {
     const today = new Date();
     const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-    if (!confirm(`Send subscription reminder to ${client.name}?\n\nPlan: ${subscription.plan.name}\nExpires: ${endDate.toLocaleDateString()}\nDays Remaining: ${daysRemaining}`)) {
+    if (!(await appConfirm(`Send subscription reminder to ${client.name}?\n\nPlan: ${subscription.plan.name}\nExpires: ${endDate.toLocaleDateString()}\nDays Remaining: ${daysRemaining}`))) {
       return;
     }
 
@@ -435,19 +436,19 @@ export default function CoachDashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        alert(`Reminder sent successfully to ${client.email}!\nDays remaining: ${data.daysRemaining}`);
+        appAlert(`Reminder sent successfully to ${client.email}!\nDays remaining: ${data.daysRemaining}`);
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to send reminder');
+        appAlert(data.error || 'Failed to send reminder');
       }
     } catch (error) {
       console.error('Error sending reminder:', error);
-      alert('An error occurred while sending the reminder');
+      appAlert('An error occurred while sending the reminder');
     }
   };
 
   const handleDeleteSubscription = async (subId: number) => {
-    if (!confirm('Delete this subscription permanently? This cannot be undone.')) return;
+    if (!(await appConfirm('Delete this subscription permanently? This cannot be undone.'))) return;
     setDeletingSubId(subId);
     try {
       const token = localStorage.getItem('token');
@@ -457,13 +458,13 @@ export default function CoachDashboard() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert(data.error || 'Failed to delete subscription');
+        appAlert(data.error || 'Failed to delete subscription');
         return;
       }
       await fetchDashboardData();
     } catch (error) {
       console.error('Error deleting subscription:', error);
-      alert('An error occurred while deleting the subscription.');
+      appAlert('An error occurred while deleting the subscription.');
     } finally {
       setDeletingSubId(null);
     }

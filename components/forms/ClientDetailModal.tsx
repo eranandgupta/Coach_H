@@ -1,5 +1,6 @@
 'use client';
 
+import { appAlert, appConfirm } from '@/components/AppDialogs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Dumbbell, UtensilsCrossed, Edit, CreditCard, Trash2, Calendar, ClipboardList, Loader2, Mail, Check, Target, XCircle, ChevronDown, ChevronUp, Clock, FileText, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -207,22 +208,22 @@ export default function ClientDetailModal({
       if (res.ok) {
         fetchSessions();
         if (data.subscriptionExpired) {
-          alert('That was the last session, so this 1:1 plan has now expired. Renew it to keep training.');
+          appAlert('That was the last session, so this 1:1 plan has now expired. Renew it to keep training.');
           onRefreshClients?.();
         }
       } else {
         // The save may have gone through before the error (e.g. a timeout after the write).
         fetchSessions();
-        alert(data.error || `Failed to confirm session (HTTP ${res.status}${raw && !data.error ? `: ${raw.slice(0, 120)}` : ''}). Please try again.`);
+        appAlert(data.error || `Failed to confirm session (HTTP ${res.status}${raw && !data.error ? `: ${raw.slice(0, 120)}` : ''}). Please try again.`);
       }
     } catch (error: any) {
       fetchSessions();
-      alert(`Could not reach the server to confirm Session ${sessionNumber} (${error?.message || 'network error'}). Check your connection and try again.`);
+      appAlert(`Could not reach the server to confirm Session ${sessionNumber} (${error?.message || 'network error'}). Check your connection and try again.`);
     }
   };
 
   const handleUndoSession = async (session: any) => {
-    if (!confirm(`Undo Session ${session.sessionNumber} completion?`)) return;
+    if (!(await appConfirm(`Undo Session ${session.sessionNumber} completion?`))) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -235,12 +236,12 @@ export default function ClientDetailModal({
         fetchSessions();
       }
     } catch (error) {
-      alert('Error undoing session');
+      appAlert('Error undoing session');
     }
   };
 
   const handleMarkExpired = async (subId: number) => {
-    if (!confirm('Deactivate this subscription? The client will lose access to this plan and stay deactivated (even Elite 1:1 plans with sessions remaining) until you reactivate it.')) return;
+    if (!(await appConfirm('Deactivate this subscription? The client will lose access to this plan and stay deactivated (even Elite 1:1 plans with sessions remaining) until you reactivate it.'))) return;
 
     setExpiringSubId(subId);
     try {
@@ -258,22 +259,22 @@ export default function ClientDetailModal({
       });
 
       if (res.ok) {
-        alert('Subscription deactivated');
+        appAlert('Subscription deactivated');
         onRefreshClients?.();
       } else {
         const data = await res.json();
-        alert(data.error || 'Failed to update subscription');
+        appAlert(data.error || 'Failed to update subscription');
       }
     } catch (error) {
       console.error('Error marking subscription expired:', error);
-      alert('Error updating subscription');
+      appAlert('Error updating subscription');
     } finally {
       setExpiringSubId(null);
     }
   };
 
   const handleSendCredentials = async () => {
-    if (!confirm(`Send new login credentials to ${client.email}?\n\nThis will reset their password and email them new credentials.`)) {
+    if (!(await appConfirm(`Send new login credentials to ${client.email}?\n\nThis will reset their password and email them new credentials.`))) {
       return;
     }
 
@@ -295,16 +296,16 @@ export default function ClientDetailModal({
 
       if (response.ok) {
         setCredentialsSent(true);
-        alert(`Success! New credentials sent to ${client.email}`);
+        appAlert(`Success! New credentials sent to ${client.email}`);
 
         // Reset success state after 3 seconds
         setTimeout(() => setCredentialsSent(false), 3000);
       } else {
-        alert(data.error || 'Failed to send credentials');
+        appAlert(data.error || 'Failed to send credentials');
       }
     } catch (error) {
       console.error('Error sending credentials:', error);
-      alert('An error occurred while sending credentials');
+      appAlert('An error occurred while sending credentials');
     } finally {
       setIsSendingCredentials(false);
     }

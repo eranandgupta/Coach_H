@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { CartProvider } from '@/contexts/CartContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import { AppDialogHost } from '@/components/AppDialogs';
 import ThemeProvider from '@/components/theme/ThemeProvider';
 import Script from 'next/script';
 import { LOWEST_PLAN_PRICE, formatINR } from '@/lib/pricing';
@@ -339,6 +340,7 @@ export default function RootLayout({
             }
           `}
         </Script>
+        <AppDialogHost />
       </body>
     </html>
   );
